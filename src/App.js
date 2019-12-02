@@ -82,25 +82,6 @@ const App = ( { collapsed, setSiderCollapse } ) => (
 
 )
 
-// class App extends React.Component {
-
-//   state = {
-//     collapsed: false
-//   };
-
-//   onCollapse = collapsed => {
-//     console.log(collapsed);
-//     this.setState({ collapsed });
-//   };
-
-//   render() {
-//     return (
-      
-//     );
-//   }
-// }
-
-
 //state is the root reducer
 const mapStateToProps = state => ({
   collapsed: state.home.collapsed
