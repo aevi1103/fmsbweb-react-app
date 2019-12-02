@@ -1,7 +1,7 @@
 import homeActionTypes from './home.types'
 
 const INITIAL_STATE = {
-    collapsed: false
+    collapsed: true
 }
 
 const homeReducer = (state = INITIAL_STATE, action) => {
