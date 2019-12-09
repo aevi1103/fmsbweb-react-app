@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link, Route, withRouter } from "react-router-dom";
+import { Link, Route, withRouter, Switch } from "react-router-dom";
+
 
 import { ReactComponent as Logo } from './assets/logo.svg'
 import { ReactComponent as LogoIcon } from './assets/logoIcon.svg'
@@ -17,8 +18,9 @@ import HomePage from './pages/home/home.component'
 import MorningMeetingPage from './pages/dashboard/morning-meeting/morning-meeting.component'
 import SwotPage from './pages/dashboard/swot/swot.component'
 
+import NotFound from './pages/404/404.component';
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
 const logoStyles = {
@@ -32,7 +34,9 @@ const logoStylesWhite = {
   filter: "brightness(0) invert(1)"
 }
 
-const App = ( { collapsed, setSiderCollapse, location } ) => (
+const App = ( { collapsed, setSiderCollapse, location } ) => { 
+  
+  return (
 
   <Layout style={{ minHeight: "100vh" }}>
 
@@ -204,15 +208,12 @@ const App = ( { collapsed, setSiderCollapse, location } ) => (
     
     <Layout>
 
-      <Header style={{ background: "#fff", padding: 0 }} />
-
-      <Content style={{ margin: "0 16px" }}>
-
+      <Switch>
         <Route exact path="/" component={HomePage} />
         <Route exact path="/dashboard/morningmeeting" component={MorningMeetingPage} />
         <Route exact path="/dashboard/swot" component={SwotPage} />
-
-      </Content>
+        <Route component={NotFound} />
+      </Switch>
 
       <Footer style={{ textAlign: "center" }}>
         FMSBWeb &copy; {new Date().getFullYear()}
@@ -223,6 +224,7 @@ const App = ( { collapsed, setSiderCollapse, location } ) => (
   </Layout>
 
 ) 
+}
 
 //state is the root reducer
 const mapStateToProps = state => ({
