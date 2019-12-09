@@ -3,8 +3,11 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 import { 
-    Spin
+    Spin,
+    Icon
  } from "antd";
+
+
 
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
@@ -14,9 +17,11 @@ import ReactFC from 'react-fusioncharts';
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
+const loadingIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
+
 const IncidentByDeptChart = ({isIncidentByDeptFetching, incidentByDeptCollection}) => {
 
-    const { categories, data } = incidentByDeptCollection;
+    const { categories, series, data } = incidentByDeptCollection;
     let chartConfigs = {};
 
     if (data) {
@@ -31,17 +36,16 @@ const IncidentByDeptChart = ({isIncidentByDeptFetching, incidentByDeptCollection
             })
         });
 
-        let incidents = _.groupBy(ListOfInjuries, o => o.injuryStatus);
+        const incidents = _.groupBy(ListOfInjuries, o => o.injuryStatus);
         const dataSet = Object.keys(incidents).map(key => {
             return {
                 seriesName: key,
+                color: series.find(({ injuryStatus }) => injuryStatus === key).colorCode,
                 data: _.orderBy(incidents[key], o => o.department)                    
                         .map(({numberOfIncidents, colorCode, department}) => 
                                 ({
                                     value: numberOfIncidents,
-                                    color: colorCode,
-                                    toolText: `<b>Dept:</b> ${department} <br>
-                                                <b>Incidents:</b> ${numberOfIncidents} <br> `
+                                    color: colorCode
                                 }))
             }
         })
@@ -69,16 +73,14 @@ const IncidentByDeptChart = ({isIncidentByDeptFetching, incidentByDeptCollection
             dataSource: dataSource
           };
 
-        console.log('IncidentByDeptChart', chartConfigs)
     }
 
     return (
-        <>
+        <div className="tc">
             {
-                isIncidentByDeptFetching ? <Spin/> : <ReactFC {...chartConfigs} />
+                isIncidentByDeptFetching ? <Spin indicator={loadingIcon} tip="loading..." /> : <ReactFC {...chartConfigs} />
             }
-        </>
-
+        </div>
     )
 }
 

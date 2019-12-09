@@ -3,9 +3,11 @@ import { connect } from 'react-redux';
 import numeral from 'numeral';
 
 import { 
-    Spin
+    Spin,
+    Icon
  } from "antd";
 
+ 
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
@@ -13,6 +15,8 @@ import ReactFC from 'react-fusioncharts';
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
+
+const loadingIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 const MonthlyIncidentRateChart = ({isMonthlyIncidentRateFetching, monthlyIncidentRateCollection}) => {
 
@@ -50,7 +54,7 @@ const MonthlyIncidentRateChart = ({isMonthlyIncidentRateFetching, monthlyInciden
     return (
         <>
             {
-                isMonthlyIncidentRateFetching ? <Spin/> : <ReactFC {...chartConfigs} />
+                isMonthlyIncidentRateFetching ? <Spin indicator={loadingIcon} tip="loading..." /> : <ReactFC {...chartConfigs} />
             }
         </>
 

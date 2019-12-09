@@ -13,7 +13,7 @@ import {
     Button
  } from "antd";
 
- import Safety from './safety/safety.component'
+ import Safety from '../../../components/safety/safety.component'
 
 const { Header, Content } = Layout;
 const { TabPane } = Tabs;
@@ -25,9 +25,7 @@ const headerStyles = {
 }
 
 const dateFormat = 'MM/DD/YYYY';
-const previousDay = moment().add('d', -1);
-
-
+const previousDay = moment().add(-1, 'd');
 
 class MorningMeeting extends React.Component { 
     
