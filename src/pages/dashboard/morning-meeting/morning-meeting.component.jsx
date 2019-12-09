@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchSafetyMonthlyIncidentRateStartAsync } from '../../../redux/morning-meeting/morning-meeting.actions'
+import { 
+    fetchSafetyMonthlyIncidentRateStartAsync,
+    fetchSafetyIncidentByDeptStartAsync
+ } from '../../../redux/morning-meeting/morning-meeting.actions'
 import moment from 'moment'
 
 import { 
@@ -29,22 +32,28 @@ const previousDay = moment().add('d', -1);
 class MorningMeeting extends React.Component { 
     
     componentDidMount() {
+
         const { 
-            setMonthlyIncidentRate
+            setMonthlyIncidentRate,
+            setIncidentByDept
         } = this.props;
 
-        
         setMonthlyIncidentRate();
+        setIncidentByDept();
+    }
+
+    onClick = () => {
+
+        const { 
+            setMonthlyIncidentRate,
+            setIncidentByDept
+        } = this.props;
+
+        setMonthlyIncidentRate();
+        setIncidentByDept();
     }
 
     render() {
-
-        const { 
-            isMonthlyIncidentRateFetching,
-            monthlyIncidentRateCollection,
-            setMonthlyIncidentRate } = this.props;
-
-            console.log('from components' , this.props)
 
         return ( 
             <>
@@ -61,11 +70,11 @@ class MorningMeeting extends React.Component {
                         format={dateFormat}
                         defaultValue={[moment(previousDay, dateFormat), moment(previousDay, dateFormat)]} />
 
-                    <Button type="primary" onClick={() => setMonthlyIncidentRate()}>Go</Button>
+                    <Button type="primary" onClick={this.onClick}>Go</Button>
 
                     <Tabs defaultActiveKey="1" onChange={() => {}}>
                         <TabPane tab="Safety" key="1">                   
-                        <Safety isLoading={isMonthlyIncidentRateFetching} data={monthlyIncidentRateCollection}/>
+                            <Safety/>
                         </TabPane>
                         <TabPane tab="Quality" key="2">
                             Content of Tab Pane 2
@@ -90,13 +99,11 @@ class MorningMeeting extends React.Component {
     }
 }
 
-const mapStateToProps = ({ morningMeeting }) => ({
-    isMonthlyIncidentRateFetching: morningMeeting.isMonthlyIncidentRateFetching,
-    monthlyIncidentRateCollection: morningMeeting.monthlyIncidentRateCollection
-})
+
 
 const mapDispatchToProps = dispatch => ({
-    setMonthlyIncidentRate: () => dispatch(fetchSafetyMonthlyIncidentRateStartAsync())
+    setMonthlyIncidentRate: () => dispatch(fetchSafetyMonthlyIncidentRateStartAsync()),
+    setIncidentByDept: () => dispatch(fetchSafetyIncidentByDeptStartAsync())
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(MorningMeeting);
+export default connect(null, mapDispatchToProps)(MorningMeeting);
