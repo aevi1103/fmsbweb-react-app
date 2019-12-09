@@ -58,3 +58,33 @@ export const fetchSafetyIncidentByDeptStartAsync = () => {
 
     }
 }
+
+//INCIDENTS
+export const fetchSafetyIncidentStart = () => ({
+    type: morningMeetingTypes.FETCH_SAFETY_INCIDENTS_START
+})
+
+export const fetchSafetyIncidentSuccess = data => ({
+    type: morningMeetingTypes.FETCH_SAFETY_INCIDENTS_SUCCESS,
+    payload: data
+})
+
+export const fetchSafetyIncidentFailure = errorMsg => ({
+    type: morningMeetingTypes.FETCH_SAFETY_INCIDENTS_FAILURE,
+    payload: errorMsg
+})
+
+export const fetchSafetyIncidentStartAsync = (startDate, endDate) => {
+
+    return dispatch => {
+
+        dispatch(fetchSafetyIncidentStart());
+
+        api.get(`safety/incidents?start=${startDate}&end=${endDate}&fields=dept,injuryStatus,description,incidentDate`)
+        .then(response => {
+            dispatch(fetchSafetyIncidentSuccess(response.data))
+        })
+        .catch(error => dispatch(fetchSafetyIncidentFailure(error.message)))
+
+    }
+}

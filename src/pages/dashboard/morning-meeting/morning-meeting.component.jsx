@@ -2,7 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { 
     fetchSafetyMonthlyIncidentRateStartAsync,
-    fetchSafetyIncidentByDeptStartAsync
+    fetchSafetyIncidentByDeptStartAsync,
+    fetchSafetyIncidentStartAsync
  } from '../../../redux/morning-meeting/morning-meeting.actions'
 import moment from 'moment'
 
@@ -29,32 +30,52 @@ const previousDay = moment().add(-1, 'd');
 
 class MorningMeeting extends React.Component { 
     
+    constructor(props){
+        super(props)
+        this.state = {
+            startDate: previousDay.format(dateFormat),
+            endDate: previousDay.format(dateFormat)
+        }
+    }
+
     componentDidMount() {
+        this.fetchData();       
+    }
+
+    fetchData = () => {
 
         const { 
             setMonthlyIncidentRate,
-            setIncidentByDept
+            setIncidentByDept,
+            setIncidents
         } = this.props;
+
+        const {
+            startDate,
+            endDate
+        } = this.state;
 
         setMonthlyIncidentRate();
         setIncidentByDept();
+        setIncidents(startDate, endDate)
     }
 
     onClick = () => {
+        this.fetchData();  
+    }
 
-        const { 
-            setMonthlyIncidentRate,
-            setIncidentByDept
-        } = this.props;
-
-        setMonthlyIncidentRate();
-        setIncidentByDept();
+    onCalendarChange = (dates) => {
+        const [start, end] = dates;
+        this.setState({
+            startDate: start ? start.format(dateFormat) : null,
+            endDate: end ? end.format(dateFormat) : null
+        })    
     }
 
     render() {
 
         return ( 
-            <>
+            <div>
                 <Header className="pa0 mb3" style={headerStyles} >
                     <h2 className="ml3">Plant Status</h2>
                 </Header>
@@ -66,7 +87,13 @@ class MorningMeeting extends React.Component {
                         className="mr2"
                         onChange={() => {}}
                         format={dateFormat}
-                        defaultValue={[moment(previousDay, dateFormat), moment(previousDay, dateFormat)]} />
+                        onCalendarChange={this.onCalendarChange}
+                        defaultValue={
+                            [
+                                moment(previousDay, dateFormat),
+                                moment(previousDay, dateFormat)
+                            ]
+                        } />
 
                     <Button type="primary" onClick={this.onClick}>Go</Button>
 
@@ -92,7 +119,7 @@ class MorningMeeting extends React.Component {
                     </Tabs>
 
                 </Content>      
-            </>   
+            </div> 
         ) 
     }
 }
@@ -101,7 +128,8 @@ class MorningMeeting extends React.Component {
 
 const mapDispatchToProps = dispatch => ({
     setMonthlyIncidentRate: () => dispatch(fetchSafetyMonthlyIncidentRateStartAsync()),
-    setIncidentByDept: () => dispatch(fetchSafetyIncidentByDeptStartAsync())
+    setIncidentByDept: () => dispatch(fetchSafetyIncidentByDeptStartAsync()),
+    setIncidents: (start, end) => dispatch(fetchSafetyIncidentStartAsync(start, end)),
 })
 
 export default connect(null, mapDispatchToProps)(MorningMeeting);

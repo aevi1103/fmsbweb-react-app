@@ -7,8 +7,6 @@ import {
     Icon
  } from "antd";
 
-
-
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
@@ -19,7 +17,7 @@ ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
 const loadingIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
-const IncidentByDeptChart = ({isIncidentByDeptFetching, incidentByDeptCollection}) => {
+const IncidentByDeptChart = ({incidentByDeptCollection}) => {
 
     const { categories, series, data } = incidentByDeptCollection;
     let chartConfigs = {};
@@ -68,7 +66,7 @@ const IncidentByDeptChart = ({isIncidentByDeptFetching, incidentByDeptCollection
           chartConfigs = {
             type: 'stackedcolumn2d',
             width: '100%',
-            height: 400,
+            height: '89%',
             dataFormat: 'json',
             dataSource: dataSource
           };
@@ -76,16 +74,11 @@ const IncidentByDeptChart = ({isIncidentByDeptFetching, incidentByDeptCollection
     }
 
     return (
-        <div className="tc">
-            {
-                isIncidentByDeptFetching ? <Spin indicator={loadingIcon} tip="loading..." /> : <ReactFC {...chartConfigs} />
-            }
-        </div>
+        <ReactFC {...chartConfigs} />
     )
 }
 
 const mapStateToProps = ({ morningMeeting }) => ({
-    isIncidentByDeptFetching: morningMeeting.isIncidentByDeptFetching,
     incidentByDeptCollection: morningMeeting.incidentByDeptCollection,
 })
 

@@ -7,7 +7,11 @@ const INITIAL_STATE = {
 
     isIncidentByDeptFetching: false,
     incidentByDeptCollection: [],
-    incidentByDeptErrorMsg: undefined
+    incidentByDeptErrorMsg: undefined,
+
+    isIncidentFetching: false,
+    incidentCollection: [],
+    incidentErrorMsg: undefined
 }
 
 const morningMeetingReducer = (state = INITIAL_STATE, action) => {
@@ -61,6 +65,31 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isIncidentByDeptFetching: false,
                 incidentByDeptErrorMsg: action.payload
             }
+
+        //INCIDENTS
+        case morningMeetingTypes.FETCH_SAFETY_INCIDENTS_START:
+
+            return {
+                ...state,
+                isIncidentFetching: true
+            }
+
+        case morningMeetingTypes.FETCH_SAFETY_INCIDENTS_SUCCESS:
+
+            return {
+                ...state,
+                isIncidentFetching: false,
+                incidentCollection: action.payload
+            }
+
+        case morningMeetingTypes.FETCH_SAFETY_INCIDENTS_FAILURE:
+
+            return {
+                ...state,
+                isIncidentFetching: false,
+                incidentErrorMsg: action.payload
+            }
+
     
         default:
             return state;
