@@ -2,11 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 
-import { 
-    Spin,
-    Icon
- } from "antd";
-
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
@@ -14,8 +9,6 @@ import ReactFC from 'react-fusioncharts';
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
-
-const loadingIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 const IncidentByDeptChart = ({incidentByDeptCollection}) => {
 

@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import { 
     fetchSafetyMonthlyIncidentRateStartAsync,
     fetchSafetyIncidentByDeptStartAsync,
-    fetchSafetyIncidentStartAsync
+    fetchSafetyIncidentStartAsync,
+    fetchLogisticsStockOverviewStartAsync
  } from '../../../redux/morning-meeting/morning-meeting.actions'
 import moment from 'moment'
 
@@ -15,6 +16,7 @@ import {
  } from "antd";
 
  import Safety from '../../../components/safety/safety.component'
+ import Logistics from '../../../components/logistics/logistics.component'
 
 const { Header, Content } = Layout;
 const { TabPane } = Tabs;
@@ -47,7 +49,8 @@ class MorningMeeting extends React.Component {
         const { 
             setMonthlyIncidentRate,
             setIncidentByDept,
-            setIncidents
+            setIncidents,
+            setStockOverview
         } = this.props;
 
         const {
@@ -57,7 +60,8 @@ class MorningMeeting extends React.Component {
 
         setMonthlyIncidentRate();
         setIncidentByDept();
-        setIncidents(startDate, endDate)
+        setIncidents(startDate, endDate);
+        setStockOverview(moment(endDate, dateFormat).add(1, 'd').format(dateFormat));
     }
 
     onClick = () => {
@@ -75,7 +79,7 @@ class MorningMeeting extends React.Component {
     render() {
 
         return ( 
-            <div>
+            <>
                 <Header className="pa0 mb3" style={headerStyles} >
                     <h2 className="ml3">Plant Status</h2>
                 </Header>
@@ -102,24 +106,24 @@ class MorningMeeting extends React.Component {
                             <Safety/>
                         </TabPane>
                         <TabPane tab="Quality" key="2">
-                            Content of Tab Pane 2
+                            Quality
                         </TabPane>
                         <TabPane tab="Logistics" key="3">
-                            Content of Tab Pane 3
+                            <Logistics/>
                         </TabPane>
                         <TabPane tab="Production" key="4">
-                            Content of Tab Pane 3
+                            Prod
                         </TabPane>
                         <TabPane tab="Finance" key="5">
-                            Content of Tab Pane 3
+                            Finance
                         </TabPane>
                         <TabPane tab="Maintenance" key="6">
-                            Content of Tab Pane 3
+                            Maint
                         </TabPane>
                     </Tabs>
 
                 </Content>      
-            </div> 
+            </> 
         ) 
     }
 }
@@ -130,6 +134,7 @@ const mapDispatchToProps = dispatch => ({
     setMonthlyIncidentRate: () => dispatch(fetchSafetyMonthlyIncidentRateStartAsync()),
     setIncidentByDept: () => dispatch(fetchSafetyIncidentByDeptStartAsync()),
     setIncidents: (start, end) => dispatch(fetchSafetyIncidentStartAsync(start, end)),
+    setStockOverview: (day) => dispatch(fetchLogisticsStockOverviewStartAsync(day)),
 })
 
 export default connect(null, mapDispatchToProps)(MorningMeeting);

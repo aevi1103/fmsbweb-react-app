@@ -11,7 +11,11 @@ const INITIAL_STATE = {
 
     isIncidentFetching: false,
     incidentCollection: [],
-    incidentErrorMsg: undefined
+    incidentErrorMsg: undefined,
+
+    isStockOverviewFetching: false,
+    stockOVerviewCollection: [],
+    stockOVerviewErrorMsg: undefined
 }
 
 const morningMeetingReducer = (state = INITIAL_STATE, action) => {
@@ -90,6 +94,29 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 incidentErrorMsg: action.payload
             }
 
+        //LOGISTICS_STOCK_OVERVIEW
+        case morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_START:
+
+            return {
+                ...state,
+                isStockOverviewFetching: true
+            }
+
+        case morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_SUCCESS:
+
+            return {
+                ...state,
+                isStockOverviewFetching: false,
+                stockOVerviewCollection: action.payload
+            }
+
+        case morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_FAILURE:
+
+            return {
+                ...state,
+                isStockOverviewFetching: false,
+                stockOVerviewErrorMsg: action.payload
+            }
     
         default:
             return state;

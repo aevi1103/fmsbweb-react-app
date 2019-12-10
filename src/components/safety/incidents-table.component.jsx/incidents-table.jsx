@@ -47,16 +47,13 @@ const IncidentTable = ({isIncidentFetching, incidentCollection}) => {
       }
 
     return (
-        <div>
-            <Table 
+        <Table 
                 loading={isIncidentFetching}
                 columns={columns}
                 dataSource={data}
                 onChange={onChange}
                 pagination={false}
-                scroll={{y: 380}} />
-        </div>
-        
+                scroll={{y: 380}} />     
     )
 }
 

@@ -1,90 +1,110 @@
 import morningMeetingTypes from './morning-meeting.types';
 import api from '../../API'
 
-//MONTHLY_INCIDENT_RATE
-export const fetchSafetyMonthlyIncidentRateStart = () => ({
-    type: morningMeetingTypes.FETCH_SAFETY_MONTHLY_INCIDENT_RATE_START
+
+const fetchStart = (actionType) => ({
+    type: actionType
 })
 
-export const fetchSafetyMonthlyIncidentRateSuccess = data => ({
-    type: morningMeetingTypes.FETCH_SAFETY_MONTHLY_INCIDENT_RATE_SUCCESS,
+const fetchSuccess = (actionType, data) => ({
+    type: actionType,
     payload: data
 })
 
-export const fetchSafetyMonthlyIncidentRateFailure = errorMsg => ({
-    type: morningMeetingTypes.FETCH_SAFETY_MONTHLY_INCIDENT_RATE_FAILURE,
+const fetchFailure = (actionType, errorMsg) => ({
+    type: actionType,
     payload: errorMsg
 })
+
+//MONTHLY_INCIDENT_RATE
 
 export const fetchSafetyMonthlyIncidentRateStartAsync = () => {
 
     return dispatch => {
 
-        dispatch(fetchSafetyMonthlyIncidentRateStart());
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_SAFETY_MONTHLY_INCIDENT_RATE_START))
+
         api.get('safety/monthlyincidentrate')
         .then(response => {
-            dispatch(fetchSafetyMonthlyIncidentRateSuccess(response.data))
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_SAFETY_MONTHLY_INCIDENT_RATE_SUCCESS,
+                response.data))
+
         })
-        .catch(error => dispatch(fetchSafetyMonthlyIncidentRateFailure(error.message)))
+        .catch(error => dispatch(fetchFailure(
+            morningMeetingTypes.FETCH_SAFETY_MONTHLY_INCIDENT_RATE_FAILURE,
+            error.message)))
 
     }
 }
 
 //INCIDENTS_BY_DEPT
-export const fetchSafetyIncidentByDeptStart = () => ({
-    type: morningMeetingTypes.FETCH_SAFETY_INCIDENTS_BY_DEPT_START
-})
-
-export const fetchSafetyIncidentByDeptSuccess = data => ({
-    type: morningMeetingTypes.FETCH_SAFETY_INCIDENTS_BY_DEPT_SUCCESS,
-    payload: data
-})
-
-export const fetchSafetyIncidentByDeptFailure = errorMsg => ({
-    type: morningMeetingTypes.FETCH_SAFETY_INCIDENTS_BY_DEPT_FAILURE,
-    payload: errorMsg
-})
-
 export const fetchSafetyIncidentByDeptStartAsync = () => {
 
     return dispatch => {
 
-        dispatch(fetchSafetyIncidentByDeptStart());
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_SAFETY_INCIDENTS_BY_DEPT_START))
+
         api.get('safety/incidentbydepartment')
         .then(response => {
-            dispatch(fetchSafetyIncidentByDeptSuccess(response.data))
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_SAFETY_INCIDENTS_BY_DEPT_SUCCESS,
+                response.data))
+
         })
-        .catch(error => dispatch(fetchSafetyIncidentByDeptFailure(error.message)))
+        .catch(error => dispatch(fetchFailure(
+            morningMeetingTypes.FETCH_SAFETY_INCIDENTS_BY_DEPT_FAILURE,
+            error.message)))
 
     }
 }
 
 //INCIDENTS
-export const fetchSafetyIncidentStart = () => ({
-    type: morningMeetingTypes.FETCH_SAFETY_INCIDENTS_START
-})
-
-export const fetchSafetyIncidentSuccess = data => ({
-    type: morningMeetingTypes.FETCH_SAFETY_INCIDENTS_SUCCESS,
-    payload: data
-})
-
-export const fetchSafetyIncidentFailure = errorMsg => ({
-    type: morningMeetingTypes.FETCH_SAFETY_INCIDENTS_FAILURE,
-    payload: errorMsg
-})
-
 export const fetchSafetyIncidentStartAsync = (startDate, endDate) => {
 
     return dispatch => {
 
-        dispatch(fetchSafetyIncidentStart());
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_SAFETY_INCIDENTS_START))
 
         api.get(`safety/incidents?start=${startDate}&end=${endDate}&fields=dept,injuryStatus,description,incidentDate`)
         .then(response => {
-            dispatch(fetchSafetyIncidentSuccess(response.data))
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_SAFETY_INCIDENTS_SUCCESS,
+                response.data))
+
         })
-        .catch(error => dispatch(fetchSafetyIncidentFailure(error.message)))
+        .catch(error => dispatch(fetchFailure(
+            morningMeetingTypes.FETCH_SAFETY_INCIDENTS_FAILURE,
+            error.message)))
+
+    }
+}
+
+//LOGISTICS_STOCK_OVERVIEW
+export const fetchLogisticsStockOverviewStartAsync = (date) => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_START))
+
+        api.get(`logistics/stockoverview?date=${date}`)
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_SUCCESS,
+                response.data))
+
+        })
+        .catch(error => dispatch(fetchFailure(
+            morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_FAILURE,
+            error.message)))
 
     }
 }
