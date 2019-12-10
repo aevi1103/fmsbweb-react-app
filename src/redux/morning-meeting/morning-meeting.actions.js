@@ -108,3 +108,26 @@ export const fetchLogisticsStockOverviewStartAsync = (date) => {
 
     }
 }
+
+//LOGISTICS_STOCK_OVERVIEW_SLOC
+export const fetchLogisticsStockOverviewSlocStartAsync = (date) => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_SLOC_START))
+
+        api.get(`logistics/stockoverviewbysloc?date=${date}`)
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_SLOC_SUCCESS,
+                response.data))
+
+        })
+        .catch(error => dispatch(fetchFailure(
+            morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_SLOC_FAILURE,
+            error.message)))
+
+    }
+}

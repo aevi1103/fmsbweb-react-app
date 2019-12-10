@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import StockOverviewTable from './stock-overview-table/stock-overview-table.component'
 import StockOverviewChart from './stock-overview-chart/stock-overview-chart.component'
+import StockOverViewSlocChart from './stock-overview-sloc-chart/stock-overview-sloc-chart.component'
 
 import { 
     Row,
@@ -21,9 +22,10 @@ const cardHeightStyle = {
             <Card 
                 title="Stock Overview By Storage Location"
                 bordered={false} size="small"
+                style={cardHeightStyle}
                 className="tc mb3"
             >
-
+                <StockOverViewSlocChart/>
             </Card>
         </Col>
 

@@ -44,7 +44,7 @@ const StockOverviewChart = ({stockOVerviewCollection}) => {
     )
 }
 
-const mapStateToProps = ({ morningMeeting }) => ({
+const mapStateToProps = ({ morningMeeting }) => ({  
     stockOVerviewCollection: morningMeeting.stockOVerviewCollection,
 })
 
