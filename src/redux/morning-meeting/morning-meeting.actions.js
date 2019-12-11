@@ -131,3 +131,26 @@ export const fetchLogisticsStockOverviewSlocStartAsync = (date) => {
 
     }
 }
+    
+//LOGISTICS_STATUS
+export const fetchLogisticsStatusStartAsync = (startDate, endDate) => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_LOGISTICS_STATUS_START))
+
+        api.get(`logistics/status?start=${startDate}&end=${endDate}`)
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_LOGISTICS_STATUS_SUCCESS,
+                response.data))
+
+        })
+        .catch(error => dispatch(fetchFailure(
+            morningMeetingTypes.FETCH_LOGISTICS_STATUS_FAILURE,
+            error.message)))
+
+    }
+}

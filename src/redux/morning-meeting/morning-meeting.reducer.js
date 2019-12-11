@@ -19,7 +19,11 @@ const INITIAL_STATE = {
 
     isStockOverviewSlocFetching: false,
     stockOVerviewSlocCollection: [],
-    stockOVerviewSlocErrorMsg: undefined
+    stockOVerviewSlocErrorMsg: undefined,
+
+    isStockStatusFetching: false,
+    stockStatusCollection: [],
+    stockStatusErrorMsg: undefined
 }
 
 const morningMeetingReducer = (state = INITIAL_STATE, action) => {
@@ -144,6 +148,30 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isStockOverviewSlocFetching: false,
                 stockOVerviewSlocErrorMsg: action.payload
+            }
+
+        //LOGISTICS_STATUS
+        case morningMeetingTypes.FETCH_LOGISTICS_STATUS_START:
+
+            return {
+                ...state,
+                isStockStatusFetching: true
+            }
+
+        case morningMeetingTypes.FETCH_LOGISTICS_STATUS_SUCCESS:
+
+            return {
+                ...state,
+                isStockStatusFetching: false,
+                stockStatusCollection: action.payload
+            }
+
+        case morningMeetingTypes.FETCH_LOGISTICS_STATUS_FAILURE:
+
+            return {
+                ...state,
+                isStockStatusFetching: false,
+                stockStatusErrorMsg: action.payload
             }
     
         default:

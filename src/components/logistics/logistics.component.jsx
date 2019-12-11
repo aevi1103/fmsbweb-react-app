@@ -5,10 +5,16 @@ import StockOverviewTable from './stock-overview-table/stock-overview-table.comp
 import StockOverviewChart from './stock-overview-chart/stock-overview-chart.component'
 import StockOverViewSlocChart from './stock-overview-sloc-chart/stock-overview-sloc-chart.component'
 
+import InventoryStatusTable from './inventory-status-table/inventory-status-table.component'
+import InventoryCost from './inventory-cost-table/inventory-cost-table.component'
+import CustomerComments from './customer-comments-table/customer-comments'
+import DaysOnHandTable from './days-on-hand-table/days-on-hand-table.component'
+
 import { 
     Row,
     Col,
-    Card
+    Card,
+    Tag
  } from "antd";
 
 const cardHeightStyle = {
@@ -56,8 +62,9 @@ const cardHeightStyle = {
                 title="Inventory Status"
                 bordered={false} size="small"
                 className="tc mb3"
+                style={cardHeightStyle}
             >
-
+                <InventoryStatusTable/>
             </Card>
         </Col>
 
@@ -66,8 +73,9 @@ const cardHeightStyle = {
                 title="Inventory Cost"
                 bordered={false} size="small"
                 className="tc mb3"
+                style={cardHeightStyle}
             >
-
+                <InventoryCost/>
             </Card>
         </Col>
 
@@ -76,8 +84,9 @@ const cardHeightStyle = {
                 title="Comments"
                 bordered={false} size="small"
                 className="tc mb3"
+                style={cardHeightStyle}
             >
-
+                <CustomerComments/>
             </Card>
         </Col>
 
@@ -86,8 +95,14 @@ const cardHeightStyle = {
                 title="Days on Hand"
                 bordered={false} size="small"
                 className="tc mb3"
-            >
-
+                >
+                <div className="mb2">
+                    <Tag color="#e33545">DOH is between 0 and 2</Tag>
+                    <Tag color="#ffc107">DOH is between 2 and 3</Tag>
+                    <Tag color="#28a745">DOH is between 3 and 5</Tag>
+                    <Tag color="#2196F3">DOH is greater than 5</Tag>
+                </div>
+                <DaysOnHandTable/>
             </Card>
         </Col>
      </Row>

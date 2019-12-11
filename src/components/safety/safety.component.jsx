@@ -23,7 +23,6 @@ const Safety = ({isIncidentByDeptFetching, isMonthlyIncidentRateFetching}) => (
                 bordered={false} size="small"
                 className="tc mb3"
                 style={cardHeightStyle}
-                loading={isIncidentByDeptFetching}
                 >                     
                 <MonthlyIncidentRateChart/>
             </Card>
@@ -35,7 +34,6 @@ const Safety = ({isIncidentByDeptFetching, isMonthlyIncidentRateFetching}) => (
                 size="small"
                 className="tc mb3" 
                 style={cardHeightStyle}
-                loading={isMonthlyIncidentRateFetching}
                 >
                 <IncidentByDeptChart/>
             </Card>

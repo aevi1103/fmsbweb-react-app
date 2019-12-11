@@ -1,13 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
+// import moment from 'moment';
 import numeral from 'numeral';
+
+import { numberSorter } from '../../../helpers/helpers';
+
 import { 
     Table,
     Popover
  } from "antd";
 
- const numberSorter = (a, b) => (numeral(a).format('0') - numeral(b).format('0'));
+//  const numberSorter = (a, b) => (numeral(a).format('0') - numeral(b).format('0'));
  const numberFormat = "0,0";
 
  const renderWithIcon = (targets, value, program, sloc) => {

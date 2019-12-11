@@ -14,7 +14,7 @@ const StockOverViewSlocChart = ({stockOVerviewSlocCollection}) => {
 
     console.log('stockOVerviewSlocCollection', stockOVerviewSlocCollection)
 
-    const { categories, series, data } = stockOVerviewSlocCollection;
+    const { date, categories, data } = stockOVerviewSlocCollection;
 
     let chartConfigs = {};
     
@@ -48,7 +48,7 @@ const StockOverViewSlocChart = ({stockOVerviewSlocCollection}) => {
             },
             categories: [
                 {
-                    category: _.orderBy(stockOVerviewSlocCollection.categories, o => o.slocOrder).map(c => ({label: c.category}))
+                    category: _.orderBy(categories, o => o.slocOrder).map(c => ({label: c.category}))
                 }
             ],
             dataset: dataSet
@@ -61,6 +61,8 @@ const StockOverViewSlocChart = ({stockOVerviewSlocCollection}) => {
             dataFormat: 'json',
             dataSource: dataSource
           };
+
+          console.log('chartConfigs', chartConfigs)
 
     }
 

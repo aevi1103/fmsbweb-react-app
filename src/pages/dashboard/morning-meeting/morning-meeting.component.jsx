@@ -5,7 +5,8 @@ import {
     fetchSafetyIncidentByDeptStartAsync,
     fetchSafetyIncidentStartAsync,
     fetchLogisticsStockOverviewStartAsync,
-    fetchLogisticsStockOverviewSlocStartAsync
+    fetchLogisticsStockOverviewSlocStartAsync,
+    fetchLogisticsStatusStartAsync
  } from '../../../redux/morning-meeting/morning-meeting.actions'
 import moment from 'moment'
 
@@ -52,7 +53,8 @@ class MorningMeeting extends React.Component {
             setIncidentByDept,
             setIncidents,
             setStockOverview,
-            setStockOverviewSloc
+            setStockOverviewSloc,
+            setStatus
         } = this.props;
 
         const {
@@ -60,11 +62,15 @@ class MorningMeeting extends React.Component {
             endDate
         } = this.state;
 
+        //safety
         setMonthlyIncidentRate();
         setIncidentByDept();
         setIncidents(startDate, endDate);
+
+        //logistics
         setStockOverview(moment(endDate, dateFormat).add(1, 'd').format(dateFormat));
         setStockOverviewSloc(moment(endDate, dateFormat).add(1, 'd').format(dateFormat));
+        setStatus(startDate, endDate);
     }
 
     onClick = () => {
@@ -139,6 +145,7 @@ const mapDispatchToProps = dispatch => ({
     setIncidents: (start, end) => dispatch(fetchSafetyIncidentStartAsync(start, end)),
     setStockOverview: (day) => dispatch(fetchLogisticsStockOverviewStartAsync(day)),
     setStockOverviewSloc: (day) => dispatch(fetchLogisticsStockOverviewSlocStartAsync(day)),
+    setStatus: (start, end) => dispatch(fetchLogisticsStatusStartAsync(start, end)),
 })
 
 export default connect(null, mapDispatchToProps)(MorningMeeting);
