@@ -10,9 +10,7 @@ import {
     Popover
  } from "antd";
 
-//  const numberSorter = (a, b) => (numeral(a).format('0') - numeral(b).format('0'));
  const numberFormat = "0,0";
-
  const renderWithIcon = (targets, value, program, sloc) => {
 
     value = numeral(value).format('0');
@@ -182,9 +180,7 @@ import {
         }
       ];
       
-      
-
-      const dataSource = data.map((rowData, i) => {
+      const dataSource = !data ? [] : data.map((rowData, i) => {
 
         const {
             program,

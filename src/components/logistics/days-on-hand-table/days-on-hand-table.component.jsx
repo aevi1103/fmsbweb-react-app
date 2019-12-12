@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import numeral from 'numeral';
-import _ from 'lodash';
 import Highlighter from 'react-highlight-words';
 
 import { numberSorter } from '../../../helpers/helpers';
@@ -20,10 +19,6 @@ import {
     const [searchedColumn, setSearchedColumn] = useState('');
 
     const { daysOnHand } = stockStatusCollection;   
-
-    const getFilter = (propName) => {
-        return _.uniq(daysOnHand.map(d => d[propName])).map(d => ({text: d, value: d}));
-    }
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -136,7 +131,7 @@ import {
         }
       ];
       
-      const dataSource = daysOnHand.map((rowData, i) => {
+      const dataSource = !daysOnHand ? [] : daysOnHand.map((rowData, i) => {
 
         const {
             date,

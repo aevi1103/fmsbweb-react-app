@@ -34,7 +34,8 @@ import {
         }
       ];
       
-      const dataSource = inventoryStatus.map((rowData, i) => {
+
+      const dataSource = !inventoryStatus ? [] : inventoryStatus.map((rowData, i) => {
 
         const {
             category,

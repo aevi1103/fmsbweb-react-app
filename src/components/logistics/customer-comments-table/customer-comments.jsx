@@ -25,7 +25,7 @@ import {
         }
       ];
       
-      const dataSource = customerComments.map((rowData, i) => {
+      const dataSource = !customerComments ? [] : customerComments.map((rowData, i) => {
 
         const {
             date,

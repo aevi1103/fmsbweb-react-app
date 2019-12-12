@@ -14,11 +14,10 @@ const StockOverViewSlocChart = ({stockOVerviewSlocCollection}) => {
 
     console.log('stockOVerviewSlocCollection', stockOVerviewSlocCollection)
 
-    const { date, categories, data } = stockOVerviewSlocCollection;
+    const { categories, data } = stockOVerviewSlocCollection;
 
     let chartConfigs = {};
     
-
     if (data) {
         
         //group array by key

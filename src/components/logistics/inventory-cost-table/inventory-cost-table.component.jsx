@@ -30,7 +30,7 @@ import {
         }
       ];
       
-      const dataSource = inventoryCost.map((rowData, i) => {
+      const dataSource = !inventoryCost ? [] : inventoryCost.map((rowData, i) => {
 
         const {
             category,

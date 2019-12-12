@@ -13,14 +13,14 @@ const StockOverviewChart = ({stockOVerviewCollection}) => {
 
     const { data } = stockOVerviewCollection;
 
-    const chartData = data.map(({program, total}) => 
+    const chartData = !data ? [] : data.map(({program, total}) => 
         (
             {
                 label: program,
                 value: total
             }
         ));
-    
+
     const dataSource = {
         chart: {
           xAxisName: 'Months',
