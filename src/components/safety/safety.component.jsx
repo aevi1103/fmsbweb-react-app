@@ -21,7 +21,7 @@ const Safety = ({isIncidentByDeptFetching, isMonthlyIncidentRateFetching}) => (
             <Card 
                 title="Monthly Incident Date"
                 bordered={false} size="small"
-                className="tc mb3"
+                className="mb3"
                 style={cardHeightStyle}
                 >                     
                 <MonthlyIncidentRateChart/>
@@ -32,7 +32,7 @@ const Safety = ({isIncidentByDeptFetching, isMonthlyIncidentRateFetching}) => (
                 title="Incident Occurence by Department"
                 bordered={false} 
                 size="small"
-                className="tc mb3" 
+                className="mb3" 
                 style={cardHeightStyle}
                 >
                 <IncidentByDeptChart/>
@@ -43,7 +43,7 @@ const Safety = ({isIncidentByDeptFetching, isMonthlyIncidentRateFetching}) => (
                 title="Incidents"
                 bordered={false}
                 size="small"
-                className="tc mb3"
+                className="mb3"
                 style={cardHeightStyle}>
                 <IncidentTable/>
             </Card>

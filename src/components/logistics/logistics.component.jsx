@@ -29,7 +29,7 @@ const cardHeightStyle = {
                 title="Stock Overview By Storage Location"
                 bordered={false} size="small"
                 style={cardHeightStyle}
-                className="tc mb3"
+                className="mb3"
             >
                 <StockOverViewSlocChart/>
             </Card>
@@ -39,7 +39,7 @@ const cardHeightStyle = {
             <Card 
                 title="Stock Overview"
                 bordered={false} size="small"
-                className="tc mb3"
+                className="mb3"
             >
                 <StockOverviewTable/>
             </Card>
@@ -49,7 +49,7 @@ const cardHeightStyle = {
             <Card 
                 title="Stock Overview By Program"
                 bordered={false} size="small"
-                className="tc mb3"
+                className="mb3"
                 style={cardHeightStyle}
                 loading={isStockOverviewFetching}
             >
@@ -61,7 +61,7 @@ const cardHeightStyle = {
             <Card 
                 title="Inventory Status"
                 bordered={false} size="small"
-                className="tc mb3"
+                className="mb3"
                 style={cardHeightStyle}
             >
                 <InventoryStatusTable/>
@@ -72,7 +72,7 @@ const cardHeightStyle = {
             <Card 
                 title="Inventory Cost"
                 bordered={false} size="small"
-                className="tc mb3"
+                className="mb3"
                 style={cardHeightStyle}
             >
                 <InventoryCost/>
@@ -83,7 +83,7 @@ const cardHeightStyle = {
             <Card 
                 title="Comments"
                 bordered={false} size="small"
-                className="tc mb3"
+                className="mb3"
                 style={cardHeightStyle}
             >
                 <CustomerComments/>
@@ -94,7 +94,7 @@ const cardHeightStyle = {
             <Card 
                 title="Days on Hand"
                 bordered={false} size="small"
-                className="tc mb3"
+                className="mb3"
                 >
                 <div className="mb2">
                     <Tag color="#e33545">DOH is between 0 and 2</Tag>

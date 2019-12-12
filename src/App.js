@@ -21,6 +21,7 @@ import MorningMeetingMenu from './components/Menu/morning-meeting-menu/morning-m
 
 import SafetyPage from './pages/dashboard/morning-meeting/safety/safety.component';
 import LogisticsPage from './pages/dashboard/morning-meeting/logistics/logistics.component'
+import FoundryPage from './pages/dashboard/morning-meeting/foundry/foundry.component'
 
 const { Footer, Sider } = Layout;
 
@@ -57,9 +58,7 @@ const App = ( { collapsed, setSiderCollapse } ) => {
 
       <Switch>
         <Route exact path="/" component={HomeMenu} />
-
         <Route path="/dashboard/morningmeeting" component={MorningMeetingMenu} />
-
         <Route exact path="/dashboard/swot" component={HomeMenu} />
       </Switch>
 
@@ -72,6 +71,7 @@ const App = ( { collapsed, setSiderCollapse } ) => {
 
         <Route exact path="/dashboard/morningmeeting/safety" component={SafetyPage} />
         <Route exact path="/dashboard/morningmeeting/logistics" component={LogisticsPage} />
+        <Route exact path="/dashboard/morningmeeting/foundry" component={FoundryPage} />
 
         <Route exact path="/dashboard/swot" component={SwotPage} />
         <Route component={NotFound} />

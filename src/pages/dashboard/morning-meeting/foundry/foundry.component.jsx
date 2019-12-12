@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment'
 
-import Logistics from '../../../../components/logistics/logistics.component' 
+
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
+import Production from '../../../../components/production/production.component'
 
 import { 
-    fetchLogisticsStockOverviewStartAsync,
-    fetchLogisticsStockOverviewSlocStartAsync,
-    fetchLogisticsStatusStartAsync
+    fetchProductionStatusStartAsync
 } from '../../../../redux/morning-meeting/morning-meeting.actions'
 
 import { 
@@ -23,15 +22,17 @@ const dateFormat = 'MM/DD/YYYY';
 const previousDay = moment().add(-1, 'd');
 const previousDayFormatted = previousDay.format(dateFormat);
 
-const LogisticsPage = ({setStockOverview, setStockOverviewSloc, setStatus}) => {
+const FoundryPage = ({setProductionData}) => {
     
     const [ startDay, setStartDay ] = useState(previousDayFormatted);
     const [ endDay, setEndDay ] = useState(previousDayFormatted);
 
     const fetchData = () => {
-        setStockOverview(moment(endDay, dateFormat).add(1, 'd').format(dateFormat));
-        setStockOverviewSloc(moment(endDay, dateFormat).add(1, 'd').format(dateFormat));
-        setStatus(startDay, endDay);
+        setProductionData(
+            moment(startDay).format(dateFormat),
+            moment(endDay).format(dateFormat),
+            'foundry cell'
+        );
     }
 
     const onClick = () => {
@@ -39,6 +40,9 @@ const LogisticsPage = ({setStockOverview, setStockOverviewSloc, setStatus}) => {
     }
 
     const onCalendarChange = (dates) => {
+
+        console.log('fff', dates)
+
         const [start, end] = dates;
         setStartDay((start ? start.format(dateFormat) : null))
         setEndDay((end ? end.format(dateFormat) : null))
@@ -51,13 +55,13 @@ const LogisticsPage = ({setStockOverview, setStockOverviewSloc, setStatus}) => {
     return (
     <>
         <Header className="pa0 custom-header" >
-            <h2 className="ml3">Logistics</h2>
+            <h2 className="ml3">Foundry</h2>
         </Header>
 
         <Content className="ma3 mt0">
             <DateRangePicker defaultValue={previousDay} onButtonClick={onClick} onCalendarChange={onCalendarChange}  />
             <div className="mt3">
-                <Logistics/>
+                <Production/>
             </div>
             
         </Content>      
@@ -65,9 +69,7 @@ const LogisticsPage = ({setStockOverview, setStockOverviewSloc, setStatus}) => {
 )}
 
 const mapDispatchToProps = dispatch => ({
-    setStockOverview: (day) => dispatch(fetchLogisticsStockOverviewStartAsync(day)),
-    setStockOverviewSloc: (day) => dispatch(fetchLogisticsStockOverviewSlocStartAsync(day)),
-    setStatus: (start, end) => dispatch(fetchLogisticsStatusStartAsync(start, end)),
+    setProductionData: (start, end, area) => dispatch(fetchProductionStatusStartAsync(start, end, area))
 })
 
-export default connect(null, mapDispatchToProps)(LogisticsPage);
+export default connect(null, mapDispatchToProps)(FoundryPage);

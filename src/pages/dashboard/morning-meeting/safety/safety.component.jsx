@@ -56,7 +56,7 @@ const SafetyPage = ({setMonthlyIncidentRate, setIncidentByDept, setIncidents}) =
             <h2 className="ml3">Safety</h2>
         </Header>
 
-        <Content className="ma3">
+        <Content className="ma3 mt0">
             <DateRangePicker defaultValue={previousDay} onButtonClick={onClick} onCalendarChange={onCalendarChange}  />
             <div className="mt3">
                 <Safety/>

@@ -23,7 +23,11 @@ const INITIAL_STATE = {
 
     isStockStatusFetching: false,
     stockStatusCollection: [],
-    stockStatusErrorMsg: undefined
+    stockStatusErrorMsg: undefined,
+
+    isProdStatusFetching: false,
+    productionStatusCollection: null,
+    prodStatusErrorMsg: undefined
 }
 
 const morningMeetingReducer = (state = INITIAL_STATE, action) => {
@@ -151,28 +155,30 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             }
 
         //LOGISTICS_STATUS
-        case morningMeetingTypes.FETCH_LOGISTICS_STATUS_START:
+        case morningMeetingTypes.FETCH_PRODUCTION_STATUS_START:
 
             return {
                 ...state,
-                isStockStatusFetching: true
+                isProdStatusFetching: true
             }
 
-        case morningMeetingTypes.FETCH_LOGISTICS_STATUS_SUCCESS:
+        case morningMeetingTypes.FETCH_PRODUCTION_STATUS_SUCCESS:
 
             return {
                 ...state,
-                isStockStatusFetching: false,
-                stockStatusCollection: action.payload
+                isProdStatusFetching: false,
+                productionStatusCollection: action.payload
             }
 
-        case morningMeetingTypes.FETCH_LOGISTICS_STATUS_FAILURE:
+        case morningMeetingTypes.FETCH_PRODUCTION_STATUS_FAILURE:
 
             return {
                 ...state,
-                isStockStatusFetching: false,
-                stockStatusErrorMsg: action.payload
+                isProdStatusFetching: false,
+                prodStatusErrorMsg: action.payload
             }
+
+        //PRODUCTION STATUS
     
         default:
             return state;

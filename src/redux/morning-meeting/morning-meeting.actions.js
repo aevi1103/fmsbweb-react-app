@@ -154,3 +154,26 @@ export const fetchLogisticsStatusStartAsync = (startDate, endDate) => {
 
     }
 }
+
+//PRODUCTION_STATUS
+export const fetchProductionStatusStartAsync = (startDate, endDate, area) => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_PRODUCTION_STATUS_START))
+
+        api.get(`sap/productiondata?start=${startDate}&end=${endDate}&area=${area}`)
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_PRODUCTION_STATUS_SUCCESS,
+                response.data))
+
+        })
+        .catch(error => dispatch(fetchFailure(
+            morningMeetingTypes.FETCH_PRODUCTION_STATUS_FAILURE,
+            error.message)))
+
+    }
+}
