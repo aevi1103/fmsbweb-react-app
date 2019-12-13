@@ -155,6 +155,30 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             }
 
         //LOGISTICS_STATUS
+        case morningMeetingTypes.FETCH_LOGISTICS_STATUS_START:
+
+            return {
+                ...state,
+                isStockStatusFetching: true
+            }
+
+        case morningMeetingTypes.FETCH_LOGISTICS_STATUS_SUCCESS:
+
+            return {
+                ...state,
+                isStockStatusFetching: false,
+                stockStatusCollection: action.payload
+            }
+
+        case morningMeetingTypes.FETCH_LOGISTICS_STATUS_FAILURE:
+
+            return {
+                ...state,
+                isStockStatusFetching: false,
+                stockStatusErrorMsg: action.payload
+            }
+
+        //PRODUCTION_STATUS
         case morningMeetingTypes.FETCH_PRODUCTION_STATUS_START:
 
             return {

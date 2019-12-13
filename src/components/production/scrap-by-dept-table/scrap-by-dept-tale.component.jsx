@@ -1,25 +1,25 @@
 import React from 'react';
 import numeral from 'numeral';
 import { 
-    Table
+    Table,
  } from "antd";
 
 import { numberSorter, percentSorter } from '../../../helpers/helpers'
 
-const ScrapByCodeTable = ({scrapData, isLoading, otherProps}) => {
+const ScrapByDeptTable = ({scrapData, isLoading, otherProps}) => {
 
     const columns = [
         {
-          title: 'Area Found',
-          dataIndex: 'area',
-          sorter: (a, b) => a.area.length - b.area.length,
-          sortDirections: ['descend', 'ascend'],
+            title: 'Area',
+            dataIndex: 'area',
+            sorter: (a, b) => a.area.length - b.area.length,
+            sortDirections: ['descend', 'ascend'],
         },
         {
-          title: 'Scrap Type',
-          dataIndex: 'type',
-          sorter: (a, b) => a.type.length - b.type.length,
-          sortDirections: ['descend', 'ascend'],
+            title: 'Scrap Category',
+            dataIndex: 'type',
+            sorter: (a, b) => a.type.length - b.type.length,
+            sortDirections: ['descend', 'ascend'],
         },
         {
             title: 'Qty',
@@ -28,17 +28,17 @@ const ScrapByCodeTable = ({scrapData, isLoading, otherProps}) => {
             sortDirections: ['descend', 'ascend'],
         },
         {
-          title: 'Scrap Rate',
-          dataIndex: 'rate',
-          sorter: (a, b) => percentSorter(a.rate, b.rate),
-            sortDirections: ['descend', 'ascend'],
+            title: 'Scrap Rate',
+            dataIndex: 'rate',
+            sorter: (a, b) => percentSorter(a.rate, b.rate),
+                sortDirections: ['descend', 'ascend'],
         },
       ];
       
-      const data = scrapData.map(({area, scrapAreaName, qty, scrapRate}, i) => ({
+      const data = scrapData.map(({area, scrapType, qty, scrapRate}, i) => ({
         key: i,
         area: area,
-        type: scrapAreaName,
+        type: scrapType,
         qty: numeral(qty).format('0,0'),
         rate: numeral(scrapRate).format('0.00%')
       }))
@@ -58,4 +58,4 @@ const ScrapByCodeTable = ({scrapData, isLoading, otherProps}) => {
     )
 }
 
- export default ScrapByCodeTable;
+ export default ScrapByDeptTable;

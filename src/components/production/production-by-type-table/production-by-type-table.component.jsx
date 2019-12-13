@@ -1,46 +1,39 @@
 import React from 'react';
 import numeral from 'numeral';
 import { 
-    Table
+    Table,
  } from "antd";
 
-import { numberSorter, percentSorter } from '../../../helpers/helpers'
+import { numberSorter } from '../../../helpers/helpers'
 
-const ScrapByCodeTable = ({scrapData, isLoading, otherProps}) => {
+const ProductionByTypeTable = ({prodData, isLoading, otherProps}) => {
 
     const columns = [
         {
-          title: 'Area Found',
+          title: 'Area',
           dataIndex: 'area',
           sorter: (a, b) => a.area.length - b.area.length,
           sortDirections: ['descend', 'ascend'],
         },
         {
-          title: 'Scrap Type',
+          title: 'SAP Type',
           dataIndex: 'type',
           sorter: (a, b) => a.type.length - b.type.length,
           sortDirections: ['descend', 'ascend'],
         },
         {
-            title: 'Qty',
-            dataIndex: 'qty',
-            sorter: (a, b) => numberSorter(a.qty, b.qty),
+            title: 'SAP Net',
+            dataIndex: 'net',
+            sorter: (a, b) => numberSorter(a.net, b.net),
             sortDirections: ['descend', 'ascend'],
-        },
-        {
-          title: 'Scrap Rate',
-          dataIndex: 'rate',
-          sorter: (a, b) => percentSorter(a.rate, b.rate),
-            sortDirections: ['descend', 'ascend'],
-        },
+        }
       ];
       
-      const data = scrapData.map(({area, scrapAreaName, qty, scrapRate}, i) => ({
+      const data = prodData.map(({area, sapType, sapNet}, i) => ({
         key: i,
         area: area,
-        type: scrapAreaName,
-        qty: numeral(qty).format('0,0'),
-        rate: numeral(scrapRate).format('0.00%')
+        type: sapType,
+        net: numeral(sapNet).format('0,0')
       }))
 
       const onChange = (pagination, filters, sorter, extra) => {
@@ -58,4 +51,4 @@ const ScrapByCodeTable = ({scrapData, isLoading, otherProps}) => {
     )
 }
 
- export default ScrapByCodeTable;
+ export default ProductionByTypeTable;

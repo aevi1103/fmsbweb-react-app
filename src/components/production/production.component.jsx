@@ -4,6 +4,9 @@ import numeral from 'numeral';
 import styled from 'styled-components'
 
 import ScrapByCodeTable from '../../components/production/scrap-by-code-table/scrap-by-code-table.component'
+import ProductionByTypeTable from '../../components/production/production-by-type-table/production-by-type-table.component'
+import ScrapByDeptTable from '../../components/production/scrap-by-dept-table/scrap-by-dept-tale.component'
+import LaborHoursTable from '../../components/production/labor-hours-table/labor-hours-table.component'
 
 import { 
     Row,
@@ -11,15 +14,13 @@ import {
     Card,
     Empty,
     Statistic,
-    Button
+    Collapse
  } from "antd";
+
+ const { Panel } = Collapse;
 
  const cardHeightStyle = {
     height: "400px"
-}
-
-const cardKpiStyles = {
-    height: "200px"
 }
 
 const KpiContainer = styled.span`
@@ -29,6 +30,14 @@ const KpiContainer = styled.span`
     height: 140px;
     font-size: 2.5rem;
 `
+
+const fontRed = {
+    color: "#FF4136"
+}
+
+const fontGreen = {
+    color: "#19A974"
+}
 
  const Production = ({productionStatusCollection, isProdStatusFetching}) => {
 
@@ -49,6 +58,18 @@ const KpiContainer = styled.span`
     let _target = 0;
     let _sapNet = 0;
 
+    let _prodByTypeList = [];
+    let _deptScrapList = [];
+
+    let _laborHours = null;
+
+    let _laborHoursDetails = [];
+
+    let _sapOaeColorCode,
+        _hxhOaeColorCode,
+        _scrapByCodeColorCode,
+        _ppmhColorCode;
+
     if (productionStatusCollection) {
 
         const { 
@@ -58,11 +79,17 @@ const KpiContainer = styled.span`
             purchaseScrapByCode,
             target,
             sapNet,
-            departmentScrap
+            departmentScrap,
+            sapProductionByType,
+
+            sapOaeColorCode,
+            hxhOaeColorCode,
+            scrapByCodeColorCode,
+            ppmhColorCode
         } = productionStatusCollection;
 
         const { scrapRate, total } = sbScrapByCode;
-        const { ppmh } = laborHours;
+        const { ppmh, details } = laborHours;
 
         _sbScrapRate = scrapRate;
         _sbScrapQty = total;
@@ -80,10 +107,20 @@ const KpiContainer = styled.span`
 
         _deptScrap = departmentScrap.total;
         _deptScrapRate = departmentScrap.scrapRate;
+
+        _prodByTypeList = sapProductionByType.details;
+        _deptScrapList = departmentScrap.details;
+
+        _laborHours = laborHours;
+
+        _laborHoursDetails = laborHours.details;
+
+        _sapOaeColorCode = sapOaeColorCode;
+        _hxhOaeColorCode = hxhOaeColorCode;
+        _scrapByCodeColorCode = scrapByCodeColorCode;
+        _ppmhColorCode = ppmhColorCode;
         
     }
-
-    
 
     return (
 
@@ -102,7 +139,7 @@ const KpiContainer = styled.span`
                      {
                         productionStatusCollection 
                         ? (<KpiContainer>
-                                <h1>{numeral(_sbScrapRate).format('0.0%')}</h1>
+                                <h1 style={{color: _scrapByCodeColorCode}}>{numeral(_sbScrapRate).format('0.0%')}</h1>
                             </KpiContainer>)
                         : <Empty/>
                      }
@@ -121,7 +158,7 @@ const KpiContainer = styled.span`
                 {
                     productionStatusCollection 
                     ? (<KpiContainer>
-                            <h1>{numeral(_oae).format('0.0%')}</h1>
+                            <h1 style={{color: _sapOaeColorCode}}>{numeral(_oae).format('0.0%')}</h1>
                         </KpiContainer>)
                     : <Empty/>
                  }
@@ -134,13 +171,12 @@ const KpiContainer = styled.span`
                     title="PPMH"
                     bordered={false} size="small"
                     className="mb3"
+                    loading={isProdStatusFetching}
                 >
-
-
                 {
                     productionStatusCollection 
                     ? (<KpiContainer>
-                            <h1>{numeral(_ppmh).format('0')}</h1>
+                            <h1 style={{color: _ppmhColorCode}}>{numeral(_ppmh).format('0')}</h1>
                         </KpiContainer>)
                     : <Empty/>
                  }
@@ -219,40 +255,43 @@ const KpiContainer = styled.span`
                     title="Scrap Details"
                     bordered={false} size="small"
                     className="mb3"
+                    loading={isProdStatusFetching}
                 >
-
                     <Row gutter={16}  className="mb3">
                         <Col span={12}>
-                            <Statistic title="SB Scrap Qty" value={_sbScrapQty} />
+                            <Statistic title="SB Scrap Qty" value={_sbScrapQty} valueStyle={fontRed} />
                         </Col>
 
                         <Col span={12}>
-                            <Statistic title="SB Scrap %" value={numeral(_sbScrapRate).format('0.00%')} />
+                            <Statistic title="SB Scrap %" value={numeral(_sbScrapRate).format('0.00%')} valueStyle={fontRed} />
                         </Col>
 
                     </Row>
-
-                    <Row gutter={16}>
+                    <Row gutter={16} className="mb3">
                         <Col span={12}>
-                            <Statistic title="Purchase Scrap Qty" value={_purchasedScrapQty} />
+                            <Statistic title="Purchase Scrap Qty" value={_purchasedScrapQty} valueStyle={fontRed} />
                         </Col>
 
                         <Col span={12}>
-                            <Statistic title="Purchase Scrap %" value={numeral(_purchasedScrapRate).format('0.00%')} />
+                            <Statistic title="Purchase Scrap %" value={numeral(_purchasedScrapRate).format('0.00%')} valueStyle={fontRed} />
                         </Col>
                     </Row>
+                    <Collapse bordered={false}>
 
-                    <ScrapByCodeTable 
-                        className="mt3"
-                        scrapData={_sbScrapList}
-                        isLoading={isProdStatusFetching}
-                        tableTitle="SB Scrap Detail" />
+                        <Panel header="SB Scrap Details" key="1">                     
+                            <ScrapByCodeTable 
+                                className="mt3"
+                                scrapData={_sbScrapList}
+                                isLoading={isProdStatusFetching} />
+                        </Panel>
+                        <Panel header="Purchased Scrap Detail" key="2">
+                            <ScrapByCodeTable 
+                                className="mt3"
+                                scrapData={_purchasedScrapList}
+                                isLoading={isProdStatusFetching} />
+                        </Panel>
 
-                    <ScrapByCodeTable 
-                        className="mt3"
-                        scrapData={_purchasedScrapList}
-                        isLoading={isProdStatusFetching}
-                        tableTitle="Purchased Scrap Detail" />
+                    </Collapse>
 
                 </Card>
             </Col>
@@ -262,42 +301,55 @@ const KpiContainer = styled.span`
                     title="Production Details"
                     bordered={false} size="small"
                     className="mb3"
+                    loading={isProdStatusFetching}
                 >
 
                     <Row gutter={16} className="mb3">
                         <Col span={8}>
-                            <Statistic title="Target" value={_target} />
+                            <Statistic title="Target" value={_target} valueStyle={fontGreen} />
                         </Col>
-
                         <Col span={8}>      
                             <Statistic 
                                 title="SAP OAE %"
+                                valueStyle={fontGreen}
                                 value={numeral(_oae).format('0.0%')} 
                                 suffix={<small>({numeral(_sapNet).format('0,0')})</small>}
                                 />
                         </Col>
-
                         <Col span={8}>
                             <Statistic 
                                 title="HXH OAE %"
+                                valueStyle={fontGreen}
                                 value={numeral(0).format('0.0%')} 
                                 suffix={<small>({numeral(0).format('0,0')})</small>}
                             />
                         </Col>
-
                     </Row>
-
-                    <Row>
-                    
+                    <Row gutter={16} className="mb3">              
                         <Col span={8}>
                             <Statistic 
                                 title="Department Scrap %"
+                                valueStyle={fontRed}
                                 value={numeral(_deptScrapRate).format('0.0%')} 
                                 suffix={<small>({numeral(_deptScrap).format('0,0')})</small>}
                             />
                         </Col>
-
                     </Row>
+
+                    <Collapse bordered={false}>                 
+                        <Panel header="SAP Production by Type Details" key="1">
+                            <ProductionByTypeTable 
+                                prodData={_prodByTypeList}
+                                isLoading={isProdStatusFetching}
+                                className="mt3" />
+                        </Panel>
+                        <Panel header="Department Scrap Details" key="2">
+                            <ScrapByDeptTable 
+                                scrapData={_deptScrapList}
+                                isLoading={isProdStatusFetching}
+                                className="mt3" />
+                        </Panel>
+                    </Collapse>
 
                 </Card>
             </Col>
@@ -306,9 +358,47 @@ const KpiContainer = styled.span`
                 <Card 
                     title="Labor Hours Details"
                     bordered={false} size="small"
-                    style={cardHeightStyle}
                     className="mb3"
+                    loading={isProdStatusFetching}
                 >
+                    <Row gutter={16} className="mb3">
+                        <Col span={8}>
+                            <Statistic title="PPMH" value={numeral(_ppmh).format('0.00')} />
+                        </Col>
+                        <Col span={8}>
+                            <Statistic title="Regular" 
+                                value={numeral((!_laborHours ? 0 : _laborHours.regular)).format('0.00')} />
+                        </Col>
+                        <Col span={8}>
+                            <Statistic title="Overtime" 
+                                value={numeral((!_laborHours ? 0 : _laborHours.overtime)).format('0.00')} />
+                        </Col>
+                    </Row>
+
+                    <Row gutter={16} className="mb3">
+                        <Col span={8}>
+                            <Statistic title="Double Time" 
+                                value={numeral((!_laborHours ? 0 : _laborHours.doubleTime)).format('0.00')} />
+                        </Col>
+                        <Col span={8}>
+                            <Statistic title="Orientation" 
+                                value={numeral((!_laborHours ? 0 : _laborHours.orientation)).format('0.00')} />
+                        </Col>
+                        <Col span={8}>
+                            <Statistic title="Overall" 
+                                value={numeral((!_laborHours ? 0 : _laborHours.overAll)).format('0.00')} />
+                        </Col>
+                    </Row>
+
+                    <Collapse bordered={false}>                 
+                        <Panel header="Labor Hours Details" key="1">
+                            <LaborHoursTable 
+                                laborHoursData={_laborHoursDetails}
+                                isLoading={isProdStatusFetching}
+                                className="mt3" />
+                        </Panel>
+                    </Collapse>
+
                 </Card>
             </Col>
 
@@ -319,6 +409,7 @@ const KpiContainer = styled.span`
                     style={cardHeightStyle}
                     className="mb3"
                 >
+
                 </Card>
             </Col>
 

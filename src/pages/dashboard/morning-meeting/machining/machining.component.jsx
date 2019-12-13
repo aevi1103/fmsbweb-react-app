@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment'
 
-
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
 import Production from '../../../../components/production/production.component'
 
@@ -22,7 +21,7 @@ const dateFormat = 'MM/DD/YYYY';
 const previousDay = moment().add(-1, 'd');
 const previousDayFormatted = previousDay.format(dateFormat);
 
-const FoundryPage = ({setProductionData}) => {
+const MachiningPage = ({setProductionData}) => {
     
     const [ startDay, setStartDay ] = useState(previousDayFormatted);
     const [ endDay, setEndDay ] = useState(previousDayFormatted);
@@ -31,7 +30,7 @@ const FoundryPage = ({setProductionData}) => {
         setProductionData(
             moment(startDay).format(dateFormat),
             moment(endDay).format(dateFormat),
-            'foundry cell'
+            'machine line'
         );
     }
 
@@ -52,7 +51,7 @@ const FoundryPage = ({setProductionData}) => {
     return (
     <>
         <Header className="pa0 custom-header" >
-            <h2 className="ml3">Foundry</h2>
+            <h2 className="ml3">Machining</h2>
         </Header>
 
         <Content className="ma3 mt0">
@@ -69,4 +68,4 @@ const mapDispatchToProps = dispatch => ({
     setProductionData: (start, end, area) => dispatch(fetchProductionStatusStartAsync(start, end, area))
 })
 
-export default connect(null, mapDispatchToProps)(FoundryPage);
+export default connect(null, mapDispatchToProps)(MachiningPage);
