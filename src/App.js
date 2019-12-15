@@ -21,10 +21,7 @@ import MorningMeetingMenu from './components/Menu/morning-meeting-menu/morning-m
 
 import SafetyPage from './pages/dashboard/morning-meeting/safety/safety.component';
 import LogisticsPage from './pages/dashboard/morning-meeting/logistics/logistics.component'
-import FoundryPage from './pages/dashboard/morning-meeting/foundry/foundry.component'
-import MachiningPage from './pages/dashboard/morning-meeting/machining/machining.component'
-import FinishingPage from './pages/dashboard/morning-meeting/finishing/finishing.component'
-import AssemblyPage from './pages/dashboard/morning-meeting/assembly/assembly.component'
+import ProductionPage from './pages/dashboard/morning-meeting/production-page/production-page.component'
 
 const { Footer, Sider } = Layout;
 
@@ -74,10 +71,11 @@ const App = ( { collapsed, setSiderCollapse } ) => {
 
         <Route exact path="/dashboard/morningmeeting/safety" component={SafetyPage} />
         <Route exact path="/dashboard/morningmeeting/logistics" component={LogisticsPage} />
-        <Route exact path="/dashboard/morningmeeting/foundry" component={FoundryPage} />
-        <Route exact path="/dashboard/morningmeeting/machining" component={MachiningPage} />
-        <Route exact path="/dashboard/morningmeeting/finishing" component={FinishingPage} />
-        <Route exact path="/dashboard/morningmeeting/assembly" component={AssemblyPage} />
+
+        <Route exact path="/dashboard/morningmeeting/foundry" component={() => <ProductionPage area="foundry cell" headerTitle="Foundry" />} />
+        <Route exact path="/dashboard/morningmeeting/machining" component={() => <ProductionPage area="machine line" headerTitle="Machining" />} />
+        <Route exact path="/dashboard/morningmeeting/finishing" component={() => <ProductionPage area="skirt coat" headerTitle="Finishing / Skirt Coat" />}/>
+        <Route exact path="/dashboard/morningmeeting/assembly" component={() => <ProductionPage area="assembly" headerTitle="Assembly" />} />
 
         <Route exact path="/dashboard/swot" component={SwotPage} />
         <Route component={NotFound} />

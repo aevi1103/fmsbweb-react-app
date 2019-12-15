@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment'
 
+
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
 import Production from '../../../../components/production/production.component'
 
 import { 
-    fetchProductionStatusStartAsync
+    fetchProductionStatusStartAsync,
+    fetchDailyScrapRateStartAsync,
+    fetchDailyKpiStartAsync,
+    fetchWeeklyLaborHrsStartAsync
 } from '../../../../redux/morning-meeting/morning-meeting.actions'
 
 import { 
@@ -21,17 +25,30 @@ const dateFormat = 'MM/DD/YYYY';
 const previousDay = moment().add(-1, 'd');
 const previousDayFormatted = previousDay.format(dateFormat);
 
-const MachiningPage = ({setProductionData}) => {
+const ProductionPage = ({
+        setProductionData,
+        fetchDailyScrapRateStartAsync,
+        fetchDailyKpiStartAsync,
+        fetchWeeklyLaborHrsStartAsync,
+        area,
+        headerTitle
+    }) => {
     
     const [ startDay, setStartDay ] = useState(previousDayFormatted);
     const [ endDay, setEndDay ] = useState(previousDayFormatted);
 
     const fetchData = () => {
-        setProductionData(
-            moment(startDay).format(dateFormat),
-            moment(endDay).format(dateFormat),
-            'machine line'
-        );
+
+        const start = moment(startDay, dateFormat).format(dateFormat);
+        const chartTrendStart = moment(startDay, dateFormat).add(-30, 'd').format(dateFormat);
+        const laborHoursStart = moment(startDay, dateFormat).add(-9, 'w').startOf('week').format(dateFormat);
+
+        const end = moment(endDay, dateFormat).format(dateFormat);
+
+        setProductionData(start,end,area);
+        fetchDailyScrapRateStartAsync(chartTrendStart, end, area);
+        fetchDailyKpiStartAsync(chartTrendStart, end, area);
+        fetchWeeklyLaborHrsStartAsync(laborHoursStart, end, area);
     }
 
     const onClick = () => {
@@ -51,7 +68,7 @@ const MachiningPage = ({setProductionData}) => {
     return (
     <>
         <Header className="pa0 custom-header" >
-            <h2 className="ml3">Machining</h2>
+            <h2 className="ml3">{headerTitle}</h2>
         </Header>
 
         <Content className="ma3 mt0">
@@ -65,7 +82,10 @@ const MachiningPage = ({setProductionData}) => {
 )}
 
 const mapDispatchToProps = dispatch => ({
-    setProductionData: (start, end, area) => dispatch(fetchProductionStatusStartAsync(start, end, area))
+    setProductionData: (start, end, area) => dispatch(fetchProductionStatusStartAsync(start, end, area)),
+    fetchDailyScrapRateStartAsync: (start, end, area) => dispatch(fetchDailyScrapRateStartAsync(start, end, area)),
+    fetchDailyKpiStartAsync: (start, end, area) => dispatch(fetchDailyKpiStartAsync(start, end, area)),
+    fetchWeeklyLaborHrsStartAsync: (start, end, area) => dispatch(fetchWeeklyLaborHrsStartAsync(start, end, area)),
 })
 
-export default connect(null, mapDispatchToProps)(MachiningPage);
+export default connect(null, mapDispatchToProps)(ProductionPage);

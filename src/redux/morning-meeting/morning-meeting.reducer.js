@@ -27,7 +27,19 @@ const INITIAL_STATE = {
 
     isProdStatusFetching: false,
     productionStatusCollection: null,
-    prodStatusErrorMsg: undefined
+    prodStatusErrorMsg: undefined,
+
+    isDailyScrapRateFetching: false,
+    dailyScrapRateCollection: null,
+    dailyScrapRateErrorMsg: undefined,
+
+    isDailyKpiFetching: false,
+    dailyKpiCollection: null,
+    dailyKpiErrorMsg: undefined,
+
+    isWeeklyLaborHrsFetching: false,
+    weeklyLaborHrsCollection: null,
+    weeklyLaborHrsErrorMsg: undefined
 }
 
 const morningMeetingReducer = (state = INITIAL_STATE, action) => {
@@ -202,7 +214,77 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 prodStatusErrorMsg: action.payload
             }
 
-        //PRODUCTION STATUS
+        //DAILY SCRAP RATE
+        case morningMeetingTypes.FETCH_DAILY_SCRAP_RATE_START:
+
+            return {
+                ...state,
+                isDailyScrapRateFetching: true
+            }
+
+        case morningMeetingTypes.FETCH_DAILY_SCRAP_RATE_SUCCESS:
+
+            return {
+                ...state,
+                isDailyScrapRateFetching: false,
+                dailyScrapRateCollection: action.payload
+            }
+
+        case morningMeetingTypes.FETCH_DAILY_SCRAP_RATE_FAILURE:
+
+            return {
+                ...state,
+                isDailyScrapRateFetching: false,
+                dailyScrapRateErrorMsg: action.payload
+            }
+
+        //DAILY KPI
+        case morningMeetingTypes.FETCH_DAILY_KPI_START:
+
+            return {
+                ...state,
+                isDailyKpiFetching: true
+            }
+
+        case morningMeetingTypes.FETCH_DAILY_KPI_SUCCESS:
+
+            return {
+                ...state,
+                isDailyKpiFetching: false,
+                dailyKpiCollection: action.payload
+            }
+
+        case morningMeetingTypes.FETCH_DAILY_KPI_FAILURE:
+
+            return {
+                ...state,
+                isDailyKpiFetching: false,
+                dailyKpiErrorMsg: action.payload
+            }
+
+        //WEEKLY LABOR HRS
+        case morningMeetingTypes.FETCH_WEEKLY_LABOR_HRS_START:
+
+            return {
+                ...state,
+                isWeeklyLaborHrsFetching: true
+            }
+
+        case morningMeetingTypes.FETCH_WEEKLY_LABOR_HRS_SUCCESS:
+
+            return {
+                ...state,
+                isWeeklyLaborHrsFetching: false,
+                weeklyLaborHrsCollection: action.payload
+            }
+
+        case morningMeetingTypes.FETCH_WEEKLY_LABOR_HRS_FAILURE:
+
+            return {
+                ...state,
+                isWeeklyLaborHrsFetching: false,
+                weeklyLaborHrsErrorMsg: action.payload
+            }
     
         default:
             return state;

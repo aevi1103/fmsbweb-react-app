@@ -177,3 +177,72 @@ export const fetchProductionStatusStartAsync = (startDate, endDate, area) => {
 
     }
 }
+
+//DAILY SCRAP RATE
+export const fetchDailyScrapRateStartAsync = (startDate, endDate, area) => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_DAILY_SCRAP_RATE_START))
+
+        api.get(`sap/dailyscraprate?start=${startDate}&end=${endDate}&area=${area}`)
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_DAILY_SCRAP_RATE_SUCCESS,
+                response.data))
+
+        })
+        .catch(error => dispatch(fetchFailure(
+            morningMeetingTypes.FETCH_DAILY_SCRAP_RATE_FAILURE,
+            error.message)))
+
+    }
+}
+
+//DAILY KPI
+export const fetchDailyKpiStartAsync = (startDate, endDate, area) => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_DAILY_KPI_START))
+
+        api.get(`sap/dailykpi?start=${startDate}&end=${endDate}&area=${area}`)
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_DAILY_KPI_SUCCESS,
+                response.data))
+
+        })
+        .catch(error => dispatch(fetchFailure(
+            morningMeetingTypes.FETCH_DAILY_KPI_FAILURE,
+            error.message)))
+
+    }
+}
+
+//WEEKLY LABOR HRS
+export const fetchWeeklyLaborHrsStartAsync = (startDate, endDate, area) => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_WEEKLY_LABOR_HRS_START))
+
+        api.get(`fmsb/weeklylaborhours?start=${startDate}&end=${endDate}&area=${area}`)
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_WEEKLY_LABOR_HRS_SUCCESS,
+                response.data))
+
+        })
+        .catch(error => dispatch(fetchFailure(
+            morningMeetingTypes.FETCH_WEEKLY_LABOR_HRS_FAILURE,
+            error.message)))
+
+    }
+}

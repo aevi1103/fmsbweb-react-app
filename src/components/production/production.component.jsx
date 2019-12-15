@@ -7,6 +7,9 @@ import ScrapByCodeTable from '../../components/production/scrap-by-code-table/sc
 import ProductionByTypeTable from '../../components/production/production-by-type-table/production-by-type-table.component'
 import ScrapByDeptTable from '../../components/production/scrap-by-dept-table/scrap-by-dept-tale.component'
 import LaborHoursTable from '../../components/production/labor-hours-table/labor-hours-table.component'
+import DailyScrapChart from '../../components/production/daily-scrap-rate-chart/daily-scrap-rate.component'
+import DailyKpi from '../../components/production/daily-kpi-chart/daily-kpi.component'
+import WeeklyPpmhChart from '../../components/production/weekly-ppmh-chart/weekly-ppmh-chart.component'
 
 import { 
     Row,
@@ -66,7 +69,6 @@ const fontGreen = {
     let _laborHoursDetails = [];
 
     let _sapOaeColorCode,
-        _hxhOaeColorCode,
         _scrapByCodeColorCode,
         _ppmhColorCode;
 
@@ -83,13 +85,12 @@ const fontGreen = {
             sapProductionByType,
 
             sapOaeColorCode,
-            hxhOaeColorCode,
             scrapByCodeColorCode,
             ppmhColorCode
         } = productionStatusCollection;
 
         const { scrapRate, total } = sbScrapByCode;
-        const { ppmh, details } = laborHours;
+        const { ppmh } = laborHours;
 
         _sbScrapRate = scrapRate;
         _sbScrapQty = total;
@@ -116,7 +117,6 @@ const fontGreen = {
         _laborHoursDetails = laborHours.details;
 
         _sapOaeColorCode = sapOaeColorCode;
-        _hxhOaeColorCode = hxhOaeColorCode;
         _scrapByCodeColorCode = scrapByCodeColorCode;
         _ppmhColorCode = ppmhColorCode;
         
@@ -158,7 +158,7 @@ const fontGreen = {
                 {
                     productionStatusCollection 
                     ? (<KpiContainer>
-                            <h1 style={{color: _sapOaeColorCode}}>{numeral(_oae).format('0.0%')}</h1>
+                            <h1 style={{color: _sapOaeColorCode}}>{numeral(_oae).format('0%')}</h1>
                         </KpiContainer>)
                     : <Empty/>
                  }
@@ -213,6 +213,7 @@ const fontGreen = {
                     style={cardHeightStyle}
                     className="mb3"
                 >
+                    <DailyScrapChart/>
                 </Card>
             </Col>
 
@@ -223,6 +224,7 @@ const fontGreen = {
                     style={cardHeightStyle}
                     className="mb3"
                 >
+                    <DailyKpi/>
                 </Card>
             </Col>
 
@@ -233,6 +235,7 @@ const fontGreen = {
                     style={cardHeightStyle}
                     className="mb3"
                 >
+                    <WeeklyPpmhChart/>
                 </Card>
             </Col>
 
@@ -312,7 +315,7 @@ const fontGreen = {
                             <Statistic 
                                 title="SAP OAE %"
                                 valueStyle={fontGreen}
-                                value={numeral(_oae).format('0.0%')} 
+                                value={numeral(_oae).format('0%')} 
                                 suffix={<small>({numeral(_sapNet).format('0,0')})</small>}
                                 />
                         </Col>
@@ -320,7 +323,7 @@ const fontGreen = {
                             <Statistic 
                                 title="HXH OAE %"
                                 valueStyle={fontGreen}
-                                value={numeral(0).format('0.0%')} 
+                                value={numeral(0).format('0%')} 
                                 suffix={<small>({numeral(0).format('0,0')})</small>}
                             />
                         </Col>
@@ -330,7 +333,7 @@ const fontGreen = {
                             <Statistic 
                                 title="Department Scrap %"
                                 valueStyle={fontRed}
-                                value={numeral(_deptScrapRate).format('0.0%')} 
+                                value={numeral(_deptScrapRate).format('0.00%')} 
                                 suffix={<small>({numeral(_deptScrap).format('0,0')})</small>}
                             />
                         </Col>
@@ -363,7 +366,7 @@ const fontGreen = {
                 >
                     <Row gutter={16} className="mb3">
                         <Col span={8}>
-                            <Statistic title="PPMH" value={numeral(_ppmh).format('0.00')} />
+                            <Statistic title="PPMH" value={numeral(_ppmh).format('0')} />
                         </Col>
                         <Col span={8}>
                             <Statistic title="Regular" 
