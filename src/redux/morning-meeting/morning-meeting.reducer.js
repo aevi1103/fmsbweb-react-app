@@ -39,7 +39,11 @@ const INITIAL_STATE = {
 
     isWeeklyLaborHrsFetching: false,
     weeklyLaborHrsCollection: null,
-    weeklyLaborHrsErrorMsg: undefined
+    weeklyLaborHrsErrorMsg: undefined,
+
+    isProdScrapFetching: false,
+    prodScrapCollection: null,
+    prodScrapErrorMsg: undefined
 }
 
 const morningMeetingReducer = (state = INITIAL_STATE, action) => {
@@ -284,6 +288,30 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isWeeklyLaborHrsFetching: false,
                 weeklyLaborHrsErrorMsg: action.payload
+            }
+
+        //PROD SCRAP
+        case morningMeetingTypes.FETCH_PROD_SCRAP_START:
+
+            return {
+                ...state,
+                isProdScrapFetching: true
+            }
+
+        case morningMeetingTypes.FETCH_PROD_SCRAP_SUCCESS:
+
+            return {
+                ...state,
+                isProdScrapFetching: false,
+                prodScrapCollection: action.payload
+            }
+
+        case morningMeetingTypes.FETCH_PROD_SCRAP_FAILURE:
+
+            return {
+                ...state,
+                isProdScrapFetching: false,
+                prodScrapErrorMsg: action.payload
             }
     
         default:

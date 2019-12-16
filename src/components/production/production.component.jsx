@@ -10,6 +10,7 @@ import LaborHoursTable from '../../components/production/labor-hours-table/labor
 import DailyScrapChart from '../../components/production/daily-scrap-rate-chart/daily-scrap-rate.component'
 import DailyKpi from '../../components/production/daily-kpi-chart/daily-kpi.component'
 import WeeklyPpmhChart from '../../components/production/weekly-ppmh-chart/weekly-ppmh-chart.component'
+import DailyProdChart from '../../components/production/daily-prod-chart/daily-prod-chart.component'
 
 import { 
     Row,
@@ -42,7 +43,8 @@ const fontGreen = {
     color: "#19A974"
 }
 
- const Production = ({productionStatusCollection, isProdStatusFetching}) => {
+ const Production = ({productionStatusCollection, isProdStatusFetching, 
+                        prodScrapCollection, isProdScrapFetching}) => {
 
     let _sbScrapQty = 0;
     let _sbScrapRate = 0;
@@ -122,6 +124,18 @@ const fontGreen = {
         
     }
 
+    let _mtdProd = 0;
+    let _mtdSbScrap = [];
+    let _mtdPurchaseScrap = [];
+
+    if (prodScrapCollection) {
+
+        _mtdProd = prodScrapCollection.sapProd;
+        _mtdSbScrap = prodScrapCollection.sbScrapDetail;
+        _mtdPurchaseScrap = prodScrapCollection.purchaseScrapDetail;
+
+    }
+
     return (
 
         <>
@@ -189,12 +203,13 @@ const fontGreen = {
                     title="MTD Production"
                     bordered={false} size="small"
                     className="mb3"
+                    loading={isProdScrapFetching}
                 >
 
                 {
-                productionStatusCollection 
+                    prodScrapCollection 
                     ? (<KpiContainer>
-                            <h1>0</h1>
+                        <h1 style={{color: "#19a974"}}>{numeral(_mtdProd).format('0,0')}</h1>
                         </KpiContainer>)
                     : <Empty/>
                 }
@@ -246,6 +261,7 @@ const fontGreen = {
                     style={cardHeightStyle}
                     className="mb3"
                 >
+                    <DailyProdChart/>
                 </Card>
             </Col>
 
@@ -407,11 +423,58 @@ const fontGreen = {
 
             <Col span={6}>
                 <Card 
-                    title="MTD Scrap Details"
+                    title="MTD Details"
                     bordered={false} size="small"
-                    style={cardHeightStyle}
                     className="mb3"
+                    loading={isProdScrapFetching}
                 >
+
+                    {
+                        prodScrapCollection ?
+                        (<>
+                            <Row gutter={16} className="mb3">
+                                <Col span={8}>
+                                    <Statistic title="Production" value={numeral(prodScrapCollection.sapProd).format('0,0')} valueStyle={fontGreen} />
+                                </Col>
+                                <Col span={8}>
+                                    <Statistic title="SB Scrap" value={numeral(prodScrapCollection.sbScrap).format('0,0')} valueStyle={fontRed} />
+                                </Col>
+                                <Col span={8}>
+                                    <Statistic title="Purchased Scrap %" value={numeral(prodScrapCollection.purchasedScrap).format('0,0')} valueStyle={fontRed} />
+                                </Col>
+                            </Row>
+
+                            <Row gutter={16} className="mb3">
+                                <Col span={8}>
+                                    <Statistic title="OAE %" value={numeral(prodScrapCollection.sapOae).format('0.0%')} valueStyle={fontGreen} />
+                                </Col>
+                                <Col span={8}>
+                                    <Statistic title="SB Scrap %" value={numeral(prodScrapCollection.sbScrapRate).format('0.00%')} valueStyle={fontRed} />
+                                </Col>
+                                <Col span={8}>
+                                    <Statistic title="Purchased Scrap %" value={numeral(prodScrapCollection.purchaseScrapRate).format('0.00%')} valueStyle={fontRed} />
+                                </Col>
+                            </Row>
+                        </>)
+                        : <Empty/>
+                    }
+
+                    <Collapse bordered={false}>
+
+                        <Panel header="SB Scrap Details" key="1">                     
+                            <ScrapByCodeTable 
+                                className="mt3"
+                                scrapData={_mtdSbScrap}
+                                isLoading={isProdScrapFetching} />
+                        </Panel>
+                        <Panel header="Purchased Scrap Detail" key="2">
+                            <ScrapByCodeTable 
+                                className="mt3"
+                                scrapData={_mtdPurchaseScrap}
+                                isLoading={isProdScrapFetching} />
+                        </Panel>
+
+                    </Collapse>
 
                 </Card>
             </Col>
@@ -429,7 +492,9 @@ const fontGreen = {
 
  const mapStateToProps = ({morningMeeting}) => ({
     productionStatusCollection: morningMeeting.productionStatusCollection,
-    isProdStatusFetching: morningMeeting.isProdStatusFetching
+    isProdStatusFetching: morningMeeting.isProdStatusFetching,
+    prodScrapCollection: morningMeeting.prodScrapCollection,
+    isProdScrapFetching: morningMeeting.isProdScrapFetching,
  })
 
  export default connect(mapStateToProps)(Production);

@@ -10,7 +10,8 @@ import {
     fetchProductionStatusStartAsync,
     fetchDailyScrapRateStartAsync,
     fetchDailyKpiStartAsync,
-    fetchWeeklyLaborHrsStartAsync
+    fetchWeeklyLaborHrsStartAsync,
+    fetchProdScrapStartAsync
 } from '../../../../redux/morning-meeting/morning-meeting.actions'
 
 import { 
@@ -30,6 +31,7 @@ const ProductionPage = ({
         fetchDailyScrapRateStartAsync,
         fetchDailyKpiStartAsync,
         fetchWeeklyLaborHrsStartAsync,
+        fetchProdScrapStartAsync,
         area,
         headerTitle
     }) => {
@@ -40,15 +42,21 @@ const ProductionPage = ({
     const fetchData = () => {
 
         const start = moment(startDay, dateFormat).format(dateFormat);
-        const chartTrendStart = moment(startDay, dateFormat).add(-30, 'd').format(dateFormat);
-        const laborHoursStart = moment(startDay, dateFormat).add(-9, 'w').startOf('week').format(dateFormat);
-
         const end = moment(endDay, dateFormat).format(dateFormat);
 
         setProductionData(start,end,area);
+
+        const chartTrendStart = moment(startDay, dateFormat).add(-30, 'd').format(dateFormat);    
         fetchDailyScrapRateStartAsync(chartTrendStart, end, area);
         fetchDailyKpiStartAsync(chartTrendStart, end, area);
+
+        const laborHoursStart = moment(startDay, dateFormat).add(-9, 'w').startOf('week').format(dateFormat);
         fetchWeeklyLaborHrsStartAsync(laborHoursStart, end, area);
+
+        const mtdStart = moment(end, dateFormat).startOf('month').format(dateFormat); 
+        const mtdEnd =  moment(end, dateFormat).endOf('month').format(dateFormat);
+
+        fetchProdScrapStartAsync(mtdStart, mtdEnd, area);
     }
 
     const onClick = () => {
@@ -86,6 +94,7 @@ const mapDispatchToProps = dispatch => ({
     fetchDailyScrapRateStartAsync: (start, end, area) => dispatch(fetchDailyScrapRateStartAsync(start, end, area)),
     fetchDailyKpiStartAsync: (start, end, area) => dispatch(fetchDailyKpiStartAsync(start, end, area)),
     fetchWeeklyLaborHrsStartAsync: (start, end, area) => dispatch(fetchWeeklyLaborHrsStartAsync(start, end, area)),
+    fetchProdScrapStartAsync: (start, end, area) => dispatch(fetchProdScrapStartAsync(start, end, area)),
 })
 
 export default connect(null, mapDispatchToProps)(ProductionPage);

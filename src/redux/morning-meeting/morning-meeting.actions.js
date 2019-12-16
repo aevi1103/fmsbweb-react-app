@@ -246,3 +246,26 @@ export const fetchWeeklyLaborHrsStartAsync = (startDate, endDate, area) => {
 
     }
 }
+
+//prod scrap
+export const fetchProdScrapStartAsync = (startDate, endDate, area) => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_PROD_SCRAP_START))
+
+        api.get(`sap/prodscrap?start=${startDate}&end=${endDate}&area=${area}`)
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_PROD_SCRAP_SUCCESS,
+                response.data))
+
+        })
+        .catch(error => dispatch(fetchFailure(
+            morningMeetingTypes.FETCH_PROD_SCRAP_FAILURE,
+            error.message)))
+
+    }
+}
