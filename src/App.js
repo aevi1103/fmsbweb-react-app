@@ -22,6 +22,8 @@ import MorningMeetingMenu from './components/Menu/morning-meeting-menu/morning-m
 import SafetyPage from './pages/dashboard/morning-meeting/safety/safety.component';
 import LogisticsPage from './pages/dashboard/morning-meeting/logistics/logistics.component'
 import ProductionPage from './pages/dashboard/morning-meeting/production-page/production-page.component'
+import FinancePage from './pages/dashboard/morning-meeting/finance/finance.component'
+
 
 const { Footer, Sider } = Layout;
 
@@ -76,6 +78,7 @@ const App = ( { collapsed, setSiderCollapse } ) => {
         <Route exact path="/dashboard/morningmeeting/machining" component={() => <ProductionPage area="machine line" headerTitle="Machining" />} />
         <Route exact path="/dashboard/morningmeeting/finishing" component={() => <ProductionPage area="skirt coat" headerTitle="Finishing / Skirt Coat" />}/>
         <Route exact path="/dashboard/morningmeeting/assembly" component={() => <ProductionPage area="assembly" headerTitle="Assembly" />} />
+        <Route exact path="/dashboard/morningmeeting/finance" component={FinancePage} />
 
         <Route exact path="/dashboard/swot" component={SwotPage} />
         <Route component={NotFound} />

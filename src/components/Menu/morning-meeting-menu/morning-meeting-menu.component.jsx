@@ -56,6 +56,12 @@ const MorningMeetingMenu = ( { location } ) => {
             <Link to="/dashboard/morningmeeting/assembly" />
         </Menu.Item>
 
+        <Menu.Item key="/dashboard/morningmeeting/finance">
+            <Icon type="dollar" />
+            <span>Finance</span>
+            <Link to="/dashboard/morningmeeting/finance" />
+        </Menu.Item>
+
         <Menu.Item key="/dashboard/morningmeeting/maintenance">
             <Icon type="setting" />
             <span>Maintenance</span>

@@ -2,13 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment'
 
-import Logistics from '../../../../components/logistics/logistics.component' 
 import DatePicker from '../../../../components/single-date-range-picker/single-date-range-picker.component'
 
 import { 
-    fetchLogisticsStockOverviewStartAsync,
-    fetchLogisticsStockOverviewSlocStartAsync,
-    fetchLogisticsStatusStartAsync
+    fetchFiananceKpiStartAsync
 } from '../../../../redux/morning-meeting/morning-meeting.actions'
 
 import { 
@@ -17,20 +14,20 @@ import {
 
 import '../morning-meeting.styles.scss'
 
+import FinanceKpi from '../../../../components/finance/kpi/kpi.component'
+
 const { Header, Content } = Layout;
 
 const dateFormat = 'MM/DD/YYYY';
 const today = moment();
 const todayFormatted = today.format(dateFormat);
 
-const LogisticsPage = ({setStockOverview, setStockOverviewSloc, setStatus}) => {
+const FinancePage = ({fetchFiananceKpiStartAsync}) => {
     
     const [ date, setDate ] = useState(todayFormatted);
 
     const fetchData = () => {
-        setStockOverview(date);
-        setStockOverviewSloc(date);
-        setStatus(date, date);
+        fetchFiananceKpiStartAsync(date);
     }
 
     const onClick = () => {
@@ -42,14 +39,14 @@ const LogisticsPage = ({setStockOverview, setStockOverviewSloc, setStatus}) => {
     }
 
     useEffect(() => {
-        document.title = `Morning Meeting - Logistics`;
+        document.title = `Morning Meeting - Finance`
         fetchData();
     }, [])
 
     return (
     <>
         <Header className="pa0 custom-header" >
-            <h2 className="ml3">Logistics</h2>
+            <h2 className="ml3">Finance</h2>
         </Header>
 
         <Content className="ma3 mt0">
@@ -57,7 +54,7 @@ const LogisticsPage = ({setStockOverview, setStockOverviewSloc, setStatus}) => {
                     defaultValue={today} />
 
             <div className="mt3">
-                <Logistics/>
+                <FinanceKpi/>
             </div>
             
         </Content>      
@@ -65,9 +62,7 @@ const LogisticsPage = ({setStockOverview, setStockOverviewSloc, setStatus}) => {
 )}
 
 const mapDispatchToProps = dispatch => ({
-    setStockOverview: (day) => dispatch(fetchLogisticsStockOverviewStartAsync(day)),
-    setStockOverviewSloc: (day) => dispatch(fetchLogisticsStockOverviewSlocStartAsync(day)),
-    setStatus: (start, end) => dispatch(fetchLogisticsStatusStartAsync(start, end)),
+    fetchFiananceKpiStartAsync: date => dispatch(fetchFiananceKpiStartAsync(date))
 })
 
-export default connect(null, mapDispatchToProps)(LogisticsPage);
+export default connect(null, mapDispatchToProps)(FinancePage);

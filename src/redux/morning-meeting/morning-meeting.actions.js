@@ -269,3 +269,26 @@ export const fetchProdScrapStartAsync = (startDate, endDate, area) => {
 
     }
 }
+
+//finance
+export const fetchFiananceKpiStartAsync = (date) => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_FINANCE_KPI_START))
+
+        api.get(`finance/kpi?date=${date}`)
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_FINANCE_KPI_SUCCESS,
+                response.data))
+
+        })
+        .catch(error => dispatch(fetchFailure(
+            morningMeetingTypes.FETCH_FINANCE_KPI_FAILURE,
+            error.message)))
+
+    }
+}

@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
 import MonthlyIncidentRateChart from './monthly-incident-rate-chart/monthly-incident-rate-chart.component'
 import IncidentByDeptChart from './incident-by-dept-chart/incident-by-dept-chart.component'
@@ -15,7 +14,7 @@ const cardHeightStyle = {
     height: "500px"
 }
 
-const Safety = ({isIncidentByDeptFetching, isMonthlyIncidentRateFetching}) => (
+const Safety = () => (
     <Row gutter={16}>
         <Col span={8} lg={8} md={24} xs={24}>
             <Card 
@@ -51,9 +50,4 @@ const Safety = ({isIncidentByDeptFetching, isMonthlyIncidentRateFetching}) => (
     </Row>
 );
 
-const mapStateToProps = ({ morningMeeting }) => ({
-    isIncidentByDeptFetching: morningMeeting.isIncidentByDeptFetching,
-    isMonthlyIncidentRateFetching: morningMeeting.isMonthlyIncidentRateFetching,
-})
-
-export default connect(mapStateToProps)(Safety);
+export default Safety;

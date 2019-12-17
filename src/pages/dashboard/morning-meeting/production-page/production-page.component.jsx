@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment'
 
-
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
 import Production from '../../../../components/production/production.component'
 
@@ -54,7 +53,7 @@ const ProductionPage = ({
         fetchWeeklyLaborHrsStartAsync(laborHoursStart, end, area);
 
         const mtdStart = moment(end, dateFormat).startOf('month').format(dateFormat); 
-        const mtdEnd =  moment(end, dateFormat).endOf('month').format(dateFormat);
+        const mtdEnd =  moment(end, dateFormat).format(dateFormat); 
 
         fetchProdScrapStartAsync(mtdStart, mtdEnd, area);
     }
@@ -70,6 +69,7 @@ const ProductionPage = ({
     }
 
     useEffect(() => {
+        document.title = `Morning Meeting - ${headerTitle}`;
         fetchData();
     }, [])
 

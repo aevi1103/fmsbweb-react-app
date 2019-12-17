@@ -4,28 +4,20 @@ import {
     Table,
  } from "antd";
 
-import { numberSorter } from '../../../helpers/helpers'
-
 const LaborHoursTable = ({laborHoursData, isLoading, otherProps}) => {
 
     const columns = [
         {
             title: 'Type',
-            dataIndex: 'type',
-            sorter: (a, b) => a.type.length - b.type.length,
-            sortDirections: ['descend', 'ascend'],
+            dataIndex: 'type'
         },
         {
             title: 'Role',
-            dataIndex: 'role',
-            sorter: (a, b) => a.role.length - b.role.length,
-            sortDirections: ['descend', 'ascend'],
+            dataIndex: 'role'
         },
         {
             title: 'Labor Hours',
-            dataIndex: 'hrs',
-            sorter: (a, b) => numberSorter(a.hrs, b.hrs),
-            sortDirections: ['descend', 'ascend'],
+            dataIndex: 'hrs'
         }
       ];
       

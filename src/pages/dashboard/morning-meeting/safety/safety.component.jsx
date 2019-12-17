@@ -47,6 +47,7 @@ const SafetyPage = ({setMonthlyIncidentRate, setIncidentByDept, setIncidents}) =
     }
 
     useEffect(() => {
+        document.title = `Morning Meeting - Safety`;
         fetchData();
     }, [])
 

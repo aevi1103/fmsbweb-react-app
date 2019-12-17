@@ -43,7 +43,11 @@ const INITIAL_STATE = {
 
     isProdScrapFetching: false,
     prodScrapCollection: null,
-    prodScrapErrorMsg: undefined
+    prodScrapErrorMsg: undefined,
+
+    isFinanceKpiFetching: false,
+    financeKpiCollection: null,
+    financeKpiErrorMsg: undefined
 }
 
 const morningMeetingReducer = (state = INITIAL_STATE, action) => {
@@ -312,6 +316,30 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isProdScrapFetching: false,
                 prodScrapErrorMsg: action.payload
+            }
+
+        //FIANNCE
+        case morningMeetingTypes.FETCH_FINANCE_KPI_START:
+
+            return {
+                ...state,
+                isFinanceKpiFetching: true
+            }
+
+        case morningMeetingTypes.FETCH_FINANCE_KPI_SUCCESS:
+
+            return {
+                ...state,
+                isFinanceKpiFetching: false,
+                financeKpiCollection: action.payload
+            }
+
+        case morningMeetingTypes.FETCH_FINANCE_KPI_FAILURE:
+
+            return {
+                ...state,
+                isFinanceKpiFetching: false,
+                financeKpiErrorMsg: action.payload
             }
     
         default:
