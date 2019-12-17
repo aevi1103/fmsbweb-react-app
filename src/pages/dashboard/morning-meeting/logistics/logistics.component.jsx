@@ -29,9 +29,13 @@ const LogisticsPage = ({setStockOverview, setStockOverviewSloc, setStatus}) => {
     const [ endDay, setEndDay ] = useState(previousDayFormatted);
 
     const fetchData = () => {
-        setStockOverview(moment(endDay, dateFormat).add(-1, 'd').format(dateFormat));
-        setStockOverviewSloc(moment(endDay, dateFormat).add(-1, 'd').format(dateFormat));
-        setStatus(startDay, endDay);
+
+        const start = moment(startDay, dateFormat).add(1, 'd').format(dateFormat);
+        const end = moment(endDay, dateFormat).add(1, 'd').format(dateFormat);
+        
+        setStockOverview(end);
+        setStockOverviewSloc(end);
+        setStatus(start, end);
     }
 
     const onClick = () => {
