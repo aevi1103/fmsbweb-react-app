@@ -7,10 +7,12 @@ import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
+import CustomSpinner from '../../custom-spinner/custom-spinner.component';
+
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const IncidentByDeptChart = ({incidentByDeptCollection}) => {
+const IncidentByDeptChart = ({incidentByDeptCollection, isIncidentByDeptFetching}) => {
 
     const { categories, series, data } = incidentByDeptCollection;
     let chartConfigs = {};
@@ -67,12 +69,19 @@ const IncidentByDeptChart = ({incidentByDeptCollection}) => {
     }
 
     return (
-        <ReactFC {...chartConfigs} />
+        <>
+            {
+                isIncidentByDeptFetching 
+                    ? (<CustomSpinner/>)
+                    : (<ReactFC {...chartConfigs} />)
+            }   
+        </> 
     )
 }
 
 const mapStateToProps = ({ morningMeeting }) => ({
     incidentByDeptCollection: morningMeeting.incidentByDeptCollection,
+    isIncidentByDeptFetching: morningMeeting.isIncidentByDeptFetching,
 })
 
 export default connect(mapStateToProps)(IncidentByDeptChart);

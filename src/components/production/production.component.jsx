@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import numeral from 'numeral';
 import styled from 'styled-components'
+import moment from 'moment'
 
 import ScrapByCodeTable from '../../components/production/scrap-by-code-table/scrap-by-code-table.component'
 import ProductionByTypeTable from '../../components/production/production-by-type-table/production-by-type-table.component'
@@ -129,7 +130,6 @@ const fontGreen = {
     let _mtdPurchaseScrap = [];
 
     if (prodScrapCollection) {
-
         _mtdProd = prodScrapCollection.sapProd;
         _mtdSbScrap = prodScrapCollection.sbScrapDetail;
         _mtdPurchaseScrap = prodScrapCollection.purchaseScrapDetail;
@@ -143,7 +143,6 @@ const fontGreen = {
         <Row gutter={16}>
         
             <Col span={6}>
-
                 <Card 
                     title="South Bend Scrap Rate by Code"
                     bordered={false} size="small"
@@ -182,7 +181,9 @@ const fontGreen = {
 
             <Col span={6}>
                 <Card 
-                    title="PPMH"
+                    title={_laborHours 
+                            ? `PPMH (${moment(_laborHours.startDate).format('MM/DD/YY')} - ${moment(_laborHours.endDate).format('MM/DD/YY')})`
+                            : `PPMH`}
                     bordered={false} size="small"
                     className="mb3"
                     loading={isProdStatusFetching}
@@ -268,7 +269,7 @@ const fontGreen = {
         </Row>
 
         <Row gutter={16}>
-        
+
             <Col span={6}>
                 <Card 
                     title="Scrap Details"
@@ -375,7 +376,9 @@ const fontGreen = {
 
             <Col span={6}>
                 <Card 
-                    title="Labor Hours Details"
+                    title={_laborHours 
+                            ? `Labour Hours Details (${moment(_laborHours.startDate).format('MM/DD/YY')} - ${moment(_laborHours.endDate).format('MM/DD/YY')})`
+                            : `Labour Hours Details`}
                     bordered={false} size="small"
                     className="mb3"
                     loading={isProdStatusFetching}
@@ -479,11 +482,8 @@ const fontGreen = {
                 </Card>
             </Col>
 
-        
-
         </Row>
-
-
+        
         </>
 
     )

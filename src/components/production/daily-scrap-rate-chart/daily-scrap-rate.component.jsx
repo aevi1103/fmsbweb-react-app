@@ -8,14 +8,18 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 import moment from 'moment';
 
+import CustomSpinner from '../../custom-spinner/custom-spinner.component';
+
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
 const dateFormat = 'MM/DD/YY';
 
-const MonthlyIncidentRateChart = ({dailyScrapRateCollection}) => {
+const MonthlyIncidentRateChart = ({dailyScrapRateCollection, isDailyScrapRateFetching}) => {
 
-    const chartData = !dailyScrapRateCollection ? [] : dailyScrapRateCollection.map(({shiftDate, scrapRate, totalScrap, sapGross}) => 
+    const chartData = !dailyScrapRateCollection 
+                        ? [] 
+                        : dailyScrapRateCollection.map(({shiftDate, scrapRate, totalScrap, sapGross}) => 
         (
             {
                 label: moment(shiftDate).format(dateFormat),
@@ -44,18 +48,25 @@ const MonthlyIncidentRateChart = ({dailyScrapRateCollection}) => {
       const chartConfigs = {
         type: 'line',
         width: '100%',
-        height: '89%',
+        height: '86%',
         dataFormat: 'json',
         dataSource: dataSource
       };
 
     return (
-        <ReactFC {...chartConfigs} />
+        <>
+            {
+                isDailyScrapRateFetching 
+                    ? (<CustomSpinner/>)
+                    : (<ReactFC {...chartConfigs} />)
+            }   
+        </>     
     )
 }
 
 const mapStateToProps = ({ morningMeeting }) => ({
     dailyScrapRateCollection: morningMeeting.dailyScrapRateCollection,
+    isDailyScrapRateFetching: morningMeeting.isDailyScrapRateFetching
 })
 
 export default connect(mapStateToProps)(MonthlyIncidentRateChart);

@@ -7,12 +7,14 @@ import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
+import CustomSpinner from '../../custom-spinner/custom-spinner.component';
+
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
 const numberFormat = '0,0.00';
 
-const MonthlyIncidentRateChart = ({weeklyLaborHrsCollection}) => {
+const MonthlyIncidentRateChart = ({weeklyLaborHrsCollection, isWeeklyLaborHrsFetching}) => {
 
     const chartData = !weeklyLaborHrsCollection ? [] : weeklyLaborHrsCollection.map(({weekNumber, details: { ppmh, 
                 regular, overtime, doubleTime, orientation, overAll, sapGross } }) => 
@@ -47,18 +49,25 @@ const MonthlyIncidentRateChart = ({weeklyLaborHrsCollection}) => {
       const chartConfigs = {
         type: 'line',
         width: '100%',
-        height: '89%',
+        height: '86%',
         dataFormat: 'json',
         dataSource: dataSource
       };
 
     return (
-        <ReactFC {...chartConfigs} />
+        <>
+            {
+                isWeeklyLaborHrsFetching 
+                    ? (<CustomSpinner/>)
+                    : (<ReactFC {...chartConfigs} />)
+            }   
+        </> 
     )
 }
 
 const mapStateToProps = ({ morningMeeting }) => ({
     weeklyLaborHrsCollection: morningMeeting.weeklyLaborHrsCollection,
+    isWeeklyLaborHrsFetching: morningMeeting.isWeeklyLaborHrsFetching,
 })
 
 export default connect(mapStateToProps)(MonthlyIncidentRateChart);

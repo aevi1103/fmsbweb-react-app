@@ -6,10 +6,12 @@ import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
+import CustomSpinner from '../../custom-spinner/custom-spinner.component';
+
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const StockOverviewChart = ({stockOVerviewCollection}) => {
+const StockOverviewChart = ({stockOVerviewCollection, isStockOverviewFetching}) => {
 
     const { data } = stockOVerviewCollection;
 
@@ -40,12 +42,19 @@ const StockOverviewChart = ({stockOVerviewCollection}) => {
       };
 
     return (
-        <ReactFC {...chartConfigs} />
+        <>
+            {
+                isStockOverviewFetching 
+                    ? (<CustomSpinner/>)
+                    : (<ReactFC {...chartConfigs} />)
+            }   
+        </>
     )
 }
 
 const mapStateToProps = ({ morningMeeting }) => ({  
     stockOVerviewCollection: morningMeeting.stockOVerviewCollection,
+    isStockOverviewFetching: morningMeeting.isStockOverviewFetching,
 })
 
 export default connect(mapStateToProps)(StockOverviewChart);

@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import numeral from 'numeral';
 
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
@@ -8,12 +7,14 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 import moment from 'moment';
 
+import CustomSpinner from '../../custom-spinner/custom-spinner.component';
+
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
 const dateFormat = 'MM/DD/YY';
 
-const DailyProdChart = ({prodScrapCollection}) => {
+const DailyProdChart = ({prodScrapCollection, isProdScrapFetching}) => {
 
     const chartData = !prodScrapCollection ? [] : prodScrapCollection.dailySapProd.map(({shiftDate, qty}) => 
         (
@@ -40,18 +41,25 @@ const DailyProdChart = ({prodScrapCollection}) => {
       const chartConfigs = {
         type: 'line',
         width: '100%',
-        height: '89%',
+        height: '86%',
         dataFormat: 'json',
         dataSource: dataSource
       };
 
     return (
-        <ReactFC {...chartConfigs} />
+        <>
+            {
+                isProdScrapFetching 
+                    ? (<CustomSpinner/>)
+                    : (<ReactFC {...chartConfigs} />)
+            }   
+        </> 
     )
 }
 
 const mapStateToProps = ({ morningMeeting }) => ({
     prodScrapCollection: morningMeeting.prodScrapCollection,
+    isProdScrapFetching: morningMeeting.isProdScrapFetching,
 })
 
 export default connect(mapStateToProps)(DailyProdChart);

@@ -8,10 +8,12 @@ import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
+import CustomSpinner from '../../custom-spinner/custom-spinner.component';
+
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const DailyKpiChart = ({dailyKpiCollection}) => {
+const DailyKpiChart = ({dailyKpiCollection, isDailyKpiFetching}) => {
 
     let chartConfigs = {};
 
@@ -75,7 +77,7 @@ const DailyKpiChart = ({dailyKpiCollection}) => {
           chartConfigs = {
             type: 'stackedarea2d',
             width: '100%',
-            height: '89%',
+            height: '86%',
             dataFormat: 'json',
             dataSource: dataSource
           };
@@ -83,12 +85,19 @@ const DailyKpiChart = ({dailyKpiCollection}) => {
     }
 
     return (
-        <ReactFC {...chartConfigs} />
+        <>
+            {
+                isDailyKpiFetching 
+                    ? (<CustomSpinner/>)
+                    : (<ReactFC {...chartConfigs} />)
+            }   
+        </>  
     )
 }
 
 const mapStateToProps = ({ morningMeeting }) => ({
     dailyKpiCollection: morningMeeting.dailyKpiCollection,
+    isDailyKpiFetching: morningMeeting.isDailyKpiFetching,
 })
 
 export default connect(mapStateToProps)(DailyKpiChart);

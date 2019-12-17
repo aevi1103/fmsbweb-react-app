@@ -7,10 +7,12 @@ import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
+import CustomSpinner from '../../custom-spinner/custom-spinner.component';
+
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const MonthlyIncidentRateChart = ({monthlyIncidentRateCollection}) => {
+const MonthlyIncidentRateChart = ({monthlyIncidentRateCollection, isMonthlyIncidentRateFetching}) => {
 
     const chartData = monthlyIncidentRateCollection.map(({month, incidentRate, manHours, numberOfRecordable}) => 
         (
@@ -44,12 +46,19 @@ const MonthlyIncidentRateChart = ({monthlyIncidentRateCollection}) => {
       };
 
     return (
-        <ReactFC {...chartConfigs} />
+      <>
+        {
+          isMonthlyIncidentRateFetching 
+                ? (<CustomSpinner/>)
+                : (<ReactFC {...chartConfigs} />)
+        }   
+    </> 
     )
 }
 
 const mapStateToProps = ({ morningMeeting }) => ({
     monthlyIncidentRateCollection: morningMeeting.monthlyIncidentRateCollection,
+    isMonthlyIncidentRateFetching: morningMeeting.isMonthlyIncidentRateFetching,
 })
 
 export default connect(mapStateToProps)(MonthlyIncidentRateChart);
