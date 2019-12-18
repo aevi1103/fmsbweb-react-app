@@ -285,10 +285,53 @@ export const fetchFiananceKpiStartAsync = (date) => {
                 morningMeetingTypes.FETCH_FINANCE_KPI_SUCCESS,
                 response.data))
 
+            dispatch(fetchFailure(
+                morningMeetingTypes.FETCH_FINANCE_KPI_FAILURE, undefined))
+
         })
-        .catch(error => dispatch(fetchFailure(
-            morningMeetingTypes.FETCH_FINANCE_KPI_FAILURE,
-            error.message)))
+        .catch(error => {
+            
+            dispatch(fetchFailure(
+                morningMeetingTypes.FETCH_FINANCE_KPI_FAILURE,
+                error.message))
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_FINANCE_KPI_SUCCESS, null))
+        
+        })
+
+    }
+}
+
+//quality
+export const fetchQualityStartAsync = (date) => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_QUALITY_START))
+
+        api.get(`quality/status?start=${date}&end=${date}`)
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_QUALITY_SUCCESS,
+                response.data))
+
+            dispatch(fetchFailure(
+                morningMeetingTypes.FETCH_QUALITY_FAILURE, undefined))
+
+        })
+        .catch(error => {
+            
+            dispatch(fetchFailure(
+                morningMeetingTypes.FETCH_QUALITY_FAILURE,
+                error.message))
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_QUALITY_SUCCESS, null))
+        
+        })
 
     }
 }

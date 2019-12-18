@@ -5,7 +5,7 @@ import moment from 'moment'
 import DatePicker from '../../../../components/single-date-range-picker/single-date-range-picker.component'
 
 import { 
-    fetchFiananceKpiStartAsync
+    fetchQualityStartAsync
 } from '../../../../redux/morning-meeting/morning-meeting.actions'
 
 import { 
@@ -14,7 +14,7 @@ import {
 
 import '../morning-meeting.styles.scss'
 
-import FinanceKpi from '../../../../components/finance/kpi/kpi.component'
+import Quality from '../../../../components/quality/quality.component'
 
 const { Header, Content } = Layout;
 
@@ -22,12 +22,12 @@ const dateFormat = 'MM/DD/YYYY';
 const today = moment();
 const todayFormatted = today.format(dateFormat);
 
-const FinancePage = ({fetchFiananceKpiStartAsync}) => {
+const QualityPage = ({fetchQualityStartAsync}) => {
     
     const [ date, setDate ] = useState(todayFormatted);
 
     const fetchData = () => {
-        fetchFiananceKpiStartAsync(date);
+        fetchQualityStartAsync(date);
     }
 
     const onClick = () => {
@@ -46,7 +46,7 @@ const FinancePage = ({fetchFiananceKpiStartAsync}) => {
     return (
     <>
         <Header className="pa0 custom-header" >
-            <h2 className="ml3">Finance</h2>
+            <h2 className="ml3">Quality</h2>
         </Header>
 
         <Content className="ma3 mt0">
@@ -54,7 +54,7 @@ const FinancePage = ({fetchFiananceKpiStartAsync}) => {
                     defaultValue={today} />
 
             <div className="mt3">
-                <FinanceKpi/>
+                <Quality/>
             </div>
             
         </Content>      
@@ -62,7 +62,7 @@ const FinancePage = ({fetchFiananceKpiStartAsync}) => {
 )}
 
 const mapDispatchToProps = dispatch => ({
-    fetchFiananceKpiStartAsync: date => dispatch(fetchFiananceKpiStartAsync(date))
+    fetchQualityStartAsync: date => dispatch(fetchQualityStartAsync(date))
 })
 
-export default connect(null, mapDispatchToProps)(FinancePage);
+export default connect(null, mapDispatchToProps)(QualityPage);

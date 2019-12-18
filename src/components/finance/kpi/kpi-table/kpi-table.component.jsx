@@ -5,7 +5,9 @@ import {
     Table
  } from "antd";
 
-const KpiTable = ({isFinanceKpiFetching, financeKpiCollection}) => {
+ import Error from '../../../error-empty-container/error-empty-container.component'
+
+const KpiTable = ({isFinanceKpiFetching, financeKpiCollection, financeKpiErrorMsg}) => {
 
     const columns = [
         {
@@ -70,6 +72,10 @@ const KpiTable = ({isFinanceKpiFetching, financeKpiCollection}) => {
         // console.log('params', pagination, filters, sorter, extra);
       }
 
+    if (financeKpiErrorMsg) {
+      return <Error errorMsg={financeKpiErrorMsg} />
+    } 
+
     return (
         <Table 
                 loading={isFinanceKpiFetching}
@@ -83,6 +89,7 @@ const KpiTable = ({isFinanceKpiFetching, financeKpiCollection}) => {
 const mapStateToProps = ({ morningMeeting }) => ({
     isFinanceKpiFetching: morningMeeting.isFinanceKpiFetching,
     financeKpiCollection: morningMeeting.financeKpiCollection,
+    financeKpiErrorMsg: morningMeeting.financeKpiErrorMsg
 })
 
 export default connect(mapStateToProps)(KpiTable);

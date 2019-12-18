@@ -75,6 +75,9 @@ const fontGreen = {
         _scrapByCodeColorCode,
         _ppmhColorCode;
 
+    let _hxhNet = 0;
+    let _hxhOae = 0;
+
     if (productionStatusCollection) {
 
         const { 
@@ -89,7 +92,10 @@ const fontGreen = {
 
             sapOaeColorCode,
             scrapByCodeColorCode,
-            ppmhColorCode
+            ppmhColorCode,
+
+            hxHNet,
+            hxhOae
         } = productionStatusCollection;
 
         const { scrapRate, total } = sbScrapByCode;
@@ -102,6 +108,9 @@ const fontGreen = {
         _sapNet = sapNet
         _oae = sapOae;
         _ppmh = ppmh;
+
+        _hxhNet = hxHNet;
+        _hxhOae = hxhOae;
 
         _purchasedScrapQty = purchaseScrapByCode.total;
         _purchasedScrapRate = purchaseScrapByCode.scrapRate;
@@ -340,8 +349,8 @@ const fontGreen = {
                             <Statistic 
                                 title="HXH OAE %"
                                 valueStyle={fontGreen}
-                                value={numeral(0).format('0%')} 
-                                suffix={<small>({numeral(0).format('0,0')})</small>}
+                                value={numeral(_hxhOae).format('0%')} 
+                                suffix={<small>({numeral(_hxhNet).format('0,0')})</small>}
                             />
                         </Col>
                     </Row>

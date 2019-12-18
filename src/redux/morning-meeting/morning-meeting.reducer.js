@@ -47,7 +47,11 @@ const INITIAL_STATE = {
 
     isFinanceKpiFetching: false,
     financeKpiCollection: null,
-    financeKpiErrorMsg: undefined
+    financeKpiErrorMsg: undefined,
+
+    isQualityFetching: false,
+    qualityCollection: null,
+    qualityErrorMsg: undefined
 }
 
 const morningMeetingReducer = (state = INITIAL_STATE, action) => {
@@ -340,6 +344,30 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isFinanceKpiFetching: false,
                 financeKpiErrorMsg: action.payload
+            }
+
+        //quality
+        case morningMeetingTypes.FETCH_QUALITY_START:
+
+            return {
+                ...state,
+                isQualityFetching: true
+            }
+
+        case morningMeetingTypes.FETCH_QUALITY_SUCCESS:
+
+            return {
+                ...state,
+                isQualityFetching: false,
+                qualityCollection: action.payload
+            }
+
+        case morningMeetingTypes.FETCH_QUALITY_FAILURE:
+
+            return {
+                ...state,
+                isQualityFetching: false,
+                qualityErrorMsg: action.payload
             }
     
         default:
