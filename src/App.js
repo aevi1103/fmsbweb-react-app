@@ -25,6 +25,14 @@ import ProductionPage from './pages/dashboard/morning-meeting/production-page/pr
 import FinancePage from './pages/dashboard/morning-meeting/finance/finance.component'
 import QualityPage from './pages/dashboard/morning-meeting/quality/quality.component'
 
+import ProductionDetailsPage from './pages/dashboard/morning-meeting/production-details-page/production-details-page.component'
+
+
+// const SafetyPage = lazy(() => import('./pages/dashboard/morning-meeting/safety/safety.component'));
+// const LogisticsPage = lazy(() => import('./pages/dashboard/morning-meeting/logistics/logistics.component'));
+// const ProductionPage = lazy(() => import('./pages/dashboard/morning-meeting/production-page/production-page.component'));
+// const FinancePage = lazy(() => import('./pages/dashboard/morning-meeting/finance/finance.component'));
+// const QualityPage = lazy(() => import('./pages/dashboard/morning-meeting/quality/quality.component'))
 
 const { Footer, Sider } = Layout;
 
@@ -75,22 +83,25 @@ const App = ( { collapsed, setSiderCollapse } ) => {
     
     <Layout>
 
-      <Switch>
-        <Route exact path="/" component={HomePage} />
+    <Switch>
+      <Route exact path="/" component={HomePage} />
 
-        <Route exact path="/dashboard/morningmeeting/safety" component={SafetyPage} />
-        <Route exact path="/dashboard/morningmeeting/logistics" component={LogisticsPage} />
+      <Route exact path="/dashboard/morningmeeting/safety" component={SafetyPage} />
+      <Route exact path="/dashboard/morningmeeting/logistics" component={LogisticsPage} />
 
-        <Route exact path="/dashboard/morningmeeting/foundry" component={RenderedFoundryPage} />
-        <Route exact path="/dashboard/morningmeeting/machining" component={RenderedMachiningPage} />
-        <Route exact path="/dashboard/morningmeeting/finishing" component={RenderedFinishingPage}/>
-        <Route exact path="/dashboard/morningmeeting/assembly" component={RenderedAssemblyPage} />
-        <Route exact path="/dashboard/morningmeeting/finance" component={FinancePage} />
-        <Route exact path="/dashboard/morningmeeting/quality" component={QualityPage} />
+      <Route exact path="/dashboard/morningmeeting/foundry" component={RenderedFoundryPage} />
+      <Route exact path="/dashboard/morningmeeting/machining" component={RenderedMachiningPage} />
+      <Route exact path="/dashboard/morningmeeting/finishing" component={RenderedFinishingPage}/>
+      <Route exact path="/dashboard/morningmeeting/assembly" component={RenderedAssemblyPage} />
+      <Route exact path="/dashboard/morningmeeting/finance" component={FinancePage} />
+      <Route exact path="/dashboard/morningmeeting/quality" component={QualityPage} />
 
-        <Route exact path="/dashboard/swot" component={SwotPage} />
-        <Route component={NotFound} />
-      </Switch>
+      <Route exact path="/dashboard/*/details" component={ProductionDetailsPage} />
+
+      <Route exact path="/dashboard/swot" component={SwotPage} />
+      <Route component={NotFound} />
+    </Switch>
+      
 
       <Footer style={{ textAlign: "center" }}>
         FMSBWeb &copy; {new Date().getFullYear()}

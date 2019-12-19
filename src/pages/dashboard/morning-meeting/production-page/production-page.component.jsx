@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { Link, withRouter } from "react-router-dom";
 import moment from 'moment'
 
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
@@ -13,8 +14,11 @@ import {
     fetchProdScrapStartAsync
 } from '../../../../redux/morning-meeting/morning-meeting.actions'
 
+import { setTitle, setArea } from '../../../../redux/production-details/production-details.actions'
+
 import { 
-    Layout
+    Layout,
+    Button
  } from "antd";
 
 import '../morning-meeting.styles.scss'
@@ -32,7 +36,11 @@ const ProductionPage = ({
         fetchWeeklyLaborHrsStartAsync,
         fetchProdScrapStartAsync,
         area,
-        headerTitle
+        headerTitle,
+        location,
+
+        setTitle,
+        setArea
     }) => {
     
     const [ startDay, setStartDay ] = useState(previousDayFormatted);
@@ -73,6 +81,11 @@ const ProductionPage = ({
         fetchData();
     }, [])
 
+    const onDetailsButtonClick = () => {
+        setTitle(`${headerTitle} Details`);
+        setArea(area);
+    }
+
     return (
     <>
         <Header className="pa0 custom-header" >
@@ -81,6 +94,11 @@ const ProductionPage = ({
 
         <Content className="ma3 mt0">
             <DateRangePicker defaultValue={previousDay} onButtonClick={onClick} onCalendarChange={onCalendarChange}  />
+
+            <Button type="link" onClick={onDetailsButtonClick}>
+                <Link to={`${location.pathname}/details`}>Show Details</Link>
+            </Button>
+
             <div className="mt3">
                 <Production/>
             </div>
@@ -95,6 +113,9 @@ const mapDispatchToProps = dispatch => ({
     fetchDailyKpiStartAsync: (start, end, area) => dispatch(fetchDailyKpiStartAsync(start, end, area)),
     fetchWeeklyLaborHrsStartAsync: (start, end, area) => dispatch(fetchWeeklyLaborHrsStartAsync(start, end, area)),
     fetchProdScrapStartAsync: (start, end, area) => dispatch(fetchProdScrapStartAsync(start, end, area)),
+
+    setTitle: title => dispatch(setTitle(title)),
+    setArea: area => dispatch(setArea(area))
 })
 
-export default connect(null, mapDispatchToProps)(ProductionPage);
+export default connect(null, mapDispatchToProps)(withRouter(ProductionPage));
