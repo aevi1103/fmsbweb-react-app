@@ -1,19 +1,25 @@
 import React from 'react';
-
+import { connect } from 'react-redux';
 import { 
     Row,
     Col,
     Card
  } from "antd";
 
-const ProductionDetails = () => (
+ import SummaryByLineTable from './summary-by-line-table/summary-by-line-table.component'
+ import SummaryByProgramTable from './summary-by-program/summary-by-program.component'
+ import DefectSummaryTable from './defect-summary-table/defect-summary-table.component';
+
+
+const ProductionDetails = ({productionDetailsCollection}) => (
     <Row gutter={16}>
         <Col span={24}>
             <Card 
                 title="Summary by Line"
                 bordered={false} size="small"
                 className="mb3"
-                >                 
+                >       
+                <SummaryByLineTable/>          
             </Card>     
         </Col>
         <Col span={24}>
@@ -23,6 +29,7 @@ const ProductionDetails = () => (
                 size="small"
                 className="mb3"
                 >
+                <SummaryByProgramTable/>
             </Card>
         </Col>
         <Col span={24}>
@@ -31,6 +38,10 @@ const ProductionDetails = () => (
                 bordered={false}
                 size="small"
                 className="mb3">
+                <DefectSummaryTable 
+                    scrapData={(!productionDetailsCollection 
+                                ? [] 
+                                : productionDetailsCollection.sbScrapDetails )} />
             </Card>
         </Col>
         <Col span={24}>
@@ -39,9 +50,17 @@ const ProductionDetails = () => (
                 bordered={false}
                 size="small"
                 className="mb3">
+                <DefectSummaryTable 
+                    scrapData={(!productionDetailsCollection 
+                                ? [] 
+                                : productionDetailsCollection.purchaseScrapDetails )} />
             </Card>
         </Col>
     </Row>
 );
 
-export default ProductionDetails;
+const mapStateToProps = ({ productionDetails }) => ({
+    productionDetailsCollection: productionDetails.productionDetailsCollection,
+})
+
+export default connect(mapStateToProps)(ProductionDetails);
