@@ -80,7 +80,7 @@ const SummaryByProgramTable = ({isProductionDetailsLoading, productionDetailsCol
             title: 'Program',
             dataIndex: 'program',
             render: (text, record, index) => {
-                return record.line;
+                return record.program;
             },
             sorter: (a, b) => a.program.length - b.program.length,
             sortDirections: ['descend', 'ascend'],

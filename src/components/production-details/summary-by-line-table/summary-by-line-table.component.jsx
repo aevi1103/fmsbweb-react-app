@@ -249,29 +249,29 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
                     render: (text, record, index) => {
                         return <span>{numeral(record.hxHOae).format('0%')}</span>;
                     },
-                    sorter: (a, b) => a.hxhOae - b.hxhOae,
+                    sorter: (a, b) => parseFloat(a.hxHOae) - parseFloat(b.hxHOae),
                     sortDirections: ['descend', 'ascend'],
                 },
             ]
         },
-        {
-            title: 'Component Scrap %',
-            dataIndex: 'componentScrap',
-            render: (text, record, index) => {
-                return <span>{numeral(record.componentScrapRate).format('0.0%')} ({record.componentScrap})</span>
-            },
-            sorter: (a, b) => a.componentScrapRate - b.componentScrapRate,
-            sortDirections: ['descend', 'ascend'],
-        },
-        {
-            title: 'Downtime %',
-            dataIndex: 'downtime',
-            render: (text, record, index) => {
-                return numeral(record.downtimeRate).format('0.0%');
-            },
-            sorter: (a, b) => a.downtimeRate - b.downtimeRate,
-            sortDirections: ['descend', 'ascend'],
-        }    
+        // {
+        //     title: 'Component Scrap %',
+        //     dataIndex: 'componentScrap',
+        //     render: (text, record, index) => {
+        //         return <span>{numeral(record.componentScrapRate).format('0.0%')} ({record.componentScrap})</span>
+        //     },
+        //     sorter: (a, b) => a.componentScrapRate - b.componentScrapRate,
+        //     sortDirections: ['descend', 'ascend'],
+        // },
+        // {
+        //     title: 'Downtime %',
+        //     dataIndex: 'downtime',
+        //     render: (text, record, index) => {
+        //         return numeral(record.downtimeRate).format('0.0%');
+        //     },
+        //     sorter: (a, b) => a.downtimeRate - b.downtimeRate,
+        //     sortDirections: ['descend', 'ascend'],
+        // }    
       ];
       
       const data = !productionDetailsCollection 
@@ -313,10 +313,6 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
         addCellStyle('.parent-success');
         addCellStyle('.parent-danger');
         addCellStyle('.parent-warning');
-
-        const tbl = document.querySelector('.lineTbl').closest('table');
-
-        console.log(tbl)
 
       }, [])
 

@@ -31,6 +31,16 @@ const ProductionDetailsSummary = ({data}, area) => (
     <Row gutter={16}>
 
         <Col span={3}>
+            <Statistic title="SAP" 
+            value={formatNetOae(data.sapNet, data.sapOae)} />
+        </Col>
+
+        <Col span={3}>
+            <Statistic title="HxH" 
+            value={formatNetOae(data.hxHNet, data.hxHOae)} />
+        </Col>
+
+        <Col span={3}>
             <Statistic title="Total SB Scrap" 
                 value={formatScrapText(
                     data.totalScrapRate,
@@ -69,16 +79,6 @@ const ProductionDetailsSummary = ({data}, area) => (
             value={formatScrap(data, 'Assembly')} />
         </Col>
 
-        <Col span={3}>
-            <Statistic title="SAP" 
-            value={formatNetOae(data.sapNet, data.sapOae)} />
-        </Col>
-
-        <Col span={3}>
-            <Statistic title="HxH" 
-            value={formatNetOae(data.hxHNet, data.hxHOae)} />
-        </Col>
-        
     </Row>
 
 )
