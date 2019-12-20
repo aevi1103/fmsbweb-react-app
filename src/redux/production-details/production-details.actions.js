@@ -11,6 +11,16 @@ export const setArea = area => ({
     payload: area
 })
 
+export const setDetailsStartDate = date => ({
+    type: productionDetailsType.SET_PRODUCTION_DETAILS_START_DATE,
+    payload: date
+})
+
+export const setDetailsEndDate = date => ({
+    type: productionDetailsType.SET_PRODUCTION_DETAILS_END_DATE,
+    payload: date
+})
+
 const fetchStart = (actionType) => ({
     type: actionType
 })

@@ -1,8 +1,15 @@
 import productionDetailsTypes from './production-details.types'
+import moment from 'moment';
+
+const dateFormat = 'MM/DD/YYYY';
+const previousDay = moment().add(-1, 'd');
+const previousDayFormatted = previousDay.format(dateFormat);
 
 const INITIAL_STATE = {
-    title: "",
+    title: null,
     area: "",
+    detailsStartDate: previousDayFormatted,
+    detailsEndDate: previousDayFormatted,
 
     isProductionDetailsLoading: false,
     productionDetailsCollection: null,
@@ -48,6 +55,20 @@ const productionDetailsReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isProductionDetailsLoading: false,
                 productionDetailsErrorMsg: action.payload
+            }
+
+        case productionDetailsTypes.SET_PRODUCTION_DETAILS_START_DATE:
+
+            return {
+                ...state,
+                detailsStartDate: action.payload
+            }
+
+        case productionDetailsTypes.SET_PRODUCTION_DETAILS_END_DATE:
+
+            return {
+                ...state,
+                detailsEndDate: action.payload
             }
     
         default:

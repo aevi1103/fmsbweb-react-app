@@ -20,7 +20,22 @@ import {
     'This Year': [moment().startOf('year'), moment().endOf('year')]
  }
 
- const DateRangePicker = ({defaultValue, onButtonClick, onCalendarChange, otherState}) => (
+ const DateRangePicker = ({defaultValue, onButtonClick, onCalendarChange, dateRangeValue = null, ...otherState}) => {
+     
+    let defaultRange = [
+        moment(defaultValue, dateFormat),
+        moment(defaultValue, dateFormat)
+    ];
+
+    if (dateRangeValue) {
+        const {startDate, endDate} = dateRangeValue;
+        defaultRange = [
+            moment(startDate, dateFormat),
+            moment(endDate, dateFormat)
+        ];
+    }
+
+    return (
 
     <>
         <span className="mr2">Date Range:</span>
@@ -31,17 +46,12 @@ import {
             format={dateFormat}
             onCalendarChange={onCalendarChange}
             ranges={ranges}
-            defaultValue={
-                [
-                    moment(defaultValue, dateFormat),
-                    moment(defaultValue, dateFormat)
-                ]
-            }
+            defaultValue={defaultRange}
             {...otherState} />
 
         <Button type="primary" onClick={onButtonClick}>Go</Button>
     </>
 
- )
+ )}
 
  export default DateRangePicker;

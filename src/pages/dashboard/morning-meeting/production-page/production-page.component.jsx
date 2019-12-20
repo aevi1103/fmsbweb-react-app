@@ -14,7 +14,12 @@ import {
     fetchProdScrapStartAsync
 } from '../../../../redux/morning-meeting/morning-meeting.actions'
 
-import { setTitle, setArea } from '../../../../redux/production-details/production-details.actions'
+import { 
+    setTitle,
+    setArea,
+    setDetailsStartDate,
+    setDetailsEndDate
+} from '../../../../redux/production-details/production-details.actions'
 
 import { 
     Layout,
@@ -40,7 +45,9 @@ const ProductionPage = ({
         location,
 
         setTitle,
-        setArea
+        setArea,
+        setDetailsStartDate,
+        setDetailsEndDate
     }) => {
     
     const [ startDay, setStartDay ] = useState(previousDayFormatted);
@@ -71,9 +78,14 @@ const ProductionPage = ({
     }
 
     const onCalendarChange = (dates) => {
+
         const [start, end] = dates;
+        
         setStartDay((start ? start.format(dateFormat) : null))
         setEndDay((end ? end.format(dateFormat) : null))
+
+        setDetailsStartDate(startDay)
+        setDetailsEndDate(endDay)
     }
 
     useEffect(() => {
@@ -82,8 +94,16 @@ const ProductionPage = ({
     }, [])
 
     const onDetailsButtonClick = () => {
-        setTitle(`${headerTitle} Details`);
+
+        setTitle({
+            headerTitle,
+            startDay,
+            endDay
+        })
+
         setArea(area);
+        setDetailsStartDate(startDay)
+        setDetailsEndDate(endDay)
     }
 
     return (
@@ -115,7 +135,9 @@ const mapDispatchToProps = dispatch => ({
     fetchProdScrapStartAsync: (start, end, area) => dispatch(fetchProdScrapStartAsync(start, end, area)),
 
     setTitle: title => dispatch(setTitle(title)),
-    setArea: area => dispatch(setArea(area))
+    setArea: area => dispatch(setArea(area)),
+    setDetailsStartDate: date => dispatch(setDetailsStartDate(date)),
+    setDetailsEndDate: date => dispatch(setDetailsEndDate(date)),
 })
 
 export default connect(null, mapDispatchToProps)(withRouter(ProductionPage));
