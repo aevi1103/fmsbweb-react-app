@@ -10,9 +10,25 @@ import {
  import SummaryByProgramTable from './summary-by-program/summary-by-program.component'
  import DefectSummaryTable from './defect-summary-table/defect-summary-table.component';
 
+import ProductionDetailsSummary from './production-details-summary/production-details-summary.component'
 
-const ProductionDetails = ({productionDetailsCollection}) => (
+const ProductionDetails = ({productionDetailsCollection, isProductionDetailsLoading}) => (
     <Row gutter={16}>
+
+        <Col span={24}>
+            <Card 
+                title="Department Summary"
+                bordered={false} size="small"
+                className="mb3"
+                loading={isProductionDetailsLoading}
+                >       
+                {
+                    !productionDetailsCollection ? "" : <ProductionDetailsSummary data={productionDetailsCollection} 
+                                                        area={productionDetailsCollection.area} />
+                }
+            </Card>     
+        </Col>
+
         <Col span={24}>
             <Card 
                 title="Summary by Line"
@@ -60,6 +76,7 @@ const ProductionDetails = ({productionDetailsCollection}) => (
 );
 
 const mapStateToProps = ({ productionDetails }) => ({
+    isProductionDetailsLoading: productionDetails.isProductionDetailsLoading,
     productionDetailsCollection: productionDetails.productionDetailsCollection,
 })
 

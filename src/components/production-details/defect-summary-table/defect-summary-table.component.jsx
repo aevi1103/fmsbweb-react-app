@@ -71,6 +71,8 @@ const DefectSummaryTable = ({isProductionDetailsLoading, scrapData}) => {
                 columns={columns}
                 dataSource={data}
                 onChange={onChange}
+                size="middle"
+                bordered={true}
                 pagination={false} />     
 
         </>

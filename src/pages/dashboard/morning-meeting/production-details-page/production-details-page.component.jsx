@@ -62,7 +62,7 @@ const ProductionDetailsPage = ({title, area, fetchProductionDetailsStartAsync, s
                 <ProductionDetails/>
             </div>
 
-        </Content>      
+        </Content>  
     </>
     )
 };

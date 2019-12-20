@@ -10,7 +10,7 @@ import {
 } from './App.styles';
 
 import { setSiderCollapse } from './redux/home/home.actions'
-import { Layout } from "antd";
+import { Layout, BackTop } from "antd";
 
 import HomePage from './pages/home/home.component'
 import SwotPage from './pages/dashboard/swot/swot.component'
@@ -108,6 +108,8 @@ const App = ( { collapsed, setSiderCollapse } ) => {
       </Footer>
 
     </Layout>
+      
+    <BackTop/>
 
   </Layout>
 

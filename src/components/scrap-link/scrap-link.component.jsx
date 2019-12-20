@@ -13,7 +13,7 @@ const ScrapLink = ({qty, value, onClick}) => (
             qty > 0 
             ? (<Tooltip placement="top" title="Click to see scrap details">
                     <Button type="link" onClick={onClick}>
-                        <Text type="danger">{value}</Text>
+                        <span>{value}</span>
                     </Button>
                 </Tooltip>)
             : (

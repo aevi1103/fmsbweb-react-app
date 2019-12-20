@@ -80,7 +80,7 @@ const ProductionPage = ({
     const onCalendarChange = (dates) => {
 
         const [start, end] = dates;
-        
+
         setStartDay((start ? start.format(dateFormat) : null))
         setEndDay((end ? end.format(dateFormat) : null))
 
@@ -122,7 +122,7 @@ const ProductionPage = ({
             <div className="mt3">
                 <Production/>
             </div>
-            
+
         </Content>      
     </> 
 )}
