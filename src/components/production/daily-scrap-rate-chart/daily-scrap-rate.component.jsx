@@ -27,7 +27,7 @@ const MonthlyIncidentRateChart = ({dailyScrapRateCollection, isDailyScrapRateFet
                 toolText: `<b>Shift Date: </b> ${moment(shiftDate).format(dateFormat)} <br>
                             <b>Total Scrap: </b> ${numeral(totalScrap).format('0,0')} <br>
                             <b>SAP Gross: </b> ${numeral(sapGross).format('0,0')} <br>
-                            <b>Scrap Rate: </b> ${numeral(scrapRate).format('0.00%')} <br>`
+                            <b>Scrap Rate: </b> ${numeral(scrapRate).format('0.0%')} <br>`
             }
         ));
     

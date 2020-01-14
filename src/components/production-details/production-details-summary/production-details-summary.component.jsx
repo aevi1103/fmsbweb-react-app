@@ -43,7 +43,7 @@ const ProductionDetailsSummary = ({data}, area) => (
         <Col span={3}>
             <Statistic title="Total SB Scrap" 
                 value={formatScrapText(
-                    data.totalScrapRate,
+                    data.totalSbScrapRate,
                     data.totalSbScrap)} />
         </Col>
 

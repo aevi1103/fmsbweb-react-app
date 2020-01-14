@@ -31,9 +31,9 @@
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build && npm run post-build",
-    "delete-post-build-dir": "rm -r /z/src/react.app/",
-    "copy-build-to-prod-dir": "cp -a /c/Users/rontoa20/source/repos/fmsbweb3/fmsbweb.react-app/build/. /z/src/react.app/",
-    "copy-web-config": "cp /c/Users/rontoa20/source/repos/fmsbweb3/fmsbweb.react-app/web.config /z/src/react.app/",
+    "delete-post-build-dir": "rm -r /q/react.app/",
+    "copy-build-to-prod-dir": "cp -a /c/Users/rontoa20/source/repos/fmsbweb3/fmsbweb.react-app/build/. /q/react.app/",
+    "copy-web-config": "cp /c/Users/rontoa20/source/repos/fmsbweb3/fmsbweb.react-app/web.config /q/react.app/",
     "post-build": "npm run delete-post-build-dir && npm run copy-build-to-prod-dir && npm run copy-web-config",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
