@@ -71,8 +71,10 @@ const fontGreen = {
 
     let _laborHoursDetails = [];
 
-    let _sapOaeColorCode,
-        _scrapByCodeColorCode,
+    let _sapOaeColorCode = "";
+    let _hxhOaeColorCode = "";
+
+    let _scrapByCodeColorCode,
         _ppmhColorCode;
 
     let _hxhNet = 0;
@@ -91,6 +93,7 @@ const fontGreen = {
             sapProductionByType,
 
             sapOaeColorCode,
+            hxhOaeColorCode,
             scrapByCodeColorCode,
             ppmhColorCode,
 
@@ -129,6 +132,7 @@ const fontGreen = {
         _laborHoursDetails = laborHours.details;
 
         _sapOaeColorCode = sapOaeColorCode;
+        _hxhOaeColorCode = hxhOaeColorCode;
         _scrapByCodeColorCode = scrapByCodeColorCode;
         _ppmhColorCode = ppmhColorCode;
         
@@ -288,21 +292,21 @@ const fontGreen = {
                 >
                     <Row gutter={16}  className="mb3">
                         <Col span={12}>
-                            <Statistic title="SB Scrap Qty" value={_sbScrapQty} valueStyle={fontRed} />
+                            <Statistic title="SB Scrap Qty" value={_sbScrapQty} valueStyle={{color: _scrapByCodeColorCode}} />
                         </Col>
 
                         <Col span={12}>
-                            <Statistic title="SB Scrap %" value={numeral(_sbScrapRate).format('0.00%')} valueStyle={fontRed} />
+                            <Statistic title="SB Scrap %" value={numeral(_sbScrapRate).format('0.00%')} valueStyle={{color: _scrapByCodeColorCode}} />
                         </Col>
 
                     </Row>
                     <Row gutter={16} className="mb3">
                         <Col span={12}>
-                            <Statistic title="Purchase Scrap Qty" value={_purchasedScrapQty} valueStyle={fontRed} />
+                            <Statistic title="Purchase Scrap Qty" value={_purchasedScrapQty} valueStyle={{color: _scrapByCodeColorCode}} />
                         </Col>
 
                         <Col span={12}>
-                            <Statistic title="Purchase Scrap %" value={numeral(_purchasedScrapRate).format('0.00%')} valueStyle={fontRed} />
+                            <Statistic title="Purchase Scrap %" value={numeral(_purchasedScrapRate).format('0.00%')} valueStyle={{color: _scrapByCodeColorCode}} />
                         </Col>
                     </Row>
                     <Collapse bordered={false}>
@@ -340,7 +344,7 @@ const fontGreen = {
                         <Col span={8}>      
                             <Statistic 
                                 title="SAP OAE %"
-                                valueStyle={fontGreen}
+                                valueStyle={{color: _sapOaeColorCode}}
                                 value={numeral(_oae).format('0%')} 
                                 suffix={<small>({numeral(_sapNet).format('0,0')})</small>}
                                 />
@@ -348,7 +352,7 @@ const fontGreen = {
                         <Col span={8}>
                             <Statistic 
                                 title="HXH OAE %"
-                                valueStyle={fontGreen}
+                                valueStyle={{color: _hxhOaeColorCode}}
                                 value={numeral(_hxhOae).format('0%')} 
                                 suffix={<small>({numeral(_hxhNet).format('0,0')})</small>}
                             />
@@ -449,22 +453,22 @@ const fontGreen = {
                                     <Statistic title="Production" value={numeral(prodScrapCollection.sapProd).format('0,0')} valueStyle={fontGreen} />
                                 </Col>
                                 <Col span={8}>
-                                    <Statistic title="SB Scrap" value={numeral(prodScrapCollection.sbScrap).format('0,0')} valueStyle={fontRed} />
+                                    <Statistic title="SB Scrap" value={numeral(prodScrapCollection.sbScrap).format('0,0')} valueStyle={{color: _scrapByCodeColorCode}} />
                                 </Col>
                                 <Col span={8}>
-                                    <Statistic title="Purchased Scrap %" value={numeral(prodScrapCollection.purchasedScrap).format('0,0')} valueStyle={fontRed} />
+                                    <Statistic title="Purchased Scrap %" value={numeral(prodScrapCollection.purchasedScrap).format('0,0')} valueStyle={{color: _scrapByCodeColorCode}} />
                                 </Col>
                             </Row>
 
                             <Row gutter={16} className="mb3">
                                 <Col span={8}>
-                                    <Statistic title="OAE %" value={numeral(prodScrapCollection.sapOae).format('0.0%')} valueStyle={fontGreen} />
+                                    <Statistic title="SAP OAE %" value={numeral(prodScrapCollection.sapOae).format('0.0%')} valueStyle={{color: _sapOaeColorCode}} />
                                 </Col>
                                 <Col span={8}>
-                                    <Statistic title="SB Scrap %" value={numeral(prodScrapCollection.sbScrapRate).format('0.00%')} valueStyle={fontRed} />
+                                    <Statistic title="SB Scrap %" value={numeral(prodScrapCollection.sbScrapRate).format('0.00%')} valueStyle={{color: _scrapByCodeColorCode}} />
                                 </Col>
                                 <Col span={8}>
-                                    <Statistic title="Purchased Scrap %" value={numeral(prodScrapCollection.purchaseScrapRate).format('0.00%')} valueStyle={fontRed} />
+                                    <Statistic title="Purchased Scrap %" value={numeral(prodScrapCollection.purchaseScrapRate).format('0.00%')} valueStyle={{color: _scrapByCodeColorCode}} />
                                 </Col>
                             </Row>
                         </>)
