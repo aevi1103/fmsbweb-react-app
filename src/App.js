@@ -18,6 +18,7 @@ import NotFound from './pages/404/404.component';
 
 import HomeMenu from './components/Menu/home-menu/home-menu.components';
 import MorningMeetingMenu from './components/Menu/morning-meeting-menu/morning-meeting-menu.component'
+import OrderStatusMenu from './components/Menu/order-status-menu/order-status-menu.component'
 
 import SafetyPage from './pages/dashboard/morning-meeting/safety/safety.component';
 import LogisticsPage from './pages/dashboard/morning-meeting/logistics/logistics.component'
@@ -27,6 +28,7 @@ import QualityPage from './pages/dashboard/morning-meeting/quality/quality.compo
 
 import ProductionDetailsPage from './pages/dashboard/morning-meeting/production-details-page/production-details-page.component'
 
+import OrderStatusPage from './pages/order-status-page/order-status-page.component'
 
 // const SafetyPage = lazy(() => import('./pages/dashboard/morning-meeting/safety/safety.component'));
 // const LogisticsPage = lazy(() => import('./pages/dashboard/morning-meeting/logistics/logistics.component'));
@@ -77,6 +79,7 @@ const App = ( { collapsed, setSiderCollapse } ) => {
         <Route exact path="/" component={HomeMenu} />
         <Route path="/dashboard/morningmeeting" component={MorningMeetingMenu} />
         <Route exact path="/dashboard/swot" component={HomeMenu} />
+        <Route path="/orderstatus" component={OrderStatusMenu} />
       </Switch>
 
     </Sider>
@@ -86,6 +89,7 @@ const App = ( { collapsed, setSiderCollapse } ) => {
     <Switch>
       <Route exact path="/" component={HomePage} />
 
+      {/* Monring Meeting */}
       <Route exact path="/dashboard/morningmeeting/safety" component={SafetyPage} />
       <Route exact path="/dashboard/morningmeeting/logistics" component={LogisticsPage} />
 
@@ -96,9 +100,15 @@ const App = ( { collapsed, setSiderCollapse } ) => {
       <Route exact path="/dashboard/morningmeeting/finance" component={FinancePage} />
       <Route exact path="/dashboard/morningmeeting/quality" component={QualityPage} />
 
+      {/* morning meeting details */}
       <Route exact path="/dashboard/*/details" component={ProductionDetailsPage} />
 
+      {/* SWOT */}
       <Route exact path="/dashboard/swot" component={SwotPage} />
+
+      {/* Order Status */}
+      <Route exact path="/orderstatus" component={OrderStatusPage} />
+
       <Route component={NotFound} />
     </Switch>
       

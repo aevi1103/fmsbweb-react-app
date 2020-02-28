@@ -31,6 +31,11 @@ const HomeMenu = ( { location } ) => {
           <Link to="/dashboard/morningmeeting/safety" />
         </Menu.Item>
 
+        <Menu.Item key="/orderstatus">
+          <span>Order Status</span>
+          <Link to="/orderstatus/foundry" />
+        </Menu.Item>
+
         <Menu.Item key="/dashboard/swot">
           <span>SWOT</span>
           <Link to="/dashboard/swot" />
