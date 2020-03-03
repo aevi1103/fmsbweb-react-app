@@ -1,5 +1,11 @@
 import morningMeetingTypes from './morning-meeting.types';
 
+import moment from 'moment';
+
+const dateFormat = 'MM/DD/YYYY';
+const previousDay = moment().add(-1, 'd');
+const previousDayFormatted = previousDay.format(dateFormat);
+
 const INITIAL_STATE = {
     isMonthlyIncidentRateFetching: false,
     monthlyIncidentRateCollection: [],
@@ -51,7 +57,10 @@ const INITIAL_STATE = {
 
     isQualityFetching: false,
     qualityCollection: null,
-    qualityErrorMsg: undefined
+    qualityErrorMsg: undefined,
+
+    startDate: previousDayFormatted,
+    endDate: previousDayFormatted,
 }
 
 const morningMeetingReducer = (state = INITIAL_STATE, action) => {
@@ -79,6 +88,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isMonthlyIncidentRateFetching: false,
+                monthlyIncidentRateCollection: [],
                 monthlyIncidentRateErrorMsg: action.payload
             }
 
@@ -103,6 +113,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isIncidentByDeptFetching: false,
+                incidentByDeptCollection: [],
                 incidentByDeptErrorMsg: action.payload
             }
 
@@ -127,6 +138,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isIncidentFetching: false,
+                incidentCollection: [],
                 incidentErrorMsg: action.payload
             }
 
@@ -151,6 +163,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isStockOverviewFetching: false,
+                stockOVerviewCollection: [],
                 stockOVerviewErrorMsg: action.payload
             }
 
@@ -175,6 +188,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isStockOverviewSlocFetching: false,
+                stockOVerviewSlocCollection: [],
                 stockOVerviewSlocErrorMsg: action.payload
             }
 
@@ -199,6 +213,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isStockStatusFetching: false,
+                stockStatusCollection: [],
                 stockStatusErrorMsg: action.payload
             }
 
@@ -223,6 +238,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isProdStatusFetching: false,
+                productionStatusCollection: null,
                 prodStatusErrorMsg: action.payload
             }
 
@@ -247,6 +263,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isDailyScrapRateFetching: false,
+                dailyScrapRateCollection: null,
                 dailyScrapRateErrorMsg: action.payload
             }
 
@@ -271,6 +288,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isDailyKpiFetching: false,
+                dailyKpiCollection: null,
                 dailyKpiErrorMsg: action.payload
             }
 
@@ -295,6 +313,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isWeeklyLaborHrsFetching: false,
+                weeklyLaborHrsCollection: null,
                 weeklyLaborHrsErrorMsg: action.payload
             }
 
@@ -319,6 +338,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isProdScrapFetching: false,
+                prodScrapCollection: null,
                 prodScrapErrorMsg: action.payload
             }
 
@@ -343,6 +363,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isFinanceKpiFetching: false,
+                financeKpiCollection: null,
                 financeKpiErrorMsg: action.payload
             }
 
@@ -367,7 +388,22 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isQualityFetching: false,
+                qualityCollection: null,
                 qualityErrorMsg: action.payload
+            }
+
+        case morningMeetingTypes.SET_PRODUCTION_START_DATE:
+
+            return {
+                ...state,
+                startDate: action.payload
+            }
+
+        case morningMeetingTypes.SET_PRODUCTION_END_DATE:
+
+            return {
+                ...state,
+                endDate: action.payload
             }
     
         default:

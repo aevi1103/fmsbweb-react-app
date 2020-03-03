@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment'
-
 import Safety from '../../../../components/safety/safety.component' 
-
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
 
 import { 
     fetchSafetyMonthlyIncidentRateStartAsync,
     fetchSafetyIncidentByDeptStartAsync,
-    fetchSafetyIncidentStartAsync
+    fetchSafetyIncidentStartAsync,
+
+    setStartDate,
+    setEndDate
 } from '../../../../redux/morning-meeting/morning-meeting.actions'
 
 import { 
@@ -22,28 +22,39 @@ import '../morning-meeting.styles.scss'
 const { Header, Content } = Layout;
 
 const dateFormat = 'MM/DD/YYYY';
-const previousDay = moment().add(-1, 'd');
-const previousDayFormatted = previousDay.format(dateFormat);
 
-const SafetyPage = ({setMonthlyIncidentRate, setIncidentByDept, setIncidents}) => {
+const SafetyPage = ({
+        setMonthlyIncidentRate,
+        setIncidentByDept,
+        setIncidents,
+
+        startDate,
+        endDate,
+        setStartDate,
+        setEndDate
+    }) => {
     
-    const [ startDay, setStartDay ] = useState(previousDayFormatted);
-    const [ endDay, setEndDay ] = useState(previousDayFormatted);
+    const [startFormat, setStartFormat] = useState(startDate);
+    const [endFormat, setSendFormat] = useState(endDate);
 
-    const fetchData = () => {
+    const fetchData = (start = startFormat, end = endFormat) => {
         setMonthlyIncidentRate();
         setIncidentByDept();
-        setIncidents(startDay, endDay);
+        setIncidents(start, end);
     }
 
     const onClick = () => {
-        fetchData();
+        setStartDate(startFormat);
+        setEndDate(endFormat);
+        fetchData(startFormat, endFormat);
     }
 
     const onCalendarChange = (dates) => {
+
         const [start, end] = dates;
-        setStartDay((start ? start.format(dateFormat) : null))
-        setEndDay((end ? end.format(dateFormat) : null))
+        setStartFormat(start ? start.format(dateFormat) : null);
+        setSendFormat(end ? end.format(dateFormat) : null);
+
     }
 
     useEffect(() => {
@@ -54,11 +65,14 @@ const SafetyPage = ({setMonthlyIncidentRate, setIncidentByDept, setIncidents}) =
     return (
     <>
         <Header className="pa0 custom-header" >
-            <h2 className="ml3">Safety</h2>
+            <h2 className="ml3">Safety: {startDate} - {endDate}</h2>
         </Header>
 
         <Content className="ma3 mt0">
-            <DateRangePicker defaultValue={previousDay} onButtonClick={onClick} onCalendarChange={onCalendarChange}  />
+            <DateRangePicker 
+                dateRangeValue={{startDate: startDate, endDate: endDate}}
+                onButtonClick={onClick}
+                onCalendarChange={onCalendarChange} />
             <div className="mt3">
                 <Safety/>
             </div>
@@ -70,7 +84,15 @@ const SafetyPage = ({setMonthlyIncidentRate, setIncidentByDept, setIncidents}) =
 const mapDispatchToProps = dispatch => ({
     setMonthlyIncidentRate: () => dispatch(fetchSafetyMonthlyIncidentRateStartAsync()),
     setIncidentByDept: () => dispatch(fetchSafetyIncidentByDeptStartAsync()),
-    setIncidents: (start, end) => dispatch(fetchSafetyIncidentStartAsync(start, end))
+    setIncidents: (start, end) => dispatch(fetchSafetyIncidentStartAsync(start, end)),
+
+    setStartDate: (date) => dispatch(setStartDate(date)),
+    setEndDate: (date) => dispatch(setEndDate(date))
 })
 
-export default connect(null, mapDispatchToProps)(SafetyPage);
+const mapStateToProps = ({morningMeeting}) => ({
+    startDate: morningMeeting.startDate,
+    endDate: morningMeeting.endDate
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(SafetyPage);

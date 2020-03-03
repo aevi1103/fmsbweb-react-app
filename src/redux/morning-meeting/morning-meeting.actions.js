@@ -1,6 +1,6 @@
 import morningMeetingTypes from './morning-meeting.types';
 import api from '../../API'
-
+import axios from 'axios'
 
 const fetchStart = (actionType) => ({
     type: actionType
@@ -25,7 +25,9 @@ export const fetchSafetyMonthlyIncidentRateStartAsync = () => {
         dispatch(fetchStart(
             morningMeetingTypes.FETCH_SAFETY_MONTHLY_INCIDENT_RATE_START))
 
-        api.get('safety/monthlyincidentrate')
+        const url = 'safety/monthlyincidentrate';
+
+        api.get(url)
         .then(response => {
 
             dispatch(fetchSuccess(
@@ -33,9 +35,19 @@ export const fetchSafetyMonthlyIncidentRateStartAsync = () => {
                 response.data))
 
         })
-        .catch(error => dispatch(fetchFailure(
-            morningMeetingTypes.FETCH_SAFETY_MONTHLY_INCIDENT_RATE_FAILURE,
-            error.message)))
+        .catch(error => {
+            
+            dispatch(fetchFailure(
+                morningMeetingTypes.FETCH_SAFETY_MONTHLY_INCIDENT_RATE_FAILURE,
+                error.message))
+
+            if (axios.isCancel(error)) {
+                console.error('Request canceled', url, error.message);
+            } else {
+                console.error('sopmething else', url, error.message)
+            }
+
+        })
 
     }
 }
@@ -156,14 +168,16 @@ export const fetchLogisticsStatusStartAsync = (startDate, endDate) => {
 }
 
 //PRODUCTION_STATUS
-export const fetchProductionStatusStartAsync = (startDate, endDate, area) => {
+export const fetchProductionStatusStartAsync = (startDate, endDate, area, cancelTokenSrc) => {
 
     return dispatch => {
 
         dispatch(fetchStart(
             morningMeetingTypes.FETCH_PRODUCTION_STATUS_START))
 
-        api.get(`sap/productiondata?start=${startDate}&end=${endDate}&area=${area}`)
+        const url = `sap/productiondata?start=${startDate}&end=${endDate}&area=${area}`
+
+        api.get(url, { cancelToken: cancelTokenSrc.token })
         .then(response => {
 
             dispatch(fetchSuccess(
@@ -171,22 +185,32 @@ export const fetchProductionStatusStartAsync = (startDate, endDate, area) => {
                 response.data))
 
         })
-        .catch(error => dispatch(fetchFailure(
-            morningMeetingTypes.FETCH_PRODUCTION_STATUS_FAILURE,
-            error.message)))
+        .catch(error => {
+            
+            if (axios.isCancel(error)) {
+                console.error('Request canceled', url, error.message);
+            } else {
+                console.error('sopmething else', url, error.message);
+                dispatch(fetchFailure(
+                    morningMeetingTypes.FETCH_PRODUCTION_STATUS_FAILURE,
+                    error.message))
+            }
+        
+        })
 
     }
 }
 
 //DAILY SCRAP RATE
-export const fetchDailyScrapRateStartAsync = (startDate, endDate, area) => {
+export const fetchDailyScrapRateStartAsync = (startDate, endDate, area, cancelTokenSrc) => {
 
     return dispatch => {
 
         dispatch(fetchStart(
             morningMeetingTypes.FETCH_DAILY_SCRAP_RATE_START))
 
-        api.get(`sap/dailyscraprate?start=${startDate}&end=${endDate}&area=${area}`)
+        const url = `sap/dailyscraprate?start=${startDate}&end=${endDate}&area=${area}`;
+        api.get(url, { cancelToken: cancelTokenSrc.token })
         .then(response => {
 
             dispatch(fetchSuccess(
@@ -194,22 +218,32 @@ export const fetchDailyScrapRateStartAsync = (startDate, endDate, area) => {
                 response.data))
 
         })
-        .catch(error => dispatch(fetchFailure(
-            morningMeetingTypes.FETCH_DAILY_SCRAP_RATE_FAILURE,
-            error.message)))
+        .catch(error => {
+            
+            if (axios.isCancel(error)) {
+                console.error('Request canceled', url, error.message);
+            } else {
+                console.error('sopmething else', url, error.message);
+                dispatch(fetchFailure(
+                    morningMeetingTypes.FETCH_DAILY_SCRAP_RATE_FAILURE,
+                    error.message))
+            }
+        
+        })
 
     }
 }
 
 //DAILY KPI
-export const fetchDailyKpiStartAsync = (startDate, endDate, area) => {
+export const fetchDailyKpiStartAsync = (startDate, endDate, area, cancelTokenSrc) => {
 
     return dispatch => {
 
         dispatch(fetchStart(
             morningMeetingTypes.FETCH_DAILY_KPI_START))
 
-        api.get(`sap/dailykpi?start=${startDate}&end=${endDate}&area=${area}`)
+        const url = `sap/dailykpi?start=${startDate}&end=${endDate}&area=${area}`;
+        api.get(url, { cancelToken: cancelTokenSrc.token })
         .then(response => {
 
             dispatch(fetchSuccess(
@@ -217,22 +251,31 @@ export const fetchDailyKpiStartAsync = (startDate, endDate, area) => {
                 response.data))
 
         })
-        .catch(error => dispatch(fetchFailure(
-            morningMeetingTypes.FETCH_DAILY_KPI_FAILURE,
-            error.message)))
+        .catch(error => {
+        
+            if (axios.isCancel(error)) {
+                console.error('Request canceled', url, error.message);
+            } else {
+                console.error('sopmething else', url, error.message);
+                dispatch(fetchFailure(
+                    morningMeetingTypes.FETCH_DAILY_KPI_FAILURE,
+                    error.message))
+            }
+        })
 
     }
 }
 
 //WEEKLY LABOR HRS
-export const fetchWeeklyLaborHrsStartAsync = (startDate, endDate, area) => {
+export const fetchWeeklyLaborHrsStartAsync = (startDate, endDate, area, cancelTokenSrc) => {
 
     return dispatch => {
 
         dispatch(fetchStart(
             morningMeetingTypes.FETCH_WEEKLY_LABOR_HRS_START))
 
-        api.get(`fmsb/weeklylaborhours?start=${startDate}&end=${endDate}&area=${area}`)
+        const url = `fmsb/weeklylaborhours?start=${startDate}&end=${endDate}&area=${area}`;
+        api.get(url, { cancelToken: cancelTokenSrc.token })
         .then(response => {
 
             dispatch(fetchSuccess(
@@ -240,22 +283,32 @@ export const fetchWeeklyLaborHrsStartAsync = (startDate, endDate, area) => {
                 response.data))
 
         })
-        .catch(error => dispatch(fetchFailure(
-            morningMeetingTypes.FETCH_WEEKLY_LABOR_HRS_FAILURE,
-            error.message)))
+        .catch(error => {
+            
+            if (axios.isCancel(error)) {
+                console.error('Request canceled', url, error.message);
+            } else {
+                console.error('sopmething else', url, error.message);
+                dispatch(fetchFailure(
+                    morningMeetingTypes.FETCH_WEEKLY_LABOR_HRS_FAILURE,
+                    error.message))
+            }
+        
+        })
 
     }
 }
 
 //prod scrap
-export const fetchProdScrapStartAsync = (startDate, endDate, area) => {
+export const fetchProdScrapStartAsync = (startDate, endDate, area, cancelTokenSrc) => {
 
     return dispatch => {
 
         dispatch(fetchStart(
             morningMeetingTypes.FETCH_PROD_SCRAP_START))
 
-        api.get(`sap/prodscrap?start=${startDate}&end=${endDate}&area=${area}`)
+        const url = `sap/prodscrap?start=${startDate}&end=${endDate}&area=${area}`;
+        api.get(url, { cancelToken: cancelTokenSrc.token })
         .then(response => {
 
             dispatch(fetchSuccess(
@@ -263,9 +316,18 @@ export const fetchProdScrapStartAsync = (startDate, endDate, area) => {
                 response.data))
 
         })
-        .catch(error => dispatch(fetchFailure(
-            morningMeetingTypes.FETCH_PROD_SCRAP_FAILURE,
-            error.message)))
+        .catch(error => {
+
+            if (axios.isCancel(error)) {
+                console.error('Request canceled', url, error.message);
+            } else {
+                console.error('sopmething else', url, error.message);
+                dispatch(fetchFailure(
+                    morningMeetingTypes.FETCH_PROD_SCRAP_FAILURE,
+                    error.message))
+            }
+        
+        })
 
     }
 }
@@ -285,18 +347,12 @@ export const fetchFiananceKpiStartAsync = (date) => {
                 morningMeetingTypes.FETCH_FINANCE_KPI_SUCCESS,
                 response.data))
 
-            dispatch(fetchFailure(
-                morningMeetingTypes.FETCH_FINANCE_KPI_FAILURE, undefined))
-
         })
         .catch(error => {
             
             dispatch(fetchFailure(
                 morningMeetingTypes.FETCH_FINANCE_KPI_FAILURE,
                 error.message))
-
-            dispatch(fetchSuccess(
-                morningMeetingTypes.FETCH_FINANCE_KPI_SUCCESS, null))
         
         })
 
@@ -318,20 +374,24 @@ export const fetchQualityStartAsync = (date) => {
                 morningMeetingTypes.FETCH_QUALITY_SUCCESS,
                 response.data))
 
-            dispatch(fetchFailure(
-                morningMeetingTypes.FETCH_QUALITY_FAILURE, undefined))
-
         })
         .catch(error => {
             
             dispatch(fetchFailure(
                 morningMeetingTypes.FETCH_QUALITY_FAILURE,
                 error.message))
-
-            dispatch(fetchSuccess(
-                morningMeetingTypes.FETCH_QUALITY_SUCCESS, null))
         
         })
 
     }
 }
+
+export const setStartDate = date => ({
+    type: morningMeetingTypes.SET_PRODUCTION_START_DATE,
+    payload: date
+})
+
+export const setEndDate = date => ({
+    type: morningMeetingTypes.SET_PRODUCTION_END_DATE,
+    payload: date
+})

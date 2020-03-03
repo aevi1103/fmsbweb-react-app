@@ -16,16 +16,16 @@ import {
  } from "antd";
 
 import '../morning-meeting.styles.scss'
-
 const { Header, Content } = Layout;
 
-const dateFormat = 'MM/DD/YYYY';
-const today = moment();
-const todayFormatted = today.format(dateFormat);
-
-const LogisticsPage = ({setStockOverview, setStockOverviewSloc, setStatus}) => {
+const LogisticsPage = ({
+        setStockOverview,
+        setStockOverviewSloc,
+        setStatus,
+        endDate
+    }) => {
     
-    const [ date, setDate ] = useState(todayFormatted);
+    const [ date, setDate ] = useState(endDate);
 
     const fetchData = () => {
         setStockOverview(date);
@@ -49,12 +49,12 @@ const LogisticsPage = ({setStockOverview, setStockOverviewSloc, setStatus}) => {
     return (
     <>
         <Header className="pa0 custom-header" >
-            <h2 className="ml3">Logistics</h2>
+            <h2 className="ml3">Logistics: {date}</h2>
         </Header>
 
         <Content className="ma3 mt0">
             <DatePicker onButtonClick={onClick} onChange={onChange} 
-                    defaultValue={today} />
+                    defaultValue={moment(endDate, 'MM/DD/YYYY')} />
 
             <div className="mt3">
                 <Logistics/>
@@ -70,4 +70,8 @@ const mapDispatchToProps = dispatch => ({
     setStatus: (start, end) => dispatch(fetchLogisticsStatusStartAsync(start, end)),
 })
 
-export default connect(null, mapDispatchToProps)(LogisticsPage);
+const mapStateToProps = ({morningMeeting}) => ({
+    endDate: morningMeeting.endDate
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(LogisticsPage);

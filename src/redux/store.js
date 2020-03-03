@@ -8,7 +8,7 @@ import rootReducer from './root-reducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 const persistConfig = {
-    key: 'root',
+    key: 'root_v1',
     storage,
   }
 

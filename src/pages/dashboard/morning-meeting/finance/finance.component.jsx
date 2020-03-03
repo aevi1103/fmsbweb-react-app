@@ -18,13 +18,12 @@ import FinanceKpi from '../../../../components/finance/kpi/kpi.component'
 
 const { Header, Content } = Layout;
 
-const dateFormat = 'MM/DD/YYYY';
-const today = moment();
-const todayFormatted = today.format(dateFormat);
-
-const FinancePage = ({fetchFiananceKpiStartAsync}) => {
+const FinancePage = ({
+        fetchFiananceKpiStartAsync,
+        endDate
+    }) => {
     
-    const [ date, setDate ] = useState(todayFormatted);
+    const [ date, setDate ] = useState(endDate);
 
     const fetchData = () => {
         fetchFiananceKpiStartAsync(date);
@@ -46,12 +45,12 @@ const FinancePage = ({fetchFiananceKpiStartAsync}) => {
     return (
     <>
         <Header className="pa0 custom-header" >
-            <h2 className="ml3">Finance</h2>
+            <h2 className="ml3">Finance: {endDate}</h2>
         </Header>
 
         <Content className="ma3 mt0">
             <DatePicker onButtonClick={onClick} onChange={onChange} 
-                    defaultValue={today} />
+                    defaultValue={moment(endDate, 'MM/DD/YYYY')} />
 
             <div className="mt3">
                 <FinanceKpi/>
@@ -65,4 +64,8 @@ const mapDispatchToProps = dispatch => ({
     fetchFiananceKpiStartAsync: date => dispatch(fetchFiananceKpiStartAsync(date))
 })
 
-export default connect(null, mapDispatchToProps)(FinancePage);
+const mapStateToProps = ({morningMeeting}) => ({
+    endDate: morningMeeting.endDate
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(FinancePage);

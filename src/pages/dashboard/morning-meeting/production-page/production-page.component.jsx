@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from "react-router-dom";
 import moment from 'moment'
+import axios from 'axios'
 
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
 import Production from '../../../../components/production/production.component'
@@ -11,14 +12,15 @@ import {
     fetchDailyScrapRateStartAsync,
     fetchDailyKpiStartAsync,
     fetchWeeklyLaborHrsStartAsync,
-    fetchProdScrapStartAsync
+    fetchProdScrapStartAsync,
+
+    setStartDate,
+    setEndDate
 } from '../../../../redux/morning-meeting/morning-meeting.actions'
 
 import { 
     setTitle,
-    setArea,
-    setDetailsStartDate,
-    setDetailsEndDate
+    setArea
 } from '../../../../redux/production-details/production-details.actions'
 
 import { 
@@ -31,8 +33,6 @@ import '../morning-meeting.styles.scss'
 const { Header, Content } = Layout;
 
 const dateFormat = 'MM/DD/YYYY';
-const previousDay = moment().add(-1, 'd');
-const previousDayFormatted = previousDay.format(dateFormat);
 
 const ProductionPage = ({
         setProductionData,
@@ -46,74 +46,90 @@ const ProductionPage = ({
 
         setTitle,
         setArea,
-        setDetailsStartDate,
-        setDetailsEndDate
+
+        setStartDate,
+        setEndDate,
+
+        startDate,
+        endDate
     }) => {
     
-    const [ startDay, setStartDay ] = useState(previousDayFormatted);
-    const [ endDay, setEndDay ] = useState(previousDayFormatted);
+    const [startFormat, setStartFormat] = useState(startDate);
+    const [endFormat, setSendFormat] = useState(endDate);
 
-    const fetchData = () => {
+    //cancel token
+    const prodTokenSrc = axios.CancelToken.source();
+    const scrapRateTokenSrc = axios.CancelToken.source();
+    const dailyKpiTokenSrc = axios.CancelToken.source();
+    const weeklyLaborHrsKpiTokenSrc = axios.CancelToken.source();
+    const prodScrapLaborHrsKpiTokenSrc = axios.CancelToken.source();
 
-        const start = moment(startDay, dateFormat).format(dateFormat);
-        const end = moment(endDay, dateFormat).format(dateFormat);
+    const fetchData = (start = startDate, end = endDate) => {
 
-        setProductionData(start,end,area);
+        setProductionData(start,end,area, prodTokenSrc);
 
-        const chartTrendStart = moment(startDay, dateFormat).add(-30, 'd').format(dateFormat);    
-        fetchDailyScrapRateStartAsync(chartTrendStart, end, area);
-        fetchDailyKpiStartAsync(chartTrendStart, end, area);
+        const chartTrendStart = moment(start, dateFormat).add(-30, 'd').format(dateFormat);    
+        fetchDailyScrapRateStartAsync(chartTrendStart, end, area, scrapRateTokenSrc);
+        fetchDailyKpiStartAsync(chartTrendStart, end, area, dailyKpiTokenSrc);
 
-        const laborHoursStart = moment(startDay, dateFormat).add(-9, 'w').startOf('week').format(dateFormat);
-        fetchWeeklyLaborHrsStartAsync(laborHoursStart, end, area);
+        const laborHoursStart = moment(start, dateFormat).add(-9, 'w').startOf('week').format(dateFormat);
+        fetchWeeklyLaborHrsStartAsync(laborHoursStart, end, area, weeklyLaborHrsKpiTokenSrc);
 
         const mtdStart = moment(end, dateFormat).startOf('month').format(dateFormat); 
         const mtdEnd =  moment(end, dateFormat).format(dateFormat); 
 
-        fetchProdScrapStartAsync(mtdStart, mtdEnd, area);
+        fetchProdScrapStartAsync(mtdStart, mtdEnd, area, prodScrapLaborHrsKpiTokenSrc);
     }
 
     const onClick = () => {
-        fetchData();
+        setStartDate(startFormat)
+        setEndDate(endFormat)
+        fetchData(startFormat, endFormat);
     }
 
     const onCalendarChange = (dates) => {
 
         const [start, end] = dates;
-
-        setStartDay((start ? start.format(dateFormat) : null))
-        setEndDay((end ? end.format(dateFormat) : null))
-
-        setDetailsStartDate(startDay)
-        setDetailsEndDate(endDay)
+        setStartFormat(start ? start.format(dateFormat) : null);
+        setSendFormat(end ? end.format(dateFormat) : null);
     }
 
     useEffect(() => {
         document.title = `Morning Meeting - ${headerTitle}`;
         fetchData();
+
+        return function cleanup() {
+            prodTokenSrc.cancel('Operation cancelled');
+            scrapRateTokenSrc.cancel('Operation cancelled');
+            dailyKpiTokenSrc.cancel('Operation cancelled');
+            weeklyLaborHrsKpiTokenSrc.cancel('Operation cancelled');
+            prodScrapLaborHrsKpiTokenSrc.cancel('Operation cancelled');
+        }
+
     }, [])
 
     const onDetailsButtonClick = () => {
 
         setTitle({
             headerTitle,
-            startDay,
-            endDay
+            startDate,
+            endDate
         })
 
         setArea(area);
-        setDetailsStartDate(startDay)
-        setDetailsEndDate(endDay)
     }
 
     return (
     <>
         <Header className="pa0 custom-header" >
-            <h2 className="ml3">{headerTitle}</h2>
+            <h2 className="ml3">{headerTitle}: {startDate} - {endDate}</h2>
         </Header>
 
         <Content className="ma3 mt0">
-            <DateRangePicker defaultValue={previousDay} onButtonClick={onClick} onCalendarChange={onCalendarChange}  />
+            <DateRangePicker 
+                dateRangeValue={{startDate: startDate, endDate: endDate}}
+                onButtonClick={onClick}
+                onCalendarChange={onCalendarChange}  />
 
             <Button type="link" onClick={onDetailsButtonClick}>
                 <Link to={`${location.pathname}/details`}>Show Details</Link>
@@ -128,16 +144,22 @@ const ProductionPage = ({
 )}
 
 const mapDispatchToProps = dispatch => ({
-    setProductionData: (start, end, area) => dispatch(fetchProductionStatusStartAsync(start, end, area)),
-    fetchDailyScrapRateStartAsync: (start, end, area) => dispatch(fetchDailyScrapRateStartAsync(start, end, area)),
-    fetchDailyKpiStartAsync: (start, end, area) => dispatch(fetchDailyKpiStartAsync(start, end, area)),
-    fetchWeeklyLaborHrsStartAsync: (start, end, area) => dispatch(fetchWeeklyLaborHrsStartAsync(start, end, area)),
-    fetchProdScrapStartAsync: (start, end, area) => dispatch(fetchProdScrapStartAsync(start, end, area)),
+    setProductionData: (start, end, area, cancelToken) => dispatch(fetchProductionStatusStartAsync(start, end, area, cancelToken)),
+    fetchDailyScrapRateStartAsync: (start, end, area, cancelToken) => dispatch(fetchDailyScrapRateStartAsync(start, end, area, cancelToken)),
+    fetchDailyKpiStartAsync: (start, end, area, cancelToken) => dispatch(fetchDailyKpiStartAsync(start, end, area, cancelToken)),
+    fetchWeeklyLaborHrsStartAsync: (start, end, area, cancelToken) => dispatch(fetchWeeklyLaborHrsStartAsync(start, end, area, cancelToken)),
+    fetchProdScrapStartAsync: (start, end, area, cancelToken) => dispatch(fetchProdScrapStartAsync(start, end, area, cancelToken)),
 
     setTitle: title => dispatch(setTitle(title)),
     setArea: area => dispatch(setArea(area)),
-    setDetailsStartDate: date => dispatch(setDetailsStartDate(date)),
-    setDetailsEndDate: date => dispatch(setDetailsEndDate(date)),
+
+    setStartDate: (date) => dispatch(setStartDate(date)),
+    setEndDate: (date) => dispatch(setEndDate(date))
 })
 
-export default connect(null, mapDispatchToProps)(withRouter(ProductionPage));
+const mapStateToProps = ({morningMeeting}) => ({
+    startDate: morningMeeting.startDate,
+    endDate: morningMeeting.endDate
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ProductionPage));

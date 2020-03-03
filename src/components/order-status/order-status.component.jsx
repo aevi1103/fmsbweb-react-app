@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
 import { 
     Row,
     Col,
-    Card,
-    Button,
-    Tooltip
+    Card
  } from "antd";
 
  import OrderStatusChart from '../../components/order-status/order-status-chart.component'

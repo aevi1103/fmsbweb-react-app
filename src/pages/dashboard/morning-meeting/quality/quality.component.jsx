@@ -18,13 +18,12 @@ import Quality from '../../../../components/quality/quality.component'
 
 const { Header, Content } = Layout;
 
-const dateFormat = 'MM/DD/YYYY';
-const today = moment();
-const todayFormatted = today.format(dateFormat);
-
-const QualityPage = ({fetchQualityStartAsync}) => {
+const QualityPage = ({
+        fetchQualityStartAsync,
+        endDate
+    }) => {
     
-    const [ date, setDate ] = useState(todayFormatted);
+    const [ date, setDate ] = useState(endDate);
 
     const fetchData = () => {
         fetchQualityStartAsync(date);
@@ -46,12 +45,12 @@ const QualityPage = ({fetchQualityStartAsync}) => {
     return (
     <>
         <Header className="pa0 custom-header" >
-            <h2 className="ml3">Quality</h2>
+            <h2 className="ml3">Quality: {date}</h2>
         </Header>
 
         <Content className="ma3 mt0">
             <DatePicker onButtonClick={onClick} onChange={onChange} 
-                    defaultValue={today} />
+                    defaultValue={moment(endDate, 'MM/DD/YYYY')} />
 
             <div className="mt3">
                 <Quality/>
@@ -65,4 +64,8 @@ const mapDispatchToProps = dispatch => ({
     fetchQualityStartAsync: date => dispatch(fetchQualityStartAsync(date))
 })
 
-export default connect(null, mapDispatchToProps)(QualityPage);
+const mapStateToProps = ({morningMeeting}) => ({
+    endDate: morningMeeting.endDate
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(QualityPage);
