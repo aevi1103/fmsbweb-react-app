@@ -49,10 +49,18 @@ const logoStylesWhite = {
   filter: "brightness(0) invert(1)"
 }
 
-const RenderedFoundryPage = () => <ProductionPage area="foundry cell" headerTitle="Foundry" />
-const RenderedMachiningPage = () => <ProductionPage area="machine line" headerTitle="Machining" />
-const RenderedFinishingPage = () => <ProductionPage area="skirt coat" headerTitle="Finishing / Skirt Coat" />
-const RenderedAssemblyPage = () => <ProductionPage area="assembly" headerTitle="Assembly" />
+const GetRenderedProdPage = (area, header) => <ProductionPage area={area} headerTitle={header} />
+const GetRenderedOrderPage = (area, header) => <OrderStatusPage area={area} headerTitle={header} />
+
+const RenderedFoundryPage = () => GetRenderedProdPage("foundry cell", "Foundry")
+const RenderedMachiningPage = () => GetRenderedProdPage("machine line", "Machining")
+const RenderedFinishingPage = () => GetRenderedProdPage("skirt coat", "Finishing / Skirt Coat")
+const RenderedAssemblyPage = () => GetRenderedProdPage("assembly", "Assembly")
+
+const RenderedFoundryOrderStatPage = () => GetRenderedOrderPage("foundry cell", "Foundry Active Orders")
+const RenderedMachiningOrderStatPage = () => GetRenderedOrderPage("machine line", "Machining Active Orders")
+const RenderedFinishingOrderStatPage = () => GetRenderedOrderPage("finishing", "Finishing Active Orders")
+const RenderedAssemblyOrderStatPage = () => GetRenderedOrderPage("assembly", "Assembly Active Orders")
 
 
 const App = ( { collapsed, setSiderCollapse } ) => { 
@@ -107,7 +115,10 @@ const App = ( { collapsed, setSiderCollapse } ) => {
       <Route exact path="/dashboard/swot" component={SwotPage} />
 
       {/* Order Status */}
-      <Route exact path="/orderstatus" component={OrderStatusPage} />
+      <Route exact path="/orderstatus/foundry" component={RenderedFoundryOrderStatPage} />
+      <Route exact path="/orderstatus/machining" component={RenderedMachiningOrderStatPage} />
+      <Route exact path="/orderstatus/finishing" component={RenderedFinishingOrderStatPage} />
+      <Route exact path="/orderstatus/assembly" component={RenderedAssemblyOrderStatPage} />
 
       <Route component={NotFound} />
     </Switch>
