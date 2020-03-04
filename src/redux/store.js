@@ -7,8 +7,10 @@ import thunk from 'redux-thunk';
 import rootReducer from './root-reducer';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
+import { version } from '../../package.json'
+
 const persistConfig = {
-    key: 'root_v1',
+    key: `root_${version}`,
     storage,
   }
 

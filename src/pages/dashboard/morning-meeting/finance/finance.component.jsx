@@ -17,13 +17,15 @@ import '../morning-meeting.styles.scss'
 import FinanceKpi from '../../../../components/finance/kpi/kpi.component'
 
 const { Header, Content } = Layout;
+const dateFormat = 'MM/DD/YYYY';
 
 const FinancePage = ({
         fetchFiananceKpiStartAsync,
         endDate
     }) => {
     
-    const [ date, setDate ] = useState(endDate);
+        const endDatePlusOneDay = moment(endDate, dateFormat).add(1, 'd').format(dateFormat)
+    const [ date, setDate ] = useState(endDatePlusOneDay);
 
     const fetchData = () => {
         fetchFiananceKpiStartAsync(date);
@@ -45,12 +47,12 @@ const FinancePage = ({
     return (
     <>
         <Header className="pa0 custom-header" >
-            <h2 className="ml3">Finance: {endDate}</h2>
+            <h2 className="ml3">Finance: {date}</h2>
         </Header>
 
         <Content className="ma3 mt0">
             <DatePicker onButtonClick={onClick} onChange={onChange} 
-                    defaultValue={moment(endDate, 'MM/DD/YYYY')} />
+                    defaultValue={moment(endDatePlusOneDay, 'MM/DD/YYYY')} />
 
             <div className="mt3">
                 <FinanceKpi/>

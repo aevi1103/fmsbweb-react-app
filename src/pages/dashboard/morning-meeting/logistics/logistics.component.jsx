@@ -17,6 +17,7 @@ import {
 
 import '../morning-meeting.styles.scss'
 const { Header, Content } = Layout;
+const dateFormat = 'MM/DD/YYYY';
 
 const LogisticsPage = ({
         setStockOverview,
@@ -25,7 +26,8 @@ const LogisticsPage = ({
         endDate
     }) => {
     
-    const [ date, setDate ] = useState(endDate);
+    const endDatePlusOneDay = moment(endDate, dateFormat).add(1, 'd').format(dateFormat)
+    const [ date, setDate ] = useState(endDatePlusOneDay);
 
     const fetchData = () => {
         setStockOverview(date);
@@ -54,7 +56,7 @@ const LogisticsPage = ({
 
         <Content className="ma3 mt0">
             <DatePicker onButtonClick={onClick} onChange={onChange} 
-                    defaultValue={moment(endDate, 'MM/DD/YYYY')} />
+                    defaultValue={moment(endDatePlusOneDay, 'MM/DD/YYYY')} />
 
             <div className="mt3">
                 <Logistics/>

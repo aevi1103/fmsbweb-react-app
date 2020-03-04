@@ -17,13 +17,16 @@ import '../morning-meeting.styles.scss'
 import Quality from '../../../../components/quality/quality.component'
 
 const { Header, Content } = Layout;
+const dateFormat = 'MM/DD/YYYY';
 
 const QualityPage = ({
         fetchQualityStartAsync,
         endDate
     }) => {
     
-    const [ date, setDate ] = useState(endDate);
+    const endDatePlusOneDay = moment(endDate, dateFormat).add(1, 'd').format(dateFormat)
+
+    const [ date, setDate ] = useState(endDatePlusOneDay);
 
     const fetchData = () => {
         fetchQualityStartAsync(date);
@@ -50,7 +53,7 @@ const QualityPage = ({
 
         <Content className="ma3 mt0">
             <DatePicker onButtonClick={onClick} onChange={onChange} 
-                    defaultValue={moment(endDate, 'MM/DD/YYYY')} />
+                    defaultValue={moment(endDatePlusOneDay, dateFormat)} />
 
             <div className="mt3">
                 <Quality/>
