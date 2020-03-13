@@ -1,38 +1,72 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment'
+import UIDGenerator   from 'uid-generator'
 
 import { 
     Row,
     Col,
-    Card
+    Card,
+    Button
  } from "antd";
 
  import OrderStatusChart from '../../components/order-status/order-status-chart.component'
 
+ 
+
 const OrderStatus = ({
-        workCenterCollection,
-        isOrderStatusFetching
-    }) => {
+    workCenterCollection,
+    isOrderStatusFetching
+}) => {
+
+    const uidgen = new UIDGenerator(); 
+    const [workCenters, setWorkCenters] = useState(workCenterCollection)
+
+    const onClickRefresh = (workCenter) => {
+        
+        console.log(workCenter);
+        setWorkCenters(
+            workCenters.map(item => {
+                if (item.workCenter === workCenter) {
+                    return { 
+                        ...item,
+                        lastUpdate: `Last Updated at ${moment().format('M/D/YY h:mm:ss A')}`,
+                        url: `sap/odata?line=${item.line}&side=${item.side}&token=${uidgen.generateSync()}`
+                    }
+                } else {
+                    return item;
+                }
+            })
+        )
+        
+        console.log(workCenters)
+    }
 
     return (
         <Row gutter={16}>
             {
-                workCenterCollection.map(({workCenter, line, side}) => (
+                workCenters.map(({workCenter, url, lastUpdate}) => (
                     <Col span={8} key={`order_${workCenter}`}>
                         <Card
-                            title={`${line}${side === 'n/a' ? '' : side}`}    
+                            key={`card_${workCenter}`}
+                            title={workCenter}    
                             bordered={false} size="small"
                             className="mb3"
                             loading={isOrderStatusFetching}
                             style={{height: '25rem'}}
+                            extra={<Button key={`btn_${workCenter}`}
+                                        type="link" 
+                                        onClick={() => onClickRefresh(workCenter)}
+                                        style={{paddingRight: 0}} >Refresh</Button>}
                         >
-                            <OrderStatusChart line={line} side={side} workCenter={workCenter}/>
+                            <OrderStatusChart key={`chart_${workCenter}`} workCenter={workCenter} url={url} lastUpdate={lastUpdate}/>
                         </Card>
                     </Col>
                 ))
             }
         </Row>
     )
+
  }
 
  const mapStateToProps = ({orderStatus}) => ({

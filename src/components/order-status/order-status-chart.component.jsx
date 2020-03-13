@@ -17,16 +17,16 @@ FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
 const OrderStatusChart = ({ 
-    line,
-    side,
-    workCenter
+    workCenter,
+    url,
+    lastUpdate,
+    token
 }) => {
 
     const [isLoading, setIsLoading] = useState(false); 
     const [isError, setIserror] = useState(false); 
     const [errMsg, setErrMsg] = useState(""); 
     const [chartConfigs, setChartConfigs] = useState({}); 
-    const url = `sap/odata?line=${line}&side=${side}`;
 
     const CancelToken = axios.CancelToken;
     const source = CancelToken.source();
@@ -48,6 +48,7 @@ const OrderStatusChart = ({
                 const dataSource = {
                     chart: {
                         caption: `${workCenter} Active Production Order`,
+                        subCaption: `${lastUpdate}`,
                         placevaluesinside: "1",
                         showvalues: "1",
                         theme: "fusion",
@@ -91,17 +92,19 @@ const OrderStatusChart = ({
                     console.error('Request canceled', url, thrown.message);
                 } else {
                     console.error(thrown);
-                    setIserror(true)
+                    setIserror(true);
                     setErrMsg(thrown.message);
                 }
 
             })
             .finally(() => {
+
                 setIsLoading(false);
 
-                if (isError) {
-                    console.error(url, 'isError: ', isError)
-                    fetchData();
+                if (isError) {             
+                    setIserror(false);
+                    console.error(url, 'retrying in one minute', isError);
+                    setTimeout(() => fetchData(), 60000);
                 }
 
             })
@@ -109,11 +112,13 @@ const OrderStatusChart = ({
     }
 
     useEffect(() => {
+
         fetchData();
         return function cleanup() {
             source.cancel(url, 'Operation cancelled');
         }
-    }, [])
+        
+    }, [lastUpdate])
     
     return (
         <>
@@ -131,6 +136,7 @@ const OrderStatusChart = ({
             } 
         </> 
     )
+
     
 
 }
