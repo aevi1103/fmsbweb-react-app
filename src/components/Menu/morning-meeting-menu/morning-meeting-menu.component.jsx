@@ -14,6 +14,12 @@ const MorningMeetingMenu = ( { location } ) => {
             <Link to="/" />
         </Menu.Item>
 
+        <Menu.Item key="/orderstatus/foundry">
+            <Icon type="inbox" />
+            <span>Active Orders</span>
+            <Link to="/orderstatus/foundry" />
+        </Menu.Item>
+
         <Menu.Item key="/dashboard/morningmeeting/safety">
             <Icon type="safety" />
             <span>Safety</span>

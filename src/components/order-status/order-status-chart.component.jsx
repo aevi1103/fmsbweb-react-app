@@ -27,6 +27,7 @@ const OrderStatusChart = ({
     const [isError, setIserror] = useState(false); 
     const [errMsg, setErrMsg] = useState(""); 
     const [chartConfigs, setChartConfigs] = useState({}); 
+    // const [timeOutKey, setTimeOutKey] = useState(null); 
 
     const CancelToken = axios.CancelToken;
     const source = CancelToken.source();
@@ -39,6 +40,8 @@ const OrderStatusChart = ({
             cancelToken: source.token
           })
             .then(response => {
+
+                setIserror(false);
 
                 const result = response.data;
                 const category = result.map(({ orderNumber, material }) => ({ label: `${orderNumber} (${material})` }));
@@ -84,6 +87,7 @@ const OrderStatusChart = ({
                     }
                 
                 setChartConfigs(config);
+                setIsLoading(false);
 
             })
             .catch(thrown => {
@@ -93,18 +97,8 @@ const OrderStatusChart = ({
                 } else {
                     console.error(thrown);
                     setIserror(true);
+                    setIsLoading(false);
                     setErrMsg(thrown.message);
-                }
-
-            })
-            .finally(() => {
-
-                setIsLoading(false);
-
-                if (isError) {             
-                    setIserror(false);
-                    console.error(url, 'retrying in one minute', isError);
-                    setTimeout(() => fetchData(), 60000);
                 }
 
             })
@@ -114,8 +108,13 @@ const OrderStatusChart = ({
     useEffect(() => {
 
         fetchData();
+
         return function cleanup() {
             source.cancel(url, 'Operation cancelled');
+            setIsLoading(false);
+            setIserror(false);
+            setErrMsg("");
+            setChartConfigs({});
         }
         
     }, [lastUpdate])

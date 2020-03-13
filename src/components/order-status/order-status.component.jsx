@@ -24,7 +24,6 @@ const OrderStatus = ({
 
     const onClickRefresh = (workCenter) => {
         
-        console.log(workCenter);
         setWorkCenters(
             workCenters.map(item => {
                 if (item.workCenter === workCenter) {
@@ -38,8 +37,6 @@ const OrderStatus = ({
                 }
             })
         )
-        
-        console.log(workCenters)
     }
 
     return (

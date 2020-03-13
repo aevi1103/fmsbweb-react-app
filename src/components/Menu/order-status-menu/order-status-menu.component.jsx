@@ -14,6 +14,12 @@ const OrderStatusMenu = ( { location } ) => {
             <Link to="/" />
         </Menu.Item>
 
+        <Menu.Item key="/dashboard/morningmeeting/safety">
+            <Icon type="apartment" />
+            <span>Morning Meeting</span>
+            <Link to="/dashboard/morningmeeting/safety" />
+        </Menu.Item>
+
         <Menu.Item key="/orderstatus/foundry">
             <Icon type="area-chart" />
             <span>Foundry</span>
