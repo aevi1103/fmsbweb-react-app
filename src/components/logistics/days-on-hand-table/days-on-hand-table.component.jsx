@@ -119,6 +119,13 @@ import {
             // ...getColumnSearchProps('stock')
         },
         {
+          title: 'Safety Stock',
+          dataIndex: 'safetyStock',
+          sorter: (a, b) => numberSorter(a.stock, b.stock),
+          sortDirections: ['descend', 'ascend'],
+          // ...getColumnSearchProps('stock')
+      },
+        {
             title: 'Days On Hand',
             dataIndex: 'doh',
             sorter: (a, b) => numberSorter(a.doh, b.doh),
@@ -131,7 +138,9 @@ import {
         }
       ];
       
-      const dataSource = !daysOnHand ? [] : daysOnHand.map((rowData, i) => {
+      const dataSource = !daysOnHand 
+        ? [] 
+        : daysOnHand.map((rowData, i) => {
 
         const {
             date,
@@ -139,7 +148,8 @@ import {
             material,
             finGoodIn0300,
             daysOnHand,
-            colorCode
+            colorCode,
+            safetyStock
         } = rowData;
 
         const { bgColor, fontColor } = colorCode;
@@ -150,6 +160,7 @@ import {
             prog: program,
             mat: material,
             stock: numeral(finGoodIn0300).format('0,0'),
+            safetyStock: numeral(safetyStock).format('0,0'),
             doh: daysOnHand,
             bgColor,
             fontColor
