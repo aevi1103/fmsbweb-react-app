@@ -116,6 +116,33 @@ import {
             }
         },
         {
+            title: 'Foundry Hold (QC03)',
+            dataIndex: 'qcFoundry',
+            sorter: (a, b) => numberSorter(a.qcFoundry, b.qcFoundry),
+            sortDirections: ['descend', 'ascend'],
+            render: (text, record, index) => {
+                return renderWithIcon(targets, text, record.prog, 'QC02');
+            }
+        },
+        {
+            title: 'Machining Hold (QC04)',
+            dataIndex: 'qcMach',
+            sorter: (a, b) => numberSorter(a.qcMach, b.qcMach),
+            sortDirections: ['descend', 'ascend'],
+            render: (text, record, index) => {
+                return renderWithIcon(targets, text, record.prog, 'QC02');
+            }
+        },
+        {
+            title: 'A&F Hold (QC05)',
+            dataIndex: 'qcAf',
+            sorter: (a, b) => numberSorter(a.qcAf, b.qcAf),
+            sortDirections: ['descend', 'ascend'],
+            render: (text, record, index) => {
+                return renderWithIcon(targets, text, record.prog, 'QC02');
+            }
+        },
+        {
             title: 'Finishing (0130)',
             dataIndex: 'fin',
             sorter: (a, b) => numberSorter(a.fin, b.fin),
@@ -186,6 +213,9 @@ import {
             program,
             qc01,
             qc02,
+            qc03,
+            qc04,
+            qc05,
             total,
             _0111,
             _0115,
@@ -206,8 +236,13 @@ import {
             gs: numeral(_0115).format(numberFormat),
             machIn: numeral(_4000).format(numberFormat),
             machOut: numeral(_5000).format(numberFormat),
+
             qcIn: numeral(qc01).format(numberFormat),
             qcOut: numeral(qc02).format(numberFormat),
+            qcFoundry: numeral(qc03).format(numberFormat),
+            qcMach: numeral(qc04).format(numberFormat),
+            qcAf: numeral(qc05).format(numberFormat),
+
             fin: numeral(_0130).format(numberFormat),
             assy: numeral(_0131).format(numberFormat),
             dock: numeral(_0135).format(numberFormat),
