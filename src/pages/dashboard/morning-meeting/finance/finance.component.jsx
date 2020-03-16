@@ -53,7 +53,7 @@ const FinancePage = ({
         <Content className="ma3 mt0">
             <DatePicker onButtonClick={onClick} onChange={onChange} 
                     defaultValue={moment(endDatePlusOneDay, 'MM/DD/YYYY')} />
-
+            <a href="http://10.129.224.149/FMSB/Finance/DataEntry.aspx" target="_blank" className="ml2">Enter Data</a>
             <div className="mt3">
                 <FinanceKpi/>
             </div>

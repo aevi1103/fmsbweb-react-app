@@ -41,7 +41,7 @@ const QualityPage = ({
     }
 
     useEffect(() => {
-        document.title = `Morning Meeting - Finance`;
+        document.title = `Morning Meeting - Quality`;
         fetchData();
     }, [])
 
@@ -54,7 +54,7 @@ const QualityPage = ({
         <Content className="ma3 mt0">
             <DatePicker onButtonClick={onClick} onChange={onChange} 
                     defaultValue={moment(endDatePlusOneDay, dateFormat)} />
-
+            <a href="http://10.129.224.149/FMSB/Quality/Customer/Record.aspx" target="_blank" className="ml2">Enter Data</a>
             <div className="mt3">
                 <Quality/>
             </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment'
+import 'tachyons'
 
 import Logistics from '../../../../components/logistics/logistics.component' 
 import DatePicker from '../../../../components/single-date-range-picker/single-date-range-picker.component'
@@ -57,7 +58,7 @@ const LogisticsPage = ({
         <Content className="ma3 mt0">
             <DatePicker onButtonClick={onClick} onChange={onChange} 
                     defaultValue={moment(endDatePlusOneDay, 'MM/DD/YYYY')} />
-
+            <a href="http://10.129.224.149/FMSB/Logistics/MorningMeeting.aspx" className="ml2" target="_blank">Enter Data</a>
             <div className="mt3">
                 <Logistics/>
             </div>

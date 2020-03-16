@@ -28,6 +28,7 @@
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
     "styled-components": "^4.4.1",
+    "tachyons": "^4.11.1",
     "uid-generator": "^2.0.0"
   },
   "scripts": {
@@ -57,7 +58,6 @@
     ]
   },
   "devDependencies": {
-    "standard-version": "^7.1.0",
-    "tachyons": "^4.11.1"
+    "standard-version": "^7.1.0"
   }
 }

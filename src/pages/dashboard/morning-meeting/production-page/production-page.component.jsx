@@ -40,8 +40,10 @@ const ProductionPage = ({
         fetchDailyKpiStartAsync,
         fetchWeeklyLaborHrsStartAsync,
         fetchProdScrapStartAsync,
+
         area,
         headerTitle,
+
         location,
 
         setTitle,
@@ -119,6 +121,9 @@ const ProductionPage = ({
         setArea(area);
     }
 
+    const route = location.pathname.substr(location.pathname.lastIndexOf('/')+1);
+    console.log(location, route)
+
     return (
     <>
         <Header className="pa0 custom-header" >
@@ -130,10 +135,12 @@ const ProductionPage = ({
                 dateRangeValue={{startDate: startDate, endDate: endDate}}
                 onButtonClick={onClick}
                 onCalendarChange={onCalendarChange}  />
-
+            
             <Button type="link" onClick={onDetailsButtonClick}>
                 <Link to={`${location.pathname}/details`}>Show Details</Link>
             </Button>
+
+            <a href={`/orderstatus/${route}`} target="_blank">Show Active Orders</a>
 
             <div className="mt3">
                 <Production/>

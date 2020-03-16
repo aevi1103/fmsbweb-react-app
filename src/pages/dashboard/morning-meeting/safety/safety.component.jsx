@@ -73,6 +73,7 @@ const SafetyPage = ({
                 dateRangeValue={{startDate: startDate, endDate: endDate}}
                 onButtonClick={onClick}
                 onCalendarChange={onCalendarChange} />
+                <a href="http://10.129.224.149/FMSB/Safety2/Charts.aspx" target="_blank" className="ml2">See More Charts</a>
             <div className="mt3">
                 <Safety/>
             </div>
