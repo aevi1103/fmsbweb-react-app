@@ -10,7 +10,8 @@ import {
     Table,
     Input,
     Button,
-    Icon
+    Icon,
+    Tag 
  } from "antd";
 
  const DaysOnHandTable = ({isStockStatusFetching, stockStatusCollection}) => {
@@ -116,10 +117,13 @@ import {
             dataIndex: 'stock',
             sorter: (a, b) => numberSorter(a.stock, b.stock),
             sortDirections: ['descend', 'ascend'],
-            // ...getColumnSearchProps('stock')
+            render: (text, record, index) => {
+              const { bgColor } = record;
+              return <Tag color={bgColor}>{text}</Tag>          
+          }
         },
         {
-          title: 'Safety Stock',
+          title: 'Req. Stock',
           dataIndex: 'safetyStock',
           sorter: (a, b) => numberSorter(a.stock, b.stock),
           sortDirections: ['descend', 'ascend'],
@@ -131,7 +135,7 @@ import {
             sorter: (a, b) => numberSorter(a.doh, b.doh),
             sortDirections: ['descend', 'ascend'],
             render: (text, record, index) => {
-                const { bgColor } = record;
+                const { bgColor } = record;             
                 return <span className="b" style={{color: bgColor}}>{text}</span>
             },
             // ...getColumnSearchProps('doh')

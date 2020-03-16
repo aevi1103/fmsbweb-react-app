@@ -7,7 +7,8 @@ import { numberSorter } from '../../../helpers/helpers';
 
 import { 
     Table,
-    Popover
+    Popover,
+    Tag
  } from "antd";
 
  const numberFormat = "0,0";
@@ -40,7 +41,7 @@ import {
 
         return (
             <Popover content={content} title="Target" trigger="hover">
-                <span className="b" style={{color: color}}>{numeral(value).format(numberFormat)}</span>
+                <Tag className="b" color={color}>{numeral(value).format(numberFormat)}</Tag>
             </Popover>
         )
 
