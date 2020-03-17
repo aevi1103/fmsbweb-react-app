@@ -3,7 +3,8 @@ import moment from 'moment'
 
 import { 
     DatePicker,
-    Button
+    Button,
+    Tooltip
  } from "antd";
 
  const { RangePicker } = DatePicker;
@@ -48,7 +49,10 @@ import {
             defaultValue={defaultRange}
             {...otherState} />
 
-        <Button type="primary" onClick={onButtonClick}>Go</Button>
+        <Tooltip placement="top" title={<span>Download Data</span>}>
+            <Button type="primary" onClick={onButtonClick}>Go</Button>
+        </Tooltip>
+        
     </>
 
  )}

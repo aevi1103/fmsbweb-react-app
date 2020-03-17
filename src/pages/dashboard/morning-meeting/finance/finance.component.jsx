@@ -9,7 +9,8 @@ import {
 } from '../../../../redux/morning-meeting/morning-meeting.actions'
 
 import { 
-    Layout
+    Layout,
+    Button
  } from "antd";
 
 import '../morning-meeting.styles.scss'
@@ -53,7 +54,11 @@ const FinancePage = ({
         <Content className="ma3 mt0">
             <DatePicker onButtonClick={onClick} onChange={onChange} 
                     defaultValue={moment(endDatePlusOneDay, 'MM/DD/YYYY')} />
-            <a href="http://10.129.224.149/FMSB/Finance/DataEntry.aspx" target="_blank" className="ml2">Enter Data</a>
+
+            <Button type="primary" className="ml2">
+                <a href="http://10.129.224.149/FMSB/Finance/DataEntry.aspx" target="_blank">Enter Data</a>
+            </Button>
+
             <div className="mt3">
                 <FinanceKpi/>
             </div>

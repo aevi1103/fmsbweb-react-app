@@ -13,7 +13,8 @@ import {
 } from '../../../../redux/morning-meeting/morning-meeting.actions'
 
 import { 
-    Layout
+    Layout,
+    Button
  } from "antd";
 
 import '../morning-meeting.styles.scss'
@@ -73,7 +74,11 @@ const SafetyPage = ({
                 dateRangeValue={{startDate: startDate, endDate: endDate}}
                 onButtonClick={onClick}
                 onCalendarChange={onCalendarChange} />
-                <a href="http://10.129.224.149/FMSB/Safety2/Charts.aspx" target="_blank" className="ml2">See More Charts</a>
+
+            <Button type="primary" className="ml2">
+                <a href="http://10.129.224.149/FMSB/Safety2/Charts.aspx" target="_blank">View More Charts</a>
+            </Button>
+
             <div className="mt3">
                 <Safety/>
             </div>

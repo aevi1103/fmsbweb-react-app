@@ -2,7 +2,8 @@ import React from 'react';
 
 import { 
     DatePicker,
-    Button
+    Button,
+    Tooltip
  } from "antd";
 
  const dateFormat = 'MM/DD/YYYY';
@@ -19,7 +20,10 @@ import {
             defaultValue={defaultValue}
             {...otherState}/>
 
-        <Button type="primary" onClick={onButtonClick}>Go</Button>
+        <Tooltip placement="top" title={<span>Download Data</span>}>
+            <Button type="primary" onClick={onButtonClick}>Go</Button>
+        </Tooltip>
+        
     </>
 
  )

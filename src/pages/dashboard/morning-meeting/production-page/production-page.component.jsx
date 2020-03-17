@@ -25,7 +25,8 @@ import {
 
 import { 
     Layout,
-    Button
+    Button,
+    Tooltip
  } from "antd";
 
 import '../morning-meeting.styles.scss'
@@ -136,12 +137,18 @@ const ProductionPage = ({
                 onButtonClick={onClick}
                 onCalendarChange={onCalendarChange}  />
             
-            <Button type="link" onClick={onDetailsButtonClick}>
-                <Link to={`${location.pathname}/details`}>Show Details</Link>
-            </Button>
-
-            <a href={`/orderstatus/${route}`} target="_blank">Show Active Orders</a>
-
+            <Tooltip placement="top" title={<span>Click to view Productivity Details by Work Center</span>}>
+                <Button type="primary" onClick={onDetailsButtonClick} className="ml2">
+                    <Link to={`${location.pathname}/details`}>Work Center Details</Link>
+                </Button>
+            </Tooltip>
+            
+            <Tooltip placement="top" title={<span>View active orders by Work Center</span>}>
+                <Button type="primary" className="ml2">
+                    <Link to={`/orderstatus/${route}`} target="_blank">View Active Orders</Link>
+                </Button>
+            </Tooltip>
+            
             <div className="mt3">
                 <Production/>
             </div>
