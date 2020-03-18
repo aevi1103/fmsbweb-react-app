@@ -59,8 +59,15 @@ const INITIAL_STATE = {
     qualityCollection: null,
     qualityErrorMsg: undefined,
 
+    isDowntimeFetching: false,
+    downtimeCollection: null,
+    downtimeErrorMsg: undefined,
+
     startDate: previousDayFormatted,
     endDate: previousDayFormatted,
+
+    downtimeByOwnerCollection: [],
+    downtimeByLineCollection: []
 }
 
 const morningMeetingReducer = (state = INITIAL_STATE, action) => {
@@ -392,6 +399,34 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 qualityErrorMsg: action.payload
             }
 
+        //downtime
+        case morningMeetingTypes.FETCH_DOWNTIME_START:
+
+            // console.log('downtime start')
+
+            return {
+                ...state,
+                isDowntimeFetching: true
+            }
+
+        case morningMeetingTypes.FETCH_DOWNTIME_SUCCESS:
+
+            return {
+                ...state,
+                isDowntimeFetching: false,
+                downtimeCollection: action.payload
+            }
+
+        case morningMeetingTypes.FETCH_DOWNTIME_FAILURE:
+
+            return {
+                ...state,
+                isDowntimeFetching: false,
+                downtimeCollection: null,
+                downtimeErrorMsg: action.payload
+            }
+
+        //set dates
         case morningMeetingTypes.SET_PRODUCTION_START_DATE:
 
             return {
@@ -404,6 +439,22 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 endDate: action.payload
+            }
+
+        //downtime by owner
+        case morningMeetingTypes.SET_DOWNTIME_BY_OWNER:
+
+            return {
+                ...state,
+                downtimeByOwnerCollection: action.payload
+            }
+
+        //downtime by line
+        case morningMeetingTypes.SET_DOWNTIME_BY_LINE:
+
+            return {
+                ...state,
+                downtimeByLineCollection: action.payload
             }
     
         default:

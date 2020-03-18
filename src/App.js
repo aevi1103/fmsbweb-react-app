@@ -25,6 +25,7 @@ import LogisticsPage from './pages/dashboard/morning-meeting/logistics/logistics
 import ProductionPage from './pages/dashboard/morning-meeting/production-page/production-page.component'
 import FinancePage from './pages/dashboard/morning-meeting/finance/finance.component'
 import QualityPage from './pages/dashboard/morning-meeting/quality/quality.component'
+import DowntimePage from './pages/dashboard/morning-meeting/downtime-page/downtime-page.component'
 
 import ProductionDetailsPage from './pages/dashboard/morning-meeting/production-details-page/production-details-page.component'
 
@@ -61,7 +62,6 @@ const RenderedFoundryOrderStatPage = () => GetRenderedOrderPage("foundry cell", 
 const RenderedMachiningOrderStatPage = () => GetRenderedOrderPage("machine line", "Machining Active Orders")
 const RenderedFinishingOrderStatPage = () => GetRenderedOrderPage("finishing", "Finishing Active Orders")
 const RenderedAssemblyOrderStatPage = () => GetRenderedOrderPage("assembly", "Assembly Active Orders")
-
 
 const App = ( { collapsed, setSiderCollapse } ) => { 
   
@@ -107,6 +107,7 @@ const App = ( { collapsed, setSiderCollapse } ) => {
       <Route exact path="/dashboard/morningmeeting/assembly" component={RenderedAssemblyPage} />
       <Route exact path="/dashboard/morningmeeting/finance" component={FinancePage} />
       <Route exact path="/dashboard/morningmeeting/quality" component={QualityPage} />
+      <Route exact path="/dashboard/morningmeeting/downtime" component={DowntimePage} />
 
       {/* morning meeting details */}
       <Route exact path="/dashboard/*/details" component={ProductionDetailsPage} />

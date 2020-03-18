@@ -68,10 +68,10 @@ const MorningMeetingMenu = ( { location } ) => {
             <Link to="/dashboard/morningmeeting/finance" />
         </Menu.Item>
 
-        <Menu.Item key="/dashboard/morningmeeting/maintenance">
+        <Menu.Item key="/dashboard/morningmeeting/downtime">
             <Icon type="setting" />
-            <span>Maintenance</span>
-            <Link to="/dashboard/morningmeeting/maintenance" />
+            <span>Downtime</span>
+            <Link to="/dashboard/morningmeeting/downtime" />
         </Menu.Item>
 
       

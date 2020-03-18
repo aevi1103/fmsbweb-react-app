@@ -21,9 +21,7 @@ const StockOverViewSlocChart = ({stockOVerviewSlocCollection, isStockOverviewSlo
         
         //group array by key
         const dataSetByKey = _.groupBy(data, o => o.program); 
-
-        // console.log('dataSetByKey', dataSetByKey)
-
+        
         // transform datasetbykey to a object that fusion chart understands
         const dataSet = Object.keys(dataSetByKey).map(key => {
             return {

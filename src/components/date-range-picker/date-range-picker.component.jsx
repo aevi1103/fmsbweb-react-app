@@ -21,7 +21,13 @@ import {
 //     'This Year': [moment().startOf('year'), moment().endOf('year')]
 //  }
 
- const DateRangePicker = ({defaultValue, onButtonClick, onCalendarChange, dateRangeValue = null, ...otherState}) => {
+ const DateRangePicker = ({
+    defaultValue,
+    onButtonClick,
+    onCalendarChange,
+    dateRangeValue = null,
+    ...otherState
+    }) => {
      
     let defaultRange = [
         moment(defaultValue, dateFormat),

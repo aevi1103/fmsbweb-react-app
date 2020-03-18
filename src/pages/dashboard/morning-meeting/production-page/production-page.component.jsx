@@ -123,7 +123,7 @@ const ProductionPage = ({
     }
 
     const route = location.pathname.substr(location.pathname.lastIndexOf('/')+1);
-    console.log(location, route)
+    // console.log(location, route)
 
     return (
     <>
