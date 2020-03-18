@@ -19,7 +19,7 @@ export const getDowntimeByLine = (ownerDetails, dept, shift, owner) => {
         dept,
         shift,
         owner,
-        lineTitle: `${dept} - Shift ${shift} - ${owner} - Dowtime By Line`,
+        lineTitle: `${dept} - Shift ${shift} - ${owner} - Dowtime By Machine (Drilldown Chart)`,
         lineDetails
     };
 

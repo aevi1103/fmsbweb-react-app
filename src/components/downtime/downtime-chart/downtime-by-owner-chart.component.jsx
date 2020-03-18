@@ -7,7 +7,8 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
 import {
-    setDowntimeByLine
+    setDowntimeByLine,
+    resetDowntimeByLine
 } from '../../../redux/morning-meeting/morning-meeting.actions'
 
 FusionCharts.options.creditLabel = false;
@@ -15,7 +16,8 @@ ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
 const DowntimeByOwnerChart = ({
     downtimeByOwnerCollection,
-    setDowntimeByLine
+    setDowntimeByLine,
+    resetDowntimeByLine
 }) => {
 
     const [ownerDetails, setOwnerDetails] = useState([])
@@ -44,18 +46,17 @@ const DowntimeByOwnerChart = ({
             theme: "fusion",
             useDataPlotColorForLabels: "1",
             showLegend: "1",
-
             plottooltext: 'Owner: $label {br} Downtime: $value minutes',
-
             toolTipBorderColor: "#001529",
             toolTipBgColor: "#001529",
             toolTipColor: "#fafafa",
             toolTipBgAlpha: "80",
             showToolTipShadow: "1",
+            // paletteColors: "#F44336, #03A9F4, #4CAF50, #FFC107, #795548"
             // exportEnabled: "1",
             // exportFileName: "Downtime by Owner"
         },
-        data: ownerDetails.map(({type, totalDowntime}) => ({ label: type, value: totalDowntime}))
+        data: ownerDetails.map(({type, typeColor, totalDowntime}) => ({ label: type, value: totalDowntime, color: typeColor}))
       };
       
       const chartConfigs = {
@@ -69,14 +70,14 @@ const DowntimeByOwnerChart = ({
                 //categoryLabel = selected owner
                 const { categoryLabel } = evt.data;  
                 const {dept, shift, ownerDetails } = downtimeByOwnerCollection;
+
+                resetDowntimeByLine();
                 setDowntimeByLine(ownerDetails, dept, shift, categoryLabel);
-                
-                console.log(categoryLabel)
             }
           }
       };
 
-    return (<ReactFC {...chartConfigs} />)
+    return ownerDetails.length > 0 ? <ReactFC {...chartConfigs} /> : <span>Select Shift Downtime To Display Data</span>
 }
 
 const mapStateToProps = ({ morningMeeting }) => ({
@@ -84,7 +85,8 @@ const mapStateToProps = ({ morningMeeting }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-    setDowntimeByLine: (ownerDetails, dept, shift, owner) => dispatch(setDowntimeByLine(ownerDetails, dept, shift, owner))
+    setDowntimeByLine: (ownerDetails, dept, shift, owner) => dispatch(setDowntimeByLine(ownerDetails, dept, shift, owner)),
+    resetDowntimeByLine: () => dispatch(resetDowntimeByLine())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(DowntimeByOwnerChart);
