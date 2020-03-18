@@ -33,7 +33,13 @@ const DailyProdChart = ({prodScrapCollection, isProdScrapFetching}) => {
             connectNullData: '1',
             labelDisplay: 'rotate',
             slantLabel: '1',
-            palettecolors: '#19a974'
+            palettecolors: '#19a974',
+
+            toolTipBorderColor: "#001529",
+            toolTipBgColor: "#001529",
+            toolTipColor: "#fafafa",
+            toolTipBgAlpha: "80",
+            showToolTipShadow: "1",
         },
         data: chartData
       };

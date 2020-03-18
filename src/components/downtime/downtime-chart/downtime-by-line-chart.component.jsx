@@ -16,10 +16,14 @@ const DowntimeByOwnerChart = ({
     const [lineDetails, setLineDetails] = useState([])
     useEffect(() => {
 
-        if (downtimeByLineCollection) {
-            setLineDetails(downtimeByLineCollection.lineDetails);
+        try {
+            if (downtimeByLineCollection) {
+                setLineDetails(downtimeByLineCollection.lineDetails);  
+            }
+        } catch (error) {
+            setLineDetails([]);
         }
-
+        
     },[downtimeByLineCollection])
 
     const dataSource = {
@@ -29,7 +33,18 @@ const DowntimeByOwnerChart = ({
             enablemultislicing: "1",
             theme: "fusion",
             useDataPlotColorForLabels: "1",
-            showLegend: "1"
+            showLegend: "1",
+            drawcrossline: "1",
+
+            plottooltext: 'Line: $label {br} Downtime: $value minutes',
+
+            toolTipBorderColor: "#001529",
+            toolTipBgColor: "#001529",
+            toolTipColor: "#fafafa",
+            toolTipBgAlpha: "80",
+            showToolTipShadow: "1",
+            // exportEnabled: "1",
+            // exportFileName: "Downtime by Line"
         },
         data: lineDetails.map(({line, totalDowntime}) => ({ label: line, value: totalDowntime}))
       };

@@ -44,11 +44,20 @@ const DowntimeChart = ({
         chart: {
             xAxisName: 'Department',
             yAxisName: 'Minutes',
-            showValues: '1',
+            // showValues: '1',
             theme: 'fusion',
             drawcrossline: "1",
             // formatNumberScale: "0",
             showsum: "1",
+            plottooltext: 'Shift: $seriesname, Department: $label, Downtime: $value minutes',
+            
+            toolTipBorderColor: "#001529",
+            toolTipBgColor: "#001529",
+            toolTipColor: "#fafafa",
+            toolTipBgAlpha: "80",
+            showToolTipShadow: "1",
+            // exportEnabled: "1",
+            // exportFileName: "Downtime by Department and Shift"
         },
         categories: [
             {

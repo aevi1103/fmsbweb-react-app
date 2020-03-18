@@ -22,11 +22,17 @@ const DowntimeByOwnerChart = ({
 
     useEffect(() => {
 
-        if (downtimeByOwnerCollection) {
-            if (downtimeByOwnerCollection.ownerDetails.length > 0) {
-                setOwnerDetails(downtimeByOwnerCollection.ownerDetails);
+        try {
+            if (downtimeByOwnerCollection) {
+                if (downtimeByOwnerCollection.ownerDetails.length > 0) {
+                    setOwnerDetails(downtimeByOwnerCollection.ownerDetails);  
+                }
             }
-        }
+        } catch (error) {
+            setOwnerDetails([]);
+        } 
+        
+        
 
     },[downtimeByOwnerCollection])
 
@@ -37,7 +43,17 @@ const DowntimeByOwnerChart = ({
             enablemultislicing: "0",
             theme: "fusion",
             useDataPlotColorForLabels: "1",
-            showLegend: "1"
+            showLegend: "1",
+
+            plottooltext: 'Owner: $label {br} Downtime: $value minutes',
+
+            toolTipBorderColor: "#001529",
+            toolTipBgColor: "#001529",
+            toolTipColor: "#fafafa",
+            toolTipBgAlpha: "80",
+            showToolTipShadow: "1",
+            // exportEnabled: "1",
+            // exportFileName: "Downtime by Owner"
         },
         data: ownerDetails.map(({type, totalDowntime}) => ({ label: type, value: totalDowntime}))
       };

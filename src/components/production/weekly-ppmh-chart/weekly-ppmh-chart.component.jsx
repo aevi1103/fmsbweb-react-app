@@ -41,7 +41,13 @@ const MonthlyIncidentRateChart = ({weeklyLaborHrsCollection, isWeeklyLaborHrsFet
             showValues: '1',
             theme: 'fusion',
             labelDisplay: 'rotate',
-            slantLabel: '1'
+            slantLabel: '1',
+
+            toolTipBorderColor: "#001529",
+            toolTipBgColor: "#001529",
+            toolTipColor: "#fafafa",
+            toolTipBgAlpha: "80",
+            showToolTipShadow: "1",
         },
         data: chartData
       };

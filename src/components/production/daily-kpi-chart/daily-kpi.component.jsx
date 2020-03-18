@@ -62,7 +62,13 @@ const DailyKpiChart = ({dailyKpiCollection, isDailyKpiFetching}) => {
                 plottooltext: '$label: <b>$seriesname:</b> <b>$value</b>',
                 connectNullData: '1',
                 labelDisplay: 'rotate',
-                slantLabel: '1'
+                slantLabel: '1',
+
+                toolTipBorderColor: "#001529",
+                toolTipBgColor: "#001529",
+                toolTipColor: "#fafafa",
+                toolTipBgAlpha: "80",
+                showToolTipShadow: "1",
             },
             categories: [
                 {

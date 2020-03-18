@@ -40,7 +40,13 @@ const MonthlyIncidentRateChart = ({dailyScrapRateCollection, isDailyScrapRateFet
             connectNullData: '1',
             labelDisplay: 'rotate',
             slantLabel: '1',
-            palettecolors: '#ff4136'
+            palettecolors: '#ff4136',
+
+            toolTipBorderColor: "#001529",
+            toolTipBgColor: "#001529",
+            toolTipColor: "#fafafa",
+            toolTipBgAlpha: "80",
+            showToolTipShadow: "1",
         },
         data: chartData
       };

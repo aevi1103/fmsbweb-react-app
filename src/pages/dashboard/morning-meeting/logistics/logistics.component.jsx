@@ -41,7 +41,7 @@ const LogisticsPage = ({
         fetchData();
     }
 
-    const onChange = (dateStr) => {
+    const onChange = (date, dateStr) => {
         setDate(dateStr);
     }
 

@@ -25,10 +25,16 @@ const StockOverviewChart = ({stockOVerviewCollection, isStockOverviewFetching}) 
 
     const dataSource = {
         chart: {
-          xAxisName: 'Months',
-          yAxisName: 'Incident Rate',
-          showValues: '1',
-          theme: 'fusion'
+            xAxisName: 'Months',
+            yAxisName: 'Incident Rate',
+            showValues: '1',
+            theme: 'fusion',
+
+            toolTipBorderColor: "#001529",
+            toolTipBgColor: "#001529",
+            toolTipColor: "#fafafa",
+            toolTipBgAlpha: "80",
+            showToolTipShadow: "1",
         },
         data: chartData
       };

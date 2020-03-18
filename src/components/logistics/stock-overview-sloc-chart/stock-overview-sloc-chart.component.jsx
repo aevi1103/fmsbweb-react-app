@@ -37,10 +37,19 @@ const StockOverViewSlocChart = ({stockOVerviewSlocCollection, isStockOverviewSlo
 
         const dataSource = {
             chart: {
-              xAxisName: 'Program',
-              yAxisName: 'Stock',
-              showValues: '0',
-              theme: 'fusion'
+                xAxisName: 'Program',
+                yAxisName: 'Stock',
+                showValues: '0',
+                theme: 'fusion',
+                showsum: "1",
+
+                toolTipBorderColor: "#001529",
+                toolTipBgColor: "#001529",
+                toolTipColor: "#fafafa",
+                toolTipBgAlpha: "80",
+                showToolTipShadow: "1",
+
+                plottooltext: 'Program: $seriesname, SLOC: $label, Qty: $value',
             },
             categories: [
                 {
