@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
-import styled from 'styled-components'
-
 import { 
     setStartDate,
     setEndDate,
@@ -27,13 +25,9 @@ import {
  const { Header, Content } = Layout;
  const dateFormat = 'MM/DD/YYYY';
 
- const KpiContainer = styled.span`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 40vh;
-    font-size: 2.5rem;
-`
+ const cardHeightStyle = {
+    height: "500px"
+}
 
  const DowntimePage = ({
     startDate,
@@ -50,8 +44,6 @@ import {
 
     const [startFormat, setStartFormat] = useState(startDate);
     const [endFormat, setSendFormat] = useState(endDate);
-
-    // console.log({downtimeByOwnerCollection,downtimeByLineCollection })
 
     const { ownerTitle } = downtimeByOwnerCollection;
     const { lineTitle } = downtimeByLineCollection;
@@ -102,11 +94,10 @@ import {
                                 title="Downtime by Department and Shift (Minutes)"
                                 bordered={false} size="small"
                                 className="mb3"
+                                style={cardHeightStyle}
                                 loading={isDowntimeFetching}
                             >
-                                <KpiContainer>  
-                                    <DowntimeChart/>
-                                </KpiContainer>
+                                <DowntimeChart/>
                             </Card>         
                         </Col>
 
@@ -115,11 +106,10 @@ import {
                                 title={ownerTitle}
                                 bordered={false} size="small"
                                 className="mb3"
+                                style={cardHeightStyle}
                                 loading={isDowntimeFetching}
                             >
-                                <KpiContainer>
-                                    <DowntimeByOwnerChart/>
-                                </KpiContainer>
+                                <DowntimeByOwnerChart/>
                             </Card>         
                         </Col>
 
@@ -128,11 +118,10 @@ import {
                                 title={lineTitle}
                                 bordered={false} size="small"
                                 className="mb3"
+                                style={cardHeightStyle}
                                 loading={isDowntimeFetching}
                             >
-                                <KpiContainer>
-                                    <DowntimeByLineChart/>
-                                </KpiContainer>
+                                <DowntimeByLineChart/>
                             </Card>         
                         </Col>
 

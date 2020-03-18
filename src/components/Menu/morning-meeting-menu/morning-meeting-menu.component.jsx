@@ -38,6 +38,18 @@ const MorningMeetingMenu = ( { location } ) => {
             <Link to="/dashboard/morningmeeting/logistics" />
         </Menu.Item>
 
+        <Menu.Item key="/dashboard/morningmeeting/level0">
+            <Icon type="rise" />
+            <span>Performance: L0 - L1</span>
+            <Link to="/dashboard/morningmeeting/level0" />
+        </Menu.Item>
+
+        <Menu.Item key="/dashboard/morningmeeting/level2">
+            <Icon type="rise" />
+            <span>Performance: L2 - L3</span>
+            <Link to="/dashboard/morningmeeting/level2" />
+        </Menu.Item>
+
         <Menu.Item key="/dashboard/morningmeeting/foundry">
             <Icon type="area-chart" />
             <span>Foundry</span>

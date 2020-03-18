@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment'
+import styled from 'styled-components'
 
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
@@ -9,6 +10,14 @@ import ReactFC from 'react-fusioncharts';
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
+
+const Container = styled.span`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+    font-size: 2.5rem;
+`
 
 const DowntimeByOwnerChart = ({
     downtimeByLineCollection
@@ -125,7 +134,7 @@ const DowntimeByOwnerChart = ({
 
     //   console.log(chartConfigs)
 
-    return lineDetails.length > 0 ? <ReactFC {...chartConfigs} /> : <span>Select Owner Downtime To Display Data</span>
+    return lineDetails.length > 0 ? <ReactFC {...chartConfigs} /> : <Container>Select Owner Downtime To Display Data</Container>
 }
 
 const mapStateToProps = ({ morningMeeting }) => ({
