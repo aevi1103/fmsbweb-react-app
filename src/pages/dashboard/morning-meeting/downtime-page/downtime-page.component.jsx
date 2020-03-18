@@ -129,9 +129,8 @@ import {
                 </div>
                 
             </Content>      
-        </> 
-
- )}
+        </>)
+    }
 
 const mapDispatchToProps = dispatch => ({
     fetchDowntimeStartAsync: (start, end) => dispatch(fetchDowntimeStartAsync(start, end)),

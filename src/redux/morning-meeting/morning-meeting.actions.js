@@ -459,6 +459,40 @@ export const fetchQualityStartAsync = (date) => {
     }
 }
 
+//quality
+export const fetchScrapVarianceStartAsync = (start, end, area) => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_SCRAP_VARIANCE_START))
+
+        const url = 'sap/scrapvariance'
+        api.get(url, {
+            params: {
+                start,
+                end,
+                area
+            }
+        })
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_SCRAP_VARIANCE_SUCCESS,
+                response.data))
+
+        })
+        .catch(error => {
+            
+            dispatch(fetchFailure(
+                morningMeetingTypes.FETCH_SCRAP_VARIANCE_FAILURE,
+                error.message))
+        
+        })
+
+    }
+}
+
 //downtime
 export const fetchDowntimeStartAsync = (start, end, dept = '', line = '', shift = '') => {
 

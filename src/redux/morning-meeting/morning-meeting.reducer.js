@@ -63,6 +63,10 @@ const INITIAL_STATE = {
     downtimeCollection: null,
     downtimeErrorMsg: undefined,
 
+    isScrapVarianceFetching: false,
+    scrapVarianceCollection: null,
+    scrapVarianceErrorMsg: undefined,
+
     startDate: previousDayFormatted,
     endDate: previousDayFormatted,
 
@@ -402,8 +406,6 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
         //downtime
         case morningMeetingTypes.FETCH_DOWNTIME_START:
 
-            // console.log('downtime start')
-
             return {
                 ...state,
                 isDowntimeFetching: true
@@ -424,6 +426,31 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isDowntimeFetching: false,
                 downtimeCollection: null,
                 downtimeErrorMsg: action.payload
+            }
+
+        //scrap variance
+        case morningMeetingTypes.FETCH_SCRAP_VARIANCE_START:
+
+            return {
+                ...state,
+                isScrapVarianceFetching: true
+            }
+
+        case morningMeetingTypes.FETCH_SCRAP_VARIANCE_SUCCESS:
+
+            return {
+                ...state,
+                isScrapVarianceFetching: false,
+                scrapVarianceCollection: action.payload
+            }
+
+        case morningMeetingTypes.FETCH_SCRAP_VARIANCE_FAILURE:
+
+            return {
+                ...state,
+                isScrapVarianceFetching: false,
+                scrapVarianceCollection: null,
+                scrapVarianceErrorMsg: action.payload
             }
 
         //set dates
