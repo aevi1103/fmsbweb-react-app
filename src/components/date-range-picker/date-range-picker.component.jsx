@@ -46,8 +46,12 @@ import {
     return (
 
     <>
-        <span className="mr2">Date Range:</span>
-                
+        {
+            isRenderButton
+            ? <span className="mr2">Date Range:</span>
+            : null
+        }
+
         <RangePicker 
             className="mr2"
             onChange={() => {}}

@@ -98,25 +98,42 @@ const PerformanceLevel0Page = ({
     
             <Content className="ma3 mt0">
             
-                <DateRangePicker 
-                    dateRangeValue={{startDate: startFormat, endDate: endFormat}}
-                    onCalendarChange={onCalendarChange}
-                    isRenderButton={false}/>
+                <span className="mr2">Quarterly Chart Date Range:</span>
+                <Tooltip className="mr2" placement="top" title={<span>Update date range for quarterly charts</span>}>
+                    <DateRangePicker 
+                        dateRangeValue={{startDate: startFormat, endDate: endFormat}}
+                        onCalendarChange={onCalendarChange}
+                        isRenderButton={false}/>
+                </Tooltip>
 
-                <Select 
-                    defaultValue={performaceSelectedDepartment}
-                    style={{ width: 120 }}
-                    onChange={onSelectChange}
-                    className="mr2">
-                    <Option value="Foundry Cell">Foundry</Option>
-                    <Option value="Machine Line">Machining</Option>
-                    <Option value="Skirt Coat">Finishing</Option>
-                    <Option value="Assembly">Assembly</Option>
-                </Select>
-
+                <span className="mr2">Date Range:</span>
+                <Tooltip className="mr2" placement="top" title={<span>Update date range for other charts</span>}>
+                    <DateRangePicker 
+                        dateRangeValue={{startDate: startFormat, endDate: endFormat}}
+                        onCalendarChange={onCalendarChange}
+                        isRenderButton={false}/>
+                </Tooltip>
+                
+                <Tooltip placement="top" title={<span>Update department</span>}>
+                    <Select 
+                        defaultValue={performaceSelectedDepartment}
+                        style={{ width: 120 }}
+                        onChange={onSelectChange}
+                        className="mr2">
+                        <Option value="Foundry Cell">Foundry</Option>
+                        <Option value="Machine Line">Machining</Option>
+                        <Option value="Skirt Coat">Finishing</Option>
+                        <Option value="Assembly">Assembly</Option>
+                    </Select>
+                </Tooltip>
+                
                 <Tooltip placement="top" title={<span>Click to reload dashboard</span>}>
                     <Button type="primary" onClick={onClick}>Go</Button>
                 </Tooltip>
+
+                <Button type="primary" className="ml2">
+                    <a href="http://134.238.150.15/FMSB/SWOT/Targets.aspx" target="_blank">Update KPI Targets</a>
+                </Button>
 
                 <div className="mt3">
                     <Row gutter={12}>  
