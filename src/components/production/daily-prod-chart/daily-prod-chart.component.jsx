@@ -8,6 +8,9 @@ import ReactFC from 'react-fusioncharts';
 import moment from 'moment';
 
 import CustomSpinner from '../../custom-spinner/custom-spinner.component';
+import {
+    tooltipStyle
+} from '../../../helpers/chart-config'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -35,11 +38,7 @@ const DailyProdChart = ({prodScrapCollection, isProdScrapFetching}) => {
             slantLabel: '1',
             palettecolors: '#19a974',
 
-            toolTipBorderColor: "#001529",
-            toolTipBgColor: "#001529",
-            toolTipColor: "#fafafa",
-            toolTipBgAlpha: "80",
-            showToolTipShadow: "1",
+            ...tooltipStyle
         },
         data: chartData
       };

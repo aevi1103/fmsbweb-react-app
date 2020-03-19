@@ -8,6 +8,8 @@ import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
+import { tooltipStyle } from '../../../helpers/chart-config'
+
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
@@ -17,7 +19,7 @@ const Container = styled.span`
     justify-content: center;
     height: 400px;
     font-size: 2.5rem;
-`
+`;
 
 const DowntimeByOwnerChart = ({
     downtimeByLineCollection
@@ -49,15 +51,9 @@ const DowntimeByOwnerChart = ({
             showLegend: "1",
             drawcrossline: "1",
             plottooltext: 'Line: $label {br} Downtime: $value minutes',
-            toolTipBorderColor: "#001529",
-            toolTipBgColor: "#001529",
-            toolTipColor: "#fafafa",
-            toolTipBgAlpha: "80",
-            showToolTipShadow: "1",
             labelDisplay: "rotate",
-            slantLabel: "1"
-            // exportEnabled: "1",
-            // exportFileName: "Downtime by Line"
+            slantLabel: "1",
+            ...tooltipStyle
         },
         data: lineDetails.map(({line, typeColor, totalDowntime}) => ({
             label: line,
@@ -80,11 +76,7 @@ const DowntimeByOwnerChart = ({
                                 showLegend: "1",
                                 drawcrossline: "1",
                                 plottooltext: 'Reason: $label {br} Downtime: $value minutes',           
-                                toolTipBorderColor: "#001529",
-                                toolTipBgColor: "#001529",
-                                toolTipColor: "#fafafa",
-                                toolTipBgAlpha: "80",
-                                showToolTipShadow: "1",
+                                ...tooltipStyle
                             },
                             data: reason2Details.map(({ reason2, typeColor, totalDowntime }) => ({ 
                                     label: reason2,
@@ -107,11 +99,7 @@ const DowntimeByOwnerChart = ({
                                         showLegend: "1",
                                         drawcrossline: "1",
                                         plottooltext: 'Shift Date: $label {br} Downtime: $value minutes',           
-                                        toolTipBorderColor: "#001529",
-                                        toolTipBgColor: "#001529",
-                                        toolTipColor: "#fafafa",
-                                        toolTipBgAlpha: "80",
-                                        showToolTipShadow: "1",
+                                        ...tooltipStyle
                                     },
                                     data: dailyDetails.map(({ shifDate, typeColor, totalDowntime }) => ({ 
                                         label: moment(shifDate).format('MM/DD/YYYY'),

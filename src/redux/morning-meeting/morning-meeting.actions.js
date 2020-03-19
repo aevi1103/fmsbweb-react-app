@@ -571,3 +571,8 @@ export const resetDowntimeByLine = () => ({
         lineDetails: []
     }
 })
+
+export const setPerformaceSelectedDepartment = dept => ({
+    type: morningMeetingTypes.SET_DEPARTMENT_SELECT,
+    payload: dept
+})

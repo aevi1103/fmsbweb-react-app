@@ -10,6 +10,10 @@ import ReactFC from 'react-fusioncharts';
 import CustomSpinner from '../../components/custom-spinner/custom-spinner.component'
 import Error from '../../components/error-empty-container/error-empty-container.component'
 
+import {
+    tooltipStyle
+} from '../../helpers/chart-config'
+
 import { Typography } from 'antd';
 const { Text } = Typography;
 
@@ -59,7 +63,8 @@ const OrderStatusChart = ({
                         valueFontColor: "#000000",
                         valueBgColor: "#FFFFFF",
                         valueBgAlpha: "50",
-                        formatNumberScale: "0"
+                        formatNumberScale: "0",
+                        ...tooltipStyle
                     },
                     categories: [
                         {

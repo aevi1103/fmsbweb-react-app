@@ -20,7 +20,7 @@ import {
             defaultValue={defaultValue}
             {...otherState}/>
 
-        <Tooltip placement="top" title={<span>Download Data</span>}>
+        <Tooltip placement="top" title={<span>Click to reload dashboard</span>}>
             <Button type="primary" onClick={onButtonClick}>Go</Button>
         </Tooltip>
         

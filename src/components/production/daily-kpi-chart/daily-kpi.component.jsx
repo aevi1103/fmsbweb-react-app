@@ -9,6 +9,7 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
 import CustomSpinner from '../../custom-spinner/custom-spinner.component';
+import { tooltipStyle } from '../../../helpers/chart-config'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -63,12 +64,7 @@ const DailyKpiChart = ({dailyKpiCollection, isDailyKpiFetching}) => {
                 connectNullData: '1',
                 labelDisplay: 'rotate',
                 slantLabel: '1',
-
-                toolTipBorderColor: "#001529",
-                toolTipBgColor: "#001529",
-                toolTipColor: "#fafafa",
-                toolTipBgAlpha: "80",
-                showToolTipShadow: "1",
+                ...tooltipStyle
             },
             categories: [
                 {

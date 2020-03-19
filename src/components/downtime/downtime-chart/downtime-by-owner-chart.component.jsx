@@ -12,6 +12,8 @@ import {
     resetDowntimeByLine
 } from '../../../redux/morning-meeting/morning-meeting.actions'
 
+import { tooltipStyle } from '../../../helpers/chart-config'
+
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
@@ -54,14 +56,7 @@ const DowntimeByOwnerChart = ({
             useDataPlotColorForLabels: "1",
             showLegend: "1",
             plottooltext: 'Owner: $label {br} Downtime: $value minutes',
-            toolTipBorderColor: "#001529",
-            toolTipBgColor: "#001529",
-            toolTipColor: "#fafafa",
-            toolTipBgAlpha: "80",
-            showToolTipShadow: "1",
-            // paletteColors: "#F44336, #03A9F4, #4CAF50, #FFC107, #795548"
-            // exportEnabled: "1",
-            // exportFileName: "Downtime by Owner"
+            ...tooltipStyle
         },
         data: ownerDetails.map(({type, typeColor, totalDowntime}) => ({ label: type, value: totalDowntime, color: typeColor}))
       };

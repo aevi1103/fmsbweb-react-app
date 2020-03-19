@@ -26,6 +26,7 @@ import {
     onButtonClick,
     onCalendarChange,
     dateRangeValue = null,
+    isRenderButton = true,
     ...otherState
     }) => {
      
@@ -55,9 +56,15 @@ import {
             defaultValue={defaultRange}
             {...otherState} />
 
-        <Tooltip placement="top" title={<span>Download Data</span>}>
-            <Button type="primary" onClick={onButtonClick}>Go</Button>
-        </Tooltip>
+
+        {
+            isRenderButton 
+            ? (<Tooltip placement="top" title={<span>Click to reload dashboard</span>}>
+                    <Button type="primary" onClick={onButtonClick}>Go</Button>
+                </Tooltip>)
+            : null
+        }
+        
         
     </>
 

@@ -8,6 +8,7 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
 import CustomSpinner from '../../custom-spinner/custom-spinner.component';
+import { tooltipStyle } from '../../../helpers/chart-config'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -32,7 +33,8 @@ const MonthlyIncidentRateChart = ({monthlyIncidentRateCollection, isMonthlyIncid
           xAxisName: 'Months',
           yAxisName: 'Incident Rate',
           showValues: '1',
-          theme: 'fusion'
+          theme: 'fusion',
+          ...tooltipStyle
         },
         data: chartData
       };

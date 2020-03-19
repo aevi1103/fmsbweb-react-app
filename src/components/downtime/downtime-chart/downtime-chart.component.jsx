@@ -11,6 +11,10 @@ import {
     resetDowntimeByLine
 } from '../../../redux/morning-meeting/morning-meeting.actions'
 
+import {
+    tooltipStyle
+} from '../../../helpers/chart-config'
+
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
@@ -51,13 +55,7 @@ const DowntimeChart = ({
             showsum: "1",
             plottooltext: 'Shift: $seriesname, Department: $label, Downtime: $value minutes',
             
-            toolTipBorderColor: "#001529",
-            toolTipBgColor: "#001529",
-            toolTipColor: "#fafafa",
-            toolTipBgAlpha: "80",
-            showToolTipShadow: "1",
-            // exportEnabled: "1",
-            // exportFileName: "Downtime by Department and Shift"
+            ...tooltipStyle
         },
         categories: [
             {

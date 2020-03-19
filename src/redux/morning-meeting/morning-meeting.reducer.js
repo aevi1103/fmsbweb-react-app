@@ -71,7 +71,9 @@ const INITIAL_STATE = {
     endDate: previousDayFormatted,
 
     downtimeByOwnerCollection: [],
-    downtimeByLineCollection: []
+    downtimeByLineCollection: [],
+
+    performaceSelectedDepartment: 'Foundry Cell'
 }
 
 const morningMeetingReducer = (state = INITIAL_STATE, action) => {
@@ -482,6 +484,14 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 downtimeByLineCollection: action.payload
+            }
+
+        //selected department for performace page
+        case morningMeetingTypes.SET_DEPARTMENT_SELECT:
+
+            return {
+                ...state,
+                performaceSelectedDepartment: action.payload
             }
     
         default:

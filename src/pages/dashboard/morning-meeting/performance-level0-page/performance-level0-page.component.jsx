@@ -6,8 +6,11 @@ import DateRangePicker from '../../../../components/date-range-picker/date-range
 import { 
     setStartDate,
     setEndDate,
-    fetchScrapVarianceStartAsync
+    fetchScrapVarianceStartAsync,
+    setPerformaceSelectedDepartment
 } from '../../../../redux/morning-meeting/morning-meeting.actions'
+
+import PerformanceLevel0Chart from '../../../../components/performance/performance-level0-chart.component'
 
 import '../morning-meeting.styles.scss'
 
@@ -16,8 +19,12 @@ import {
     Row,
     Col,
     Card,
-    Select
+    Select,
+    Button,
+    Tooltip
  } from "antd";
+
+ import 'tachyons'
 
  const { Option } = Select;
  const { Header, Content } = Layout;
@@ -29,25 +36,46 @@ import {
 
 const PerformanceLevel0Page = ({
     fetchScrapVarianceStartAsync,
-    scrapVarianceCollection,
-    isScrapVarianceFetching
+
+    setPerformaceSelectedDepartment,
+    performaceSelectedDepartment
 }) => {
 
-    const firstOfTheYear = moment().startOf('year').format(dateFormat);
+    const lastTwelveMonths = moment().add(-12, 'month').startOf('quarter').format(dateFormat);
     const previousDay = moment().add(-1, 'days').format(dateFormat);
 
-    const [startFormat, setStartFormat] = useState(firstOfTheYear);
+    const [startFormat, setStartFormat] = useState(lastTwelveMonths);
     const [endFormat, setSendFormat] = useState(previousDay);
-    const [deptValue, setDeptValue] = useState('Foundry Cell');
 
+    const [deptTitle, setDeptTitle] = useState(performaceSelectedDepartment);
+    
     const fetchData = (start = startFormat, end = endFormat) => {
-        fetchScrapVarianceStartAsync(start, end, deptValue);
+        fetchScrapVarianceStartAsync(start, end, performaceSelectedDepartment);
+    }
+
+    const setTitleFn = (dept) => {
+        switch (dept) {
+            case 'Skirt Coat' :
+                return 'Finishing';
+            case 'Foundry Cell' :
+                return 'Foundry';
+            case 'Machine Line':
+                return 'Machining';
+            default:
+                return dept;
+        }
     }
 
     const onClick = () => {
+
         setStartDate(startFormat);
         setEndDate(endFormat);
-        fetchData(startFormat, endFormat, deptValue)
+        setDeptTitle(setTitleFn(performaceSelectedDepartment));
+        fetchData(startFormat, endFormat, performaceSelectedDepartment);
+    }
+
+    const onSelectChange = (value) => {
+        setPerformaceSelectedDepartment(value);
     }
 
     const onCalendarChange = (dates) => {
@@ -59,47 +87,49 @@ const PerformanceLevel0Page = ({
     useEffect(() => {
         document.title = `Performance: L0 - L1`;
         fetchData();
+        setDeptTitle(setTitleFn(performaceSelectedDepartment));
     }, [])
-
-    const scrapVarianceDeptSelectChange = (value) => {
-        setDeptValue(value)
-    }
-
-    const DeptSelect = (
-        <Select defaultValue={deptValue} style={{ width: 120 }} onChange={scrapVarianceDeptSelectChange} value={deptValue}>
-            <Option value="Foundry Cell">Foundry</Option>
-            <Option value="Machine Line">Machining</Option>
-            <Option value="Skirt Coat">Finishing</Option>
-            <Option value="Assembly">Assembly</Option>
-        </Select>
-    )
 
     return (
         <>
             <Header className="pa0 custom-header" >
-                <h2 className="ml3">Performace L0 - L1: {startFormat} - {endFormat} (WIP)</h2>
+                <h2 className="ml3">{deptTitle} Performace L0 - L1: {startFormat} - {endFormat} (WIP)</h2>
             </Header>
     
             <Content className="ma3 mt0">
             
                 <DateRangePicker 
                     dateRangeValue={{startDate: startFormat, endDate: endFormat}}
-                    onButtonClick={onClick}
-                    onCalendarChange={onCalendarChange}/>
+                    onCalendarChange={onCalendarChange}
+                    isRenderButton={false}/>
+
+                <Select 
+                    defaultValue={performaceSelectedDepartment}
+                    style={{ width: 120 }}
+                    onChange={onSelectChange}
+                    className="mr2">
+                    <Option value="Foundry Cell">Foundry</Option>
+                    <Option value="Machine Line">Machining</Option>
+                    <Option value="Skirt Coat">Finishing</Option>
+                    <Option value="Assembly">Assembly</Option>
+                </Select>
+
+                <Tooltip placement="top" title={<span>Click to reload dashboard</span>}>
+                    <Button type="primary" onClick={onClick}>Go</Button>
+                </Tooltip>
 
                 <div className="mt3">
                     <Row gutter={12}>  
 
                         <Col span={8}>
                             <Card 
-                                title="Level 0 - Plant Wide Scrap Variance"
+                                title={`Level 0 - Plant Wide Scrap Variance`}
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
-                                extra={DeptSelect}
-                                loading={isScrapVarianceFetching}
+                                extra={<span>{deptTitle}</span>}
                             >
-
+                                <PerformanceLevel0Chart/>
                             </Card>         
                         </Col>
 
@@ -109,7 +139,6 @@ const PerformanceLevel0Page = ({
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
-                                extra={DeptSelect}
                             >
                             </Card>         
                         </Col>
@@ -135,7 +164,6 @@ const PerformanceLevel0Page = ({
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
-                                extra={DeptSelect}
                             >
                                 
                             </Card>         
@@ -147,7 +175,6 @@ const PerformanceLevel0Page = ({
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
-                                extra={DeptSelect}
                             >
                             </Card>         
                         </Col>
@@ -173,12 +200,12 @@ const PerformanceLevel0Page = ({
 }
 
 const mapDispatchToProps = dispatch => ({
-    fetchScrapVarianceStartAsync: (start, end, area) => dispatch(fetchScrapVarianceStartAsync(start, end, area))
+    fetchScrapVarianceStartAsync: (start, end, area) => dispatch(fetchScrapVarianceStartAsync(start, end, area)),
+    setPerformaceSelectedDepartment: (dept) => dispatch(setPerformaceSelectedDepartment(dept))
 })
 
 const mapStateToProps = ({morningMeeting}) => ({
-    isScrapVarianceFetching: morningMeeting.isScrapVarianceFetching,
-    scrapVarianceCollection: morningMeeting.morningMeeting
+    performaceSelectedDepartment: morningMeeting.performaceSelectedDepartment
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(PerformanceLevel0Page);
