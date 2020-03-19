@@ -1,17 +1,27 @@
 import React from 'react';
 import { Link, withRouter } from "react-router-dom";
-import { Menu, Icon } from "antd";
+
+import {
+  DashboardOutlined,
+  DeploymentUnitOutlined,
+  HomeOutlined,
+  SafetyOutlined,
+  SolutionOutlined,
+  TeamOutlined,
+  ToolOutlined,
+} from '@ant-design/icons';
+
+import { Menu } from "antd";
 
 const { SubMenu } = Menu;
 
 const HomeMenu = ( { location } ) => { 
 
   return (
-
     <Menu theme="dark" defaultSelectedKeys={[location.pathname]} mode="inline">
 
       <Menu.Item key="/">
-        <Icon type="home" />
+        <HomeOutlined />
         <span>Home</span>
         <Link to="/" />
       </Menu.Item>
@@ -20,7 +30,7 @@ const HomeMenu = ( { location } ) => {
         key="dashboard"
         title={
           <span>
-            <Icon type="dashboard" />
+            <DashboardOutlined />
             <span>Dashboard</span>
           </span>
         }
@@ -48,7 +58,7 @@ const HomeMenu = ( { location } ) => {
         key="safety"
         title={
           <span>
-            <Icon type="safety" />
+            <SafetyOutlined />
             <span>Safety</span>
           </span>
         }
@@ -63,7 +73,7 @@ const HomeMenu = ( { location } ) => {
         key="foundryTeam"
         title={
           <span>
-            <Icon type="team" />
+            <TeamOutlined />
             <span>Foundry</span>
           </span>
         }
@@ -80,7 +90,7 @@ const HomeMenu = ( { location } ) => {
         key="machTeam"
         title={
           <span>
-            <Icon type="team" />
+            <TeamOutlined />
             <span>Machining</span>
           </span>
         }
@@ -97,7 +107,7 @@ const HomeMenu = ( { location } ) => {
         key="afteam"
         title={
           <span>
-            <Icon type="team" />
+            <TeamOutlined />
             <span>A&F</span>
           </span>
         }
@@ -118,7 +128,7 @@ const HomeMenu = ( { location } ) => {
         key="maintTeam"
         title={
           <span>
-          <Icon type="deployment-unit" />
+          <DeploymentUnitOutlined />
             <span>Maintenance</span>
           </span>
         }
@@ -132,7 +142,7 @@ const HomeMenu = ( { location } ) => {
         key="qaTeam"
         title={
           <span>
-          <Icon type="solution" />
+          <SolutionOutlined />
             <span>Quality</span>
           </span>
         }
@@ -147,7 +157,7 @@ const HomeMenu = ( { location } ) => {
         key="engTeam"
         title={
           <span>
-          <Icon type="tool" />
+          <ToolOutlined />
             <span>Engineering</span>
           </span>
         }
@@ -157,8 +167,7 @@ const HomeMenu = ( { location } ) => {
       </SubMenu>
       
     </Menu>
-
-) 
+  ); 
 }
 
 export default withRouter(HomeMenu);
