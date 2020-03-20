@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment'
-import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
+import 'tachyons'
 
 import { 
-    setStartDate,
-    setEndDate,
     fetchScrapVarianceStartAsync,
     setPerformaceSelectedDepartment
 } from '../../../../redux/morning-meeting/morning-meeting.actions'
 
 import PerformanceLevel0Chart from '../../../../components/performance/performance-level0-chart.component'
-
+import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
 import '../morning-meeting.styles.scss'
 
 import { 
@@ -21,13 +19,14 @@ import {
     Card,
     Select,
     Button,
-    Tooltip
+    Tooltip,
+    DatePicker 
  } from "antd";
-
- import 'tachyons'
 
  const { Option } = Select;
  const { Header, Content } = Layout;
+ const { RangePicker } = DatePicker;
+
  const dateFormat = 'MM/DD/YYYY';
 
  const cardHeightStyle = {
@@ -41,47 +40,68 @@ const PerformanceLevel0Page = ({
     performaceSelectedDepartment
 }) => {
 
-    const lastTwelveMonths = moment().add(-12, 'month').startOf('quarter').format(dateFormat);
     const previousDay = moment().add(-1, 'days').format(dateFormat);
 
-    const [startFormat, setStartFormat] = useState(lastTwelveMonths);
-    const [endFormat, setSendFormat] = useState(previousDay);
+    //date range for quartery charts
+    const lastTwelveMonths = moment().add(-12, 'month').startOf('quarter').format(dateFormat);
+    const [monthStartFormart, setMonthStartFormat] = useState(lastTwelveMonths);
+    const [monthEndFormat, setMonthEndFormat] = useState(previousDay);
+
+    //date range for non quarterly charts
+    const startOfTheMonth = moment().startOf('month');
+    const [dateStartFormat, setDateStartFormat] = useState(startOfTheMonth);
+    const [dateEndFormat, setDateEndFormat] = useState(previousDay);
 
     const [deptTitle, setDeptTitle] = useState(performaceSelectedDepartment);
     
-    const fetchData = (start = startFormat, end = endFormat) => {
+    const fetchData = (start = monthStartFormart, end = monthEndFormat) => {
         fetchScrapVarianceStartAsync(start, end, performaceSelectedDepartment);
     }
 
     const setTitleFn = (dept) => {
         switch (dept) {
             case 'Skirt Coat' :
-                return 'Finishing';
+                return 'Finishing Scrap';
             case 'Foundry Cell' :
-                return 'Foundry';
+                return 'Foundry Scrap';
             case 'Machine Line':
-                return 'Machining';
+                return 'Machining Scrap';
             default:
-                return dept;
+                return dept + ' Scrap';
         }
     }
 
     const onClick = () => {
-
-        setStartDate(startFormat);
-        setEndDate(endFormat);
         setDeptTitle(setTitleFn(performaceSelectedDepartment));
-        fetchData(startFormat, endFormat, performaceSelectedDepartment);
+        fetchData(monthStartFormart, monthEndFormat, performaceSelectedDepartment);
     }
+
+    function disabledDate(current) {
+        return current && current > moment().endOf('day');
+      }
 
     const onSelectChange = (value) => {
         setPerformaceSelectedDepartment(value);
     }
 
-    const onCalendarChange = (dates) => {
-        const [start, end] = dates;
-        setStartFormat(start ? start.format(dateFormat) : null);
-        setSendFormat(end ? end.format(dateFormat) : null);  
+    const onMonthChange = (date, dateString) => {
+
+        let [start, end] = date;
+        const [startStr, endStr] = dateString;
+        const currentMonthYear = moment().format('YYYY-MM');
+
+        if (endStr === currentMonthYear) {
+            end = moment().add(-1, 'days');
+        } else {
+            end = end.endOf('month');
+        }
+
+        setMonthStartFormat(start ? start.format(dateFormat) : null);
+        setMonthEndFormat(end ? end.format(dateFormat) : null);  
+    }
+
+    const onCalendarChange = (date, dateString) => {
+        const [start, end] = date;
     }
 
     useEffect(() => {
@@ -93,28 +113,47 @@ const PerformanceLevel0Page = ({
     return (
         <>
             <Header className="pa0 custom-header" >
-                <h2 className="ml3">{deptTitle} Performace L0 - L1: {startFormat} - {endFormat} (WIP)</h2>
+                <h2 className="ml3">{deptTitle} Performace L0 - L1: {monthStartFormart} - {monthEndFormat} (WIP)</h2>
             </Header>
     
             <Content className="ma3 mt0">
             
-                <span className="mr2">Quarterly Chart Date Range:</span>
-                <Tooltip className="mr2" placement="top" title={<span>Update date range for quarterly charts</span>}>
-                    <DateRangePicker 
-                        dateRangeValue={{startDate: startFormat, endDate: endFormat}}
-                        onCalendarChange={onCalendarChange}
-                        isRenderButton={false}/>
-                </Tooltip>
+                <Tooltip placement="top" title={
+                    (<div>
+                        <b>Update Charts:</b>
+                        <ul>
+                            <li>Plant Wide Scrap Variance</li>
+                            <li>PPMH Plant Wide Variance</li>
+                            <li>PPMH Variance per Dept</li>
+                        </ul>
+                    </div>)}>
 
-                <span className="mr2">Date Range:</span>
-                <Tooltip className="mr2" placement="top" title={<span>Update date range for other charts</span>}>
-                    <DateRangePicker 
-                        dateRangeValue={{startDate: startFormat, endDate: endFormat}}
-                        onCalendarChange={onCalendarChange}
-                        isRenderButton={false}/>
+                    <span className="mr2">Month Range:</span>
                 </Tooltip>
+                <RangePicker picker="month" onChange={onMonthChange} className="mr2" disabledDate={disabledDate}
+                    defaultValue={[
+                        moment(monthStartFormart, dateFormat),
+                        moment(monthEndFormat, dateFormat)
+                    ]} />
+
+                <Tooltip placement="top" title={
+                    (<div>
+                        <b>Update Charts:</b>
+                        <ul>
+                            <li>Plant OAE, Downtime, Scrap</li>
+                            <li>Plant Wide Scrap Variace per Program</li>
+                            <li>Downtime per Dept</li>
+                        </ul>
+                    </div>)}>
+
+                    <span className="mr2">Date Range:</span>
+                </Tooltip>
+                <DateRangePicker 
+                    dateRangeValue={{startDate: dateStartFormat, endDate: dateEndFormat}}
+                    onCalendarChange={onCalendarChange}
+                    isRenderButton={false}/>
                 
-                <Tooltip placement="top" title={<span>Update department</span>}>
+                <Tooltip placement="top" title={<span>Scrap Type</span>}>
                     <Select 
                         defaultValue={performaceSelectedDepartment}
                         style={{ width: 120 }}
@@ -126,7 +165,7 @@ const PerformanceLevel0Page = ({
                         <Option value="Assembly">Assembly</Option>
                     </Select>
                 </Tooltip>
-                
+                                
                 <Tooltip placement="top" title={<span>Click to reload dashboard</span>}>
                     <Button type="primary" onClick={onClick}>Go</Button>
                 </Tooltip>
@@ -144,7 +183,20 @@ const PerformanceLevel0Page = ({
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
-                                extra={<span>{deptTitle}</span>}
+                                extra={
+                                    <div>
+                                        <Select 
+                                            defaultValue="SB Scrap"
+                                            bordered={false}
+                                            size="small"
+                                            style={{ width: '150px' }}
+                                            className="mr2">
+                                            <Option value="Sb Scrap">Sb Scrap</Option>
+                                            <Option value="Purchased Scrap">Purchased Scrap</Option>
+                                        </Select>
+                                        <span>{deptTitle}</span>
+                                    </div>
+                                }
                             >
                                 <PerformanceLevel0Chart/>
                             </Card>         

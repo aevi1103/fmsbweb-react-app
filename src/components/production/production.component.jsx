@@ -309,7 +309,7 @@ const fontGreen = {
                             <Statistic title="Purchase Scrap %" value={numeral(_purchasedScrapRate).format('0.00%')} valueStyle={{color: _scrapByCodeColorCode}} />
                         </Col>
                     </Row>
-                    <Collapse bordered={false}>
+                    <Collapse>
 
                         <Panel header="SB Scrap Details" key="1">                     
                             <ScrapByCodeTable 
@@ -331,8 +331,7 @@ const fontGreen = {
 
             <Col span={6}>
                 <Card 
-                    title="Production Details"
-                    bordered={false} size="small"
+                    title="Production Details" size="small"
                     className="mb3"
                     loading={isProdStatusFetching}
                 >
@@ -369,7 +368,7 @@ const fontGreen = {
                         </Col>
                     </Row>
 
-                    <Collapse bordered={false}>                 
+                    <Collapse>                 
                         <Panel header="SAP Production by Type Details" key="1">
                             <ProductionByTypeTable 
                                 prodData={_prodByTypeList}
@@ -425,7 +424,7 @@ const fontGreen = {
                         </Col>
                     </Row>
 
-                    <Collapse bordered={false}>                 
+                    <Collapse>                 
                         <Panel header="Labor Hours Details" key="1">
                             <LaborHoursTable 
                                 laborHoursData={_laborHoursDetails}
@@ -475,7 +474,7 @@ const fontGreen = {
                         : <Empty/>
                     }
 
-                    <Collapse bordered={false}>
+                    <Collapse>
 
                         <Panel header="SB Scrap Details" key="1">                     
                             <ScrapByCodeTable 

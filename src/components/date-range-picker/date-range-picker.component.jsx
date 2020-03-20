@@ -10,17 +10,6 @@ import {
  const { RangePicker } = DatePicker;
  const dateFormat = 'MM/DD/YYYY';
 
-//  const ranges = {
-//     'Today': [moment(), moment()],
-//     'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-//     'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-//     'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-//     'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-//     'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-//     'This Month': [moment().startOf('month'), moment().endOf('month')],
-//     'This Year': [moment().startOf('year'), moment().endOf('year')]
-//  }
-
  const DateRangePicker = ({
     defaultValue,
     onButtonClick,
@@ -43,6 +32,11 @@ import {
         ];
     }
 
+    function disabledDate(current) {
+        // Can not select days before today and today
+        return current && current > moment().endOf('day');
+      }
+
     return (
 
     <>
@@ -58,6 +52,16 @@ import {
             format={dateFormat}
             onCalendarChange={onCalendarChange}
             defaultValue={defaultRange}
+            disabledDate={disabledDate}
+            ranges={{
+                'Today': [moment(), moment()],
+                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                'Last Week': [moment().subtract(6, 'days').startOf('week'), moment().subtract(6, 'days').endOf('week')],
+                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                'Last 30 days': [moment().subtract(30, 'days').startOf('month'), moment()],
+                'MTD': [moment().startOf('month'), moment().add(-1, 'days')],
+                'YTD': [moment().startOf('year'), moment().add(-1, 'days')]
+              }}
             {...otherState} />
 
 

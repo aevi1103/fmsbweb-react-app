@@ -52,7 +52,7 @@ const PerformanceLevel0Chart = ({
           ],
         dataset: [
             {
-                seriesname: "Scrap %",
+                seriesname: "SB Scrap %",
                 color: "#e74d3d",
                 data: collection.map(({ scrapRate, key }) => ({ 
                     value: (scrapRate * 100).toFixed(2),
@@ -90,7 +90,7 @@ const PerformanceLevel0Chart = ({
                   ],
                 dataset: [
                     {
-                        seriesname: "Scrap %",
+                        seriesname: "SB Scrap %",
                         color: "#e74d3d",
                         data: monthDetails.map(({ scrapRate, key }) => ({ 
                             value: (scrapRate * 100).toFixed(1),
@@ -128,7 +128,7 @@ const PerformanceLevel0Chart = ({
                         ],
                         dataset: [
                             {
-                                seriesname: "Scrap %",
+                                seriesname: "SB Scrap %",
                                 color: "#e74d3d",
                                 data: weekDetails.map(({ scrapRate }) => ({ 
                                     value: (scrapRate * 100).toFixed(1)
@@ -149,7 +149,7 @@ const PerformanceLevel0Chart = ({
         dataSource: dataSource
       };
 
-      console.log({chartConfigs, collection, scrapVarianceCollection})
+    //   console.log({chartConfigs, collection, scrapVarianceCollection})
 
     return isScrapVarianceFetching ? <CustomSpinner/> : <ReactFC {...chartConfigs} />
 }
