@@ -460,7 +460,7 @@ export const fetchQualityStartAsync = (date) => {
 }
 
 //quality
-export const fetchScrapVarianceStartAsync = (start, end, area) => {
+export const fetchScrapVarianceStartAsync = (start, end, area, isPurchasedScrap = 'Sb Scrap') => {
 
     return dispatch => {
 
@@ -472,7 +472,8 @@ export const fetchScrapVarianceStartAsync = (start, end, area) => {
             params: {
                 start,
                 end,
-                area
+                area,
+                isPurchasedScrap: isPurchasedScrap === 'SB' ? false : true
             }
         })
         .then(response => {
@@ -494,7 +495,7 @@ export const fetchScrapVarianceStartAsync = (start, end, area) => {
 }
 
 //downtime
-export const fetchDowntimeStartAsync = (start, end, dept = '', line = '', shift = '') => {
+export const fetchDowntimeStartAsync = (start, end) => {
 
     return dispatch => {
 
@@ -506,8 +507,8 @@ export const fetchDowntimeStartAsync = (start, end, dept = '', line = '', shift 
             
         api.get(url, {
             params: {
-                Start: start,
-                End: end,
+                start,
+                end,
                 // Dept: dept,
                 // Line: line,
                 // Shift: shift

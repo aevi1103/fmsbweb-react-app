@@ -10,6 +10,7 @@ import {
 
 import PerformanceLevel0Chart from '../../../../components/performance/performance-level0-chart.component'
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
+import SelectScrapType from '../../../../components/select-scrap-type/seclect-scrap-type.components'
 import '../morning-meeting.styles.scss'
 
 import { 
@@ -41,6 +42,8 @@ const PerformanceLevel0Page = ({
 }) => {
 
     const previousDay = moment().add(-1, 'days').format(dateFormat);
+    const scrapTypeDefault = 'SB';
+    /** Hooks */
 
     //date range for quartery charts
     const lastTwelveMonths = moment().add(-12, 'month').startOf('quarter').format(dateFormat);
@@ -52,10 +55,15 @@ const PerformanceLevel0Page = ({
     const [dateStartFormat, setDateStartFormat] = useState(startOfTheMonth);
     const [dateEndFormat, setDateEndFormat] = useState(previousDay);
 
-    const [deptTitle, setDeptTitle] = useState(performaceSelectedDepartment);
-    
-    const fetchData = (start = monthStartFormart, end = monthEndFormat) => {
-        fetchScrapVarianceStartAsync(start, end, performaceSelectedDepartment);
+    //scrap area name title
+    const [scrapAreaNameTitle, setScrapAreaNameTitle] = useState(performaceSelectedDepartment);
+
+    //scrap type
+    const [scrapVarianceScrapType, setScrapVarianceScrapType] = useState(scrapTypeDefault);
+
+    const fetchData = (start = monthStartFormart, end = monthEndFormat, scrapType = scrapVarianceScrapType) => {
+        fetchScrapVarianceStartAsync(start, end, 
+            performaceSelectedDepartment, scrapType);
     }
 
     const setTitleFn = (dept) => {
@@ -71,14 +79,13 @@ const PerformanceLevel0Page = ({
         }
     }
 
-    const onClick = () => {
-        setDeptTitle(setTitleFn(performaceSelectedDepartment));
-        fetchData(monthStartFormart, monthEndFormat, performaceSelectedDepartment);
-    }
+    const disabledDate = (current) => current && current > moment().endOf('day');
 
-    function disabledDate(current) {
-        return current && current > moment().endOf('day');
-      }
+    //events handlers
+    const onClick = () => {
+        setScrapAreaNameTitle(setTitleFn(performaceSelectedDepartment));
+        fetchData(monthStartFormart, monthEndFormat);
+    }
 
     const onSelectChange = (value) => {
         setPerformaceSelectedDepartment(value);
@@ -104,16 +111,21 @@ const PerformanceLevel0Page = ({
         const [start, end] = date;
     }
 
+    const onScrapVarianceSelectChange = (value) => {
+        setScrapVarianceScrapType(value);
+        fetchData(monthStartFormart, monthEndFormat, value);
+    }
+
     useEffect(() => {
         document.title = `Performance: L0 - L1`;
         fetchData();
-        setDeptTitle(setTitleFn(performaceSelectedDepartment));
+        setScrapAreaNameTitle(setTitleFn(performaceSelectedDepartment));
     }, [])
 
     return (
         <>
             <Header className="pa0 custom-header" >
-                <h2 className="ml3">{deptTitle} Performace L0 - L1: {monthStartFormart} - {monthEndFormat} (WIP)</h2>
+                <h2 className="ml3">{scrapAreaNameTitle} Performace L0 - L1: {monthStartFormart} - {monthEndFormat} (WIP)</h2>
             </Header>
     
             <Content className="ma3 mt0">
@@ -183,20 +195,10 @@ const PerformanceLevel0Page = ({
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
-                                extra={
-                                    <div>
-                                        <Select 
-                                            defaultValue="SB Scrap"
-                                            bordered={false}
-                                            size="small"
-                                            style={{ width: '150px' }}
-                                            className="mr2">
-                                            <Option value="Sb Scrap">Sb Scrap</Option>
-                                            <Option value="Purchased Scrap">Purchased Scrap</Option>
-                                        </Select>
-                                        <span>{deptTitle}</span>
-                                    </div>
-                                }
+                                extra={<div>
+                                            <SelectScrapType onChange={onScrapVarianceSelectChange} />
+                                            <span>{scrapAreaNameTitle}</span>
+                                        </div>}
                             >
                                 <PerformanceLevel0Chart/>
                             </Card>         
@@ -269,7 +271,7 @@ const PerformanceLevel0Page = ({
 }
 
 const mapDispatchToProps = dispatch => ({
-    fetchScrapVarianceStartAsync: (start, end, area) => dispatch(fetchScrapVarianceStartAsync(start, end, area)),
+    fetchScrapVarianceStartAsync: (start, end, area, isPurchasedScrap) => dispatch(fetchScrapVarianceStartAsync(start, end, area, isPurchasedScrap)),
     setPerformaceSelectedDepartment: (dept) => dispatch(setPerformaceSelectedDepartment(dept))
 })
 
