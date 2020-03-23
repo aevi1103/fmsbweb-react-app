@@ -19,13 +19,13 @@ const numberFormat = '0,0.00';
 
 const MonthlyIncidentRateChart = ({weeklyLaborHrsCollection, isWeeklyLaborHrsFetching}) => {
 
-    const chartData = !weeklyLaborHrsCollection ? [] : weeklyLaborHrsCollection.map(({weekNumber, details: { ppmh, 
+    const chartData = !weeklyLaborHrsCollection ? [] : weeklyLaborHrsCollection.map(({weekNumber, yearWeekNumber, details: { ppmh, 
                 regular, overtime, doubleTime, orientation, overAll, sapGross } }) => 
         (
             {
-                label: `Wk${weekNumber}`,
+                label: yearWeekNumber,
                 value: numeral(ppmh).format(numberFormat),
-                toolText: `<b>Week Number: </b> ${weekNumber} <br>
+                toolText: `<b>Week Number: </b> ${yearWeekNumber} <br>
                             <b>Regular: </b> ${numeral(regular).format(numberFormat)} <br>
                             <b>Overtime: </b> ${numeral(overtime).format(numberFormat)} <br>
                             <b>Double TIme: </b> ${numeral(doubleTime).format(numberFormat)} <br>

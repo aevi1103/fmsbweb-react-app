@@ -28,14 +28,23 @@ const DailyKpiChart = ({dailyKpiCollection, isDailyKpiFetching}) => {
         const renderValue = ({ sapOae, scrapRate, downtimeRate }, key) => {
             
             if (key === 'OAE %') {
-                return sapOae > 1 ? 1 : sapOae
+                if (sapOae > 1) return 1;
+                if (sapOae < 0) return 0;
+                return sapOae;
             }
 
             if (key === 'Scrap % by Dept') {
-                return scrapRate
+                if (scrapRate > 1) return 1;
+                if (scrapRate < 0) return 0        
+                return scrapRate; 
             }
 
-            return downtimeRate
+            if (key === 'Downtime %') {
+                if (downtimeRate > 1) return 1;
+                if (downtimeRate < 0) return 0        
+                return downtimeRate;
+            }
+            
         }
 
         // transform datasetbykey to a object that fusion chart understands

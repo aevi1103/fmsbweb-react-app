@@ -529,6 +529,40 @@ export const fetchScrapVariancePerProgramStartAsync = (start, end, area, isPurch
     }
 }
 
+//PPMH variance per program
+export const fetchPpmhPerDeptStartAsync = (start, end, area) => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_PPMH_PER_DEPT_START))
+
+        const url = 'ppmh/ppmhperdept'
+        api.get(url, {
+            params: {
+                start,
+                end,
+                area
+            }
+        })
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_PPMH_PER_DEPT_SUCCESS,
+                response.data))
+
+        })
+        .catch(error => {
+            
+            dispatch(fetchFailure(
+                morningMeetingTypes.FETCH_PPMH_PER_DEPT_FAILURE,
+                error.message))
+        
+        })
+
+    }
+}
+
 //downtime
 export const fetchDowntimeStartAsync = (start, end) => {
 

@@ -6,13 +6,14 @@ import 'tachyons'
 import { 
     fetchScrapVarianceStartAsync,
     fetchScrapVariancePerProgramStartAsync,
-
-    setPerformaceSelectedDepartment
+    setPerformaceSelectedDepartment,
+    fetchPpmhPerDeptStartAsync
 } from '../../../../redux/morning-meeting/morning-meeting.actions'
 
 //level 0 charts
-import ScrapVarianceChart from '../../../../components/performance/level-0/scrap-variance-chart'
-import ScrapVarianceChartPerProgram from '../../../../components/performance/level-1/scrap-variance-per-program-chart'
+import ScrapVarianceChart from '../../../../components/performance/level-0/scrap-variance-chart.component'
+import ScrapVarianceChartPerProgram from '../../../../components/performance/level-1/scrap-variance-per-program-chart.component'
+import PpmhVariancePerDeptChart from '../../../../components/performance/level-1/ppmh-variance-per-dept-chart.component'
 
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
 import SelectScrapType from '../../../../components/select-scrap-type/seclect-scrap-type.components'
@@ -42,6 +43,7 @@ import {
 const PerformanceLevel0Page = ({
     fetchScrapVarianceStartAsync,
     fetchScrapVariancePerProgramStartAsync,
+    fetchPpmhPerDeptStartAsync,
 
     setPerformaceSelectedDepartment,
     performaceSelectedDepartment
@@ -70,10 +72,11 @@ const PerformanceLevel0Page = ({
 
     const fetchQuarterly = (start = monthStartFormart, end = monthEndFormat, scrapType = scrapVarianceScrapType) => {
         fetchScrapVarianceStartAsync(start, end, performaceSelectedDepartment, scrapType); 
+        fetchPpmhPerDeptStartAsync(start, end, performaceSelectedDepartment);
     }
     
     const fetch = (start = dateStartFormat, end = dateEndFormat, scrapType = scrapVariancePerProgScrapType) => {
-        fetchScrapVariancePerProgramStartAsync(start, end, performaceSelectedDepartment, scrapType);
+        fetchScrapVariancePerProgramStartAsync(start, end, performaceSelectedDepartment, scrapType);      
     }
 
     const setTitleFn = (dept) => {
@@ -210,7 +213,7 @@ const PerformanceLevel0Page = ({
 
                         <Col span={8}>
                             <Card 
-                                title={`Lvl 0 - ${scrapAreaNameTitle} Plant Wide Scrap Variance (${monthStartFormart} - ${monthEndFormat})`}
+                                title={`Lvl 0: ${scrapAreaNameTitle} Plant Wide Scrap Variance (${monthStartFormart} - ${monthEndFormat})`}
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
@@ -248,7 +251,7 @@ const PerformanceLevel0Page = ({
 
                         <Col span={8}>
                             <Card 
-                                title={`Lvl 1 - ${scrapAreaNameTitle} Plant Wide Scrap Variance per Program (${dateStartFormat} - ${dateEndFormat})`}
+                                title={`Lvl 1: ${scrapAreaNameTitle} Plant Wide Scrap Variance per Program (${dateStartFormat} - ${dateEndFormat})`}
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
@@ -260,17 +263,18 @@ const PerformanceLevel0Page = ({
 
                         <Col span={8}>
                             <Card 
-                                title="Level 1 - PPMH Plant Wide Variance per Department"
+                                title={`Lvl 1: ${scrapAreaNameTitle} PPMH Plant Wide Variance per Department (${monthStartFormart} - ${monthEndFormat})`}
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
                             >
+                                <PpmhVariancePerDeptChart/>
                             </Card>         
                         </Col>
 
                         <Col span={8}>
                             <Card 
-                                title="Level 1 - Downtime per Department"
+                                title="Level 0 - Downtime per Department"
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
@@ -291,6 +295,7 @@ const PerformanceLevel0Page = ({
 const mapDispatchToProps = dispatch => ({
     fetchScrapVarianceStartAsync: (start, end, area, isPurchasedScrap) => dispatch(fetchScrapVarianceStartAsync(start, end, area, isPurchasedScrap)),
     fetchScrapVariancePerProgramStartAsync: (start, end, area, isPurchasedScrap) => dispatch(fetchScrapVariancePerProgramStartAsync(start, end, area, isPurchasedScrap)),
+    fetchPpmhPerDeptStartAsync: (start, end, area) => dispatch(fetchPpmhPerDeptStartAsync(start, end, area)),
     setPerformaceSelectedDepartment: (dept) => dispatch(setPerformaceSelectedDepartment(dept))
 })
 

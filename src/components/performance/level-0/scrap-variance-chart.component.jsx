@@ -33,16 +33,26 @@ const ScrapVarianceChart = ({
         
     },[collection, scrapVarianceCollection]);
 
+    const chartProps = {
+        showValues: '1',
+        theme: 'fusion',
+        drawcrossline: "1",
+        numbersuffix: "%",
+        showsum: "1",
+    }
+
+    const targetLineProps = {
+        anchorRadius: "0",
+        dashed: "1",
+        showValue: "0"
+    }
+
     const dataSource = {
         chart: {
             xAxisName: 'Quarter',
             yAxisName: 'Percentage (%)',
-            showValues: '1',
-            theme: 'fusion',
-            drawcrossline: "1",
-            numbersuffix: "%",
-            showsum: "1",
-            plottooltext: '$seriesname, Quarter: $label, Scrap %: $value %',        
+            plottooltext: '$seriesname, Quarter: $label, Scrap %: $value %',  
+            ...chartProps,
             ...tooltipStyle
         },
         categories: [
@@ -56,14 +66,15 @@ const ScrapVarianceChart = ({
                 color: "#e74d3d",
                 data: collection.map(({ scrapRate, key }) => ({ 
                     value: (scrapRate * 100).toFixed(2),
-                    link: `newchart-xml-${key}` 
+                    link: `newchart-xml-${key}`               
                 }))
             },
             {
               seriesname: "Target",
               color: "#18bc9c",
               data: collection.map(({ target }) => ({ 
-                  value: (target * 100).toFixed(2)
+                  value: (target * 100).toFixed(2),
+                  ...targetLineProps
                 }))
             }          
         ],
@@ -74,13 +85,8 @@ const ScrapVarianceChart = ({
                     caption: `${quarter} Monthly Scrap Rate`,
                     xAxisName: 'Month',
                     yAxisName: 'Percentage (%)',
-                    showValues: '1',
-                    theme: 'fusion',
-                    drawcrossline: "1",
-                    numbersuffix: "%",
-                    showsum: "1",
-                    plottooltext: '$seriesname, Month: $label, Scrap %: $value %',
-                    
+                    plottooltext: '$seriesname, Month: $label, Scrap %: $value %',            
+                    ...chartProps,
                     ...tooltipStyle
                 },
                 categories: [
@@ -94,15 +100,16 @@ const ScrapVarianceChart = ({
                         color: "#e74d3d",
                         data: monthDetails.map(({ scrapRate, key }) => ({ 
                             value: (scrapRate * 100).toFixed(1),
-                            link: `newchart-xml-${key}` 
+                            link: `newchart-xml-${key}`
                         }))
                     },
                     {
                         seriesname: "Target",
                         color: "#18bc9c",
                         data: monthDetails.map(({ target }) => ({ 
-                            value: (target * 100).toFixed(1)
-                            }))
+                            value: (target * 100).toFixed(1),
+                            ...targetLineProps
+                        }))
                     }
                 ],
                 linkeddata: monthDetails.map(({ key, monthName, weekDetails }) => ({
@@ -112,13 +119,8 @@ const ScrapVarianceChart = ({
                             caption: `${monthName} Weekly Scrap Rate`,
                             xAxisName: 'Week Number',
                             yAxisName: 'Percentage (%)',
-                            showValues: '1',
-                            theme: 'fusion',
-                            drawcrossline: "1",
-                            numbersuffix: "%",
-                            showsum: "1",
                             plottooltext: '$seriesname, Week: $label, Scrap %: $value %',
-                            
+                            ...chartProps,
                             ...tooltipStyle
                         },
                         categories: [
