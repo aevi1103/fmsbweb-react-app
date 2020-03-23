@@ -5,10 +5,15 @@ import 'tachyons'
 
 import { 
     fetchScrapVarianceStartAsync,
+    fetchScrapVariancePerProgramStartAsync,
+
     setPerformaceSelectedDepartment
 } from '../../../../redux/morning-meeting/morning-meeting.actions'
 
-import PerformanceLevel0Chart from '../../../../components/performance/performance-level0-chart.component'
+//level 0 charts
+import ScrapVarianceChart from '../../../../components/performance/level-0/scrap-variance-chart'
+import ScrapVarianceChartPerProgram from '../../../../components/performance/level-1/scrap-variance-per-program-chart'
+
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
 import SelectScrapType from '../../../../components/select-scrap-type/seclect-scrap-type.components'
 import '../morning-meeting.styles.scss'
@@ -36,6 +41,7 @@ import {
 
 const PerformanceLevel0Page = ({
     fetchScrapVarianceStartAsync,
+    fetchScrapVariancePerProgramStartAsync,
 
     setPerformaceSelectedDepartment,
     performaceSelectedDepartment
@@ -51,7 +57,7 @@ const PerformanceLevel0Page = ({
     const [monthEndFormat, setMonthEndFormat] = useState(previousDay);
 
     //date range for non quarterly charts
-    const startOfTheMonth = moment().startOf('month');
+    const startOfTheMonth = moment().startOf('month').format(dateFormat);
     const [dateStartFormat, setDateStartFormat] = useState(startOfTheMonth);
     const [dateEndFormat, setDateEndFormat] = useState(previousDay);
 
@@ -60,10 +66,14 @@ const PerformanceLevel0Page = ({
 
     //scrap type
     const [scrapVarianceScrapType, setScrapVarianceScrapType] = useState(scrapTypeDefault);
+    const [scrapVariancePerProgScrapType, setScrapVariancePerProgScrapType] = useState(scrapTypeDefault);
 
-    const fetchData = (start = monthStartFormart, end = monthEndFormat, scrapType = scrapVarianceScrapType) => {
-        fetchScrapVarianceStartAsync(start, end, 
-            performaceSelectedDepartment, scrapType);
+    const fetchQuarterly = (start = monthStartFormart, end = monthEndFormat, scrapType = scrapVarianceScrapType) => {
+        fetchScrapVarianceStartAsync(start, end, performaceSelectedDepartment, scrapType); 
+    }
+    
+    const fetch = (start = dateStartFormat, end = dateEndFormat, scrapType = scrapVariancePerProgScrapType) => {
+        fetchScrapVariancePerProgramStartAsync(start, end, performaceSelectedDepartment, scrapType);
     }
 
     const setTitleFn = (dept) => {
@@ -84,7 +94,8 @@ const PerformanceLevel0Page = ({
     //events handlers
     const onClick = () => {
         setScrapAreaNameTitle(setTitleFn(performaceSelectedDepartment));
-        fetchData(monthStartFormart, monthEndFormat);
+        fetchQuarterly(monthStartFormart, monthEndFormat);
+        fetch(dateStartFormat, dateEndFormat);
     }
 
     const onSelectChange = (value) => {
@@ -109,23 +120,31 @@ const PerformanceLevel0Page = ({
 
     const onCalendarChange = (date, dateString) => {
         const [start, end] = date;
+        setDateStartFormat(start ? start.format(dateFormat) : null);
+        setDateEndFormat(end ? end.format(dateFormat) : null);  
     }
 
     const onScrapVarianceSelectChange = (value) => {
         setScrapVarianceScrapType(value);
-        fetchData(monthStartFormart, monthEndFormat, value);
+        fetchQuarterly(monthStartFormart, monthEndFormat, value);
+    }
+
+    const onScrapVariancePerProgSelectChange = (value) => {
+        setScrapVariancePerProgScrapType(value);
+        fetch(dateStartFormat, dateEndFormat, value);
     }
 
     useEffect(() => {
         document.title = `Performance: L0 - L1`;
-        fetchData();
+        fetchQuarterly();
+        fetch();
         setScrapAreaNameTitle(setTitleFn(performaceSelectedDepartment));
     }, [])
 
     return (
         <>
             <Header className="pa0 custom-header" >
-                <h2 className="ml3">{scrapAreaNameTitle} Performace L0 - L1: {monthStartFormart} - {monthEndFormat} (WIP)</h2>
+                <h2 className="ml3">{scrapAreaNameTitle} Performace L0 - L1</h2>
             </Header>
     
             <Content className="ma3 mt0">
@@ -191,16 +210,13 @@ const PerformanceLevel0Page = ({
 
                         <Col span={8}>
                             <Card 
-                                title={`Level 0 - Plant Wide Scrap Variance`}
+                                title={`Lvl 0 - ${scrapAreaNameTitle} Plant Wide Scrap Variance (${monthStartFormart} - ${monthEndFormat})`}
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
-                                extra={<div>
-                                            <SelectScrapType onChange={onScrapVarianceSelectChange} />
-                                            <span>{scrapAreaNameTitle}</span>
-                                        </div>}
+                                extra={<SelectScrapType onChange={onScrapVarianceSelectChange} />}
                             >
-                                <PerformanceLevel0Chart/>
+                                <ScrapVarianceChart  />
                             </Card>         
                         </Col>
 
@@ -211,6 +227,7 @@ const PerformanceLevel0Page = ({
                                 className="mb3"
                                 style={cardHeightStyle}
                             >
+                                
                             </Card>         
                         </Col>
 
@@ -231,12 +248,13 @@ const PerformanceLevel0Page = ({
 
                         <Col span={8}>
                             <Card 
-                                title="Level 1 - Plant Wide Scrap Variance per Program"
+                                title={`Lvl 1 - ${scrapAreaNameTitle} Plant Wide Scrap Variance per Program (${dateStartFormat} - ${dateEndFormat})`}
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
+                                extra={<SelectScrapType onChange={onScrapVariancePerProgSelectChange} />}
                             >
-                                
+                                <ScrapVarianceChartPerProgram/>
                             </Card>         
                         </Col>
 
@@ -272,6 +290,7 @@ const PerformanceLevel0Page = ({
 
 const mapDispatchToProps = dispatch => ({
     fetchScrapVarianceStartAsync: (start, end, area, isPurchasedScrap) => dispatch(fetchScrapVarianceStartAsync(start, end, area, isPurchasedScrap)),
+    fetchScrapVariancePerProgramStartAsync: (start, end, area, isPurchasedScrap) => dispatch(fetchScrapVariancePerProgramStartAsync(start, end, area, isPurchasedScrap)),
     setPerformaceSelectedDepartment: (dept) => dispatch(setPerformaceSelectedDepartment(dept))
 })
 

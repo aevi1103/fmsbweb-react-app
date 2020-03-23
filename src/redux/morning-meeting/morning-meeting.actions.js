@@ -459,7 +459,7 @@ export const fetchQualityStartAsync = (date) => {
     }
 }
 
-//quality
+//scrap variance
 export const fetchScrapVarianceStartAsync = (start, end, area, isPurchasedScrap = 'Sb Scrap') => {
 
     return dispatch => {
@@ -487,6 +487,41 @@ export const fetchScrapVarianceStartAsync = (start, end, area, isPurchasedScrap 
             
             dispatch(fetchFailure(
                 morningMeetingTypes.FETCH_SCRAP_VARIANCE_FAILURE,
+                error.message))
+        
+        })
+
+    }
+}
+
+//scrap variance per program
+export const fetchScrapVariancePerProgramStartAsync = (start, end, area, isPurchasedScrap = 'Sb Scrap') => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_START))
+
+        const url = 'sap/scrapvarianceperprogram'
+        api.get(url, {
+            params: {
+                start,
+                end,
+                area,
+                isPurchasedScrap: isPurchasedScrap === 'SB' ? false : true
+            }
+        })
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_SUCCESS,
+                response.data))
+
+        })
+        .catch(error => {
+            
+            dispatch(fetchFailure(
+                morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_FAILURE,
                 error.message))
         
         })

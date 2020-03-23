@@ -67,6 +67,10 @@ const INITIAL_STATE = {
     scrapVarianceCollection: null,
     scrapVarianceErrorMsg: undefined,
 
+    isScrapVariancePerProgramFetching: false,
+    scrapVariancePerProgramCollection: null,
+    scrapVariancePerProgramErrorMsg: undefined,
+
     startDate: previousDayFormatted,
     endDate: previousDayFormatted,
 
@@ -453,6 +457,31 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isScrapVarianceFetching: false,
                 scrapVarianceCollection: null,
                 scrapVarianceErrorMsg: action.payload
+            }
+
+        //scrap variance per program
+        case morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_START:
+
+            return {
+                ...state,
+                isScrapVariancePerProgramFetching: true
+            }
+
+        case morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_SUCCESS:
+
+            return {
+                ...state,
+                isScrapVariancePerProgramFetching: false,
+                scrapVariancePerProgramCollection: action.payload
+            }
+
+        case morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_FAILURE:
+
+            return {
+                ...state,
+                isScrapVariancePerProgramFetching: false,
+                scrapVariancePerProgramCollection: null,
+                scrapVariancePerProgramErrorMsg: action.payload
             }
 
         //set dates

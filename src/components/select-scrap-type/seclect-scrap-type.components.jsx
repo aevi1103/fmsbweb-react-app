@@ -10,7 +10,7 @@ import {
         onChange={onChange}
         bordered={false}
         size="small"
-        style={{ width: '150px' }}
+        style={{ width: '120px' }}
         className="mr2">
         <Option value="SB">Sb Scrap</Option>
         <Option value="Purchased">Purchased Scrap</Option>

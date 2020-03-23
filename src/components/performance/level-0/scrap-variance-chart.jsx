@@ -6,17 +6,17 @@ import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
-import CustomSpinner from '../custom-spinner/custom-spinner.component'
+import CustomSpinner from '../../custom-spinner/custom-spinner.component'
 import {
     tooltipStyle
-} from '../../helpers/chart-config'
+} from '../../../helpers/chart-config'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const PerformanceLevel0Chart = ({
+const ScrapVarianceChart = ({
     scrapVarianceCollection,
-    isScrapVarianceFetching
+    isScrapVarianceFetching,
 }) => {
 
     const [collection, setCollection] = useState([]);
@@ -159,4 +159,4 @@ const mapStateToProps = ({ morningMeeting }) => ({
     isScrapVarianceFetching: morningMeeting.isScrapVarianceFetching
 })
 
-export default connect(mapStateToProps)(PerformanceLevel0Chart);
+export default connect(mapStateToProps)(ScrapVarianceChart);

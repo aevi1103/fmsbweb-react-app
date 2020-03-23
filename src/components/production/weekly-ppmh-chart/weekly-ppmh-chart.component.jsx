@@ -32,7 +32,7 @@ const MonthlyIncidentRateChart = ({weeklyLaborHrsCollection, isWeeklyLaborHrsFet
                             <b>Orientation: </b> ${numeral(orientation).format(numberFormat)} <br>
                             <b>Overall: </b> ${numeral(overAll).format(numberFormat)} <br>
                             <b>SAP Gross: </b> ${numeral(sapGross).format('0,0')} <br>
-                            <b>PPMH: </b> ${numeral(overAll).format(numberFormat)} <br>
+                            <b>PPMH: </b> ${numeral(ppmh).format(numberFormat)} <br>
                             `
             }
         ));
