@@ -27,7 +27,8 @@ import {
     Select,
     Button,
     Tooltip,
-    DatePicker 
+    DatePicker ,
+    Empty
  } from "antd";
 
  const { Option } = Select;
@@ -129,7 +130,7 @@ const PerformanceLevel0Page = ({
 
     const onScrapVarianceSelectChange = (value) => {
         setScrapVarianceScrapType(value);
-        fetchQuarterly(monthStartFormart, monthEndFormat, value);
+        fetchScrapVarianceStartAsync(monthStartFormart, monthEndFormat, performaceSelectedDepartment, value); 
     }
 
     const onScrapVariancePerProgSelectChange = (value) => {
@@ -192,11 +193,12 @@ const PerformanceLevel0Page = ({
                         defaultValue={performaceSelectedDepartment}
                         style={{ width: 120 }}
                         onChange={onSelectChange}
-                        className="mr2">
+                        className="mr2">       
                         <Option value="Foundry Cell">Foundry</Option>
                         <Option value="Machine Line">Machining</Option>
                         <Option value="Skirt Coat">Finishing</Option>
                         <Option value="Assembly">Assembly</Option>
+                        <Option value="Plant">Plant</Option>
                     </Select>
                 </Tooltip>
                                 

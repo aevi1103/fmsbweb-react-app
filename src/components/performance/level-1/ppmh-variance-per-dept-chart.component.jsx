@@ -6,6 +6,8 @@ import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
+import { Empty } from 'antd';
+
 import CustomSpinner from '../../custom-spinner/custom-spinner.component'
 import {
     tooltipStyle
@@ -151,9 +153,13 @@ const ScrapVarianceChart = ({
         dataSource: dataSource
       };
 
-      console.log({chartConfigs, collection, ppmhPerDeptVarianceCollection})
+    //   console.log({chartConfigs, collection, ppmhPerDeptVarianceCollection})
 
-    return isPpmhPerDeptVarianceFetching ? <CustomSpinner/> : <ReactFC {...chartConfigs} />
+    return isPpmhPerDeptVarianceFetching 
+            ? <CustomSpinner/> 
+            : collection.length === 0 
+                ? <Empty/>
+                : <ReactFC {...chartConfigs} />
 }
 
 const mapStateToProps = ({ morningMeeting }) => ({

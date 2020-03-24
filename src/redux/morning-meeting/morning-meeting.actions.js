@@ -6,6 +6,10 @@ import {
     getDowntimeByLine
 } from '../../helpers/downtime-helper'
 
+import {
+    TransformScrapVarianceData
+} from '../../helpers/scrapVarianceHelper'
+
 const fetchStart = (actionType) => ({
     type: actionType
 })
@@ -473,14 +477,14 @@ export const fetchScrapVarianceStartAsync = (start, end, area, isPurchasedScrap 
                 start,
                 end,
                 area,
-                isPurchasedScrap: isPurchasedScrap === 'SB' ? false : true
+                isPurchasedScrap: isPurchasedScrap === 'SB' ? false : true,
+                isPlantTotal: area === 'Plant' ? true : false
             }
         })
         .then(response => {
 
-            dispatch(fetchSuccess(
-                morningMeetingTypes.FETCH_SCRAP_VARIANCE_SUCCESS,
-                response.data))
+            const transformedData = TransformScrapVarianceData(response.data, area);
+            dispatch(fetchSuccess(morningMeetingTypes.FETCH_SCRAP_VARIANCE_SUCCESS, transformedData))
 
         })
         .catch(error => {
