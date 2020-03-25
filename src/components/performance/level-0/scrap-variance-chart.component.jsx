@@ -6,6 +6,8 @@ import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
+import { Empty } from 'antd';
+
 import CustomSpinner from '../../custom-spinner/custom-spinner.component'
 import {
     tooltipStyle
@@ -185,7 +187,10 @@ const ScrapVarianceChart = ({
     //   console.log({chartConfigs, collection, scrapVarianceCollection})
 
     return isScrapVarianceFetching 
-                ? <CustomSpinner/> : <ReactFC {...chartConfigs} />
+        ? <CustomSpinner/> 
+        : collection.length === 0 
+            ? <Empty/>
+            : <ReactFC {...chartConfigs} />
 }
 
 const mapStateToProps = ({ morningMeeting }) => ({

@@ -7,7 +7,8 @@ import {
 } from '../../helpers/downtime-helper'
 
 import {
-    TransformScrapVarianceData
+    TransformScrapVarianceData,
+    TransformScrapVariancePerProgramData
 } from '../../helpers/scrapVarianceHelper'
 
 const fetchStart = (actionType) => ({
@@ -512,14 +513,17 @@ export const fetchScrapVariancePerProgramStartAsync = (start, end, area, isPurch
                 start,
                 end,
                 area,
-                isPurchasedScrap: isPurchasedScrap === 'SB' ? false : true
+                isPurchasedScrap: isPurchasedScrap === 'SB' ? false : true,
+                isPlantTotal: area === 'Plant' ? true : false
             }
         })
         .then(response => {
 
+            const data = TransformScrapVariancePerProgramData(response.data, area);
+
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_SUCCESS,
-                response.data))
+                data))
 
         })
         .catch(error => {
