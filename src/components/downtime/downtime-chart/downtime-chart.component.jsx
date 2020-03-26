@@ -15,13 +15,18 @@ import {
     tooltipStyle
 } from '../../../helpers/chart-config'
 
+import CustomSpinner from '../../custom-spinner/custom-spinner.component'
+import { Empty } from 'antd';
+
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
 const DowntimeChart = ({
     downtimeCollection,
+    isDowntimeFetching,
     setDowntimeByOwner,
-    resetDowntimeByLine
+    resetDowntimeByLine,
+    isDrillDown = true
 }) => {
 
     const [categoriesSet, setCategoriesSet] = useState([])
@@ -29,12 +34,15 @@ const DowntimeChart = ({
 
     useEffect(() => {
 
-        if (downtimeCollection) {
+        try {
             setCategoriesSet(downtimeCollection.categories);
             setchartData(downtimeCollection.chartData);
+        } catch (error) {
+            setchartData([]);
         }
+        
 
-    },[])
+    },[downtimeCollection])
 
     // transform datasetbykey to a object that fusion chart understands
     const dataSet = chartData.map(({ seriesname, data }) => {
@@ -73,15 +81,23 @@ const DowntimeChart = ({
         dataSource: dataSource,
         events: {
             dataplotClick: function(evt) {
-                //categoryLabel = dept, datasetName = shift
-                const { categoryLabel, datasetName } = evt.data;              
-                setDowntimeByOwner(downtimeCollection, categoryLabel, datasetName);
-                resetDowntimeByLine();
+
+                if (isDrillDown) {
+                    //categoryLabel = dept, datasetName = shift
+                    const { categoryLabel, datasetName } = evt.data;              
+                    setDowntimeByOwner(downtimeCollection, categoryLabel, datasetName);
+                    resetDowntimeByLine();
+                }
+
             }
           }
       };
 
-    return (<ReactFC {...chartConfigs} />)
+      return isDowntimeFetching 
+                ? <CustomSpinner/> 
+                : chartData.length === 0 
+                    ? <Empty/>
+                    : <ReactFC {...chartConfigs} />
 }
 
 const mapStateToProps = ({ morningMeeting }) => ({

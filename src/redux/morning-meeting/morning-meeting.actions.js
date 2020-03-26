@@ -9,7 +9,11 @@ import {
 import {
     TransformScrapVarianceData,
     TransformScrapVariancePerProgramData
-} from '../../helpers/scrapVarianceHelper'
+} from '../../helpers/scrap-variance-helper'
+
+import {
+    TransformDeptKpiData
+} from '../../helpers/dept-kpi-helper'
 
 const fetchStart = (actionType) => ({
     type: actionType
@@ -564,6 +568,37 @@ export const fetchPpmhPerDeptStartAsync = (start, end, area) => {
             
             dispatch(fetchFailure(
                 morningMeetingTypes.FETCH_PPMH_PER_DEPT_FAILURE,
+                error.message))
+        })
+
+    }
+}
+
+export const fetchDeptKpiStartAsync = (start, end, area) => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_DEPT_KPI_START))
+
+        const url = 'sap/deptkpi'
+        api.get(url, {
+            params: {
+                start,
+                end,
+                area
+            }
+        })
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_DEPT_KPI_SUCCESS, TransformDeptKpiData(response.data, area)))
+
+        })
+        .catch(error => {
+            
+            dispatch(fetchFailure(
+                morningMeetingTypes.FETCH_DEPT_KPI_FAILURE,
                 error.message))
         
         })

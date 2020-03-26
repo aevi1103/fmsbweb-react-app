@@ -30,29 +30,35 @@ const DowntimeByOwnerChart = ({
     useEffect(() => {
 
         try {
-            if (downtimeByLineCollection) {
-                setLineDetails(downtimeByLineCollection.lineDetails);  
-            }
+
+            setLineDetails(downtimeByLineCollection.lineDetails.length > 0 || downtimeByLineCollection
+                            ? downtimeByLineCollection.lineDetails
+                            : []);  
         } catch (error) {
             setLineDetails([]);
         }
         
     },[downtimeByLineCollection])
 
+    const chartProps = {
+        showvalues: "1",
+        showpercentintooltip: "0",
+        enablemultislicing: "1",
+        theme: "fusion",
+        useDataPlotColorForLabels: "1",
+        showLegend: "1",
+        drawcrossline: "1",
+        labelDisplay: "rotate",
+        slantLabel: "1",
+    }
+
     const dataSource = {
         chart: {
             xAxisName: 'Line',
             yAxisName: 'Minutes',
-            showvalues: "1",
-            showpercentintooltip: "0",
-            enablemultislicing: "1",
-            theme: "fusion",
-            useDataPlotColorForLabels: "1",
-            showLegend: "1",
-            drawcrossline: "1",
             plottooltext: 'Line: $label {br} Downtime: $value minutes',
-            labelDisplay: "rotate",
-            slantLabel: "1",
+            rotateValues: "1",
+            ...chartProps,
             ...tooltipStyle
         },
         data: lineDetails.map(({line, typeColor, totalDowntime}) => ({
@@ -68,14 +74,8 @@ const DowntimeByOwnerChart = ({
                                 caption: `${line} Downtime by Reason (Drilldown)`,
                                 xAxisName: 'Reason',
                                 yAxisName: 'Minutes',
-                                showvalues: "1",
-                                showpercentintooltip: "0",
-                                enablemultislicing: "1",
-                                theme: "fusion",
-                                useDataPlotColorForLabels: "1",
-                                showLegend: "1",
-                                drawcrossline: "1",
-                                plottooltext: 'Reason: $label {br} Downtime: $value minutes',           
+                                plottooltext: 'Reason: $label {br} Downtime: $value minutes',  
+                                ...chartProps,    
                                 ...tooltipStyle
                             },
                             data: reason2Details.map(({ reason2, typeColor, totalDowntime }) => ({ 
@@ -91,14 +91,9 @@ const DowntimeByOwnerChart = ({
                                         caption: `${line} / ${reason2} Downtime by Shift Date`,
                                         xAxisName: 'Shift Date',
                                         yAxisName: 'Minutes',
-                                        showvalues: "1",
-                                        showpercentintooltip: "0",
-                                        enablemultislicing: "1",
-                                        theme: "fusion",
-                                        useDataPlotColorForLabels: "1",
-                                        showLegend: "1",
-                                        drawcrossline: "1",
-                                        plottooltext: 'Shift Date: $label {br} Downtime: $value minutes',           
+                                        plottooltext: 'Shift Date: $label {br} Downtime: $value minutes',  
+
+                                        ...chartProps,      
                                         ...tooltipStyle
                                     },
                                     data: dailyDetails.map(({ shifDate, typeColor, totalDowntime }) => ({ 

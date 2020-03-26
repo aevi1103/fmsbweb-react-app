@@ -37,9 +37,9 @@ const DowntimeByOwnerChart = ({
 
         try {
             if (downtimeByOwnerCollection) {
-                if (downtimeByOwnerCollection.ownerDetails.length > 0) {
-                    setOwnerDetails(downtimeByOwnerCollection.ownerDetails);  
-                }
+                setOwnerDetails(downtimeByOwnerCollection.ownerDetails.length > 0 
+                                ? downtimeByOwnerCollection.ownerDetails
+                                : []);  
             }
         } catch (error) {
             setOwnerDetails([]);
@@ -79,7 +79,9 @@ const DowntimeByOwnerChart = ({
           }
       };
 
-    return ownerDetails.length > 0 ? <ReactFC {...chartConfigs} /> : <Container>Select Shift Downtime To Display Data</Container>
+    return ownerDetails.length > 0 
+            ? <ReactFC {...chartConfigs} /> 
+            : <Container>Select Shift Downtime To Display Data</Container>
 }
 
 const mapStateToProps = ({ morningMeeting }) => ({

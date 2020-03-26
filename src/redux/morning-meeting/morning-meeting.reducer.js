@@ -75,6 +75,10 @@ const INITIAL_STATE = {
     ppmhPerDeptVarianceCollection: null,
     ppmhPerDeptVarianceErrorMsg: undefined,
 
+    isDeptKpiFetching: false,
+    deptKpiCollection: null,
+    deptKpiErrorMessage: undefined,
+
     startDate: previousDayFormatted,
     endDate: previousDayFormatted,
 
@@ -511,6 +515,31 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isPpmhPerDeptVarianceFetching: false,
                 ppmhPerDeptVarianceCollection: null,
                 ppmhPerDeptVarianceErrorMsg: action.payload
+            }
+
+        //dept kpi
+        case morningMeetingTypes.FETCH_DEPT_KPI_START:
+
+            return {
+                ...state,
+                isDeptKpiFetching: true
+            }
+
+        case morningMeetingTypes.FETCH_DEPT_KPI_SUCCESS:
+
+            return {
+                ...state,
+                isDeptKpiFetching: false,
+                deptKpiCollection: action.payload
+            }
+
+        case morningMeetingTypes.FETCH_DEPT_KPI_FAILURE:
+
+            return {
+                ...state,
+                isDeptKpiFetching: false,
+                deptKpiCollection: null,
+                deptKpiErrorMessage: action.payload
             }
 
         //set dates

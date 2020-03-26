@@ -134,7 +134,7 @@ export const TransformScrapVariancePerProgramData = (data, area) => {
 
                 })
 
-                console.log('groupByProgByAreaByLine',{program,area, areaItems, lineList, groupByAreaByLine, lineDetails})
+                // console.log('groupByProgByAreaByLine',{program,area, areaItems, lineList, groupByAreaByLine, lineDetails})
 
                 return {
                     key: `Plant_${program}_${area}`,
@@ -147,7 +147,7 @@ export const TransformScrapVariancePerProgramData = (data, area) => {
 
             })
 
-            console.log('areaDetails',{program, groupByProgByArea, areaDetails})
+            // console.log('areaDetails',{program, groupByProgByArea, areaDetails})
 
             return {
                 key: `Plant_${program}`,

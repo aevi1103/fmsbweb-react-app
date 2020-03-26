@@ -95,7 +95,6 @@ import {
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
-                                loading={isDowntimeFetching}
                             >
                                 <DowntimeChart/>
                             </Card>         
@@ -107,7 +106,6 @@ import {
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
-                                loading={isDowntimeFetching}
                             >
                                 <DowntimeByOwnerChart/>
                             </Card>         
@@ -119,7 +117,6 @@ import {
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
-                                loading={isDowntimeFetching}
                             >
                                 <DowntimeByLineChart/>
                             </Card>         

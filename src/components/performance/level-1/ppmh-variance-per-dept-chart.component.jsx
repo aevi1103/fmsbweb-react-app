@@ -27,9 +27,7 @@ const ScrapVarianceChart = ({
     useEffect(() => {
 
         try {
-            if (ppmhPerDeptVarianceCollection) {
-                setCollection(ppmhPerDeptVarianceCollection);  
-            }
+            setCollection(ppmhPerDeptVarianceCollection ? ppmhPerDeptVarianceCollection : []); 
         } catch (error) {
             setCollection([]);
         }
