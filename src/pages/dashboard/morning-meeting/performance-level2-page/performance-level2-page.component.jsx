@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment'
-import 'tachyons'
-import { Link } from "react-router-dom";
+import moment from 'moment';
+import 'tachyons';
 
 import { 
     setStartDate,
@@ -11,14 +10,14 @@ import {
     fetchScrapVariancePerDeptStartAsync,
 
     setPerformaceSelectedDepartment
-} from '../../../../redux/morning-meeting/morning-meeting.actions'
+} from '../../../../redux/morning-meeting/morning-meeting.actions';
 
 //level 0 charts
-import ScrapVariancePerDeptChart from '../../../../components/performance/level-2/scrap-variance-per-dept.component'
+import ScrapVariancePerDeptChart from '../../../../components/performance/level-2/scrap-variance-per-dept.component';
 
-import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
-import SelectScrapType from '../../../../components/select-scrap-type/seclect-scrap-type.components'
-import '../morning-meeting.styles.scss'
+import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component';
+import SelectScrapType from '../../../../components/select-scrap-type/seclect-scrap-type.components';
+import '../morning-meeting.styles.scss';
 
 import { 
     Layout,

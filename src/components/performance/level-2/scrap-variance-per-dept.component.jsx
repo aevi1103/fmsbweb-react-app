@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import numeral from 'numeral'
+import numeral from 'numeral';
 
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
-import { tooltipStyle } from '../../../helpers/chart-config'
-import CustomSpinner from '../../custom-spinner/custom-spinner.component'
+import { tooltipStyle } from '../../../helpers/chart-config';
+import CustomSpinner from '../../custom-spinner/custom-spinner.component';
 
 import { Empty } from 'antd';
 
@@ -24,10 +24,7 @@ const ScrapVariancePerDeptChart = ({
     useEffect(() => {
 
         try {
-            setCollection(scrapVarianceByDeptCollection || scrapVarianceByDeptCollection.length > 0
-                            ? scrapVarianceByDeptCollection 
-                            : []); 
-
+            setCollection(scrapVarianceByDeptCollection || scrapVarianceByDeptCollection.length > 0 ? scrapVarianceByDeptCollection : []); 
         } catch (error) {
             setCollection([]);
         }
