@@ -75,6 +75,10 @@ const INITIAL_STATE = {
     scrapVarianceByDeptCollection: null,
     scrapVarianceByDeptErrorMsg: undefined,
 
+    isScrapVarianceByShiftFetching: false,
+    scrapVarianceByShiftCollection: null,
+    scrapVarianceByShiftErrorMsg: undefined,
+
     isPpmhPerDeptVarianceFetching: false,
     ppmhPerDeptVarianceCollection: null,
     ppmhPerDeptVarianceErrorMsg: undefined,
@@ -102,7 +106,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isMonthlyIncidentRateFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_SAFETY_MONTHLY_INCIDENT_RATE_SUCCESS:
 
@@ -110,7 +114,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isMonthlyIncidentRateFetching: false,
                 monthlyIncidentRateCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_SAFETY_MONTHLY_INCIDENT_RATE_FAILURE:
 
@@ -119,7 +123,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isMonthlyIncidentRateFetching: false,
                 monthlyIncidentRateCollection: [],
                 monthlyIncidentRateErrorMsg: action.payload
-            }
+            };
 
         //INCIDENTS_BY_DEPT
         case morningMeetingTypes.FETCH_SAFETY_INCIDENTS_BY_DEPT_START:
@@ -127,7 +131,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isIncidentByDeptFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_SAFETY_INCIDENTS_BY_DEPT_SUCCESS:
 
@@ -135,7 +139,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isIncidentByDeptFetching: false,
                 incidentByDeptCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_SAFETY_INCIDENTS_BY_DEPT_FAILURE:
 
@@ -144,7 +148,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isIncidentByDeptFetching: false,
                 incidentByDeptCollection: [],
                 incidentByDeptErrorMsg: action.payload
-            }
+            };
 
         //INCIDENTS
         case morningMeetingTypes.FETCH_SAFETY_INCIDENTS_START:
@@ -152,7 +156,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isIncidentFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_SAFETY_INCIDENTS_SUCCESS:
 
@@ -160,7 +164,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isIncidentFetching: false,
                 incidentCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_SAFETY_INCIDENTS_FAILURE:
 
@@ -169,7 +173,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isIncidentFetching: false,
                 incidentCollection: [],
                 incidentErrorMsg: action.payload
-            }
+            };
 
         //LOGISTICS_STOCK_OVERVIEW
         case morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_START:
@@ -177,7 +181,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isStockOverviewFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_SUCCESS:
 
@@ -185,7 +189,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isStockOverviewFetching: false,
                 stockOVerviewCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_FAILURE:
 
@@ -194,7 +198,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isStockOverviewFetching: false,
                 stockOVerviewCollection: [],
                 stockOVerviewErrorMsg: action.payload
-            }
+            };
 
         //LOGISTICS_STOCK_OVERVIEW_SLOC
         case morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_SLOC_START:
@@ -202,7 +206,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isStockOverviewSlocFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_SLOC_SUCCESS:
 
@@ -210,7 +214,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isStockOverviewSlocFetching: false,
                 stockOVerviewSlocCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_SLOC_FAILURE:
 
@@ -219,7 +223,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isStockOverviewSlocFetching: false,
                 stockOVerviewSlocCollection: [],
                 stockOVerviewSlocErrorMsg: action.payload
-            }
+            };
 
         //LOGISTICS_STATUS
         case morningMeetingTypes.FETCH_LOGISTICS_STATUS_START:
@@ -227,7 +231,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isStockStatusFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_LOGISTICS_STATUS_SUCCESS:
 
@@ -235,7 +239,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isStockStatusFetching: false,
                 stockStatusCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_LOGISTICS_STATUS_FAILURE:
 
@@ -244,7 +248,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isStockStatusFetching: false,
                 stockStatusCollection: [],
                 stockStatusErrorMsg: action.payload
-            }
+            };
 
         //PRODUCTION_STATUS
         case morningMeetingTypes.FETCH_PRODUCTION_STATUS_START:
@@ -252,7 +256,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isProdStatusFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_PRODUCTION_STATUS_SUCCESS:
 
@@ -260,7 +264,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isProdStatusFetching: false,
                 productionStatusCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_PRODUCTION_STATUS_FAILURE:
 
@@ -269,7 +273,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isProdStatusFetching: false,
                 productionStatusCollection: null,
                 prodStatusErrorMsg: action.payload
-            }
+            };
 
         //DAILY SCRAP RATE
         case morningMeetingTypes.FETCH_DAILY_SCRAP_RATE_START:
@@ -277,7 +281,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isDailyScrapRateFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_DAILY_SCRAP_RATE_SUCCESS:
 
@@ -285,7 +289,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isDailyScrapRateFetching: false,
                 dailyScrapRateCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_DAILY_SCRAP_RATE_FAILURE:
 
@@ -294,7 +298,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isDailyScrapRateFetching: false,
                 dailyScrapRateCollection: null,
                 dailyScrapRateErrorMsg: action.payload
-            }
+            };
 
         //DAILY KPI
         case morningMeetingTypes.FETCH_DAILY_KPI_START:
@@ -302,7 +306,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isDailyKpiFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_DAILY_KPI_SUCCESS:
 
@@ -310,7 +314,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isDailyKpiFetching: false,
                 dailyKpiCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_DAILY_KPI_FAILURE:
 
@@ -319,7 +323,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isDailyKpiFetching: false,
                 dailyKpiCollection: null,
                 dailyKpiErrorMsg: action.payload
-            }
+            };
 
         //WEEKLY LABOR HRS
         case morningMeetingTypes.FETCH_WEEKLY_LABOR_HRS_START:
@@ -327,7 +331,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isWeeklyLaborHrsFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_WEEKLY_LABOR_HRS_SUCCESS:
 
@@ -335,7 +339,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isWeeklyLaborHrsFetching: false,
                 weeklyLaborHrsCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_WEEKLY_LABOR_HRS_FAILURE:
 
@@ -344,7 +348,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isWeeklyLaborHrsFetching: false,
                 weeklyLaborHrsCollection: null,
                 weeklyLaborHrsErrorMsg: action.payload
-            }
+            };
 
         //PROD SCRAP
         case morningMeetingTypes.FETCH_PROD_SCRAP_START:
@@ -352,7 +356,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isProdScrapFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_PROD_SCRAP_SUCCESS:
 
@@ -360,7 +364,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isProdScrapFetching: false,
                 prodScrapCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_PROD_SCRAP_FAILURE:
 
@@ -369,7 +373,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isProdScrapFetching: false,
                 prodScrapCollection: null,
                 prodScrapErrorMsg: action.payload
-            }
+            };
 
         //FIANNCE
         case morningMeetingTypes.FETCH_FINANCE_KPI_START:
@@ -377,7 +381,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isFinanceKpiFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_FINANCE_KPI_SUCCESS:
 
@@ -385,7 +389,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isFinanceKpiFetching: false,
                 financeKpiCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_FINANCE_KPI_FAILURE:
 
@@ -394,7 +398,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isFinanceKpiFetching: false,
                 financeKpiCollection: null,
                 financeKpiErrorMsg: action.payload
-            }
+            };
 
         //quality
         case morningMeetingTypes.FETCH_QUALITY_START:
@@ -402,7 +406,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isQualityFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_QUALITY_SUCCESS:
 
@@ -410,7 +414,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isQualityFetching: false,
                 qualityCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_QUALITY_FAILURE:
 
@@ -419,7 +423,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isQualityFetching: false,
                 qualityCollection: null,
                 qualityErrorMsg: action.payload
-            }
+            };
 
         //downtime
         case morningMeetingTypes.FETCH_DOWNTIME_START:
@@ -427,7 +431,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isDowntimeFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_DOWNTIME_SUCCESS:
 
@@ -435,7 +439,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isDowntimeFetching: false,
                 downtimeCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_DOWNTIME_FAILURE:
 
@@ -444,7 +448,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isDowntimeFetching: false,
                 downtimeCollection: null,
                 downtimeErrorMsg: action.payload
-            }
+            };
 
         //scrap variance
         case morningMeetingTypes.FETCH_SCRAP_VARIANCE_START:
@@ -452,7 +456,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isScrapVarianceFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_SCRAP_VARIANCE_SUCCESS:
 
@@ -460,7 +464,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isScrapVarianceFetching: false,
                 scrapVarianceCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_SCRAP_VARIANCE_FAILURE:
 
@@ -469,7 +473,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isScrapVarianceFetching: false,
                 scrapVarianceCollection: null,
                 scrapVarianceErrorMsg: action.payload
-            }
+            };
 
         //scrap variance per program
         case morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_START:
@@ -477,7 +481,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isScrapVariancePerProgramFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_SUCCESS:
 
@@ -485,7 +489,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isScrapVariancePerProgramFetching: false,
                 scrapVariancePerProgramCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_FAILURE:
 
@@ -494,7 +498,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isScrapVariancePerProgramFetching: false,
                 scrapVariancePerProgramCollection: null,
                 scrapVariancePerProgramErrorMsg: action.payload
-            }
+            };
 
         //scrap variance per dept
         case morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_DEPT_START:
@@ -502,7 +506,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isScrapVarianceByDeptFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_DEPT_SUCCESS:
 
@@ -510,7 +514,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isScrapVarianceByDeptFetching: false,
                 scrapVarianceByDeptCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_DEPT_FAILURE:
 
@@ -519,7 +523,32 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isScrapVarianceByDeptFetching: false,
                 scrapVarianceByDeptCollection: null,
                 scrapVarianceByDeptErrorMsg: action.payload
-            }
+            };
+
+        //scrap variance per shift
+        case morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_SHIFT_START:
+
+            return {
+                ...state,
+                isScrapVarianceByShiftFetching: true
+            };
+
+        case morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_SHIFT_SUCCESS:
+
+            return {
+                ...state,
+                isScrapVarianceByShiftFetching: false,
+                scrapVarianceByShiftCollection: action.payload
+            };
+
+        case morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_SHIFT_FAILURE:
+
+            return {
+                ...state,
+                isScrapVarianceByShiftFetching: false,
+                scrapVarianceByShiftCollection: null,
+                scrapVarianceByShiftErrorMsg: action.payload
+            };
 
         //ppmh variance per dept
         case morningMeetingTypes.FETCH_PPMH_PER_DEPT_START:
@@ -527,7 +556,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isPpmhPerDeptVarianceFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_PPMH_PER_DEPT_SUCCESS:
 
@@ -535,7 +564,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isPpmhPerDeptVarianceFetching: false,
                 ppmhPerDeptVarianceCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_PPMH_PER_DEPT_FAILURE:
 
@@ -544,9 +573,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isPpmhPerDeptVarianceFetching: false,
                 ppmhPerDeptVarianceCollection: null,
                 ppmhPerDeptVarianceErrorMsg: action.payload
-            }
-
-
+            };
 
         //dept kpi
         case morningMeetingTypes.FETCH_DEPT_KPI_START:
@@ -554,7 +581,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isDeptKpiFetching: true
-            }
+            };
 
         case morningMeetingTypes.FETCH_DEPT_KPI_SUCCESS:
 
@@ -562,7 +589,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isDeptKpiFetching: false,
                 deptKpiCollection: action.payload
-            }
+            };
 
         case morningMeetingTypes.FETCH_DEPT_KPI_FAILURE:
 
@@ -571,7 +598,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isDeptKpiFetching: false,
                 deptKpiCollection: null,
                 deptKpiErrorMessage: action.payload
-            }
+            };
 
         //set dates
         case morningMeetingTypes.SET_PRODUCTION_START_DATE:
@@ -586,7 +613,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 endDate: action.payload
-            }
+            };
 
         //downtime by owner
         case morningMeetingTypes.SET_DOWNTIME_BY_OWNER:
@@ -594,7 +621,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 downtimeByOwnerCollection: action.payload
-            }
+            };
 
         //downtime by line
         case morningMeetingTypes.SET_DOWNTIME_BY_LINE:
@@ -602,7 +629,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 downtimeByLineCollection: action.payload
-            }
+            };
 
         //selected department for performace page
         case morningMeetingTypes.SET_DEPARTMENT_SELECT:
@@ -610,7 +637,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 performaceSelectedDepartment: action.payload
-            }
+            };
     
         default:
             return state;

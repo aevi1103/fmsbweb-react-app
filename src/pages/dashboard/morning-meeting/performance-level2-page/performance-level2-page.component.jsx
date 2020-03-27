@@ -8,15 +8,18 @@ import {
     setEndDate,
 
     fetchScrapVariancePerDeptStartAsync,
+    fetchScrapVariancePerShiftStartAsync,
 
     setPerformaceSelectedDepartment
 } from '../../../../redux/morning-meeting/morning-meeting.actions';
 
 //level 0 charts
 import ScrapVariancePerDeptChart from '../../../../components/performance/level-2/scrap-variance-per-dept.component';
+import ScrapVariancePerShiftChart from '../../../../components/performance/level-2/scrap-variance-per-shift.component';
 
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component';
 import SelectScrapType from '../../../../components/select-scrap-type/seclect-scrap-type.components';
+import DeptSelect from '../../../../components/performance/dept-select.component';
 import '../morning-meeting.styles.scss';
 
 import { 
@@ -24,13 +27,11 @@ import {
     Row,
     Col,
     Card,
-    Select,
     Button,
     Tooltip,
     DatePicker
  } from "antd";
 
- const { Option } = Select;
  const { Header, Content } = Layout;
  const { RangePicker } = DatePicker;
 
@@ -49,7 +50,8 @@ const PerformanceLevel2Page = ({
     setPerformaceSelectedDepartment,
     performaceSelectedDepartment,
 
-    fetchScrapVariancePerDeptStartAsync
+    fetchScrapVariancePerDeptStartAsync,
+    fetchScrapVariancePerShiftStartAsync
 }) => {
 
     const previousDay = moment().add(-1, 'days').format(dateFormat);
@@ -73,7 +75,8 @@ const PerformanceLevel2Page = ({
     }
     
     const fetch = (start = startDate, end = endDate) => {
-        fetchScrapVariancePerDeptStartAsync(start, end);
+        fetchScrapVariancePerDeptStartAsync(start, end, scrapByDeptScrapType);
+        fetchScrapVariancePerShiftStartAsync(start, end, performaceSelectedDepartment, scrapByDeptScrapType);
     }
 
     const setTitleFn = (dept) => {
@@ -96,7 +99,7 @@ const PerformanceLevel2Page = ({
         setDeptTitle(setTitleFn(performaceSelectedDepartment));
         fetchQuarterly(monthStartFormart, monthEndFormat);
         fetch(startDate, endDate);
-    }
+    };
 
     const onSelectChange = (value) => setPerformaceSelectedDepartment(value);
 
@@ -114,29 +117,30 @@ const PerformanceLevel2Page = ({
 
         setMonthStartFormat(start ? start.format(dateFormat) : null);
         setMonthEndFormat(end ? end.format(dateFormat) : null);  
-    }
+    };
 
     const onCalendarChange = (date, dateString) => {
         const [start, end] = date;
         setStartDate(start ? start.format(dateFormat) : null);
         setEndDate(end ? end.format(dateFormat) : null);  
-    }
+    };
 
     const onScrapByDeptChange = (value) => {
         setScrapByDeptScrapType(value);
         fetchScrapVariancePerDeptStartAsync(startDate, endDate, value);
-    }
+    };
 
     const onScrapByShiftChange = (value) => {
         setScrapByShiftScrapType(value);
-    }
+        fetchScrapVariancePerShiftStartAsync(startDate, endDate, performaceSelectedDepartment, value);
+    };
 
     useEffect(() => {
         document.title = `Performance: L0 - L1`;
         setDeptTitle(setTitleFn(performaceSelectedDepartment));
         fetchQuarterly();
         fetch();
-    }, [])
+    }, []);
 
     return (
         <>
@@ -184,17 +188,7 @@ const PerformanceLevel2Page = ({
                     isRenderButton={false}/>
                 
                 <span className="mr2">Department:</span>
-                <Select 
-                    defaultValue={performaceSelectedDepartment}
-                    style={{ width: 120 }}
-                    onChange={onSelectChange}
-                    className="mr2">       
-                    <Option value="Foundry Cell">Foundry</Option>
-                    <Option value="Machine Line">Machining</Option>
-                    <Option value="Skirt Coat">Finishing</Option>
-                    <Option value="Assembly">Assembly</Option>
-                    <Option value="Plant">Plant</Option>
-                </Select>
+                <DeptSelect defaultValue={performaceSelectedDepartment} onChange={onSelectChange} type="dept" />
                                 
                 <Tooltip placement="top" title={<span>Click to reload dashboard</span>}>
                     <Button type="primary" onClick={onClick}>Go</Button>
@@ -249,7 +243,7 @@ const PerformanceLevel2Page = ({
                                 style={cardHeightStyle}
                                 extra={<SelectScrapType onChange={onScrapByShiftChange} />}
                             >
-  
+                                <ScrapVariancePerShiftChart/>
                             </Card>         
                         </Col>
 
@@ -289,6 +283,7 @@ const mapDispatchToProps = dispatch => ({
     setEndDate: (date) => dispatch(setEndDate(date)),
 
     fetchScrapVariancePerDeptStartAsync: (start, end, isPurchasedScrap) => dispatch(fetchScrapVariancePerDeptStartAsync(start, end, isPurchasedScrap)),
+    fetchScrapVariancePerShiftStartAsync: (start, end, area, isPurchasedScrap) => dispatch(fetchScrapVariancePerShiftStartAsync(start, end, area, isPurchasedScrap)),
 
     setPerformaceSelectedDepartment: (dept) => dispatch(setPerformaceSelectedDepartment(dept)),
 })

@@ -575,6 +575,41 @@ export const fetchScrapVariancePerDeptStartAsync = (start, end, isPurchasedScrap
     }
 }
 
+//scrap variance per shift
+export const fetchScrapVariancePerShiftStartAsync = (start, end, area, isPurchasedScrap = 'SB') => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_SHIFT_START))
+
+        const url = 'sap/scrapvariancepershift'
+        api.get(url, {
+            params: {
+                start,
+                end,
+                area,
+                isPurchasedScrap: isPurchasedScrap === 'SB' ? false : true
+            }
+        })
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_SHIFT_SUCCESS,
+                response.data))
+
+        })
+        .catch(error => {
+            
+            dispatch(fetchFailure(
+                morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_SHIFT_FAILURE,
+                error.message))
+        
+        })
+
+    }
+}
+
 //PPMH variance per dept
 export const fetchPpmhPerDeptStartAsync = (start, end, area) => {
 
@@ -607,6 +642,7 @@ export const fetchPpmhPerDeptStartAsync = (start, end, area) => {
 
     }
 }
+
 
 //dept kpi
 export const fetchDeptKpiStartAsync = (start, end, area) => {

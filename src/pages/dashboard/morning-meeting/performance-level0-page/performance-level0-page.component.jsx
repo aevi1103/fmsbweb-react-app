@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment'
-import 'tachyons'
+import moment from 'moment';
+import 'tachyons';
 import { Link } from "react-router-dom";
 
 import { 
@@ -15,35 +15,35 @@ import {
 
     setStartDate,
     setEndDate
-} from '../../../../redux/morning-meeting/morning-meeting.actions'
+} from '../../../../redux/morning-meeting/morning-meeting.actions';
 
 //level 0 charts
-import ScrapVarianceChart from '../../../../components/performance/level-0/scrap-variance-chart.component'
-import ScrapVarianceChartPerProgram from '../../../../components/performance/level-1/scrap-variance-per-program-chart.component'
-import PpmhVariancePerDeptChart from '../../../../components/performance/level-1/ppmh-variance-per-dept-chart.component'
-import DeptKpiChart from '../../../../components/performance/level-0/dept-kpi-chart.component'
-import DowntimeChart from '../../../../components/downtime/downtime-chart/downtime-chart.component'
+import ScrapVarianceChart from '../../../../components/performance/level-0/scrap-variance-chart.component';
+import ScrapVarianceChartPerProgram from '../../../../components/performance/level-1/scrap-variance-per-program-chart.component';
+import PpmhVariancePerDeptChart from '../../../../components/performance/level-1/ppmh-variance-per-dept-chart.component';
+import DeptKpiChart from '../../../../components/performance/level-0/dept-kpi-chart.component';
+import DowntimeChart from '../../../../components/downtime/downtime-chart/downtime-chart.component';
 
-import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
-import SelectScrapType from '../../../../components/select-scrap-type/seclect-scrap-type.components'
-import '../morning-meeting.styles.scss'
+import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component';
+import SelectScrapType from '../../../../components/select-scrap-type/seclect-scrap-type.components';
+
+import DeptSelect from '../../../../components/performance/dept-select.component';
+
+import '../morning-meeting.styles.scss';
 
 import { 
     Layout,
     Row,
     Col,
     Card,
-    Select,
     Button,
     Tooltip,
     DatePicker,
     Empty
  } from "antd";
 
- const { Option } = Select;
  const { Header, Content } = Layout;
  const { RangePicker } = DatePicker;
-
  const dateFormat = 'MM/DD/YYYY';
 
  const cardHeightStyle = {
@@ -201,17 +201,7 @@ const PerformanceLevel0Page = ({
                     isRenderButton={false}/>
                 
                 <span className="mr2">Scrap:</span>
-                <Select 
-                    defaultValue={performaceSelectedDepartment}
-                    style={{ width: 120 }}
-                    onChange={onSelectChange}
-                    className="mr2">       
-                    <Option value="Foundry Cell">Foundry</Option>
-                    <Option value="Machine Line">Machining</Option>
-                    <Option value="Skirt Coat">Finishing</Option>
-                    <Option value="Assembly">Assembly</Option>
-                    <Option value="Plant">Plant</Option>
-                </Select>
+                <DeptSelect defaultValue={performaceSelectedDepartment} onChange={onSelectChange} />
                                 
                 <Tooltip placement="top" title={<span>Click to reload dashboard</span>}>
                     <Button type="primary" onClick={onClick}>Go</Button>

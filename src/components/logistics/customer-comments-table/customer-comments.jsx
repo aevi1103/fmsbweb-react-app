@@ -46,13 +46,13 @@ import {
         // console.log('params', pagination, filters, sorter, extra);
       }
 
-      return (<Table 
+      return <Table 
                 loading={isStockStatusFetching}
                 columns={columns}
                 dataSource={dataSource}
                 onChange={onChange}
                 scroll={{y: 380}}
-                pagination={false} />)
+                pagination={false} />
  }
 
 const mapStateToProps = ({ morningMeeting }) => ({
