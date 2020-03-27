@@ -5,24 +5,16 @@ import 'tachyons'
 import { Link } from "react-router-dom";
 
 import { 
-    fetchScrapVarianceStartAsync,
-    fetchScrapVariancePerProgramStartAsync,    
-    fetchPpmhPerDeptStartAsync,
-    fetchDeptKpiStartAsync,
-    fetchDowntimeStartAsync,
-
-    setPerformaceSelectedDepartment,
-
     setStartDate,
-    setEndDate
+    setEndDate,
+
+    fetchScrapVariancePerDeptStartAsync,
+
+    setPerformaceSelectedDepartment
 } from '../../../../redux/morning-meeting/morning-meeting.actions'
 
 //level 0 charts
-import ScrapVarianceChart from '../../../../components/performance/level-0/scrap-variance-chart.component'
-import ScrapVarianceChartPerProgram from '../../../../components/performance/level-1/scrap-variance-per-program-chart.component'
-import PpmhVariancePerDeptChart from '../../../../components/performance/level-1/ppmh-variance-per-dept-chart.component'
-import DeptKpiChart from '../../../../components/performance/level-0/dept-kpi-chart.component'
-import DowntimeChart from '../../../../components/downtime/downtime-chart/downtime-chart.component'
+import ScrapVariancePerDeptChart from '../../../../components/performance/level-2/scrap-variance-per-dept.component'
 
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
 import SelectScrapType from '../../../../components/select-scrap-type/seclect-scrap-type.components'
@@ -36,8 +28,7 @@ import {
     Select,
     Button,
     Tooltip,
-    DatePicker,
-    Empty
+    DatePicker
  } from "antd";
 
  const { Option } = Select;
@@ -50,20 +41,16 @@ import {
     height: "500px"
 }
 
-const PerformanceLevel0Page = ({
-    fetchScrapVarianceStartAsync,
-    fetchScrapVariancePerProgramStartAsync,
-    fetchPpmhPerDeptStartAsync,
-    fetchDeptKpiStartAsync,
-    fetchDowntimeStartAsync,
+const PerformanceLevel2Page = ({
+    setStartDate,
+    setEndDate,
+    startDate,
+    endDate,
 
     setPerformaceSelectedDepartment,
     performaceSelectedDepartment,
 
-    setStartDate,
-    setEndDate,
-    startDate,
-    endDate
+    fetchScrapVariancePerDeptStartAsync
 }) => {
 
     const previousDay = moment().add(-1, 'days').format(dateFormat);
@@ -75,22 +62,19 @@ const PerformanceLevel0Page = ({
     const [monthStartFormart, setMonthStartFormat] = useState(lastTwelveMonths);
     const [monthEndFormat, setMonthEndFormat] = useState(previousDay);
 
-    //scrap area name title
-    const [scrapAreaNameTitle, setScrapAreaNameTitle] = useState(performaceSelectedDepartment);
-
     //scrap type
-    const [scrapVarianceScrapType, setScrapVarianceScrapType] = useState(scrapTypeDefault);
-    const [scrapVariancePerProgScrapType, setScrapVariancePerProgScrapType] = useState(scrapTypeDefault);
+    const [scrapByDeptScrapType, setScrapByDeptScrapType] = useState(scrapTypeDefault);
+    const [scrapByShiftScrapType, setScrapByShiftScrapType] = useState(scrapTypeDefault);
 
-    const fetchQuarterly = (start = monthStartFormart, end = monthEndFormat, scrapType = scrapVarianceScrapType) => {
-        fetchScrapVarianceStartAsync(start, end, performaceSelectedDepartment, scrapType); 
-        fetchPpmhPerDeptStartAsync(start, end, performaceSelectedDepartment);
+    //scrap area name title
+    const [deptTitle, setDeptTitle] = useState(performaceSelectedDepartment);
+
+    const fetchQuarterly = (start = monthStartFormart, end = monthEndFormat) => {
+
     }
     
-    const fetch = (start = startDate, end = endDate, scrapType = scrapVariancePerProgScrapType) => {
-        fetchScrapVariancePerProgramStartAsync(start, end, performaceSelectedDepartment, scrapType);   
-        fetchDeptKpiStartAsync(start, end, performaceSelectedDepartment);
-        fetchDowntimeStartAsync(start, end);
+    const fetch = (start = startDate, end = endDate) => {
+        fetchScrapVariancePerDeptStartAsync(start, end);
     }
 
     const setTitleFn = (dept) => {
@@ -110,12 +94,11 @@ const PerformanceLevel0Page = ({
 
     //events handlers
     const onClick = () => {
-        setScrapAreaNameTitle(setTitleFn(performaceSelectedDepartment));
+        setDeptTitle(setTitleFn(performaceSelectedDepartment));
         fetchQuarterly(monthStartFormart, monthEndFormat);
         fetch(startDate, endDate);
     }
 
-    //update selected scrap type
     const onSelectChange = (value) => setPerformaceSelectedDepartment(value);
 
     const onMonthChange = (date, dateString) => {
@@ -140,27 +123,26 @@ const PerformanceLevel0Page = ({
         setEndDate(end ? end.format(dateFormat) : null);  
     }
 
-    const onScrapVarianceSelectChange = (value) => {
-        setScrapVarianceScrapType(value);
-        fetchScrapVarianceStartAsync(monthStartFormart, monthEndFormat, performaceSelectedDepartment, value); 
+    const onScrapByDeptChange = (value) => {
+        setScrapByDeptScrapType(value);
+        fetchScrapVariancePerDeptStartAsync(startDate, endDate, value);
     }
 
-    const onScrapVariancePerProgSelectChange = (value) => {
-        setScrapVariancePerProgScrapType(value);
-        fetchScrapVariancePerProgramStartAsync(startDate, endDate, performaceSelectedDepartment, value); 
+    const onScrapByShiftChange = (value) => {
+        setScrapByShiftScrapType(value);
     }
 
     useEffect(() => {
         document.title = `Performance: L0 - L1`;
+        setDeptTitle(setTitleFn(performaceSelectedDepartment));
         fetchQuarterly();
         fetch();
-        setScrapAreaNameTitle(setTitleFn(performaceSelectedDepartment));
     }, [])
 
     return (
         <>
             <Header className="pa0 custom-header" >
-                <h2 className="ml3">{scrapAreaNameTitle} Scrap Performace L0 - L1</h2>
+                <h2 className="ml3">{deptTitle} Department Performace L2 - L3</h2>
             </Header>
     
             <Content className="ma3 mt0">
@@ -169,14 +151,13 @@ const PerformanceLevel0Page = ({
                     (<div>
                         <b>Update Charts:</b>
                         <ul>
-                            <li>Plant Wide Scrap Variance</li>
-                            <li>PPMH Plant Wide Variance</li>
-                            <li>PPMH Variance per Dept</li>
+                            <li>Overtime percentage per department</li>
                         </ul>
                     </div>)}>
 
                     <span className="mr2">Month Range:</span>
                 </Tooltip>
+                
                 <RangePicker picker="month" onChange={onMonthChange} className="mr2" disabledDate={disabledDate}
                     defaultValue={[
                         moment(monthStartFormart, dateFormat),
@@ -187,20 +168,23 @@ const PerformanceLevel0Page = ({
                     (<div>
                         <b>Update Charts:</b>
                         <ul>
-                            <li>Plant OAE, Downtime, Scrap</li>
-                            <li>Plant Wide Scrap Variace per Program</li>
-                            <li>Downtime per Dept</li>
+                            <li>Scrap Variance per Dept</li>
+                            <li>Scrap Variance per Shift</li>
+                            <li>Overtime Variance per Shift</li>
+                            <li>Downtime by Owner</li>
+                            <li>Downtime Pareto PLC</li>
                         </ul>
                     </div>)}>
 
                     <span className="mr2">Date Range:</span>
                 </Tooltip>
+
                 <DateRangePicker 
                     dateRangeValue={{startDate: startDate, endDate: endDate}}
                     onCalendarChange={onCalendarChange}
                     isRenderButton={false}/>
                 
-                <span className="mr2">Scrap:</span>
+                <span className="mr2">Department:</span>
                 <Select 
                     defaultValue={performaceSelectedDepartment}
                     style={{ width: 120 }}
@@ -217,44 +201,40 @@ const PerformanceLevel0Page = ({
                     <Button type="primary" onClick={onClick}>Go</Button>
                 </Tooltip>
 
-                <Button type="primary" className="ml2">
-                    <a href="http://134.238.150.15/FMSB/SWOT/Targets.aspx" target="_blank">Update KPI Targets</a>
-                </Button>
-
                 <div className="mt3">
                     <Row gutter={12}>  
 
                         <Col span={8}>
                             <Card 
-                                title={`Lvl 0: ${scrapAreaNameTitle} Scrap Variance (${monthStartFormart} - ${monthEndFormat})`}
+                                title={`Lvl 2: Scrap Variance per Dept (${startDate} - ${endDate})`}
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
-                                extra={<SelectScrapType onChange={onScrapVarianceSelectChange} />}
+                                extra={<SelectScrapType onChange={onScrapByDeptChange} />}
                             >
-                                <ScrapVarianceChart  />
+                                <ScrapVariancePerDeptChart/>
                             </Card>         
                         </Col>
 
                         <Col span={8}>
                             <Card 
-                                title="Level 0 - PPMH Plant Wide Variance"
+                                title={`Lvl 2: ${deptTitle} Dept Overtime  percentage (${monthStartFormart} - ${monthEndFormat})`}
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
                             >
-                                <Empty/>
+                                
                             </Card>         
                         </Col>
 
                         <Col span={8}>
                             <Card 
-                                title={`Lvl 0: ${scrapAreaNameTitle} OAE, Downtime, Scrap (${startDate} - ${endDate})`}
+                                title={`Lvl 2: ${deptTitle} Dept Downtime by Owner (${startDate} - ${endDate})`}
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
                             >
-                                <DeptKpiChart/>
+
                             </Card>         
                         </Col>
 
@@ -264,38 +244,35 @@ const PerformanceLevel0Page = ({
 
                         <Col span={8}>
                             <Card 
-                                title={`Lvl 1: ${scrapAreaNameTitle} Scrap Variance per Program (${startDate} - ${endDate})`}
+                                title={`Lvl 3: ${deptTitle} Dept Scrap Variance per Shift (${startDate} - ${endDate})`}
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
-                                extra={<SelectScrapType onChange={onScrapVariancePerProgSelectChange} />}
+                                extra={<SelectScrapType onChange={onScrapByShiftChange} />}
                             >
-                                <ScrapVarianceChartPerProgram/>
+  
                             </Card>         
                         </Col>
 
                         <Col span={8}>
                             <Card 
-                                title={`Lvl 1: ${scrapAreaNameTitle} Department PPMH Variance (${monthStartFormart} - ${monthEndFormat})`}
+                                title={`Lvl 3: ${deptTitle} Overtime Variance per Shift (${startDate} - ${endDate})`}
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
                             >
-                                <PpmhVariancePerDeptChart/>
+
                             </Card>         
                         </Col>
 
                         <Col span={8}>
                             <Card 
-                                title={`Lvl 0: Downtime per Department (${startDate} - ${endDate})`}
+                                title={`Lvl 3: ${deptTitle} Top 25 Downtime pareto - PLC (${startDate} - ${endDate})`}
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
-                                extra={
-                                    <Link to="/dashboard/morningmeeting/downtime">Drilldown</Link>
-                                }
                             >
-                                <DowntimeChart isDrillDown={false}/>
+
                             </Card>         
                         </Col>
 
@@ -309,23 +286,19 @@ const PerformanceLevel0Page = ({
 }
 
 const mapDispatchToProps = dispatch => ({
-    fetchScrapVarianceStartAsync: (start, end, area, isPurchasedScrap) => dispatch(fetchScrapVarianceStartAsync(start, end, area, isPurchasedScrap)),
-    fetchScrapVariancePerProgramStartAsync: (start, end, area, isPurchasedScrap) => dispatch(fetchScrapVariancePerProgramStartAsync(start, end, area, isPurchasedScrap)),
-    fetchPpmhPerDeptStartAsync: (start, end, area) => dispatch(fetchPpmhPerDeptStartAsync(start, end, area)),
-    fetchDeptKpiStartAsync: (start, end, area) => dispatch(fetchDeptKpiStartAsync(start, end, area)),
-    fetchDowntimeStartAsync: (start, end) => dispatch(fetchDowntimeStartAsync(start, end)),
+    setStartDate: (date) => dispatch(setStartDate(date)),
+    setEndDate: (date) => dispatch(setEndDate(date)),
+
+    fetchScrapVariancePerDeptStartAsync: (start, end, isPurchasedScrap) => dispatch(fetchScrapVariancePerDeptStartAsync(start, end, isPurchasedScrap)),
 
     setPerformaceSelectedDepartment: (dept) => dispatch(setPerformaceSelectedDepartment(dept)),
-
-    setStartDate: (date) => dispatch(setStartDate(date)),
-    setEndDate: (date) => dispatch(setEndDate(date))
 })
 
 const mapStateToProps = ({morningMeeting}) => ({
-    performaceSelectedDepartment: morningMeeting.performaceSelectedDepartment,
-
     startDate: morningMeeting.startDate,
     endDate: morningMeeting.endDate,
+
+    performaceSelectedDepartment: morningMeeting.performaceSelectedDepartment,
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(PerformanceLevel0Page);
+export default connect(mapStateToProps, mapDispatchToProps)(PerformanceLevel2Page);

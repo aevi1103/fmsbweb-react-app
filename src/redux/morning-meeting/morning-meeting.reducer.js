@@ -71,6 +71,10 @@ const INITIAL_STATE = {
     scrapVariancePerProgramCollection: null,
     scrapVariancePerProgramErrorMsg: undefined,
 
+    isScrapVarianceByDeptFetching: false,
+    scrapVarianceByDeptCollection: null,
+    scrapVarianceByDeptErrorMsg: undefined,
+
     isPpmhPerDeptVarianceFetching: false,
     ppmhPerDeptVarianceCollection: null,
     ppmhPerDeptVarianceErrorMsg: undefined,
@@ -492,7 +496,32 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 scrapVariancePerProgramErrorMsg: action.payload
             }
 
-        //ppmh variance per program
+        //scrap variance per dept
+        case morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_DEPT_START:
+
+            return {
+                ...state,
+                isScrapVarianceByDeptFetching: true
+            }
+
+        case morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_DEPT_SUCCESS:
+
+            return {
+                ...state,
+                isScrapVarianceByDeptFetching: false,
+                scrapVarianceByDeptCollection: action.payload
+            }
+
+        case morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_DEPT_FAILURE:
+
+            return {
+                ...state,
+                isScrapVarianceByDeptFetching: false,
+                scrapVarianceByDeptCollection: null,
+                scrapVarianceByDeptErrorMsg: action.payload
+            }
+
+        //ppmh variance per dept
         case morningMeetingTypes.FETCH_PPMH_PER_DEPT_START:
 
             return {
@@ -516,6 +545,8 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 ppmhPerDeptVarianceCollection: null,
                 ppmhPerDeptVarianceErrorMsg: action.payload
             }
+
+
 
         //dept kpi
         case morningMeetingTypes.FETCH_DEPT_KPI_START:

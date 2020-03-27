@@ -2,8 +2,7 @@ import numeral from 'numeral';
 
 export const TransformDeptKpiData = (data, area) => {
 
-    if (!data || data.length === 0) return null;
-    if (area === 'Plant') return [];
+    if (data.target === 0 || area === 'Plant') return [];
 
     const {
         sapOae,
@@ -20,9 +19,11 @@ export const TransformDeptKpiData = (data, area) => {
         label: scrapAreaName,
         color: colorCode,
         value: (scrapRate * 100).toFixed(2),
-        toolText: `<b>SAP Gross</b> ${numeral(sapGross).format('0,0')} <br>
+        toolText: `<b>Scrap Type</b> ${scrapAreaName} <br>
+                    <b>SAP Gross</b> ${numeral(sapGross).format('0,0')} <br>
                     <b>Scrap Qty</b> ${numeral(scrapQty).format('0,0')} <br>
-                    <b>Scrap %</b> ${numeral(scrapRate).format('0.00%')} <br>`
+                    <b>Scrap %</b> ${numeral(scrapRate).format('0.00%')} <br><br>
+                    <small>*Includes SB + Purchased Scrap</small>`
     }))
 
     return [

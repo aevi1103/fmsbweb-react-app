@@ -32,6 +32,7 @@ import ProductionDetailsPage from './pages/dashboard/morning-meeting/production-
 import OrderStatusPage from './pages/order-status-page/order-status-page.component'
 
 import PerformanceLevel0Page from './pages/dashboard/morning-meeting/performance-level0-page/performance-level0-page.component'
+import PerformanceLevel2Page from './pages/dashboard/morning-meeting/performance-level2-page/performance-level2-page.component';
 
 // const SafetyPage = lazy(() => import('./pages/dashboard/morning-meeting/safety/safety.component'));
 // const LogisticsPage = lazy(() => import('./pages/dashboard/morning-meeting/logistics/logistics.component'));
@@ -125,6 +126,7 @@ const App = ( { collapsed, setSiderCollapse } ) => {
 
       {/* performance Page */}
       <Route exact path="/dashboard/morningmeeting/level0" component={PerformanceLevel0Page} />
+      <Route exact path="/dashboard/morningmeeting/level2" component={PerformanceLevel2Page} />
 
       <Route component={NotFound} />
     </Switch>

@@ -469,7 +469,7 @@ export const fetchQualityStartAsync = (date) => {
 }
 
 //scrap variance
-export const fetchScrapVarianceStartAsync = (start, end, area, isPurchasedScrap = 'Sb Scrap') => {
+export const fetchScrapVarianceStartAsync = (start, end, area, isPurchasedScrap = 'SB') => {
 
     return dispatch => {
 
@@ -504,7 +504,7 @@ export const fetchScrapVarianceStartAsync = (start, end, area, isPurchasedScrap 
 }
 
 //scrap variance per program
-export const fetchScrapVariancePerProgramStartAsync = (start, end, area, isPurchasedScrap = 'Sb Scrap') => {
+export const fetchScrapVariancePerProgramStartAsync = (start, end, area, isPurchasedScrap = 'SB') => {
 
     return dispatch => {
 
@@ -541,7 +541,41 @@ export const fetchScrapVariancePerProgramStartAsync = (start, end, area, isPurch
     }
 }
 
-//PPMH variance per program
+//scrap variance per program
+export const fetchScrapVariancePerDeptStartAsync = (start, end, isPurchasedScrap = 'SB') => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_DEPT_START))
+
+        const url = 'sap/scrapvarianceperdept'
+        api.get(url, {
+            params: {
+                start,
+                end,
+                isPurchasedScrap: isPurchasedScrap === 'SB' ? false : true
+            }
+        })
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_DEPT_SUCCESS,
+                response.data))
+
+        })
+        .catch(error => {
+            
+            dispatch(fetchFailure(
+                morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_DEPT_FAILURE,
+                error.message))
+        
+        })
+
+    }
+}
+
+//PPMH variance per dept
 export const fetchPpmhPerDeptStartAsync = (start, end, area) => {
 
     return dispatch => {
@@ -574,6 +608,7 @@ export const fetchPpmhPerDeptStartAsync = (start, end, area) => {
     }
 }
 
+//dept kpi
 export const fetchDeptKpiStartAsync = (start, end, area) => {
 
     return dispatch => {
