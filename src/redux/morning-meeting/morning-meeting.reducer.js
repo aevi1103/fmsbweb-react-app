@@ -63,6 +63,10 @@ const INITIAL_STATE = {
     downtimeCollection: null,
     downtimeErrorMsg: undefined,
 
+    isDowntimeByOwnerFetching: false,
+    downtimeByOwnerCollections: null,
+    downtimeByOwnerErrorMsg: undefined,
+
     isScrapVarianceFetching: false,
     scrapVarianceCollection: null,
     scrapVarianceErrorMsg: undefined,
@@ -448,6 +452,31 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isDowntimeFetching: false,
                 downtimeCollection: null,
                 downtimeErrorMsg: action.payload
+            };
+
+        //downtime by owner
+        case morningMeetingTypes.FETCH_DOWNTIME_BY_OWNER_START:
+
+            return {
+                ...state,
+                isDowntimeByOwnerFetching: true
+            };
+
+        case morningMeetingTypes.FETCH_DOWNTIME_BY_OWNER_SUCCESS:
+
+            return {
+                ...state,
+                isDowntimeByOwnerFetching: false,
+                downtimeByOwnerCollections: action.payload
+            };
+
+        case morningMeetingTypes.FETCH_DOWNTIME_BY_OWNER_FAILURE:
+
+            return {
+                ...state,
+                isDowntimeByOwnerFetching: false,
+                downtimeByOwnerCollections: null,
+                downtimeByOwnerErrorMsg: action.payload
             };
 
         //scrap variance

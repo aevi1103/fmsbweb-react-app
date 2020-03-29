@@ -1,5 +1,6 @@
 {
     "jshint.options": {
         "esversion": 9
-    }
+    },
+    "editor.fontSize": 12
 }

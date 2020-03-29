@@ -9,6 +9,7 @@ import {
 
     fetchScrapVariancePerDeptStartAsync,
     fetchScrapVariancePerShiftStartAsync,
+    fetchDowntimeByOwnerStartAsync,
 
     setPerformaceSelectedDepartment
 } from '../../../../redux/morning-meeting/morning-meeting.actions';
@@ -16,6 +17,7 @@ import {
 //level 0 charts
 import ScrapVariancePerDeptChart from '../../../../components/performance/level-2/scrap-variance-per-dept.component';
 import ScrapVariancePerShiftChart from '../../../../components/performance/level-2/scrap-variance-per-shift.component';
+import DowntimeByOwnerChart from '../../../../components/performance/level-2/downtime-by-owner-chart.component';
 
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component';
 import SelectScrapType from '../../../../components/select-scrap-type/seclect-scrap-type.components';
@@ -51,7 +53,8 @@ const PerformanceLevel2Page = ({
     performaceSelectedDepartment,
 
     fetchScrapVariancePerDeptStartAsync,
-    fetchScrapVariancePerShiftStartAsync
+    fetchScrapVariancePerShiftStartAsync,
+    fetchDowntimeByOwnerStartAsync
 }) => {
 
     const previousDay = moment().add(-1, 'days').format(dateFormat);
@@ -77,6 +80,7 @@ const PerformanceLevel2Page = ({
     const fetch = (start = startDate, end = endDate) => {
         fetchScrapVariancePerDeptStartAsync(start, end, scrapByDeptScrapType);
         fetchScrapVariancePerShiftStartAsync(start, end, performaceSelectedDepartment, scrapByDeptScrapType);
+        fetchDowntimeByOwnerStartAsync(start, end, performaceSelectedDepartment);
     }
 
     const setTitleFn = (dept) => {
@@ -227,7 +231,7 @@ const PerformanceLevel2Page = ({
                                 className="mb3"
                                 style={cardHeightStyle}
                             >
-
+                                <DowntimeByOwnerChart/>
                             </Card>         
                         </Col>
 
@@ -284,6 +288,7 @@ const mapDispatchToProps = dispatch => ({
 
     fetchScrapVariancePerDeptStartAsync: (start, end, isPurchasedScrap) => dispatch(fetchScrapVariancePerDeptStartAsync(start, end, isPurchasedScrap)),
     fetchScrapVariancePerShiftStartAsync: (start, end, area, isPurchasedScrap) => dispatch(fetchScrapVariancePerShiftStartAsync(start, end, area, isPurchasedScrap)),
+    fetchDowntimeByOwnerStartAsync: (start, end, dept) => dispatch(fetchDowntimeByOwnerStartAsync(start, end, dept)),
 
     setPerformaceSelectedDepartment: (dept) => dispatch(setPerformaceSelectedDepartment(dept)),
 })

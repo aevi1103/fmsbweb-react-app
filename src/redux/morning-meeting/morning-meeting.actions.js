@@ -715,6 +715,52 @@ export const fetchDowntimeStartAsync = (start, end) => {
     }
 }
 
+//downtime by owner
+export const fetchDowntimeByOwnerStartAsync = (start, end, area) => {
+
+    var dept = area;
+    switch (dept) {
+        case 'Foundry Cell' :
+            dept = 'Foundry';
+            break;
+        case 'Machine Line':
+            dept = 'Machining';
+            break;
+        default:
+            dept = area;
+    };
+
+    return dispatch => {
+
+        dispatch(fetchStart(morningMeetingTypes.FETCH_DOWNTIME_BY_OWNER_START))
+
+        const url = 'fmsb/downtimebyowner';
+            
+        api.get(url, {
+            params: {
+                start,
+                end,
+                dept
+            }
+        })
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_DOWNTIME_BY_OWNER_SUCCESS,
+                response.data))
+
+        })
+        .catch(error => {
+            
+            dispatch(fetchFailure(
+                morningMeetingTypes.FETCH_DOWNTIME_BY_OWNER_FAILURE,
+                error.message))
+        
+        })
+
+    }
+}
+
 export const setStartDate = date => ({
     type: morningMeetingTypes.SET_PRODUCTION_START_DATE,
     payload: date
