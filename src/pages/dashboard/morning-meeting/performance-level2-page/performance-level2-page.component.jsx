@@ -12,15 +12,19 @@ import {
     fetchScrapVariancePerShiftStartAsync,
     fetchDowntimeByOwnerStartAsync,
     fetchDowntimeIconicsStartAsync,
+    fetchOvertimePercentPerDeptStartAsync,
+    fetchOvertimePercentPerShiftStartAsync,
 
     setPerformaceSelectedDepartment
 } from '../../../../redux/morning-meeting/morning-meeting.actions';
 
 //level 0 charts
 import ScrapVariancePerDeptChart from '../../../../components/performance/level-2/scrap-variance-per-dept.component';
-import ScrapVariancePerShiftChart from '../../../../components/performance/level-2/scrap-variance-per-shift.component';
+import ScrapVariancePerShiftChart from '../../../../components/performance/level-3/scrap-variance-per-shift.component';
 import DowntimeByOwnerChart from '../../../../components/performance/level-2/downtime-by-owner-chart.component';
-import DowntimeIconics from '../../../../components/performance/level-2/downtime-iconics-chart.component';
+import DowntimeIconics from '../../../../components/performance/level-3/downtime-iconics-chart.component';
+import OvertimePercentPerDeptChart from '../../../../components/performance/level-2/overtime-percent-per-dept.component';
+import OvertimePercentPerSiftChart from '../../../../components/performance/level-3/overtime-percent-per-shift.component';
 
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component';
 import SelectScrapType from '../../../../components/select-scrap-type/seclect-scrap-type.components';
@@ -59,7 +63,9 @@ const PerformanceLevel2Page = ({
     fetchScrapVariancePerDeptStartAsync,
     fetchScrapVariancePerShiftStartAsync,
     fetchDowntimeByOwnerStartAsync,
-    fetchDowntimeIconicsStartAsync
+    fetchDowntimeIconicsStartAsync,
+    fetchOvertimePercentPerDeptStartAsync,
+    fetchOvertimePercentPerShiftStartAsync
 }) => {
 
     const previousDay = moment().add(-1, 'days').format(dateFormat);
@@ -83,7 +89,7 @@ const PerformanceLevel2Page = ({
     const [maxDowntimeEvt, setMaxDowntimeEvt] = useState(null);
 
     const fetchQuarterly = (start = monthStartFormart, end = monthEndFormat) => {
-
+        fetchOvertimePercentPerDeptStartAsync(start, end, performaceSelectedDepartment);
     }
     
     const fetch = (start = startDate, end = endDate) => {
@@ -91,6 +97,7 @@ const PerformanceLevel2Page = ({
         fetchScrapVariancePerShiftStartAsync(start, end, performaceSelectedDepartment, scrapByDeptScrapType);
         fetchDowntimeByOwnerStartAsync(start, end, performaceSelectedDepartment);
         fetchDowntimeIconicsStartAsync(start, end, performaceSelectedDepartment, minDowntimeEvt, maxDowntimeEvt);
+        fetchOvertimePercentPerShiftStartAsync(start, end, performaceSelectedDepartment);
     };
 
     const setTitleFn = (dept) => {
@@ -256,7 +263,7 @@ const PerformanceLevel2Page = ({
                                 className="mb3"
                                 style={cardHeightStyle}
                             >
-                                
+                                <OvertimePercentPerDeptChart/>
                             </Card>         
                         </Col>
 
@@ -294,7 +301,7 @@ const PerformanceLevel2Page = ({
                                 className="mb3"
                                 style={cardHeightStyle}
                             >
-
+                                <OvertimePercentPerSiftChart/>
                             </Card>         
                         </Col>
 
@@ -360,6 +367,8 @@ const mapDispatchToProps = dispatch => ({
     fetchScrapVariancePerShiftStartAsync: (start, end, area, isPurchasedScrap) => dispatch(fetchScrapVariancePerShiftStartAsync(start, end, area, isPurchasedScrap)),
     fetchDowntimeByOwnerStartAsync: (start, end, area) => dispatch(fetchDowntimeByOwnerStartAsync(start, end, area)),
     fetchDowntimeIconicsStartAsync: (start, end, area, min, max) => dispatch(fetchDowntimeIconicsStartAsync(start, end, area, min, max)),
+    fetchOvertimePercentPerDeptStartAsync: (start, end, dept) => dispatch(fetchOvertimePercentPerDeptStartAsync(start, end, dept)),
+    fetchOvertimePercentPerShiftStartAsync: (start, end, dept) => dispatch(fetchOvertimePercentPerShiftStartAsync(start, end, dept)),
 
     setPerformaceSelectedDepartment: (dept) => dispatch(setPerformaceSelectedDepartment(dept)),
 })

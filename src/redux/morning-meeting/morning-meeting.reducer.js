@@ -91,6 +91,14 @@ const INITIAL_STATE = {
     ppmhPerDeptVarianceCollection: null,
     ppmhPerDeptVarianceErrorMsg: undefined,
 
+    isOvertimePercentPerDeptFetching: false,
+    overtimePercentperDeptCollection: null,
+    overtimePercentPerDeptErrorMsg: undefined,
+
+    isOvertimePercentPerShiftFetching: false,
+    overtimePercentperShiftCollection: null,
+    overtimePercentPerShiftErrorMsg: undefined,
+
     isDeptKpiFetching: false,
     deptKpiCollection: null,
     deptKpiErrorMessage: undefined,
@@ -658,13 +666,63 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 deptKpiErrorMessage: action.payload
             };
 
+        //overtime percent per dept
+        case morningMeetingTypes.FETCH_OVERTIME_PERCENT_PER_DEPT_START:
+
+            return {
+                ...state,
+                isOvertimePercentPerDeptFetching: true
+            };
+
+        case morningMeetingTypes.FETCH_OVERTIME_PERCENT_PER_DEPT_SUCCESS:
+
+            return {
+                ...state,
+                isOvertimePercentPerDeptFetching: false,
+                overtimePercentperDeptCollection: action.payload
+            };
+
+        case morningMeetingTypes.FETCH_OVERTIME_PERCENT_PER_DEPT_FAILURE:
+
+            return {
+                ...state,
+                isOvertimePercentPerDeptFetching: false,
+                overtimePercentperDeptCollection: null,
+                overtimePercentPerDeptErrorMsg: action.payload
+            };
+
+        //overtime percent per shift
+        case morningMeetingTypes.FETCH_OVERTIME_PERCENT_PER_SHIFT_START:
+
+            return {
+                ...state,
+                isOvertimePercentPerShiftFetching: true
+            };
+
+        case morningMeetingTypes.FETCH_OVERTIME_PERCENT_PER_SHIFT_SUCCESS:
+
+            return {
+                ...state,
+                isOvertimePercentPerShiftFetching: false,
+                overtimePercentperShiftCollection: action.payload
+            };
+
+        case morningMeetingTypes.FETCH_OVERTIME_PERCENT_PER_SHIFT_FAILURE:
+
+            return {
+                ...state,
+                isOvertimePercentPerShiftFetching: false,
+                overtimePercentperShiftCollection: null,
+                overtimePercentPerShiftErrorMsg: action.payload
+            };
+
         //set dates
         case morningMeetingTypes.SET_PRODUCTION_START_DATE:
 
             return {
                 ...state,
                 startDate: action.payload
-            }
+            };
 
         case morningMeetingTypes.SET_PRODUCTION_END_DATE:
 

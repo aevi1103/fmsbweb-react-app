@@ -809,6 +809,74 @@ export const fetchDowntimeIconicsStartAsync = (start, end, area, minDowntimeEven
     };
 };
 
+//overtime per dept
+export const fetchOvertimePercentPerDeptStartAsync = (start, end, dept) => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(morningMeetingTypes.FETCH_OVERTIME_PERCENT_PER_DEPT_START));
+
+        const url = 'fmsb/overtimeperdept';
+            
+        api.get(url, {
+            params: {
+                start,
+                end,
+                dept
+            }
+        })
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_OVERTIME_PERCENT_PER_DEPT_SUCCESS,
+                response.data.quarterSummary));
+
+        })
+        .catch(error => {
+            
+            dispatch(fetchFailure(
+                morningMeetingTypes.FETCH_OVERTIME_PERCENT_PER_DEPT_FAILURE,
+                error.message));
+        
+        });
+
+    };
+};
+
+//overtime per shift
+export const fetchOvertimePercentPerShiftStartAsync = (start, end, dept) => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(morningMeetingTypes.FETCH_OVERTIME_PERCENT_PER_SHIFT_START));
+
+        const url = 'fmsb/overtimeperdept';
+            
+        api.get(url, {
+            params: {
+                start,
+                end,
+                dept
+            }
+        })
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_OVERTIME_PERCENT_PER_SHIFT_SUCCESS,
+                response.data.shiftSummary));
+
+        })
+        .catch(error => {
+            
+            dispatch(fetchFailure(
+                morningMeetingTypes.FETCH_OVERTIME_PERCENT_PER_SHIFT_FAILURE,
+                error.message));
+        
+        });
+
+    };
+};
+
 export const setStartDate = date => ({
     type: morningMeetingTypes.SET_PRODUCTION_START_DATE,
     payload: date
