@@ -40,7 +40,7 @@ const ScrapVariancePerShiftChart = ({
         showLegend: "1",
         drawcrossline: "1",
         numberSuffix: "%"
-    }
+    };
 
     const dataSource = {
         chart: {

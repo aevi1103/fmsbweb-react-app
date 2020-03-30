@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import _ from 'lodash';
 import 'tachyons';
 
 import { 
@@ -10,6 +11,7 @@ import {
     fetchScrapVariancePerDeptStartAsync,
     fetchScrapVariancePerShiftStartAsync,
     fetchDowntimeByOwnerStartAsync,
+    fetchDowntimeIconicsStartAsync,
 
     setPerformaceSelectedDepartment
 } from '../../../../redux/morning-meeting/morning-meeting.actions';
@@ -18,6 +20,7 @@ import {
 import ScrapVariancePerDeptChart from '../../../../components/performance/level-2/scrap-variance-per-dept.component';
 import ScrapVariancePerShiftChart from '../../../../components/performance/level-2/scrap-variance-per-shift.component';
 import DowntimeByOwnerChart from '../../../../components/performance/level-2/downtime-by-owner-chart.component';
+import DowntimeIconics from '../../../../components/performance/level-2/downtime-iconics-chart.component';
 
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component';
 import SelectScrapType from '../../../../components/select-scrap-type/seclect-scrap-type.components';
@@ -31,7 +34,8 @@ import {
     Card,
     Button,
     Tooltip,
-    DatePicker
+    DatePicker,
+    Input
  } from "antd";
 
  const { Header, Content } = Layout;
@@ -54,7 +58,8 @@ const PerformanceLevel2Page = ({
 
     fetchScrapVariancePerDeptStartAsync,
     fetchScrapVariancePerShiftStartAsync,
-    fetchDowntimeByOwnerStartAsync
+    fetchDowntimeByOwnerStartAsync,
+    fetchDowntimeIconicsStartAsync
 }) => {
 
     const previousDay = moment().add(-1, 'days').format(dateFormat);
@@ -73,6 +78,10 @@ const PerformanceLevel2Page = ({
     //scrap area name title
     const [deptTitle, setDeptTitle] = useState(performaceSelectedDepartment);
 
+    //downtime event
+    const [minDowntimeEvt, setMinDowntimeEvt] = useState(10);
+    const [maxDowntimeEvt, setMaxDowntimeEvt] = useState(null);
+
     const fetchQuarterly = (start = monthStartFormart, end = monthEndFormat) => {
 
     }
@@ -81,7 +90,8 @@ const PerformanceLevel2Page = ({
         fetchScrapVariancePerDeptStartAsync(start, end, scrapByDeptScrapType);
         fetchScrapVariancePerShiftStartAsync(start, end, performaceSelectedDepartment, scrapByDeptScrapType);
         fetchDowntimeByOwnerStartAsync(start, end, performaceSelectedDepartment);
-    }
+        fetchDowntimeIconicsStartAsync(start, end, performaceSelectedDepartment, minDowntimeEvt, maxDowntimeEvt);
+    };
 
     const setTitleFn = (dept) => {
         switch (dept) {
@@ -94,7 +104,7 @@ const PerformanceLevel2Page = ({
             default:
                 return dept;
         }
-    }
+    };
 
     const disabledDate = (current) => current && current > moment().endOf('day');
 
@@ -137,6 +147,31 @@ const PerformanceLevel2Page = ({
     const onScrapByShiftChange = (value) => {
         setScrapByShiftScrapType(value);
         fetchScrapVariancePerShiftStartAsync(startDate, endDate, performaceSelectedDepartment, value);
+    };
+
+    const isNumeric = (value) => {
+        const reg = /^-?[0-9]*(\.[0-9]*)?$/;
+        if ((!isNaN(value) && reg.test(value)) || value === '' || value === '-') return true;
+        return false;
+    };
+
+    const onChangeMinDowntimeEvt = (e) => {
+        const { value } = e.target;
+        
+        if (isNumeric(value)) {
+            setMinDowntimeEvt(value);
+        }
+    };
+
+    const onChangeMaxDowntimeEvt = (e) => {
+        const { value } = e.target;
+        if (isNumeric(value)) {
+            setMaxDowntimeEvt(value);   
+        }
+    };
+
+    const onDowntimeEvtClick = () => {
+        fetchDowntimeIconicsStartAsync(startDate, endDate, performaceSelectedDepartment, minDowntimeEvt, maxDowntimeEvt);
     };
 
     useEffect(() => {
@@ -202,6 +237,7 @@ const PerformanceLevel2Page = ({
                     <Row gutter={12}>  
 
                         <Col span={8}>
+                         
                             <Card 
                                 title={`Lvl 2: Scrap Variance per Dept (${startDate} - ${endDate})`}
                                 bordered={false} size="small"
@@ -264,12 +300,46 @@ const PerformanceLevel2Page = ({
 
                         <Col span={8}>
                             <Card 
-                                title={`Lvl 3: ${deptTitle} Top 25 Downtime pareto - PLC (${startDate} - ${endDate})`}
+                                title={`Lvl 3: ${deptTitle} Downtime pareto - PLC (${startDate} - ${endDate})`}
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
+                                extra={
+                                    <Tooltip title="Set Min and Max Downtime Event">
+                                        <Input.Group compact size="small">
+                                            <Input style={{ width: 100, textAlign: 'center' }} 
+                                                    placeholder="Minimum"
+                                                    value={minDowntimeEvt} 
+                                                    onChange={onChangeMinDowntimeEvt} />
+                                            <Input
+                                                className="site-input-split"
+                                                style={{
+                                                    width: 30,
+                                                    borderLeft: 0,
+                                                    borderRight: 0,
+                                                    pointerEvents: 'none',
+                                                }}
+                                                placeholder="~"
+                                                disabled
+                                            />
+                                            <Input
+                                                className="site-input-right"
+                                                onChange={onChangeMaxDowntimeEvt}
+                                                value={maxDowntimeEvt}
+                                                style={{
+                                                width: 100,
+                                                textAlign: 'center',
+                                                }}
+                                                placeholder="Maximum"
+                                            />
+                                            <Button type="primary" size="small" onClick={onDowntimeEvtClick}>Go</Button>
+                                        </Input.Group>
+                                        
+                                    </Tooltip>
+                                    
+                                }
                             >
-
+                                <DowntimeIconics/>
                             </Card>         
                         </Col>
 
@@ -288,7 +358,8 @@ const mapDispatchToProps = dispatch => ({
 
     fetchScrapVariancePerDeptStartAsync: (start, end, isPurchasedScrap) => dispatch(fetchScrapVariancePerDeptStartAsync(start, end, isPurchasedScrap)),
     fetchScrapVariancePerShiftStartAsync: (start, end, area, isPurchasedScrap) => dispatch(fetchScrapVariancePerShiftStartAsync(start, end, area, isPurchasedScrap)),
-    fetchDowntimeByOwnerStartAsync: (start, end, dept) => dispatch(fetchDowntimeByOwnerStartAsync(start, end, dept)),
+    fetchDowntimeByOwnerStartAsync: (start, end, area) => dispatch(fetchDowntimeByOwnerStartAsync(start, end, area)),
+    fetchDowntimeIconicsStartAsync: (start, end, area, min, max) => dispatch(fetchDowntimeIconicsStartAsync(start, end, area, min, max)),
 
     setPerformaceSelectedDepartment: (dept) => dispatch(setPerformaceSelectedDepartment(dept)),
 })

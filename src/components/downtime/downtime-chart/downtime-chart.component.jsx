@@ -61,6 +61,8 @@ const DowntimeChart = ({
             drawcrossline: "1",
             // formatNumberScale: "0",
             showsum: "1",
+            labelDisplay: "rotate",
+            slantLabel: "1",
             plottooltext: 'Shift: $seriesname, Department: $label, Downtime: $value minutes',
             
             ...tooltipStyle

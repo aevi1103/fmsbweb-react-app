@@ -67,6 +67,10 @@ const INITIAL_STATE = {
     downtimeByOwnerCollections: null,
     downtimeByOwnerErrorMsg: undefined,
 
+    isDowntimeIconicsFetching: false,
+    downtimeIconicsCollections: null,
+    downtimeIconicsErrorMsg: undefined,
+
     isScrapVarianceFetching: false,
     scrapVarianceCollection: null,
     scrapVarianceErrorMsg: undefined,
@@ -477,6 +481,31 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isDowntimeByOwnerFetching: false,
                 downtimeByOwnerCollections: null,
                 downtimeByOwnerErrorMsg: action.payload
+            };
+
+        //downtime by Iconics
+        case morningMeetingTypes.FETCH_DOWNTIME_ICONICS_START:
+
+            return {
+                ...state,
+                isDowntimeIconicsFetching: true
+            };
+
+        case morningMeetingTypes.FETCH_DOWNTIME_ICONICS_SUCCESS:
+
+            return {
+                ...state,
+                isDowntimeIconicsFetching: false,
+                downtimeIconicsCollections: action.payload
+            };
+
+        case morningMeetingTypes.FETCH_DOWNTIME_ICONICS_FAILURE:
+
+            return {
+                ...state,
+                isDowntimeIconicsFetching: false,
+                downtimeIconicsCollections: null,
+                downtimeIconicsErrorMsg: action.payload
             };
 
         //scrap variance

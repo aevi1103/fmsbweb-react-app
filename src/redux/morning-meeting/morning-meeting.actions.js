@@ -1,33 +1,33 @@
 import morningMeetingTypes from './morning-meeting.types';
-import api from '../../API'
-import axios from 'axios'
+import api from '../../API';
+import axios from 'axios';
 import {
     getDowntimeByOwner,
     getDowntimeByLine
-} from '../../helpers/downtime-helper'
+} from '../../helpers/downtime-helper';
 
 import {
     TransformScrapVarianceData,
     TransformScrapVariancePerProgramData
-} from '../../helpers/scrap-variance-helper'
+} from '../../helpers/scrap-variance-helper';
 
 import {
     TransformDeptKpiData
-} from '../../helpers/dept-kpi-helper'
+} from '../../helpers/dept-kpi-helper';
 
 const fetchStart = (actionType) => ({
     type: actionType
-})
+});
 
 const fetchSuccess = (actionType, data) => ({
     type: actionType,
     payload: data
-})
+});
 
 const fetchFailure = (actionType, errorMsg) => ({
     type: actionType,
     payload: errorMsg
-})
+});
 
 //MONTHLY_INCIDENT_RATE
 
@@ -36,7 +36,7 @@ export const fetchSafetyMonthlyIncidentRateStartAsync = () => {
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_SAFETY_MONTHLY_INCIDENT_RATE_START))
+            morningMeetingTypes.FETCH_SAFETY_MONTHLY_INCIDENT_RATE_START));
 
         const url = 'safety/monthlyincidentrate';
 
@@ -45,25 +45,25 @@ export const fetchSafetyMonthlyIncidentRateStartAsync = () => {
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_SAFETY_MONTHLY_INCIDENT_RATE_SUCCESS,
-                response.data))
+                response.data));
 
         })
         .catch(error => {
             
             dispatch(fetchFailure(
                 morningMeetingTypes.FETCH_SAFETY_MONTHLY_INCIDENT_RATE_FAILURE,
-                error.message))
+                error.message));
 
             if (axios.isCancel(error)) {
                 console.error('Request canceled', url, error.message);
             } else {
-                console.error('sopmething else', url, error.message)
+                console.error('sopmething else', url, error.message);
             }
 
-        })
+        });
 
-    }
-}
+    };
+};
 
 //INCIDENTS_BY_DEPT
 export const fetchSafetyIncidentByDeptStartAsync = () => {
@@ -71,22 +71,22 @@ export const fetchSafetyIncidentByDeptStartAsync = () => {
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_SAFETY_INCIDENTS_BY_DEPT_START))
+            morningMeetingTypes.FETCH_SAFETY_INCIDENTS_BY_DEPT_START));
 
         api.get('safety/incidentbydepartment')
         .then(response => {
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_SAFETY_INCIDENTS_BY_DEPT_SUCCESS,
-                response.data))
+                response.data));
 
         })
         .catch(error => dispatch(fetchFailure(
             morningMeetingTypes.FETCH_SAFETY_INCIDENTS_BY_DEPT_FAILURE,
-            error.message)))
+            error.message)));
 
-    }
-}
+    };
+};
 
 //INCIDENTS
 export const fetchSafetyIncidentStartAsync = (startDate, endDate) => {
@@ -94,7 +94,7 @@ export const fetchSafetyIncidentStartAsync = (startDate, endDate) => {
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_SAFETY_INCIDENTS_START))
+            morningMeetingTypes.FETCH_SAFETY_INCIDENTS_START));
 
         const url = `safety/incidents`;
         api.get(url, {
@@ -108,15 +108,15 @@ export const fetchSafetyIncidentStartAsync = (startDate, endDate) => {
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_SAFETY_INCIDENTS_SUCCESS,
-                response.data))
+                response.data));
 
         })
         .catch(error => dispatch(fetchFailure(
             morningMeetingTypes.FETCH_SAFETY_INCIDENTS_FAILURE,
-            error.message)))
+            error.message)));
 
-    }
-}
+    };
+};
 
 //LOGISTICS_STOCK_OVERVIEW
 export const fetchLogisticsStockOverviewStartAsync = (date) => {
@@ -124,7 +124,7 @@ export const fetchLogisticsStockOverviewStartAsync = (date) => {
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_START))
+            morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_START));
 
         const url = `logistics/stockoverview`;
         api.get(url, {
@@ -136,15 +136,15 @@ export const fetchLogisticsStockOverviewStartAsync = (date) => {
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_SUCCESS,
-                response.data))
+                response.data));
 
         })
         .catch(error => dispatch(fetchFailure(
             morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_FAILURE,
-            error.message)))
+            error.message)));
 
-    }
-}
+    };
+};
 
 //LOGISTICS_STOCK_OVERVIEW_SLOC
 export const fetchLogisticsStockOverviewSlocStartAsync = (date) => {
@@ -152,7 +152,7 @@ export const fetchLogisticsStockOverviewSlocStartAsync = (date) => {
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_SLOC_START))
+            morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_SLOC_START));
 
         const url = `logistics/stockoverviewbysloc`;
         api.get(url, {
@@ -164,15 +164,15 @@ export const fetchLogisticsStockOverviewSlocStartAsync = (date) => {
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_SLOC_SUCCESS,
-                response.data))
+                response.data));
 
         })
         .catch(error => dispatch(fetchFailure(
             morningMeetingTypes.FETCH_LOGISTICS_STOCK_OVERVIEW_SLOC_FAILURE,
-            error.message)))
+            error.message)));
 
-    }
-}
+    };
+};
     
 //LOGISTICS_STATUS
 export const fetchLogisticsStatusStartAsync = (start, end) => {
@@ -180,7 +180,7 @@ export const fetchLogisticsStatusStartAsync = (start, end) => {
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_LOGISTICS_STATUS_START))
+            morningMeetingTypes.FETCH_LOGISTICS_STATUS_START));
 
         const url = `logistics/status`;
         api.get(url, {
@@ -193,15 +193,15 @@ export const fetchLogisticsStatusStartAsync = (start, end) => {
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_LOGISTICS_STATUS_SUCCESS,
-                response.data))
+                response.data));
 
         })
         .catch(error => dispatch(fetchFailure(
             morningMeetingTypes.FETCH_LOGISTICS_STATUS_FAILURE,
-            error.message)))
+            error.message)));
 
-    }
-}
+    };
+};
 
 //PRODUCTION_STATUS
 export const fetchProductionStatusStartAsync = (start, end, area, cancelTokenSrc) => {
@@ -209,9 +209,9 @@ export const fetchProductionStatusStartAsync = (start, end, area, cancelTokenSrc
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_PRODUCTION_STATUS_START))
+            morningMeetingTypes.FETCH_PRODUCTION_STATUS_START));
 
-        const url = `sap/productiondata`
+        const url = `sap/productiondata`;
 
         api.get(url, { 
             params: {
@@ -225,7 +225,7 @@ export const fetchProductionStatusStartAsync = (start, end, area, cancelTokenSrc
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_PRODUCTION_STATUS_SUCCESS,
-                response.data))
+                response.data));
 
         })
         .catch(error => {
@@ -236,13 +236,13 @@ export const fetchProductionStatusStartAsync = (start, end, area, cancelTokenSrc
                 console.error('sopmething else', url, error.message);
                 dispatch(fetchFailure(
                     morningMeetingTypes.FETCH_PRODUCTION_STATUS_FAILURE,
-                    error.message))
+                    error.message));
             }
         
-        })
+        });
 
-    }
-}
+    };
+};
 
 //DAILY SCRAP RATE
 export const fetchDailyScrapRateStartAsync = (start, end, area, cancelTokenSrc) => {
@@ -250,7 +250,7 @@ export const fetchDailyScrapRateStartAsync = (start, end, area, cancelTokenSrc) 
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_DAILY_SCRAP_RATE_START))
+            morningMeetingTypes.FETCH_DAILY_SCRAP_RATE_START));
 
         const url = `sap/dailyscraprate`;
         api.get(url, { 
@@ -265,7 +265,7 @@ export const fetchDailyScrapRateStartAsync = (start, end, area, cancelTokenSrc) 
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_DAILY_SCRAP_RATE_SUCCESS,
-                response.data))
+                response.data));
 
         })
         .catch(error => {
@@ -276,13 +276,13 @@ export const fetchDailyScrapRateStartAsync = (start, end, area, cancelTokenSrc) 
                 console.error('sopmething else', url, error.message);
                 dispatch(fetchFailure(
                     morningMeetingTypes.FETCH_DAILY_SCRAP_RATE_FAILURE,
-                    error.message))
+                    error.message));
             }
         
-        })
+        });
 
-    }
-}
+    };
+};
 
 //DAILY KPI
 export const fetchDailyKpiStartAsync = (start, end, area, cancelTokenSrc) => {
@@ -290,7 +290,7 @@ export const fetchDailyKpiStartAsync = (start, end, area, cancelTokenSrc) => {
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_DAILY_KPI_START))
+            morningMeetingTypes.FETCH_DAILY_KPI_START));
 
         const url = `sap/dailykpi`;
         api.get(url, { 
@@ -305,7 +305,7 @@ export const fetchDailyKpiStartAsync = (start, end, area, cancelTokenSrc) => {
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_DAILY_KPI_SUCCESS,
-                response.data))
+                response.data));
 
         })
         .catch(error => {
@@ -316,12 +316,12 @@ export const fetchDailyKpiStartAsync = (start, end, area, cancelTokenSrc) => {
                 console.error('sopmething else', url, error.message);
                 dispatch(fetchFailure(
                     morningMeetingTypes.FETCH_DAILY_KPI_FAILURE,
-                    error.message))
+                    error.message));
             }
-        })
+        });
 
-    }
-}
+    };
+};
 
 //WEEKLY LABOR HRS
 export const fetchWeeklyLaborHrsStartAsync = (start, end, area, cancelTokenSrc) => {
@@ -329,7 +329,7 @@ export const fetchWeeklyLaborHrsStartAsync = (start, end, area, cancelTokenSrc) 
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_WEEKLY_LABOR_HRS_START))
+            morningMeetingTypes.FETCH_WEEKLY_LABOR_HRS_START));
 
         const url = `fmsb/weeklylaborhours`;
         api.get(url, { 
@@ -344,7 +344,7 @@ export const fetchWeeklyLaborHrsStartAsync = (start, end, area, cancelTokenSrc) 
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_WEEKLY_LABOR_HRS_SUCCESS,
-                response.data))
+                response.data));
 
         })
         .catch(error => {
@@ -355,13 +355,13 @@ export const fetchWeeklyLaborHrsStartAsync = (start, end, area, cancelTokenSrc) 
                 console.error('sopmething else', url, error.message);
                 dispatch(fetchFailure(
                     morningMeetingTypes.FETCH_WEEKLY_LABOR_HRS_FAILURE,
-                    error.message))
+                    error.message));
             }
         
-        })
+        });
 
-    }
-}
+    };
+};
 
 //prod scrap
 export const fetchProdScrapStartAsync = (start, end, area, cancelTokenSrc) => {
@@ -369,7 +369,7 @@ export const fetchProdScrapStartAsync = (start, end, area, cancelTokenSrc) => {
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_PROD_SCRAP_START))
+            morningMeetingTypes.FETCH_PROD_SCRAP_START));
 
         const url = `sap/prodscrap`;
         api.get(url, { 
@@ -384,7 +384,7 @@ export const fetchProdScrapStartAsync = (start, end, area, cancelTokenSrc) => {
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_PROD_SCRAP_SUCCESS,
-                response.data))
+                response.data));
 
         })
         .catch(error => {
@@ -395,13 +395,13 @@ export const fetchProdScrapStartAsync = (start, end, area, cancelTokenSrc) => {
                 console.error('sopmething else', url, error.message);
                 dispatch(fetchFailure(
                     morningMeetingTypes.FETCH_PROD_SCRAP_FAILURE,
-                    error.message))
+                    error.message));
             }
         
-        })
+        });
 
-    }
-}
+    };
+};
 
 //finance
 export const fetchFiananceKpiStartAsync = (date) => {
@@ -409,9 +409,9 @@ export const fetchFiananceKpiStartAsync = (date) => {
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_FINANCE_KPI_START))
+            morningMeetingTypes.FETCH_FINANCE_KPI_START));
 
-        const url = 'finance/kpi'
+        const url = 'finance/kpi';
         api.get(url, {
             params: {
                 date
@@ -421,19 +421,19 @@ export const fetchFiananceKpiStartAsync = (date) => {
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_FINANCE_KPI_SUCCESS,
-                response.data))
+                response.data));
 
         })
         .catch(error => {
             
             dispatch(fetchFailure(
                 morningMeetingTypes.FETCH_FINANCE_KPI_FAILURE,
-                error.message))
+                error.message));
         
-        })
+        });
 
-    }
-}
+    };
+};
 
 //quality
 export const fetchQualityStartAsync = (date) => {
@@ -441,9 +441,9 @@ export const fetchQualityStartAsync = (date) => {
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_QUALITY_START))
+            morningMeetingTypes.FETCH_QUALITY_START));
 
-        const url = 'quality/status'
+        const url = 'quality/status';
         api.get(url, {
             params: {
                 start: date,
@@ -454,19 +454,19 @@ export const fetchQualityStartAsync = (date) => {
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_QUALITY_SUCCESS,
-                response.data))
+                response.data));
 
         })
         .catch(error => {
             
             dispatch(fetchFailure(
                 morningMeetingTypes.FETCH_QUALITY_FAILURE,
-                error.message))
+                error.message));
         
-        })
+        });
 
-    }
-}
+    };
+};
 
 //scrap variance
 export const fetchScrapVarianceStartAsync = (start, end, area, isPurchasedScrap = 'SB') => {
@@ -474,9 +474,9 @@ export const fetchScrapVarianceStartAsync = (start, end, area, isPurchasedScrap 
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_SCRAP_VARIANCE_START))
+            morningMeetingTypes.FETCH_SCRAP_VARIANCE_START));
 
-        const url = 'sap/scrapvariance'
+        const url = 'sap/scrapvariance';
         api.get(url, {
             params: {
                 start,
@@ -489,19 +489,19 @@ export const fetchScrapVarianceStartAsync = (start, end, area, isPurchasedScrap 
         .then(response => {
 
             const transformedData = TransformScrapVarianceData(response.data, area);
-            dispatch(fetchSuccess(morningMeetingTypes.FETCH_SCRAP_VARIANCE_SUCCESS, transformedData))
+            dispatch(fetchSuccess(morningMeetingTypes.FETCH_SCRAP_VARIANCE_SUCCESS, transformedData));
 
         })
         .catch(error => {
             
             dispatch(fetchFailure(
                 morningMeetingTypes.FETCH_SCRAP_VARIANCE_FAILURE,
-                error.message))
+                error.message));
         
-        })
+        });
 
-    }
-}
+    };
+};
 
 //scrap variance per program
 export const fetchScrapVariancePerProgramStartAsync = (start, end, area, isPurchasedScrap = 'SB') => {
@@ -509,9 +509,9 @@ export const fetchScrapVariancePerProgramStartAsync = (start, end, area, isPurch
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_START))
+            morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_START));
 
-        const url = 'sap/scrapvarianceperprogram'
+        const url = 'sap/scrapvarianceperprogram';
         api.get(url, {
             params: {
                 start,
@@ -527,19 +527,19 @@ export const fetchScrapVariancePerProgramStartAsync = (start, end, area, isPurch
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_SUCCESS,
-                data))
+                data));
 
         })
         .catch(error => {
             
             dispatch(fetchFailure(
                 morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_FAILURE,
-                error.message))
+                error.message));
         
-        })
+        });
 
-    }
-}
+    };
+};
 
 //scrap variance per program
 export const fetchScrapVariancePerDeptStartAsync = (start, end, isPurchasedScrap = 'SB') => {
@@ -547,9 +547,9 @@ export const fetchScrapVariancePerDeptStartAsync = (start, end, isPurchasedScrap
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_DEPT_START))
+            morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_DEPT_START));
 
-        const url = 'sap/scrapvarianceperdept'
+        const url = 'sap/scrapvarianceperdept';
         api.get(url, {
             params: {
                 start,
@@ -561,19 +561,19 @@ export const fetchScrapVariancePerDeptStartAsync = (start, end, isPurchasedScrap
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_DEPT_SUCCESS,
-                response.data))
+                response.data));
 
         })
         .catch(error => {
             
             dispatch(fetchFailure(
                 morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_DEPT_FAILURE,
-                error.message))
+                error.message));
         
-        })
+        });
 
-    }
-}
+    };
+};
 
 //scrap variance per shift
 export const fetchScrapVariancePerShiftStartAsync = (start, end, area, isPurchasedScrap = 'SB') => {
@@ -581,9 +581,9 @@ export const fetchScrapVariancePerShiftStartAsync = (start, end, area, isPurchas
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_SHIFT_START))
+            morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_SHIFT_START));
 
-        const url = 'sap/scrapvariancepershift'
+        const url = 'sap/scrapvariancepershift';
         api.get(url, {
             params: {
                 start,
@@ -596,19 +596,19 @@ export const fetchScrapVariancePerShiftStartAsync = (start, end, area, isPurchas
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_SHIFT_SUCCESS,
-                response.data))
+                response.data));
 
         })
         .catch(error => {
             
             dispatch(fetchFailure(
                 morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_SHIFT_FAILURE,
-                error.message))
+                error.message));
         
-        })
+        });
 
-    }
-}
+    };
+};
 
 //PPMH variance per dept
 export const fetchPpmhPerDeptStartAsync = (start, end, area) => {
@@ -616,9 +616,9 @@ export const fetchPpmhPerDeptStartAsync = (start, end, area) => {
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_PPMH_PER_DEPT_START))
+            morningMeetingTypes.FETCH_PPMH_PER_DEPT_START));
 
-        const url = 'ppmh/ppmhperdept'
+        const url = 'ppmh/ppmhperdept';
         api.get(url, {
             params: {
                 start,
@@ -630,18 +630,18 @@ export const fetchPpmhPerDeptStartAsync = (start, end, area) => {
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_PPMH_PER_DEPT_SUCCESS,
-                response.data))
+                response.data));
 
         })
         .catch(error => {
             
             dispatch(fetchFailure(
                 morningMeetingTypes.FETCH_PPMH_PER_DEPT_FAILURE,
-                error.message))
-        })
+                error.message));
+        });
 
-    }
-}
+    };
+};
 
 
 //dept kpi
@@ -650,9 +650,9 @@ export const fetchDeptKpiStartAsync = (start, end, area) => {
     return dispatch => {
 
         dispatch(fetchStart(
-            morningMeetingTypes.FETCH_DEPT_KPI_START))
+            morningMeetingTypes.FETCH_DEPT_KPI_START));
 
-        const url = 'sap/deptkpi'
+        const url = 'sap/deptkpi';
         api.get(url, {
             params: {
                 start,
@@ -663,26 +663,26 @@ export const fetchDeptKpiStartAsync = (start, end, area) => {
         .then(response => {
 
             dispatch(fetchSuccess(
-                morningMeetingTypes.FETCH_DEPT_KPI_SUCCESS, TransformDeptKpiData(response.data, area)))
+                morningMeetingTypes.FETCH_DEPT_KPI_SUCCESS, TransformDeptKpiData(response.data, area)));
 
         })
         .catch(error => {
             
             dispatch(fetchFailure(
                 morningMeetingTypes.FETCH_DEPT_KPI_FAILURE,
-                error.message))
+                error.message));
         
-        })
+        });
 
-    }
-}
+    };
+};
 
 //downtime
 export const fetchDowntimeStartAsync = (start, end) => {
 
     return dispatch => {
 
-        dispatch(fetchStart(morningMeetingTypes.FETCH_DOWNTIME_START))
+        dispatch(fetchStart(morningMeetingTypes.FETCH_DOWNTIME_START));
         dispatch(resetDowntimeByOwner());
         dispatch(resetDowntimeByLine());
 
@@ -701,19 +701,19 @@ export const fetchDowntimeStartAsync = (start, end) => {
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_DOWNTIME_SUCCESS,
-                response.data))
+                response.data));
 
         })
         .catch(error => {
             
             dispatch(fetchFailure(
                 morningMeetingTypes.FETCH_DOWNTIME_FAILURE,
-                error.message))
+                error.message));
         
-        })
+        });
 
-    }
-}
+    };
+};
 
 //downtime by owner
 export const fetchDowntimeByOwnerStartAsync = (start, end, area) => {
@@ -728,11 +728,11 @@ export const fetchDowntimeByOwnerStartAsync = (start, end, area) => {
             break;
         default:
             dept = area;
-    };
+    }
 
     return dispatch => {
 
-        dispatch(fetchStart(morningMeetingTypes.FETCH_DOWNTIME_BY_OWNER_START))
+        dispatch(fetchStart(morningMeetingTypes.FETCH_DOWNTIME_BY_OWNER_START));
 
         const url = 'fmsb/downtimebyowner';
             
@@ -747,34 +747,82 @@ export const fetchDowntimeByOwnerStartAsync = (start, end, area) => {
 
             dispatch(fetchSuccess(
                 morningMeetingTypes.FETCH_DOWNTIME_BY_OWNER_SUCCESS,
-                response.data))
+                response.data));
 
         })
         .catch(error => {
             
             dispatch(fetchFailure(
                 morningMeetingTypes.FETCH_DOWNTIME_BY_OWNER_FAILURE,
-                error.message))
+                error.message));
         
-        })
+        });
 
+    };
+};
+
+//downtime by Iconics
+export const fetchDowntimeIconicsStartAsync = (start, end, area, minDowntimeEvent = 10, maxDowntimeEvent = null) => {
+
+    var dept = area;
+    switch (dept) {
+        case 'Foundry Cell' :
+            dept = 'Foundry';
+            break;
+        case 'Machine Line':
+            dept = 'Machining';
+            break;
+        default:
+            dept = area;
     }
-}
+
+    return dispatch => {
+
+        dispatch(fetchStart(morningMeetingTypes.FETCH_DOWNTIME_ICONICS_START));
+
+        const url = 'iconics/downtimeiconics';
+            
+        api.get(url, {
+            params: {
+                start,
+                end,
+                dept,
+                minDowntimeEvent: !minDowntimeEvent ? 0 : minDowntimeEvent,
+                maxDowntimeEvent: !maxDowntimeEvent ? null : maxDowntimeEvent
+            }
+        })
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_DOWNTIME_ICONICS_SUCCESS,
+                response.data));
+
+        })
+        .catch(error => {
+            
+            dispatch(fetchFailure(
+                morningMeetingTypes.FETCH_DOWNTIME_ICONICS_FAILURE,
+                error.message));
+        
+        });
+
+    };
+};
 
 export const setStartDate = date => ({
     type: morningMeetingTypes.SET_PRODUCTION_START_DATE,
     payload: date
-})
+});
 
 export const setEndDate = date => ({
     type: morningMeetingTypes.SET_PRODUCTION_END_DATE,
     payload: date
-})
+});
 
 export const setDowntimeByOwner = (downtimeCollection, dept, shift) => ({
     type: morningMeetingTypes.SET_DOWNTIME_BY_OWNER,
     payload: getDowntimeByOwner(downtimeCollection, dept, shift)
-})
+});
 
 export const resetDowntimeByOwner = () => ({
     type: morningMeetingTypes.SET_DOWNTIME_BY_OWNER,
@@ -784,12 +832,12 @@ export const resetDowntimeByOwner = () => ({
         ownerTitle: 'Select Shift...',
         ownerDetails: []
     }
-})
+});
 
 export const setDowntimeByLine = (ownerDetails, dept, shift, owner) => ({
     type: morningMeetingTypes.SET_DOWNTIME_BY_LINE,
     payload: getDowntimeByLine(ownerDetails, dept, shift, owner)
-})
+});
 
 export const resetDowntimeByLine = () => ({
     type: morningMeetingTypes.SET_DOWNTIME_BY_LINE,
@@ -800,9 +848,9 @@ export const resetDowntimeByLine = () => ({
         lineTitle: `Select Owner...`,
         lineDetails: []
     }
-})
+});
 
 export const setPerformaceSelectedDepartment = dept => ({
     type: morningMeetingTypes.SET_DEPARTMENT_SELECT,
     payload: dept
-})
+});
