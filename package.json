@@ -1,6 +1,6 @@
 {
   "name": "fmsbweb.react-app",
-  "version": "0.1.95",
+  "version": "0.1.96",
   "private": true,
   "dependencies": {
     "antd": "^4.0.3",
