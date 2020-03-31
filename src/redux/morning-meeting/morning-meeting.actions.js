@@ -363,6 +363,46 @@ export const fetchWeeklyLaborHrsStartAsync = (start, end, area, cancelTokenSrc) 
     };
 };
 
+//PPMH per shift
+export const fetchPpmhPerShiftStartAsync = (start, end, area, cancelTokenSrc) => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_PPMH_PER_SHIFT_START));
+
+        const url = `ppmh/shift`;
+        api.get(url, { 
+            cancelToken: cancelTokenSrc.token,
+            params: {
+                start,
+                end,
+                area
+            }
+         })
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_PPMH_PER_SHIFT_SUCCESS,
+                response.data));
+
+        })
+        .catch(error => {
+            
+            if (axios.isCancel(error)) {
+                console.error('Request canceled', url, error.message);
+            } else {
+                console.error('sopmething else', url, error.message);
+                dispatch(fetchFailure(
+                    morningMeetingTypes.FETCH_PPMH_PER_SHIFT_FAILURE,
+                    error.message));
+            }
+        
+        });
+
+    };
+};
+
 //prod scrap
 export const fetchProdScrapStartAsync = (start, end, area, cancelTokenSrc) => {
 
@@ -921,4 +961,9 @@ export const resetDowntimeByLine = () => ({
 export const setPerformaceSelectedDepartment = dept => ({
     type: morningMeetingTypes.SET_DEPARTMENT_SELECT,
     payload: dept
+});
+
+export const setPpmhChartType = chartType => ({
+    type: morningMeetingTypes.SET_PPMH_CHART_TYPE,
+    payload: chartType
 });

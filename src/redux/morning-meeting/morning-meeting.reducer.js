@@ -47,6 +47,10 @@ const INITIAL_STATE = {
     weeklyLaborHrsCollection: null,
     weeklyLaborHrsErrorMsg: undefined,
 
+    isPpmhPerShiftFetching: false,
+    ppmhPerShiftCollection: null,
+    ppmhPerShiftErrorMsg: undefined,
+
     isProdScrapFetching: false,
     prodScrapCollection: null,
     prodScrapErrorMsg: undefined,
@@ -109,8 +113,9 @@ const INITIAL_STATE = {
     downtimeByOwnerCollection: [],
     downtimeByLineCollection: [],
 
-    performaceSelectedDepartment: 'Foundry Cell'
-}
+    performaceSelectedDepartment: 'Foundry Cell',
+    ppmhChartType: 'ppmhByShift'
+};
 
 const morningMeetingReducer = (state = INITIAL_STATE, action) => {
 
@@ -364,6 +369,31 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isWeeklyLaborHrsFetching: false,
                 weeklyLaborHrsCollection: null,
                 weeklyLaborHrsErrorMsg: action.payload
+            };
+
+        //PPMH per shift
+        case morningMeetingTypes.FETCH_PPMH_PER_SHIFT_START:
+
+            return {
+                ...state,
+                isPpmhPerShiftFetching: true
+            };
+
+        case morningMeetingTypes.FETCH_PPMH_PER_SHIFT_SUCCESS:
+
+            return {
+                ...state,
+                isPpmhPerShiftFetching: false,
+                ppmhPerShiftCollection: action.payload
+            };
+
+        case morningMeetingTypes.FETCH_PPMH_PER_SHIFT_FAILURE:
+
+            return {
+                ...state,
+                isPpmhPerShiftFetching: false,
+                ppmhPerShiftCollection: null,
+                ppmhPerShiftErrorMsg: action.payload
             };
 
         //PROD SCRAP
@@ -753,6 +783,14 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 performaceSelectedDepartment: action.payload
+            };
+
+        //ppmh chart type
+        case morningMeetingTypes.SET_PPMH_CHART_TYPE:
+
+            return {
+                ...state,
+                ppmhChartType: action.payload
             };
     
         default:

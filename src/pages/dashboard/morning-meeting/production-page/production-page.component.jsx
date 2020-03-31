@@ -1,27 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from "react-router-dom";
-import moment from 'moment'
-import axios from 'axios'
+import moment from 'moment';
+import axios from 'axios';
 
-import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
-import Production from '../../../../components/production/production.component'
+import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component';
+import Production from '../../../../components/production/production.component';
 
 import { 
     fetchProductionStatusStartAsync,
     fetchDailyScrapRateStartAsync,
     fetchDailyKpiStartAsync,
     fetchWeeklyLaborHrsStartAsync,
+    fetchPpmhPerShiftStartAsync,
     fetchProdScrapStartAsync,
 
     setStartDate,
     setEndDate
-} from '../../../../redux/morning-meeting/morning-meeting.actions'
+} from '../../../../redux/morning-meeting/morning-meeting.actions';
 
 import { 
     setTitle,
     setArea
-} from '../../../../redux/production-details/production-details.actions'
+} from '../../../../redux/production-details/production-details.actions';
 
 import { 
     Layout,
@@ -29,7 +30,7 @@ import {
     Tooltip
  } from "antd";
 
-import '../morning-meeting.styles.scss'
+import '../morning-meeting.styles.scss';
 
 const { Header, Content } = Layout;
 
@@ -40,6 +41,7 @@ const ProductionPage = ({
         fetchDailyScrapRateStartAsync,
         fetchDailyKpiStartAsync,
         fetchWeeklyLaborHrsStartAsync,
+        fetchPpmhPerShiftStartAsync,
         fetchProdScrapStartAsync,
 
         area,
@@ -54,7 +56,9 @@ const ProductionPage = ({
         setEndDate,
 
         startDate,
-        endDate
+        endDate,
+
+        ppmhChartType
     }) => {
     
     const [startFormat, setStartFormat] = useState(startDate);
@@ -75,27 +79,30 @@ const ProductionPage = ({
         fetchDailyScrapRateStartAsync(chartTrendStart, end, area, scrapRateTokenSrc);
         fetchDailyKpiStartAsync(chartTrendStart, end, area, dailyKpiTokenSrc);
 
-        const laborHoursStart = moment(start, dateFormat).add(-9, 'w').startOf('week').format(dateFormat);
-        fetchWeeklyLaborHrsStartAsync(laborHoursStart, end, area, weeklyLaborHrsKpiTokenSrc);
+        if (ppmhChartType === 'ppmhByShift') {
+            fetchPpmhPerShiftStartAsync(start, end, area, weeklyLaborHrsKpiTokenSrc);
+        } else {
+            const laborHoursStart = moment(start, dateFormat).add(-9, 'w').startOf('week').format(dateFormat);
+            fetchWeeklyLaborHrsStartAsync(laborHoursStart, end, area, weeklyLaborHrsKpiTokenSrc);
+        }
 
         const mtdStart = moment(end, dateFormat).startOf('month').format(dateFormat); 
         const mtdEnd =  moment(end, dateFormat).format(dateFormat); 
-
         fetchProdScrapStartAsync(mtdStart, mtdEnd, area, prodScrapLaborHrsKpiTokenSrc);
-    }
+    };
 
     const onClick = () => {
-        setStartDate(startFormat)
-        setEndDate(endFormat)
+        setStartDate(startFormat);
+        setEndDate(endFormat);
         fetchData(startFormat, endFormat);
-    }
+    };
 
     const onCalendarChange = (dates) => {
 
         const [start, end] = dates;
         setStartFormat(start ? start.format(dateFormat) : null);
         setSendFormat(end ? end.format(dateFormat) : null);
-    }
+    };
 
     useEffect(() => {
         document.title = `Morning Meeting - ${headerTitle}`;
@@ -107,9 +114,9 @@ const ProductionPage = ({
             dailyKpiTokenSrc.cancel('Operation cancelled');
             weeklyLaborHrsKpiTokenSrc.cancel('Operation cancelled');
             prodScrapLaborHrsKpiTokenSrc.cancel('Operation cancelled');
-        }
+        };
 
-    }, [])
+    }, []);
 
     const onDetailsButtonClick = () => {
 
@@ -117,10 +124,10 @@ const ProductionPage = ({
             headerTitle,
             startDate,
             endDate
-        })
+        });
 
         setArea(area);
-    }
+    };
 
     const route = location.pathname.substr(location.pathname.lastIndexOf('/')+1);
     // console.log(location, route)
@@ -150,7 +157,7 @@ const ProductionPage = ({
             </Tooltip>
             
             <div className="mt3">
-                <Production/>
+                <Production area={area}/>
             </div>
 
         </Content>      
@@ -162,6 +169,7 @@ const mapDispatchToProps = dispatch => ({
     fetchDailyScrapRateStartAsync: (start, end, area, cancelToken) => dispatch(fetchDailyScrapRateStartAsync(start, end, area, cancelToken)),
     fetchDailyKpiStartAsync: (start, end, area, cancelToken) => dispatch(fetchDailyKpiStartAsync(start, end, area, cancelToken)),
     fetchWeeklyLaborHrsStartAsync: (start, end, area, cancelToken) => dispatch(fetchWeeklyLaborHrsStartAsync(start, end, area, cancelToken)),
+    fetchPpmhPerShiftStartAsync: (start, end, area, cancelToken) => dispatch(fetchPpmhPerShiftStartAsync(start, end, area, cancelToken)),
     fetchProdScrapStartAsync: (start, end, area, cancelToken) => dispatch(fetchProdScrapStartAsync(start, end, area, cancelToken)),
 
     setTitle: title => dispatch(setTitle(title)),
@@ -173,7 +181,8 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = ({morningMeeting}) => ({
     startDate: morningMeeting.startDate,
-    endDate: morningMeeting.endDate
+    endDate: morningMeeting.endDate,
+    ppmhChartType: morningMeeting.ppmhChartType
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ProductionPage));

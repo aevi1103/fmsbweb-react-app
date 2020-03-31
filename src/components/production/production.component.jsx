@@ -1,17 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import numeral from 'numeral';
-import styled from 'styled-components'
-import moment from 'moment'
+import styled from 'styled-components';
+import moment from 'moment';
+import axios from 'axios';
 
-import ScrapByCodeTable from '../../components/production/scrap-by-code-table/scrap-by-code-table.component'
-import ProductionByTypeTable from '../../components/production/production-by-type-table/production-by-type-table.component'
-import ScrapByDeptTable from '../../components/production/scrap-by-dept-table/scrap-by-dept-tale.component'
-import LaborHoursTable from '../../components/production/labor-hours-table/labor-hours-table.component'
-import DailyScrapChart from '../../components/production/daily-scrap-rate-chart/daily-scrap-rate.component'
-import DailyKpi from '../../components/production/daily-kpi-chart/daily-kpi.component'
-import WeeklyPpmhChart from '../../components/production/weekly-ppmh-chart/weekly-ppmh-chart.component'
-import DailyProdChart from '../../components/production/daily-prod-chart/daily-prod-chart.component'
+import ScrapByCodeTable from '../../components/production/scrap-by-code-table/scrap-by-code-table.component';
+import ProductionByTypeTable from '../../components/production/production-by-type-table/production-by-type-table.component';
+import ScrapByDeptTable from '../../components/production/scrap-by-dept-table/scrap-by-dept-tale.component';
+import LaborHoursTable from '../../components/production/labor-hours-table/labor-hours-table.component';
+import DailyScrapChart from '../../components/production/daily-scrap-rate-chart/daily-scrap-rate.component';
+import DailyKpi from '../../components/production/daily-kpi-chart/daily-kpi.component';
+import WeeklyPpmhChart from '../../components/production/weekly-ppmh-chart/weekly-ppmh-chart.component';
+import DailyProdChart from '../../components/production/daily-prod-chart/daily-prod-chart.component';
+import PpmhPerShiftChart from '../production/ppmh-per-shift-chart/ppmh-per-shift-chart.component';
+
+import {
+    setPpmhChartType,
+    fetchPpmhPerShiftStartAsync,
+    fetchWeeklyLaborHrsStartAsync
+} from '../../redux/morning-meeting/morning-meeting.actions';
 
 import { 
     Row,
@@ -19,14 +27,17 @@ import {
     Card,
     Empty,
     Statistic,
-    Collapse
+    Collapse,
+    Select,
+    Tooltip
  } from "antd";
 
  const { Panel } = Collapse;
+ const { Option } = Select;
 
  const cardHeightStyle = {
     height: "400px"
-}
+};
 
 const KpiContainer = styled.span`
     display: flex;
@@ -34,18 +45,32 @@ const KpiContainer = styled.span`
     justify-content: center;
     height: 140px;
     font-size: 2.5rem;
-`
+`;
 
 const fontRed = {
     color: "#FF4136"
-}
+};
 
 const fontGreen = {
     color: "#19A974"
-}
+};
 
- const Production = ({productionStatusCollection, isProdStatusFetching, 
-                        prodScrapCollection, isProdScrapFetching}) => {
+ const Production = ({
+    productionStatusCollection,
+    isProdStatusFetching, 
+    prodScrapCollection,
+    isProdScrapFetching,
+
+    setPpmhChartType,
+    ppmhChartType,
+
+    area,
+    startDate,
+    endDate,
+
+    fetchWeeklyLaborHrsStartAsync,
+    fetchPpmhPerShiftStartAsync
+}) => {
 
     let _sbScrapQty = 0;
     let _sbScrapRate = 0;
@@ -108,7 +133,7 @@ const fontGreen = {
         _sbScrapQty = total;
 
         _target = target;
-        _sapNet = sapNet
+        _sapNet = sapNet;
         _oae = sapOae;
         _ppmh = ppmh;
 
@@ -146,8 +171,21 @@ const fontGreen = {
         _mtdProd = prodScrapCollection.sapProd;
         _mtdSbScrap = prodScrapCollection.sbScrapDetail;
         _mtdPurchaseScrap = prodScrapCollection.purchaseScrapDetail;
-
     }
+
+    const onPpmhChartTypeChange = (value) => {
+        setPpmhChartType(value);
+
+        const tokenSrc = axios.CancelToken.source();
+
+        if (value === 'ppmhByShift') {
+            fetchPpmhPerShiftStartAsync(startDate, endDate, area, tokenSrc);
+        } else {
+            const dateFormat = 'MM/DD/YYYY';
+            const laborHoursStart = moment(startDate, dateFormat).add(-9, 'w').startOf('week').format(dateFormat);
+            fetchWeeklyLaborHrsStartAsync(laborHoursStart, endDate, area, tokenSrc);
+        }
+    };
 
     return (
 
@@ -259,12 +297,24 @@ const fontGreen = {
 
             <Col span={6}>
                 <Card 
-                    title="Weekly PPMH (Kronos)"
+                    title={ppmhChartType === 'ppmhByShift' ? `PPMH by Shift (${startDate} - ${endDate})` : 'Weekly PPMH (Kronos)'}
                     bordered={false} size="small"
                     style={cardHeightStyle}
                     className="mb3"
+                    extra={
+                        <Tooltip title="Select PPMH Chart type">
+                            <Select defaultValue={ppmhChartType} style={{ width: 135 }} bordered={false} size="small" onChange={onPpmhChartTypeChange}>
+                                <Option value="ppmhByShift">PPMH by Shift</Option>
+                                <Option value="weeklyPpmh">Weekly PPMH</Option>
+                            </Select>
+                        </Tooltip>                      
+                    }
                 >
-                    <WeeklyPpmhChart/>
+                    {
+                        ppmhChartType === 'ppmhByShift' 
+                            ? <PpmhPerShiftChart/>
+                            : <WeeklyPpmhChart/>
+                    }
                 </Card>
             </Col>
 
@@ -389,8 +439,8 @@ const fontGreen = {
             <Col span={6}>
                 <Card 
                     title={_laborHours 
-                            ? `Labour Hours Details (${moment(_laborHours.startDate).format('MM/DD/YY')} - ${moment(_laborHours.endDate).format('MM/DD/YY')})`
-                            : `Labour Hours Details`}
+                            ? `Labor Hours Details (${moment(_laborHours.startDate).format('MM/DD/YY')} - ${moment(_laborHours.endDate).format('MM/DD/YY')})`
+                            : `Labor Hours Details`}
                     bordered={false} size="small"
                     className="mb3"
                     loading={isProdStatusFetching}
@@ -502,11 +552,20 @@ const fontGreen = {
 
  }
 
- const mapStateToProps = ({morningMeeting}) => ({
+ const mapStateToProps = ({morningMeeting, productionDetails}) => ({
     productionStatusCollection: morningMeeting.productionStatusCollection,
     isProdStatusFetching: morningMeeting.isProdStatusFetching,
     prodScrapCollection: morningMeeting.prodScrapCollection,
     isProdScrapFetching: morningMeeting.isProdScrapFetching,
+    ppmhChartType: morningMeeting.ppmhChartType,
+    startDate: morningMeeting.startDate,
+    endDate: morningMeeting.endDate,
+ });
+
+ const mapDispatchTooProps = dispatch => ({
+    setPpmhChartType: (chartType) => dispatch(setPpmhChartType(chartType)),
+    fetchWeeklyLaborHrsStartAsync: (start, end, area, cancelToken) => dispatch(fetchWeeklyLaborHrsStartAsync(start, end, area, cancelToken)),
+    fetchPpmhPerShiftStartAsync: (start, end, area, cancelToken) => dispatch(fetchPpmhPerShiftStartAsync(start, end, area, cancelToken)),
  })
 
- export default connect(mapStateToProps)(Production);
+ export default connect(mapStateToProps, mapDispatchTooProps)(Production);
