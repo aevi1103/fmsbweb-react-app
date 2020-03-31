@@ -29,7 +29,7 @@ const ScrapVariancePerDeptChart = ({
             setCollection([]);
         }
         
-    },[scrapVarianceByDeptCollection])
+    },[scrapVarianceByDeptCollection]);
 
     const chartProps = {
         showvalues: "1",

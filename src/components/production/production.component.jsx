@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import numeral from 'numeral';
 import styled from 'styled-components';
@@ -29,9 +29,11 @@ import {
     Statistic,
     Collapse,
     Select,
-    Tooltip
+    Tooltip,
+    Typography 
  } from "antd";
 
+ const { Text } = Typography;
  const { Panel } = Collapse;
  const { Option } = Select;
 
@@ -72,119 +74,76 @@ const fontGreen = {
     fetchPpmhPerShiftStartAsync
 }) => {
 
-    let _sbScrapQty = 0;
-    let _sbScrapRate = 0;
-    let _deptScrap = 0;
-    let _deptScrapRate = 0;
+    const { 
+        sbScrapByCode,
+        sapOae,
+        laborHours,
+        purchaseScrapByCode,
+        target,
+        sapNet,
+        departmentScrap,
+        sapProductionByType,
 
-    let _purchasedScrapQty = 0;
-    let _purchasedScrapRate = 0;
+        sapOaeColorCode,
+        hxhOaeColorCode,
+        scrapByCodeColorCode,
+        ppmhColorCode,
 
-    let _oae = 0;
-    let _ppmh = 0;
+        hxHNet,
+        hxhOae,
 
-    let _sbScrapList = [];
-    let _purchasedScrapList = [];
+        targets
+    } = productionStatusCollection || {};
 
-    let _target = 0;
-    let _sapNet = 0;
+    const { scrapRate, total } = sbScrapByCode || {};
+    const { ppmh } = laborHours || {};
+    const { oaeTarget, scrapRateTarget, ppmhTarget } = targets || {};
 
-    let _prodByTypeList = [];
-    let _deptScrapList = [];
+    //prod status
+    const sbScrapList = sbScrapByCode ? sbScrapByCode.details : [];
 
-    let _laborHours = null;
+    const deptScrap = departmentScrap ? departmentScrap.total : 0;
+    const deptScrapRate = departmentScrap ? departmentScrap.scrapRate : 0;
+    const deptScrapList = departmentScrap ? departmentScrap.details : [];
 
-    let _laborHoursDetails = [];
+    const purchasedScrapQty = purchaseScrapByCode ? purchaseScrapByCode.total : 0;
+    const purchasedScrapRate = purchaseScrapByCode ? purchaseScrapByCode.scrapRate : 0;
+    const purchasedScrapList = purchaseScrapByCode ? purchaseScrapByCode.details : [];
+    const prodByTypeList = sapProductionByType ? sapProductionByType.details : [];
 
-    let _sapOaeColorCode = "";
-    let _hxhOaeColorCode = "";
+    const laborHoursDetails = laborHours ? laborHours.details : [];
 
-    let _scrapByCodeColorCode,
-        _ppmhColorCode;
+    //MTD
+    const mtdProd = prodScrapCollection ? prodScrapCollection.sapProd : 0;
+    const mtdScrap = prodScrapCollection ? prodScrapCollection.sbScrap : 0;
+    const mtdPurchaseScrap = prodScrapCollection ? prodScrapCollection.purchasedScrap : 0;
+    const mtdSapOae = prodScrapCollection ? prodScrapCollection.sapOae : 0;
+    const mtdSbScrapRate = prodScrapCollection ? prodScrapCollection.sbScrapRate : 0;
+    const mtdPurchaseScrapRate = prodScrapCollection ? prodScrapCollection.purchaseScrapRate : 0;
+    const mtdSbScrapDetail = prodScrapCollection ? prodScrapCollection.sbScrapDetail : [];
+    const mtdPurchaseScrapDetail = prodScrapCollection ? prodScrapCollection.purchaseScrapDetail : [];
 
-    let _hxhNet = 0;
-    let _hxhOae = 0;
-
-    if (productionStatusCollection) {
-
-        const { 
-            sbScrapByCode,
-            sapOae,
-            laborHours,
-            purchaseScrapByCode,
-            target,
-            sapNet,
-            departmentScrap,
-            sapProductionByType,
-
-            sapOaeColorCode,
-            hxhOaeColorCode,
-            scrapByCodeColorCode,
-            ppmhColorCode,
-
-            hxHNet,
-            hxhOae
-        } = productionStatusCollection;
-
-        const { scrapRate, total } = sbScrapByCode;
-        const { ppmh } = laborHours;
-
-        _sbScrapRate = scrapRate;
-        _sbScrapQty = total;
-
-        _target = target;
-        _sapNet = sapNet;
-        _oae = sapOae;
-        _ppmh = ppmh;
-
-        _hxhNet = hxHNet;
-        _hxhOae = hxhOae;
-
-        _purchasedScrapQty = purchaseScrapByCode.total;
-        _purchasedScrapRate = purchaseScrapByCode.scrapRate;
-
-        _sbScrapList = sbScrapByCode.details;
-        _purchasedScrapList = purchaseScrapByCode.details;
-
-        _deptScrap = departmentScrap.total;
-        _deptScrapRate = departmentScrap.scrapRate;
-
-        _prodByTypeList = sapProductionByType.details;
-        _deptScrapList = departmentScrap.details;
-
-        _laborHours = laborHours;
-
-        _laborHoursDetails = laborHours.details;
-
-        _sapOaeColorCode = sapOaeColorCode;
-        _hxhOaeColorCode = hxhOaeColorCode;
-        _scrapByCodeColorCode = scrapByCodeColorCode;
-        _ppmhColorCode = ppmhColorCode;
-        
-    }
-
-    let _mtdProd = 0;
-    let _mtdSbScrap = [];
-    let _mtdPurchaseScrap = [];
-
-    if (prodScrapCollection) {
-        _mtdProd = prodScrapCollection.sapProd;
-        _mtdSbScrap = prodScrapCollection.sbScrapDetail;
-        _mtdPurchaseScrap = prodScrapCollection.purchaseScrapDetail;
-    }
+    //format
+    const dateFormat = 'MM/DD/YYYY';
 
     const onPpmhChartTypeChange = (value) => {
         setPpmhChartType(value);
-
         const tokenSrc = axios.CancelToken.source();
-
         if (value === 'ppmhByShift') {
             fetchPpmhPerShiftStartAsync(startDate, endDate, area, tokenSrc);
-        } else {
-            const dateFormat = 'MM/DD/YYYY';
+        } else {         
             const laborHoursStart = moment(startDate, dateFormat).add(-9, 'w').startOf('week').format(dateFormat);
             fetchWeeklyLaborHrsStartAsync(laborHoursStart, endDate, area, tokenSrc);
         }
+    };
+
+    const getppmhTitle = laborHours => laborHours 
+                                        ? `PPMH (${moment(laborHours.startDate).format(dateFormat)} - ${moment(laborHours.endDate).format(dateFormat)})`
+                                        : 'PPMH';
+
+    const getLaborHoursProp = (laborHours, propName) => {
+        if (!laborHours) return 0;
+        return numeral(laborHours[propName]).format('0.00');
     };
 
     return (
@@ -199,11 +158,16 @@ const fontGreen = {
                     bordered={false} size="small"
                     className="mb3"
                     loading={isProdStatusFetching}
+                    extra={
+                        <Text type="secondary">Target: {numeral(scrapRateTarget / 100).format('0.00%')}</Text>
+                    }
                 >
                      {
                         productionStatusCollection 
                         ? (<KpiContainer>
-                                <h1 style={{color: _scrapByCodeColorCode}}>{numeral(_sbScrapRate).format('0.0%')}</h1>
+                                <h1 style={{color: scrapByCodeColorCode}}>
+                                    {numeral(scrapRate).format('0.0%')}
+                                </h1>
                             </KpiContainer>)
                         : <Empty/>
                      }
@@ -217,12 +181,17 @@ const fontGreen = {
                     bordered={false} size="small"
                     className="mb3"
                     loading={isProdStatusFetching}
+                    extra={
+                        <Text type="secondary">Target: {numeral(oaeTarget / 100).format('0%')}</Text>
+                    }
                 >
 
                 {
                     productionStatusCollection 
                     ? (<KpiContainer>
-                            <h1 style={{color: _sapOaeColorCode}}>{numeral(_oae).format('0%')}</h1>
+                            <h1 style={{color: sapOaeColorCode}}>
+                                {numeral(sapOae).format('0%')}
+                            </h1>
                         </KpiContainer>)
                     : <Empty/>
                  }
@@ -232,17 +201,18 @@ const fontGreen = {
 
             <Col span={6}>
                 <Card 
-                    title={_laborHours 
-                            ? `PPMH (${moment(_laborHours.startDate).format('MM/DD/YY')} - ${moment(_laborHours.endDate).format('MM/DD/YY')})`
-                            : `PPMH`}
+                    title={getppmhTitle(laborHours)}
                     bordered={false} size="small"
                     className="mb3"
                     loading={isProdStatusFetching}
+                    extra={
+                        <Text type="secondary">Target: {numeral(ppmhTarget).format('0')}</Text>
+                    }
                 >
                 {
                     productionStatusCollection 
                     ? (<KpiContainer>
-                            <h1 style={{color: _ppmhColorCode}}>{numeral(_ppmh).format('0')}</h1>
+                            <h1 style={{color: ppmhColorCode}}>{numeral(ppmh).format('0')}</h1>
                         </KpiContainer>)
                     : <Empty/>
                  }
@@ -261,7 +231,7 @@ const fontGreen = {
                 {
                     prodScrapCollection 
                     ? (<KpiContainer>
-                        <h1 style={{color: "#19a974"}}>{numeral(_mtdProd).format('0,0')}</h1>
+                        <h1 style={{color: "#19a974"}}>{numeral(mtdProd).format('0,0')}</h1>
                         </KpiContainer>)
                     : <Empty/>
                 }
@@ -342,21 +312,21 @@ const fontGreen = {
                 >
                     <Row gutter={16}  className="mb3">
                         <Col span={12}>
-                            <Statistic title="SB Scrap Qty" value={_sbScrapQty} valueStyle={{color: _scrapByCodeColorCode}} />
+                            <Statistic title="SB Scrap Qty" value={total} valueStyle={{color: scrapByCodeColorCode}} />
                         </Col>
 
                         <Col span={12}>
-                            <Statistic title="SB Scrap %" value={numeral(_sbScrapRate).format('0.00%')} valueStyle={{color: _scrapByCodeColorCode}} />
+                            <Statistic title="SB Scrap %" value={numeral(scrapRate).format('0.00%')} valueStyle={{color: scrapByCodeColorCode}} />
                         </Col>
 
                     </Row>
                     <Row gutter={16} className="mb3">
                         <Col span={12}>
-                            <Statistic title="Purchase Scrap Qty" value={_purchasedScrapQty} valueStyle={{color: _scrapByCodeColorCode}} />
+                            <Statistic title="Purchase Scrap Qty" value={purchasedScrapQty} />
                         </Col>
 
                         <Col span={12}>
-                            <Statistic title="Purchase Scrap %" value={numeral(_purchasedScrapRate).format('0.00%')} valueStyle={{color: _scrapByCodeColorCode}} />
+                            <Statistic title="Purchase Scrap %" value={numeral(purchasedScrapRate).format('0.00%')} />
                         </Col>
                     </Row>
                     <Collapse>
@@ -364,13 +334,13 @@ const fontGreen = {
                         <Panel header="SB Scrap Details" key="1">                     
                             <ScrapByCodeTable 
                                 className="mt3"
-                                scrapData={_sbScrapList}
+                                scrapData={sbScrapList}
                                 isLoading={isProdStatusFetching} />
                         </Panel>
                         <Panel header="Purchased Scrap Detail" key="2">
                             <ScrapByCodeTable 
                                 className="mt3"
-                                scrapData={_purchasedScrapList}
+                                scrapData={purchasedScrapList}
                                 isLoading={isProdStatusFetching} />
                         </Panel>
 
@@ -388,22 +358,22 @@ const fontGreen = {
 
                     <Row gutter={16} className="mb3">
                         <Col span={8}>
-                            <Statistic title="Target" value={_target} valueStyle={fontGreen} />
+                            <Statistic title="Target" value={target} valueStyle={fontGreen} />
                         </Col>
                         <Col span={8}>      
                             <Statistic 
                                 title="SAP OAE %"
-                                valueStyle={{color: _sapOaeColorCode}}
-                                value={numeral(_oae).format('0%')} 
-                                suffix={<small>({numeral(_sapNet).format('0,0')})</small>}
+                                valueStyle={{color: sapOaeColorCode}}
+                                value={numeral(sapOae).format('0%')} 
+                                suffix={<small>({numeral(sapNet).format('0,0')})</small>}
                                 />
                         </Col>
                         <Col span={8}>
                             <Statistic 
                                 title="HXH OAE %"
-                                valueStyle={{color: _hxhOaeColorCode}}
-                                value={numeral(_hxhOae).format('0%')} 
-                                suffix={<small>({numeral(_hxhNet).format('0,0')})</small>}
+                                valueStyle={{color: hxhOaeColorCode}}
+                                value={numeral(hxhOae).format('0%')} 
+                                suffix={<small>({numeral(hxHNet).format('0,0')})</small>}
                             />
                         </Col>
                     </Row>
@@ -412,8 +382,8 @@ const fontGreen = {
                             <Statistic 
                                 title="Department Scrap %"
                                 valueStyle={fontRed}
-                                value={numeral(_deptScrapRate).format('0.00%')} 
-                                suffix={<small>({numeral(_deptScrap).format('0,0')})</small>}
+                                value={numeral(deptScrapRate).format('0.00%')} 
+                                suffix={<small>({numeral(deptScrap).format('0,0')})</small>}
                             />
                         </Col>
                     </Row>
@@ -421,13 +391,13 @@ const fontGreen = {
                     <Collapse>                 
                         <Panel header="SAP Production by Type Details" key="1">
                             <ProductionByTypeTable 
-                                prodData={_prodByTypeList}
+                                prodData={prodByTypeList}
                                 isLoading={isProdStatusFetching}
                                 className="mt3" />
                         </Panel>
                         <Panel header="Department Scrap Details" key="2">
                             <ScrapByDeptTable 
-                                scrapData={_deptScrapList}
+                                scrapData={deptScrapList}
                                 isLoading={isProdStatusFetching}
                                 className="mt3" />
                         </Panel>
@@ -438,46 +408,44 @@ const fontGreen = {
 
             <Col span={6}>
                 <Card 
-                    title={_laborHours 
-                            ? `Labor Hours Details (${moment(_laborHours.startDate).format('MM/DD/YY')} - ${moment(_laborHours.endDate).format('MM/DD/YY')})`
-                            : `Labor Hours Details`}
+                    title={getppmhTitle(laborHours)}
                     bordered={false} size="small"
                     className="mb3"
                     loading={isProdStatusFetching}
                 >
                     <Row gutter={16} className="mb3">
                         <Col span={8}>
-                            <Statistic title="PPMH" value={numeral(_ppmh).format('0')} />
+                            <Statistic title="PPMH" value={numeral(ppmh).format('0')} />
                         </Col>
                         <Col span={8}>
                             <Statistic title="Regular" 
-                                value={numeral((!_laborHours ? 0 : _laborHours.regular)).format('0.00')} />
+                                value={getLaborHoursProp(laborHours, 'regular')} />
                         </Col>
                         <Col span={8}>
                             <Statistic title="Overtime" 
-                                value={numeral((!_laborHours ? 0 : _laborHours.overtime)).format('0.00')} />
+                                value={getLaborHoursProp(laborHours, 'overtime')} />
                         </Col>
                     </Row>
 
                     <Row gutter={16} className="mb3">
                         <Col span={8}>
                             <Statistic title="Double Time" 
-                                value={numeral((!_laborHours ? 0 : _laborHours.doubleTime)).format('0.00')} />
+                                value={getLaborHoursProp(laborHours, 'doubleTime')} />
                         </Col>
                         <Col span={8}>
                             <Statistic title="Orientation" 
-                                value={numeral((!_laborHours ? 0 : _laborHours.orientation)).format('0.00')} />
+                                value={getLaborHoursProp(laborHours, 'orientation')} />
                         </Col>
                         <Col span={8}>
                             <Statistic title="Overall" 
-                                value={numeral((!_laborHours ? 0 : _laborHours.overAll)).format('0.00')} />
+                                value={getLaborHoursProp(laborHours, 'overAll')} />
                         </Col>
                     </Row>
 
                     <Collapse>                 
                         <Panel header="Labor Hours Details" key="1">
                             <LaborHoursTable 
-                                laborHoursData={_laborHoursDetails}
+                                laborHoursData={laborHoursDetails}
                                 isLoading={isProdStatusFetching}
                                 className="mt3" />
                         </Panel>
@@ -499,25 +467,25 @@ const fontGreen = {
                         (<>
                             <Row gutter={16} className="mb3">
                                 <Col span={8}>
-                                    <Statistic title="Production" value={numeral(prodScrapCollection.sapProd).format('0,0')} valueStyle={fontGreen} />
+                                    <Statistic title="Production" value={numeral(mtdProd).format('0,0')} valueStyle={fontGreen} />
                                 </Col>
                                 <Col span={8}>
-                                    <Statistic title="SB Scrap" value={numeral(prodScrapCollection.sbScrap).format('0,0')} valueStyle={{color: _scrapByCodeColorCode}} />
+                                    <Statistic title="SB Scrap" value={numeral(mtdScrap).format('0,0')} />
                                 </Col>
                                 <Col span={8}>
-                                    <Statistic title="Purchased Scrap %" value={numeral(prodScrapCollection.purchasedScrap).format('0,0')} valueStyle={{color: _scrapByCodeColorCode}} />
+                                    <Statistic title="Purchased Scrap %" value={numeral(mtdPurchaseScrap).format('0,0')} />
                                 </Col>
                             </Row>
 
                             <Row gutter={16} className="mb3">
                                 <Col span={8}>
-                                    <Statistic title="SAP OAE %" value={numeral(prodScrapCollection.sapOae).format('0.0%')} valueStyle={{color: _sapOaeColorCode}} />
+                                    <Statistic title="SAP OAE %" value={numeral(mtdSapOae).format('0.0%')} />
                                 </Col>
                                 <Col span={8}>
-                                    <Statistic title="SB Scrap %" value={numeral(prodScrapCollection.sbScrapRate).format('0.00%')} valueStyle={{color: _scrapByCodeColorCode}} />
+                                    <Statistic title="SB Scrap %" value={numeral(mtdSbScrapRate).format('0.00%')} />
                                 </Col>
                                 <Col span={8}>
-                                    <Statistic title="Purchased Scrap %" value={numeral(prodScrapCollection.purchaseScrapRate).format('0.00%')} valueStyle={{color: _scrapByCodeColorCode}} />
+                                    <Statistic title="Purchased Scrap %" value={numeral(mtdPurchaseScrapRate).format('0.00%')} />
                                 </Col>
                             </Row>
                         </>)
@@ -529,13 +497,13 @@ const fontGreen = {
                         <Panel header="SB Scrap Details" key="1">                     
                             <ScrapByCodeTable 
                                 className="mt3"
-                                scrapData={_mtdSbScrap}
+                                scrapData={mtdSbScrapDetail}
                                 isLoading={isProdScrapFetching} />
                         </Panel>
                         <Panel header="Purchased Scrap Detail" key="2">
                             <ScrapByCodeTable 
                                 className="mt3"
-                                scrapData={_mtdPurchaseScrap}
+                                scrapData={mtdPurchaseScrapDetail}
                                 isLoading={isProdScrapFetching} />
                         </Panel>
 

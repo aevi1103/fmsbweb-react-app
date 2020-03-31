@@ -1,0 +1,12 @@
+{
+    "plugins": [
+      "react",
+      "flowtype",
+      "import",
+      "react-hooks"
+    ],
+    "extends": [
+      "react-app",
+      "plugin:jsx-a11y/recommended"
+    ]
+  }

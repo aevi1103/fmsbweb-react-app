@@ -19,8 +19,8 @@ const getScrapRate = (data, scrapArea, onClick) => {
     const qty = scrap ? scrap.qty : 0;
     const rate = scrap ? scrap.scrapRate : 0;
     const scrapRateText = `${numeral(rate).format('0.00%')} (${numeral(qty).format('0,0')})`;
-    return <ScrapLink qty={qty} value={scrapRateText} onClick={onClick}/>
-}
+    return <ScrapLink qty={qty} value={scrapRateText} onClick={onClick}/>;
+};
 
 const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollection}) => {
 
@@ -43,8 +43,8 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
 
         const machine = area === 'Machine Line' ? `Line ${line}` : line;
         const ttl = `${machine} ${scrapType} Scrap Details ~ ${scrapRateText}`;
-        setModalTitle(ttl)
-    }
+        setModalTitle(ttl);
+    };
 
     const onSapNetModalShow = (sapNetData = [], { area, line, sapNet }) => {
 
@@ -55,7 +55,7 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
         var ttl = `${machine} SAP Production Details ~ ${numeral(sapNet).format('0,0')}`;
         setSapNetModalTitle(ttl);
 
-    }
+    };
 
     const sortScrap = (a, b, type) => {
 
@@ -66,7 +66,7 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
         const totalB = filteredDataB.reduce((acc, {qty}) => parseInt(acc) + parseInt(qty), 0);
         
         return totalA - totalB;
-    }
+    };
 
     const columns = !productionDetailsCollection ? [] : [
         {

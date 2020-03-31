@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Link, withRouter } from "react-router-dom";
 import moment from 'moment';
 import axios from 'axios';
+import styled from 'styled-components';
 
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component';
 import Production from '../../../../components/production/production.component';
@@ -27,7 +28,8 @@ import {
 import { 
     Layout,
     Button,
-    Tooltip
+    Tooltip,
+    Spin  
  } from "antd";
 
 import '../morning-meeting.styles.scss';
@@ -43,6 +45,8 @@ const ProductionPage = ({
         fetchWeeklyLaborHrsStartAsync,
         fetchPpmhPerShiftStartAsync,
         fetchProdScrapStartAsync,
+
+        isProdStatusFetching,
 
         area,
         headerTitle,
@@ -60,7 +64,9 @@ const ProductionPage = ({
 
         ppmhChartType
     }) => {
+        
     
+
     const [startFormat, setStartFormat] = useState(startDate);
     const [endFormat, setSendFormat] = useState(endDate);
 
@@ -130,7 +136,14 @@ const ProductionPage = ({
     };
 
     const route = location.pathname.substr(location.pathname.lastIndexOf('/')+1);
-    // console.log(location, route)
+
+    const Container = styled.span`
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 140px;
+        font-size: 2.5rem;
+    `;
 
     return (
     <>
@@ -157,7 +170,12 @@ const ProductionPage = ({
             </Tooltip>
             
             <div className="mt3">
-                <Production area={area}/>
+                {
+                    !isProdStatusFetching 
+                        ? <Production area={area}/> 
+                        : <Container><Spin tip="Loading..."/></Container>
+                }
+                
             </div>
 
         </Content>      
@@ -182,7 +200,8 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = ({morningMeeting}) => ({
     startDate: morningMeeting.startDate,
     endDate: morningMeeting.endDate,
-    ppmhChartType: morningMeeting.ppmhChartType
+    ppmhChartType: morningMeeting.ppmhChartType,
+    isProdStatusFetching: morningMeeting.isProdStatusFetching,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ProductionPage));

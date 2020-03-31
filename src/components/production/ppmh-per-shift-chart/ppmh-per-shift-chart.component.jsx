@@ -69,7 +69,7 @@ const PpmhPerShiftChart = ({
       const chartConfigs = {
         type: 'column2d',
         width: '100%',
-        height: '89%',
+        height: '86%',
         dataFormat: 'json',
         dataSource: dataSource
       };

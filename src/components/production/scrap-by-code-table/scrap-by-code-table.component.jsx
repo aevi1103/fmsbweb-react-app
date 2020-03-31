@@ -48,8 +48,7 @@ const ScrapByCodeTable = ({scrapData, isLoading, otherProps}) => {
       }
 
     return (
-        <Table 
-                loading={isLoading}
+        <Table loading={isLoading}
                 columns={columns}
                 dataSource={data}
                 onChange={onChange}

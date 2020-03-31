@@ -90,7 +90,7 @@ const PerformanceLevel2Page = ({
 
     const fetchQuarterly = (start = monthStartFormart, end = monthEndFormat) => {
         fetchOvertimePercentPerDeptStartAsync(start, end, performaceSelectedDepartment);
-    }
+    };
     
     const fetch = (start = startDate, end = endDate) => {
         fetchScrapVariancePerDeptStartAsync(start, end, scrapByDeptScrapType);

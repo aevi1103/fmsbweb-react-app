@@ -219,7 +219,11 @@ export const fetchProductionStatusStartAsync = (start, end, area, cancelTokenSrc
                 end,
                 area
             },
-            cancelToken: cancelTokenSrc.token
+            cancelToken: cancelTokenSrc.token,
+            onDownloadProgress: (progressEvt) => {
+                // let percentCompleted = Math.floor((progressEvt.loaded * 100) / progressEvt.total);
+                // console.log(url, 'percentCompleted', progressEvt, percentCompleted)
+            }
          })
         .then(response => {
 
