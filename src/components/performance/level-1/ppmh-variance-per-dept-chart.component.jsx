@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import numeral from 'numeral';
 
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
@@ -34,6 +35,8 @@ const ScrapVarianceChart = ({
         
     },[ppmhPerDeptVarianceCollection]);
 
+    const hoursFormat = '0,0.00';
+
     const chartProps = {
         showValues: '1',
         theme: 'fusion',
@@ -45,6 +48,23 @@ const ScrapVarianceChart = ({
         anchorRadius: "0",
         dashed: "1",
         showValue: "0"
+    }
+
+    const ppmhToolText = (laborHours, key) => {
+
+        if (!laborHours) return '';
+        const { ppmh, regular, overtime, doubleTime, orientation, overAll, sapNet } = laborHours;
+
+        return `<b>Period: ${key}</b><br><br>
+                <b>Hours: </b><br>
+                <b>Regular: </b> ${numeral(regular).format(hoursFormat)}<br>
+                <b>Overtime: </b> ${numeral(overtime).format(hoursFormat)}<br>
+                <b>Double Time: </b> ${numeral(doubleTime).format(hoursFormat)}<br>
+                <b>Orientation: </b> ${numeral(orientation).format(hoursFormat)}<br>
+                <b>Overall: </b> ${numeral(overAll).format(hoursFormat)}<br><br>
+
+                <b>SAP Net: </b> ${numeral(sapNet).format('0,0')} <br>
+                <b>PPMH: </b> ${numeral(ppmh).format(hoursFormat)}`
     }
 
     const dataSource = {
@@ -63,10 +83,11 @@ const ScrapVarianceChart = ({
         dataset: [
             {
                 seriesname: "PPMH",
-                color: "#e74d3d",
-                data: collection.map(({ laborHours: { ppmh }, key }) => ({ 
-                    value: ppmh.toFixed(2),
+                // color: "#e74d3d",
+                data: collection.map(({ laborHours, key }) => ({ 
+                    value: Math.round(laborHours.ppmh),
                     link: `newchart-xml-${key}`,
+                    toolText: ppmhToolText(laborHours, key)
                 }))
             },
             {
@@ -97,9 +118,10 @@ const ScrapVarianceChart = ({
                 dataset: [
                     {
                         seriesname: "PPMH",
-                        color: "#e74d3d",
-                        data: monthDetails.map(({ laborHours: { ppmh }, key }) => ({ 
-                            value: ppmh.toFixed(1),
+                        // color: "#e74d3d",
+                        data: monthDetails.map(({ laborHours, key }) => ({ 
+                            value: Math.round(laborHours.ppmh),
+                            toolText: ppmhToolText(laborHours, key),
                             link: `newchart-xml-${key}`
                         }))
                     },
@@ -131,9 +153,10 @@ const ScrapVarianceChart = ({
                         dataset: [
                             {
                                 seriesname: "PPMH",
-                                color: "#e74d3d",
-                                data: weekDetails.map(({ laborHours: { ppmh } }) => ({ 
-                                    value: ppmh.toFixed(1)
+                                // color: "#e74d3d",
+                                data: weekDetails.map(({ laborHours, key }) => ({ 
+                                    value: Math.round(laborHours.ppmh),
+                                    toolText: ppmhToolText(laborHours, key),
                                 }))
                             }
                         ]

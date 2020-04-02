@@ -50,17 +50,17 @@ const PpmhPerShiftChart = ({
             ...chartProps,
             ...tooltipStyle
         },
-        data: collection.map(({shift, sapGross, laborHours: { ppmh, regular, overtime, doubleTime, orientation, overAll }}) => ({
+        data: collection.map(({shift, sapNet, laborHours: { ppmh, regular, overtime, doubleTime, orientation, overAll }}) => ({
                 label: shift,
-                value: ppmh.toFixed(2),
+                value: Math.round(ppmh),
                 toolText: `<b>Shift: </b> ${shift} <br>
                             <b>Regular: </b> ${numeral(regular).format(numberFormat)} <br>
                             <b>Overtime: </b> ${numeral(overtime).format(numberFormat)} <br>
                             <b>Double TIme: </b> ${numeral(doubleTime).format(numberFormat)} <br>
                             <b>Orientation: </b> ${numeral(orientation).format(numberFormat)} <br>
                             <b>Overall: </b> ${numeral(overAll).format(numberFormat)} <br>
-                            <b>SAP Gross: </b> ${numeral(sapGross).format('0,0')} <br>
-                            <b>PPMH: </b> ${numeral(ppmh).format(numberFormat)} <br>
+                            <b>SAP Net: </b> ${numeral(sapNet).format('0,0')} <br>
+                            <b>PPMH: </b> ${numeral(ppmh).format('0,0')} <br>
                             `
             }))
             

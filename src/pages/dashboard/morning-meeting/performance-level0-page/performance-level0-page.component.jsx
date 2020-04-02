@@ -10,6 +10,7 @@ import {
     fetchPpmhPerDeptStartAsync,
     fetchDeptKpiStartAsync,
     fetchDowntimeStartAsync,
+    fetchPlantPpmhStartAsync,
 
     setPerformaceSelectedDepartment,
 
@@ -23,6 +24,7 @@ import ScrapVarianceChartPerProgram from '../../../../components/performance/lev
 import PpmhVariancePerDeptChart from '../../../../components/performance/level-1/ppmh-variance-per-dept-chart.component';
 import DeptKpiChart from '../../../../components/performance/level-0/dept-kpi-chart.component';
 import DowntimeChart from '../../../../components/downtime/downtime-chart/downtime-chart.component';
+import PlantPpmhChart from '../../../../components/performance/level-0/plant-ppmh-chart.component';
 
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component';
 import SelectScrapType from '../../../../components/select-scrap-type/seclect-scrap-type.components';
@@ -56,6 +58,7 @@ const PerformanceLevel0Page = ({
     fetchPpmhPerDeptStartAsync,
     fetchDeptKpiStartAsync,
     fetchDowntimeStartAsync,
+    fetchPlantPpmhStartAsync,
 
     setPerformaceSelectedDepartment,
     performaceSelectedDepartment,
@@ -85,6 +88,7 @@ const PerformanceLevel0Page = ({
     const fetchQuarterly = (start = monthStartFormart, end = monthEndFormat, scrapType = scrapVarianceScrapType) => {
         fetchScrapVarianceStartAsync(start, end, performaceSelectedDepartment, scrapType); 
         fetchPpmhPerDeptStartAsync(start, end, performaceSelectedDepartment);
+        fetchPlantPpmhStartAsync(start, end);   
     }
     
     const fetch = (start = startDate, end = endDate, scrapType = scrapVariancePerProgScrapType) => {
@@ -228,12 +232,12 @@ const PerformanceLevel0Page = ({
 
                         <Col span={8}>
                             <Card 
-                                title="Level 0 - PPMH Plant Wide Variance"
+                                title="Lvl 0: PPMH Plant Wide Variance"
                                 bordered={false} size="small"
                                 className="mb3"
                                 style={cardHeightStyle}
                             >
-                                <Empty/>
+                                <PlantPpmhChart/>
                             </Card>         
                         </Col>
 
@@ -304,6 +308,7 @@ const mapDispatchToProps = dispatch => ({
     fetchPpmhPerDeptStartAsync: (start, end, area) => dispatch(fetchPpmhPerDeptStartAsync(start, end, area)),
     fetchDeptKpiStartAsync: (start, end, area) => dispatch(fetchDeptKpiStartAsync(start, end, area)),
     fetchDowntimeStartAsync: (start, end) => dispatch(fetchDowntimeStartAsync(start, end)),
+    fetchPlantPpmhStartAsync: (start, end) => dispatch(fetchPlantPpmhStartAsync(start, end)),
 
     setPerformaceSelectedDepartment: (dept) => dispatch(setPerformaceSelectedDepartment(dept)),
 

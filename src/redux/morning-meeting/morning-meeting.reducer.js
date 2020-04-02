@@ -95,6 +95,10 @@ const INITIAL_STATE = {
     ppmhPerDeptVarianceCollection: null,
     ppmhPerDeptVarianceErrorMsg: undefined,
 
+    isPlantPpmhFetching: false,
+    plantPpmhCollection: null,
+    plantPpmhErrorMsg: undefined,
+
     isOvertimePercentPerDeptFetching: false,
     overtimePercentperDeptCollection: null,
     overtimePercentPerDeptErrorMsg: undefined,
@@ -669,6 +673,31 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isPpmhPerDeptVarianceFetching: false,
                 ppmhPerDeptVarianceCollection: null,
                 ppmhPerDeptVarianceErrorMsg: action.payload
+            };
+
+        //plant ppm
+        case morningMeetingTypes.FETCH_PLANT_PPMH_START:
+
+            return {
+                ...state,
+                isPlantPpmhFetching: true
+            };
+
+        case morningMeetingTypes.FETCH_PLANT_PPMH_SUCCESS:
+
+            return {
+                ...state,
+                isPlantPpmhFetching: false,
+                plantPpmhCollection: action.payload
+            };
+
+        case morningMeetingTypes.FETCH_PLANT_PPMH_FAILURE:
+
+            return {
+                ...state,
+                isPlantPpmhFetching: false,
+                plantPpmhCollection: null,
+                plantPpmhErrorMsg: action.payload
             };
 
         //dept kpi

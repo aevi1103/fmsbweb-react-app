@@ -11,9 +11,10 @@ import {
     HomeOutlined,
     InboxOutlined,
     PieChartOutlined,
-    RiseOutlined,
+    HeatMapOutlined,
     SafetyOutlined,
     SettingOutlined,
+    DashboardOutlined
 } from '@ant-design/icons';
 
 import { Menu } from "antd";
@@ -54,13 +55,13 @@ const MorningMeetingMenu = ( { location } ) => {
           </Menu.Item>
 
           <Menu.Item key="/dashboard/morningmeeting/level0">
-              <RiseOutlined />
+              <HeatMapOutlined />
               <span>Performance: L0 - L1</span>
               <Link to="/dashboard/morningmeeting/level0" />
           </Menu.Item>
 
           <Menu.Item key="/dashboard/morningmeeting/level2">
-              <RiseOutlined />
+              <DashboardOutlined />
               <span>Performance: L2 - L3</span>
               <Link to="/dashboard/morningmeeting/level2" />
           </Menu.Item>

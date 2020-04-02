@@ -4,7 +4,6 @@ import numeral from 'numeral';
 import styled from 'styled-components';
 import moment from 'moment';
 import axios from 'axios';
-import 'tachyons'
 
 import ScrapByCodeTable from '../../components/production/scrap-by-code-table/scrap-by-code-table.component';
 import ProductionByTypeTable from '../../components/production/production-by-type-table/production-by-type-table.component';
@@ -115,6 +114,9 @@ const fontGreen = {
     const laborHoursDetails = laborHours ? laborHours.details : [];
 
     //MTD
+    const mtdStart = prodScrapCollection ? prodScrapCollection.startDate : '';
+    const mtdEnd = prodScrapCollection ? prodScrapCollection.endDate : '';
+
     const mtdProd = prodScrapCollection ? prodScrapCollection.sapProd : 0;
     const mtdScrap = prodScrapCollection ? prodScrapCollection.sbScrap : 0;
     const mtdPurchaseScrap = prodScrapCollection ? prodScrapCollection.purchasedScrap : 0;
@@ -223,7 +225,7 @@ const fontGreen = {
 
             <Col span={6}>
                 <Card 
-                    title="MTD Production"
+                    title={`MTD Production (${moment(mtdStart).format(dateFormat)} - ${moment(mtdEnd).format(dateFormat)})`}
                     bordered={false} size="small"
                     className="mb3"
                     loading={isProdScrapFetching}
@@ -291,7 +293,7 @@ const fontGreen = {
 
             <Col span={6}>
                 <Card 
-                    title="MTD SAP Production"
+                    title={`MTD Daily SAP Production`}
                     bordered={false} size="small"
                     style={cardHeightStyle}
                     className="mb3"
@@ -442,15 +444,6 @@ const fontGreen = {
                                 value={getLaborHoursProp(laborHours, 'overAll')} />
                         </Col>
                     </Row>
-
-                    {/* <Collapse>                 
-                        <Panel header="Labor Hours Details" key="1">
-                            {<LaborHoursTable 
-                                laborHoursData={laborHoursDetails}
-                                isLoading={isProdStatusFetching}
-                                className="mt3" />}
-                        </Panel>
-                    </Collapse> */}
 
                 </Card>
             </Col>

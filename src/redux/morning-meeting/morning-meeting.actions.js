@@ -687,6 +687,38 @@ export const fetchPpmhPerDeptStartAsync = (start, end, area) => {
     };
 };
 
+//Plant PPMH
+export const fetchPlantPpmhStartAsync = (start, end) => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            morningMeetingTypes.FETCH_PLANT_PPMH_START));
+
+        const url = 'ppmh/plant';
+        api.get(url, {
+            params: {
+                start,
+                end
+            }
+        })
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                morningMeetingTypes.FETCH_PLANT_PPMH_SUCCESS,
+                response.data));
+
+        })
+        .catch(error => {
+            
+            dispatch(fetchFailure(
+                morningMeetingTypes.FETCH_PLANT_PPMH_FAILURE,
+                error.message));
+        });
+
+    };
+};
+
 
 //dept kpi
 export const fetchDeptKpiStartAsync = (start, end, area) => {
