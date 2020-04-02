@@ -118,7 +118,7 @@ const ScrapVarianceChart = ({
                         chart: {
                             caption: `${moment().month(month-1).format('MMM')} Weekly PPMH`,
                             xAxisName: 'Week Number',
-                            yAxisName: 'Percentage (%)',
+                            yAxisName: 'PPMH',
                             plottooltext: '$seriesname, Week #: $label, PPMH: $value',  
                             ...chartProps,
                             ...tooltipStyle

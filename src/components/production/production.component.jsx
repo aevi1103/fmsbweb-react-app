@@ -4,6 +4,7 @@ import numeral from 'numeral';
 import styled from 'styled-components';
 import moment from 'moment';
 import axios from 'axios';
+import 'tachyons'
 
 import ScrapByCodeTable from '../../components/production/scrap-by-code-table/scrap-by-code-table.component';
 import ProductionByTypeTable from '../../components/production/production-by-type-table/production-by-type-table.component';
@@ -442,14 +443,14 @@ const fontGreen = {
                         </Col>
                     </Row>
 
-                    <Collapse>                 
+                    {/* <Collapse>                 
                         <Panel header="Labor Hours Details" key="1">
-                            <LaborHoursTable 
+                            {<LaborHoursTable 
                                 laborHoursData={laborHoursDetails}
                                 isLoading={isProdStatusFetching}
-                                className="mt3" />
+                                className="mt3" />}
                         </Panel>
-                    </Collapse>
+                    </Collapse> */}
 
                 </Card>
             </Col>
