@@ -1,4 +1,5 @@
 import React from 'react'
+import numeral from 'numeral';
 import { 
     Button,
     Tooltip,
@@ -7,12 +8,12 @@ import {
 
  const { Text } = Typography;
 
-const ScrapLink = ({qty, value, onClick}) => (
+const ScrapLink = ({qty, value, onClick, scrapTarget = 0, textState = '', toolTip = 'Click to see Scrap Details'}) => (
     <>
         {
             qty > 0 
-            ? (<Tooltip placement="top" title="Click to see scrap details">
-                    <Button type="link" onClick={onClick}>
+            ? (<Tooltip placement="top" title={toolTip}>
+                    <Button type="link" onClick={onClick} className={`pa0 ${textState}`}>
                         <span>{value}</span>
                     </Button>
                 </Tooltip>)

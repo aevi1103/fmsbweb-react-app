@@ -48,7 +48,7 @@ const ScrapByCodeTable = ({
             sortDirections: ['descend', 'ascend'],
             render: (text, record, index) => {
               const { type, area, details } = record;
-              return <Tooltip title="Click to see chart">
+              return <Tooltip title="Click to see details">
                         <Button type="link" onClick={() => onModalShow(area, type, details)}>
                             <span>{text}</span>
                         </Button> 

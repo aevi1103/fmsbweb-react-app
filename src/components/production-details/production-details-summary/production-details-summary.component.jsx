@@ -3,9 +3,14 @@ import numeral from 'numeral'
 import { 
     Row,
     Col,
-    Statistic
+    Statistic,
  } from "antd";
+import 'tachyons';
 
+import {
+    ArrowUpOutlined,
+    ArrowDownOutlined
+} from '@ant-design/icons';
 
 const formatScrapText = (rate, qty) => `${numeral(rate).format('0.00%')} (${numeral(qty).format('0,0')})`;
 
@@ -25,26 +30,47 @@ const formatScrap = (data, scrap) => {
 
 const formatNetOae = (net, oae) => `${numeral(oae).format('0%')} (${numeral(net).format('0,0')})`;
 
+const getStatusState = (value, target) => {
 
-const ProductionDetailsSummary = ({data}, area) => (
+    if (value <= target) {
+        return {
+            color: '#FF4136' //red
+        }
+    } else {
+        return {
+            color: '#19A974' //green
+        }
+    }
+}
+
+const getPrefix = (value, target) => {
+
+    if (value <= target) {
+        return <ArrowDownOutlined />
+    } else {
+        return <ArrowUpOutlined />
+    }
+}
+
+const ProductionDetailsSummary = ({ data }) => (
 
     <Row gutter={16}>
 
         <Col span={3}>
-            <Statistic title="SAP" 
-            value={formatNetOae(data.sapNet, data.sapOae)} />
+            <Statistic title={`SAP ~ Target: ${numeral(data.oaeTarget).format('0%')}`} value={formatNetOae(data.sapNet, data.sapOae)} 
+                valueStyle={getStatusState(data.sapOae, data.oaeTarget)} prefix={getPrefix(data.sapOae, data.oaeTarget)} />
         </Col>
 
         <Col span={3}>
-            <Statistic title="HxH" 
-            value={formatNetOae(data.hxHNet, data.hxHOae)} />
+            <Statistic title="HxH" value={formatNetOae(data.hxHNet, data.hxHOae)} 
+                valueStyle={getStatusState(data.hxHOae, data.oaeTarget)} 
+                prefix={getPrefix(data.hxHOae, data.oaeTarget)}/>
         </Col>
 
         <Col span={3}>
-            <Statistic title="Total SB Scrap" 
-                value={formatScrapText(
-                    data.totalSbScrapRate,
-                    data.totalSbScrap)} />
+            <Statistic title="Total SB Scrap" value={formatScrapText(
+                                                        data.totalSbScrapRate,
+                                                        data.totalSbScrap)} />
         </Col>
 
         {/* <Col span={3}>
@@ -55,28 +81,23 @@ const ProductionDetailsSummary = ({data}, area) => (
         </Col> */}
 
         <Col span={3}>
-            <Statistic title="Total FS" 
-            value={formatScrap(data, 'Foundry')} />
+            <Statistic title="Total FS" value={formatScrap(data, 'Foundry')} />
         </Col>
 
         <Col span={3}>
-            <Statistic title="Total MS" 
-            value={formatScrap(data, 'Machining')} />
+            <Statistic title="Total MS" value={formatScrap(data, 'Machining')} />
         </Col>
 
         <Col span={3}>
-            <Statistic title="Total Anod" 
-            value={formatScrap(data, 'Anodize')} />
+            <Statistic title="Total Anod" value={formatScrap(data, 'Anodize')} />
         </Col>
 
         <Col span={3}>
-            <Statistic title="Total Skirt Coat" 
-            value={formatScrap(data, 'Skirt Coat')} />
+            <Statistic title="Total Skirt Coat" value={formatScrap(data, 'Skirt Coat')} />
         </Col>
 
         <Col span={3}>
-            <Statistic title="Total Assembly" 
-            value={formatScrap(data, 'Assembly')} />
+            <Statistic title="Total Assembly" value={formatScrap(data, 'Assembly')} />
         </Col>
 
     </Row>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import numeral from 'numeral';
+import 'tachyons'
 import { 
     Table,
     Modal,
@@ -14,12 +15,40 @@ import SapNetTable from '../sap-net-table/sap-net-table.component'
 
 import '../production-details.styles.scss'
 
-const getScrapRate = (data, scrapArea, onClick) => {
-    const scrap = data.sbScrapAreaDetails.find(({scrapAreaName}) => scrapAreaName === scrapArea);
+const getScrapRate = (data, scrapArea, onClick, isAfScrap = false, afScrapRate = 0) => {
+
+    const { sbScrapAreaDetails, foundryScrapRateTarget, machiningScrapRateTarget, afScrapRateTarget } = data;
+
+    let scrapTarget = 0;
+    switch (scrapArea.toLowerCase()) {
+        case 'foundry' :
+            scrapTarget = foundryScrapRateTarget
+            break;
+        case 'machining' :
+            scrapTarget = machiningScrapRateTarget
+            break;
+        default:
+            scrapTarget = afScrapRateTarget;
+            break;
+    }
+
+    const getTextState = (scrapRate, target) => {
+        if (scrapRate < target) return 'green';
+        return 'red b';
+    }
+
+    const scrap = sbScrapAreaDetails.find(({scrapAreaName}) => scrapAreaName === scrapArea);
     const qty = scrap ? scrap.qty : 0;
     const rate = scrap ? scrap.scrapRate : 0;
+
+    const textState = getTextState(isAfScrap ? afScrapRate : rate, scrapTarget);
+
     const scrapRateText = `${numeral(rate).format('0.00%')} (${numeral(qty).format('0,0')})`;
-    return <ScrapLink qty={qty} value={scrapRateText} onClick={onClick}/>;
+    const toolTip = !isAfScrap 
+                        ? `Click to see Scrap Details, Target: ${numeral(scrapTarget).format('0.00%')}`
+                        : `Click to see Scrap Details, AF Total Scrap: ${numeral(afScrapRate).format('0.00%')}, Target: ${numeral(scrapTarget).format('0.00%')}`;
+    return <ScrapLink qty={qty} value={scrapRateText} onClick={onClick} textState={textState} scrapTarget={scrapTarget} toolTip={toolTip}/>;
+
 };
 
 const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollection}) => {
@@ -122,7 +151,7 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
                     title: 'South Bend',
                     dataIndex: 'totalSbScrap',
                     render: (text, record, index) => {
-                        const value = `${numeral(record.totalSbScrapRate).format('0.00%')} (${record.totalSbScrap})`
+                        const value = `${numeral(record.totalSbScrapRate).format('0.00%')} (${numeral(record.totalSbScrap).format('0,0')})`
                         return <ScrapLink qty={record.totalSbScrap} value={value} 
                                     onClick={() => onModalShow(record.sbScrapDetails, record, 'SB')}/>
                     },
@@ -149,9 +178,9 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
                     title: 'FS',
                     dataIndex: 'fs',
                     render: (text, record, index) => {
-                        const filteredScrap = record.sbScrapDetails.filter(({scrapAreaName}) => scrapAreaName === 'Foundry')
-                        return getScrapRate(record, 'Foundry', 
-                                    () => onModalShow(filteredScrap, record, 'Foundry'))
+                        const { sbScrapDetails } = record;
+                        const filteredScrap = sbScrapDetails.filter(({scrapAreaName}) => scrapAreaName === 'Foundry')
+                        return getScrapRate(record, 'Foundry', () => onModalShow(filteredScrap, record, 'Foundry'))
                     },
                     sorter: (a, b) => sortScrap(a, b, 'Foundry'),
                     sortDirections: ['descend', 'ascend'],
@@ -160,9 +189,9 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
                     title: 'MS',
                     dataIndex: 'ms',
                     render: (text, record, index) => {
-                        const filteredScrap = record.sbScrapDetails.filter(({scrapAreaName}) => scrapAreaName === 'Machining')
-                        return getScrapRate(record, 'Machining', 
-                                    () => onModalShow(filteredScrap, record, 'Machining'))
+                        const { sbScrapDetails } = record;
+                        const filteredScrap = sbScrapDetails.filter(({scrapAreaName}) => scrapAreaName === 'Machining')
+                        return getScrapRate(record, 'Machining', () => onModalShow(filteredScrap, record, 'Machining'))
                     },
                     sorter: (a, b) => sortScrap(a, b, 'Machining'),
                     sortDirections: ['descend', 'ascend'],
@@ -171,9 +200,9 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
                     title: 'Anod',
                     dataIndex: 'anod',
                     render: (text, record, index) => {
-                        const filteredScrap = record.sbScrapDetails.filter(({scrapAreaName}) => scrapAreaName === 'Anodize')
-                        return getScrapRate(record, 'Anodize', 
-                                    () => onModalShow(filteredScrap, record, 'Anodize'))
+                        const { sbScrapDetails, totalAfScrapRate } = record;
+                        const filteredScrap = sbScrapDetails.filter(({scrapAreaName}) => scrapAreaName === 'Anodize')
+                        return getScrapRate(record, 'Anodize', () => onModalShow(filteredScrap, record, 'Anodize'), true, totalAfScrapRate)
                     },
                     sorter: (a, b) => sortScrap(a, b, 'Anodize'),
                     sortDirections: ['descend', 'ascend'],
@@ -182,9 +211,9 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
                     title: 'SC',
                     dataIndex: 'sc',
                     render: (text, record, index) => {
-                        const filteredScrap = record.sbScrapDetails.filter(({scrapAreaName}) => scrapAreaName === 'Skirt Coat')
-                        return getScrapRate(record, 'Skirt Coat', 
-                                    () => onModalShow(filteredScrap, record, 'Skirt Coat'))
+                        const { sbScrapDetails, totalAfScrapRate } = record;
+                        const filteredScrap = sbScrapDetails.filter(({scrapAreaName}) => scrapAreaName === 'Skirt Coat')
+                        return getScrapRate(record, 'Skirt Coat', () => onModalShow(filteredScrap, record, 'Skirt Coat'), true, totalAfScrapRate)
                     },
                     sorter: (a, b) => sortScrap(a, b, 'Skirt Coat'),
                     sortDirections: ['descend', 'ascend'],
@@ -193,14 +222,23 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
                     title: 'Assy',
                     dataIndex: 'assy',
                     render: (text, record, index) => {
-                        const filteredScrap = record.sbScrapDetails.filter(({scrapAreaName}) => scrapAreaName === 'Assembly')
-                        return getScrapRate(record, 'Assembly', 
-                                    () => onModalShow(filteredScrap, record, 'Assembly'))
+                        const { sbScrapDetails, totalAfScrapRate } = record;
+                        const filteredScrap = sbScrapDetails.filter(({scrapAreaName}) => scrapAreaName === 'Assembly')
+                        return getScrapRate(record, 'Assembly', () => onModalShow(filteredScrap, record, 'Assembly'), true, totalAfScrapRate)
                     },
                     sorter: (a, b) => sortScrap(a, b, 'Assembly'),
                     sortDirections: ['descend', 'ascend'],
                 },
             ]
+        },
+        {
+            title: 'OAE Target',
+            dataIndex: 'oaeTarget',
+            render: (text, record, index) => {
+                return numeral(record.oaeTarget).format('0%');  
+            },
+            sorter: (a, b) => a.oaeTarget - b.oaeTarget,
+            sortDirections: ['descend', 'ascend'],
         },
         {
             title: <span className="parent-success">SAP Production</span>,
@@ -224,7 +262,15 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
                     title: 'OAE %',
                     dataIndex: 'sapOae',
                     render: (text, record, index) => {
-                        return <span>{numeral(record.sapOae).format('0%')}</span>;
+
+                        const { oaeTarget, sapOae } = record;
+                        const format = '0.0%';
+                        if (sapOae >= oaeTarget) {
+                            return <span className="green">{numeral(sapOae).format(format)}</span>;
+                        } else {
+                            return <span className="red b">{numeral(sapOae).format(format)}</span>;
+                        }
+
                     },
                     sorter: (a, b) => a.sapOae - b.sapOae,
                     sortDirections: ['descend', 'ascend'],
@@ -247,7 +293,15 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
                     title: 'OAE %',
                     dataIndex: 'hxhOae',
                     render: (text, record, index) => {
-                        return <span>{numeral(record.hxHOae).format('0%')}</span>;
+
+                        const { oaeTarget, hxHOae } = record;
+                        const format = '0.0%';
+                        if (hxHOae >= oaeTarget) {
+                            return <span className="green">{numeral(hxHOae).format(format)}</span>;
+                        } else {
+                            return <span className="red b">{numeral(hxHOae).format(format)}</span>;
+                        }
+
                     },
                     sorter: (a, b) => parseFloat(a.hxHOae) - parseFloat(b.hxHOae),
                     sortDirections: ['descend', 'ascend'],
