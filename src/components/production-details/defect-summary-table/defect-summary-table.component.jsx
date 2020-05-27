@@ -42,11 +42,23 @@ const DefectSummaryTable = ({
         const f = 'MM/DD/YYYY'
         const start = moment(detailsEndDate).add('d', -30).format(f)
         const end = detailsEndDate
-        const { line, department, isPurchasedExclude, scrapCode, scrapDesc } = data
+        const { 
+            line,
+            department, 
+            isPurchasedExclude, 
+            scrapCode, 
+            scrapDesc, 
+            program } = data
+
         const line2 = department === 'Machining' ? `Line ${line}` : line
 
-        setModalTitle(`${line2}: Daily ${scrapDesc} (${scrapCode}) Scrap by Shift - ${start} to ${end}`)
-        fetchDailyScrapByCodeStartAsync(start, end, line, scrapCode, isPurchasedExclude)
+        if (line) {
+            setModalTitle(`${line2}: Daily '${scrapDesc} (${scrapCode})' Scrap by Shift - ${start} to ${end}`)
+        } else {
+            setModalTitle(`${program}: Daily '${scrapDesc} (${scrapCode})' Scrap by Shift - ${start} to ${end}`)
+        }
+
+        fetchDailyScrapByCodeStartAsync(start, end, line, scrapCode, isPurchasedExclude, program, department)
         setModalVisible(true)
         
     }
@@ -171,7 +183,8 @@ const mapStateToProps = ({ productionDetails }) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-    fetchDailyScrapByCodeStartAsync: (start, end, line, scrapCode, isPurchased) => dispatch(fetchDailyScrapByCodeStartAsync(start, end, line, scrapCode, isPurchased))
+    fetchDailyScrapByCodeStartAsync: (start, end, line, scrapCode, isPurchased, program, dept) => 
+                                        dispatch(fetchDailyScrapByCodeStartAsync(start, end, line, scrapCode, isPurchased, program, dept))
 })
 
 export default connect(mapStateToProps,  mapDispatchToProps)(DefectSummaryTable);

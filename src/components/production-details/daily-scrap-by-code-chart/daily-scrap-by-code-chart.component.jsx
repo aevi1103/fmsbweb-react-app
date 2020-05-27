@@ -30,13 +30,16 @@ const DailyScrapByCodeChart = ({
             labelDisplay: 'rotate',
             slantLabel: '1',
             palettecolors: '#ef4434',
-            exportEnabled: "1",
+            // exportEnabled: "1",
 
             ...tooltipStyle
         },
         data: data.map(({shiftDate, shift, qty}) => ({
             label: `${moment(shiftDate).format(dateFormat)} - ${shift}`,
-            value: qty
+            value: qty,
+            tooltext: `<b>Shift Date: </b> ${moment(shiftDate).format(dateFormat)} <br>
+                        <b>Shift: </b> ${shift} <br>
+                        <b>Qty: </b> ${qty}`
         })),
         trendlines: [{
             line: [{

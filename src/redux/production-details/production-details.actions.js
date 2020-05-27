@@ -67,14 +67,14 @@ export const fetchProductionDetailsStartAsync = (start, end, area) => {
     }
 }
 
-export const fetchDailyScrapByCodeStartAsync = (start, end, line, scrapCode, isPurchased = false, program = '') => {
+export const fetchDailyScrapByCodeStartAsync = (start, end, line, scrapCode, isPurchased = false, program = '', department = '') => {
 
     return dispatch => {
 
         dispatch(fetchStart(
             productionDetailsType.FETCH_DAILY_SCRAP_BY_CODE_START))
 
-        api.get(`sap/dailyscrapbyshift?start=${start}&end=${end}&line=${line}&program=${program}&scrapcode=${scrapCode}&ispurchased=${isPurchased}`)
+        api.get(`sap/dailyscrapbyshift?start=${start}&end=${end}&line=${line}&program=${program}&scrapcode=${scrapCode}&ispurchased=${isPurchased}&department=${department}`)
         .then(response => {
 
             dispatch(fetchSuccess(
