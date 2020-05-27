@@ -1,5 +1,4 @@
 import React from 'react'
-import numeral from 'numeral';
 import { 
     Button,
     Tooltip,
@@ -18,7 +17,7 @@ const ScrapLink = ({qty, value, onClick, scrapTarget = 0, textState = '', toolTi
                     </Button>
                 </Tooltip>)
             : (
-                <Button type="link">
+                <Button type="link" className="pa0">
                     <Text disabled>{value}</Text>    
                 </Button>
             )

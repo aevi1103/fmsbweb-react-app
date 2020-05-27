@@ -1,13 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import numeral from 'numeral';
+import moment from 'moment';
+
 import { 
-    Table
+    Table,
+    Modal,
+    Button,
+    Row,
+    Col,
+    Card
  } from "antd";
 
  import ScrapLink  from '../../scrap-link/scrap-link.component'
 
-const DefectSummaryTable = ({isProductionDetailsLoading, scrapData}) => {
+ import {
+    fetchDailyScrapByCodeStartAsync
+ } from '../../../redux/production-details/production-details.actions'
+
+ import DailyScrapByCodeChart from '../daily-scrap-by-code-chart/daily-scrap-by-code-chart.component'
+
+ const cardHeightStyle = {
+    height: "300px"
+ }
+const DefectSummaryTable = ({
+    isProductionDetailsLoading,
+    scrapData,
+    detailsEndDate,
+
+    fetchDailyScrapByCodeStartAsync,
+    isDailyScrapByCodeLoading,
+    dailyScrapByCodeCollection
+}) => {
+
+    const [modalVisible, setModalVisible] = useState(false)
+    const [modalTitle, setModalTitle] = useState('');
+
+    const onSapNetModalCancel = () => setModalVisible(false)
+    const onScrapClick = data => {
+
+        const f = 'MM/DD/YYYY'
+        const start = moment(detailsEndDate).add('d', -30).format(f)
+        const end = detailsEndDate
+        const { line, department, isPurchasedExclude, scrapCode, scrapDesc } = data
+        const line2 = department === 'Machining' ? `Line ${line}` : line
+
+        setModalTitle(`${line2}: Daily ${scrapDesc} (${scrapCode}) Scrap by Shift - ${start} to ${end}`)
+        fetchDailyScrapByCodeStartAsync(start, end, line, scrapCode, isPurchasedExclude)
+        setModalVisible(true)
+        
+    }
 
     const columns = [
         {
@@ -51,7 +93,7 @@ const DefectSummaryTable = ({isProductionDetailsLoading, scrapData}) => {
             dataIndex: 'sapGross',
             render: (text, record, index) => {
                 const value = numeral(record.qty).format('0,0'); 
-                return <ScrapLink qty={record.qty} value={value} onClick={() => {}}/> 
+                return <ScrapLink qty={record.qty} value={value} onClick={() => onScrapClick(record)}/> 
             },
             sorter: (a, b) => a.qty - b.qty,
             sortDirections: ['descend', 'ascend']
@@ -73,7 +115,48 @@ const DefectSummaryTable = ({isProductionDetailsLoading, scrapData}) => {
                 onChange={onChange}
                 size="middle"
                 bordered={true}
-                pagination={false} />     
+                pagination={false} />   
+                
+                <Modal
+                    title={modalTitle}
+                    visible={modalVisible}
+                    onCancel={onSapNetModalCancel}
+                    width="80%"
+                    centered
+                    footer={[
+                        <Button key="back" onClick={onSapNetModalCancel}>
+                            Close
+                        </Button>
+                    ]}>
+                        {
+                            isDailyScrapByCodeLoading ? <span>Loading...</span>
+                            : 
+                            <Row gutter={[16,16]}>
+                                <Col span={24}>
+                                    <Card title="All Shift Daily Trend" style={cardHeightStyle} size="small">
+                                        {
+                                            dailyScrapByCodeCollection 
+                                                ? <DailyScrapByCodeChart chartData={dailyScrapByCodeCollection.allShifts} />
+                                                : null
+                                        }
+                                        
+                                    </Card>
+                                </Col>
+                                {
+                                    dailyScrapByCodeCollection
+                                        ? dailyScrapByCodeCollection.shift.map(d => (
+                                            <Col span={8} key={d.shift}>
+                                                <Card title={`Shift: ${d.shift} Daily Trend`} style={cardHeightStyle} size="small">
+                                                    <DailyScrapByCodeChart chartData={d.dailyScrap} />
+                                                </Card>
+                                            </Col>
+                                        ))
+                                        : null
+                                        
+                                }
+                            </Row>
+                        }
+                </Modal>
 
         </>
         
@@ -81,7 +164,14 @@ const DefectSummaryTable = ({isProductionDetailsLoading, scrapData}) => {
 }
 
 const mapStateToProps = ({ productionDetails }) => ({
-    isProductionDetailsLoading: productionDetails.isProductionDetailsLoading
+    isProductionDetailsLoading: productionDetails.isProductionDetailsLoading,
+    isDailyScrapByCodeLoading: productionDetails.isDailyScrapByCodeLoading,
+    dailyScrapByCodeCollection: productionDetails.dailyScrapByCodeCollection,
+    detailsEndDate: productionDetails.detailsEndDate
 })
 
-export default connect(mapStateToProps)(DefectSummaryTable);
+const mapDispatchToProps = dispatch => ({
+    fetchDailyScrapByCodeStartAsync: (start, end, line, scrapCode, isPurchased) => dispatch(fetchDailyScrapByCodeStartAsync(start, end, line, scrapCode, isPurchased))
+})
+
+export default connect(mapStateToProps,  mapDispatchToProps)(DefectSummaryTable);

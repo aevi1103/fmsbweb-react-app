@@ -47,7 +47,14 @@ const getScrapRate = (data, scrapArea, onClick, isAfScrap = false, afScrapRate =
     const toolTip = !isAfScrap 
                         ? `Click to see Scrap Details, Target: ${numeral(scrapTarget).format('0.00%')}`
                         : `Click to see Scrap Details, AF Total Scrap: ${numeral(afScrapRate).format('0.00%')}, Target: ${numeral(scrapTarget).format('0.00%')}`;
-    return <ScrapLink qty={qty} value={scrapRateText} onClick={onClick} textState={textState} scrapTarget={scrapTarget} toolTip={toolTip}/>;
+
+    return <ScrapLink 
+                qty={qty}
+                value={scrapRateText}
+                onClick={onClick}
+                textState={textState}
+                scrapTarget={scrapTarget} 
+                toolTip={toolTip}/>;
 
 };
 

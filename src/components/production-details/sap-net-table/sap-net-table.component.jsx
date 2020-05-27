@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import numeral from 'numeral';
 import moment from 'moment';
 import { 
     Table
  } from "antd";
+
 
 const SapNetTable = ({isProductionDetailsLoading, sapNetData}) => {
 
@@ -89,7 +90,7 @@ const SapNetTable = ({isProductionDetailsLoading, sapNetData}) => {
                 onChange={onChange}
                 size="middle"
                 bordered={true}
-                pagination={false} />     
+                pagination={false} />    
 
         </>
         

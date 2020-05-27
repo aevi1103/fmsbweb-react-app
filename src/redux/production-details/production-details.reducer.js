@@ -13,7 +13,11 @@ const INITIAL_STATE = {
 
     isProductionDetailsLoading: false,
     productionDetailsCollection: null,
-    productionDetailsErrorMsg : undefined
+    productionDetailsErrorMsg : undefined,
+
+    isDailyScrapByCodeLoading: false,
+    dailyScrapByCodeCollection: null,
+    dailyScrapByCodeErrorMsg : undefined,
 }
 
 const productionDetailsReducer = (state = INITIAL_STATE, action) => {
@@ -34,6 +38,21 @@ const productionDetailsReducer = (state = INITIAL_STATE, action) => {
                 area: action.payload
             }
 
+        case productionDetailsTypes.SET_PRODUCTION_DETAILS_START_DATE:
+
+            return {
+                ...state,
+                detailsStartDate: action.payload
+            }
+
+        case productionDetailsTypes.SET_PRODUCTION_DETAILS_END_DATE:
+
+            return {
+                ...state,
+                detailsEndDate: action.payload
+            }
+
+        //prod details
         case productionDetailsTypes.FETCH_PRODUCTION_DETAILS_START:
 
             return {
@@ -49,6 +68,7 @@ const productionDetailsReducer = (state = INITIAL_STATE, action) => {
                 productionDetailsCollection: action.payload
             }
 
+        
         case productionDetailsTypes.FETCH_PRODUCTION_DETAILS_FAILURE:
 
             return {
@@ -57,18 +77,28 @@ const productionDetailsReducer = (state = INITIAL_STATE, action) => {
                 productionDetailsErrorMsg: action.payload
             }
 
-        case productionDetailsTypes.SET_PRODUCTION_DETAILS_START_DATE:
+        //daily scrap by code
+        case productionDetailsTypes.FETCH_DAILY_SCRAP_BY_CODE_START:
 
             return {
                 ...state,
-                detailsStartDate: action.payload
+                isDailyScrapByCodeLoading: true
             }
 
-        case productionDetailsTypes.SET_PRODUCTION_DETAILS_END_DATE:
+        case productionDetailsTypes.FETCH_DAILY_SCRAP_BY_CODE_SUCCESS:
 
             return {
                 ...state,
-                detailsEndDate: action.payload
+                isDailyScrapByCodeLoading: false,
+                dailyScrapByCodeCollection: action.payload
+            }
+
+        case productionDetailsTypes.FETCH_DAILY_SCRAP_BY_CODE_FAILURE:
+
+            return {
+                ...state,
+                isDailyScrapByCodeLoading: false,
+                dailyScrapByCodeErrorMsg: action.payload
             }
     
         default:

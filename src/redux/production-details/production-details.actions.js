@@ -49,8 +49,8 @@ export const fetchProductionDetailsStartAsync = (start, end, area) => {
                 productionDetailsType.FETCH_PRODUCTION_DETAILS_SUCCESS,
                 response.data))
 
-            dispatch(fetchFailure(
-                productionDetailsType.FETCH_PRODUCTION_DETAILS_FAILURE, undefined))
+            // dispatch(fetchFailure(
+            //     productionDetailsType.FETCH_PRODUCTION_DETAILS_FAILURE, undefined))
 
         })
         .catch(error => {
@@ -61,6 +61,38 @@ export const fetchProductionDetailsStartAsync = (start, end, area) => {
 
             dispatch(fetchSuccess(
                 productionDetailsType.FETCH_PRODUCTION_DETAILS_SUCCESS, null))
+        
+        })
+
+    }
+}
+
+export const fetchDailyScrapByCodeStartAsync = (start, end, line, scrapCode, isPurchased = false, program = '') => {
+
+    return dispatch => {
+
+        dispatch(fetchStart(
+            productionDetailsType.FETCH_DAILY_SCRAP_BY_CODE_START))
+
+        api.get(`sap/dailyscrapbyshift?start=${start}&end=${end}&line=${line}&program=${program}&scrapcode=${scrapCode}&ispurchased=${isPurchased}`)
+        .then(response => {
+
+            dispatch(fetchSuccess(
+                productionDetailsType.FETCH_DAILY_SCRAP_BY_CODE_SUCCESS,
+                response.data))
+
+            // dispatch(fetchFailure(
+            //     productionDetailsType.FETCH_DAILY_SCRAP_BY_CODE_FAILURE, undefined))
+
+        })
+        .catch(error => {
+            
+            dispatch(fetchFailure(
+                productionDetailsType.FETCH_DAILY_SCRAP_BY_CODE_FAILURE,
+                error.message))
+
+            dispatch(fetchSuccess(
+                productionDetailsType.FETCH_DAILY_SCRAP_BY_CODE_SUCCESS, null))
         
         })
 
