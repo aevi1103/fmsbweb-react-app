@@ -153,13 +153,13 @@ const fontGreen = {
 
         <>
     
-        <Row gutter={16}>
+        <Row gutter={[12,12]}>
         
             <Col span={6}>
                 <Card 
                     title="South Bend Scrap Rate by Code"
                     size="small"
-                    className="mb3 b--black-10"
+                    className="b--black-10"
                     loading={isProdStatusFetching}
                     extra={
                         <Text type="secondary" className="b">Target: {numeral(scrapRateTarget / 100).format('0.00%')}</Text>
@@ -182,7 +182,7 @@ const fontGreen = {
                 <Card 
                     title="OAE %"
                     size="small"
-                    className="mb3 b--black-10"
+                    className="b--black-10"
                     loading={isProdStatusFetching}
                     extra={
                         <Text type="secondary" className="b">Target: {numeral(oaeTarget / 100).format('0%')}</Text>
@@ -206,7 +206,7 @@ const fontGreen = {
                 <Card 
                     title={getppmhTitle(laborHours)}
                     size="small"
-                    className="mb3 b--black-10"
+                    className="b--black-10"
                     loading={isProdStatusFetching}
                     extra={
                         <Text type="secondary" className="b">Target: {numeral(ppmhTarget).format('0')}</Text>
@@ -227,7 +227,7 @@ const fontGreen = {
                 <Card 
                     title={`MTD Production (${moment(mtdStart).format(dateFormat)} - ${moment(mtdEnd).format(dateFormat)})`}
                     size="small"
-                    className="mb3 b--black-10"
+                    className="b--black-10"
                     loading={isProdScrapFetching}
                 >
 
@@ -244,14 +244,14 @@ const fontGreen = {
 
         </Row>
 
-        <Row gutter={16}>
+        <Row gutter={[12,12]}>
         
             <Col span={6}>
                 <Card 
                     title="South Bend Scrap by Code Trend"
                     size="small"
                     style={cardHeightStyle}
-                    className="mb3 b--black-10"
+                    className="b--black-10"
                 >
                     <DailyScrapChart/>
                 </Card>
@@ -262,7 +262,7 @@ const fontGreen = {
                     title="Department KPI"
                     size="small"
                     style={cardHeightStyle}
-                    className="mb3 b--black-10"
+                    className="b--black-10"
                 >
                     <DailyKpi/>
                 </Card>
@@ -273,7 +273,7 @@ const fontGreen = {
                     title={ppmhChartType === 'ppmhByShift' ? `PPMH by Shift (${startDate} - ${endDate})` : 'Weekly PPMH (Kronos)'}
                     size="small"
                     style={cardHeightStyle}
-                    className="mb3 b--black-10"
+                    className="b--black-10"
                     extra={
                         <Tooltip title="Select PPMH Chart type">
                             <Select defaultValue={ppmhChartType} style={{ width: 135 }} bordered={false} size="small" onChange={onPpmhChartTypeChange}>
@@ -296,7 +296,7 @@ const fontGreen = {
                     title={`MTD Daily SAP Production`}
                     size="small"
                     style={cardHeightStyle}
-                    className="mb3 b--black-10"
+                    className="b--black-10"
                 >
                     <DailyProdChart/>
                 </Card>
@@ -304,16 +304,16 @@ const fontGreen = {
 
         </Row>
 
-        <Row gutter={16}>
+        <Row gutter={[12,12]}>
 
             <Col span={6}>
                 <Card 
                     title="Scrap Details"
                     size="small"
-                    className="mb3 b--black-10"
+                    className="b--black-10"
                     loading={isProdStatusFetching}
                 >
-                    <Row gutter={16}  className="mb3 b--black-10">
+                    <Row gutter={16}  className="b--black-10">
                         <Col span={12}>
                             <Statistic title="SB Scrap Qty" value={total} valueStyle={{color: scrapByCodeColorCode}} />
                         </Col>
@@ -323,7 +323,7 @@ const fontGreen = {
                         </Col>
 
                     </Row>
-                    <Row gutter={16} className="mb3 b--black-10">
+                    <Row gutter={16} className="b--black-10">
                         <Col span={12}>
                             <Statistic title="Purchase Scrap Qty" value={purchasedScrapQty} />
                         </Col>
@@ -356,11 +356,11 @@ const fontGreen = {
                 <Card 
                     title="Production Details" 
                     size="small"
-                    className="mb3 b--black-10"
+                    className="b--black-10"
                     loading={isProdStatusFetching}
                 >
 
-                    <Row gutter={16} className="mb3 b--black-10">
+                    <Row gutter={16} className="b--black-10">
                         <Col span={8}>
                             <Statistic title="Target" value={target} valueStyle={fontGreen} />
                         </Col>
@@ -381,7 +381,7 @@ const fontGreen = {
                             />
                         </Col>
                     </Row>
-                    <Row gutter={16} className="mb3 b--black-10">              
+                    <Row gutter={16} className="b--black-10">              
                         <Col span={8}>
                             <Statistic 
                                 title="Department Scrap %"
@@ -414,10 +414,10 @@ const fontGreen = {
                 <Card 
                     title={getppmhTitle(laborHours)}
                     size="small"
-                    className="mb3 b--black-10"
+                    className="b--black-10"
                     loading={isProdStatusFetching}
                 >
-                    <Row gutter={16} className="mb3 b--black-10">
+                    <Row gutter={16} className="b--black-10">
                         <Col span={8}>
                             <Statistic title="PPMH" value={numeral(ppmh).format('0')} />
                         </Col>
@@ -431,7 +431,7 @@ const fontGreen = {
                         </Col>
                     </Row>
 
-                    <Row gutter={16} className="mb3 b--black-10">
+                    <Row gutter={16} className="b--black-10">
                         <Col span={8}>
                             <Statistic title="Double Time" 
                                 value={getLaborHoursProp(laborHours, 'doubleTime')} />
@@ -453,14 +453,14 @@ const fontGreen = {
                 <Card 
                     title="MTD Details"
                     size="small"
-                    className="mb3 b--black-10"
+                    className="b--black-10"
                     loading={isProdScrapFetching}
                 >
 
                     {
                         prodScrapCollection ?
                         (<>
-                            <Row gutter={16} className="mb3 b--black-10">
+                            <Row gutter={16} className="b--black-10">
                                 <Col span={8}>
                                     <Statistic title="Production" value={numeral(mtdProd).format('0,0')} valueStyle={fontGreen} />
                                 </Col>
@@ -472,7 +472,7 @@ const fontGreen = {
                                 </Col>
                             </Row>
 
-                            <Row gutter={16} className="mb3 b--black-10">
+                            <Row gutter={16} className="b--black-10">
                                 <Col span={8}>
                                     <Statistic title="SAP OAE %" value={numeral(mtdSapOae).format('0.0%')} />
                                 </Col>

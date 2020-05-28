@@ -11,12 +11,12 @@ import {
  import FlashProjectionTable from '../../../components/finance/kpi/flash-projections/flash-projections.component'
 
 const FinanceKpi = () => (
-    <Row gutter={16}>
+    <Row gutter={[12,12]}>
         <Col span={24}>
             <Card 
                 title="Finance Daily KPI"
                 size="small"
-                className="mb3 ba b--black-10"
+                className="ba b--black-10"
                 >       
                     <KpiTable/>              
             </Card>     
@@ -25,7 +25,7 @@ const FinanceKpi = () => (
             <Card 
                 title="Department Forecast"
                 size="small"
-                className="mb3 ba b--black-10"
+                className="ba b--black-10"
                 >
                 <DeptForecastTable/>
             </Card>
@@ -34,7 +34,7 @@ const FinanceKpi = () => (
             <Card 
                 title="Flash Projections"
                 size="small"
-                className="mb3 ba b--black-10">
+                className="ba b--black-10">
                     <FlashProjectionTable/>
             </Card>
         </Col>

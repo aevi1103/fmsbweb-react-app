@@ -21,12 +21,12 @@ import {
 `
 
 const Quality = ({isQualityFetching, qualityCollection}) => (
-    <Row gutter={16}>
+    <Row gutter={[12,12]}>
         <Col span={6}>
             <Card 
                 title="PRR / PIR / QR"
                 size="small"
-                className="mb3 ba b--black-10"
+                className="ba b--black-10"
                 loading={isQualityFetching}
                 >       
                     {
@@ -42,7 +42,7 @@ const Quality = ({isQualityFetching, qualityCollection}) => (
             <Card 
                 title="YTD Open Status MRR"
                 size="small"
-                className="mb3 ba b--black-10"
+                className="ba b--black-10"
                 loading={isQualityFetching}
                 >       
                     {
@@ -58,7 +58,7 @@ const Quality = ({isQualityFetching, qualityCollection}) => (
             <Card 
                 title="MTD Open Status MRR"
                 size="small"
-                className="mb3 ba b--black-10"
+                className="ba b--black-10"
                 loading={isQualityFetching}
                 >       
                     {
@@ -74,7 +74,7 @@ const Quality = ({isQualityFetching, qualityCollection}) => (
             <Card 
                 title="Last 24 Hours Open MRR"
                 size="small"
-                className="mb3 ba b--black-10"
+                className="ba b--black-10"
                 loading={isQualityFetching}
                 >       
                     {
@@ -92,7 +92,7 @@ const Quality = ({isQualityFetching, qualityCollection}) => (
                 title="Customer Complaint"
                 
                 size="small"
-                className="mb3 ba b--black-10"
+                className="ba b--black-10"
                 >
                     <CustomerComplaintTable/>
             </Card>

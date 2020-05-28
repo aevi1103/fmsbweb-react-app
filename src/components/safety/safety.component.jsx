@@ -15,12 +15,12 @@ const cardHeightStyle = {
 }
 
 const Safety = () => (
-    <Row gutter={16}>
+    <Row gutter={[12,12]}>
         <Col span={8} lg={8} md={24} xs={24}>
             <Card 
                 title="Monthly Incident Date"
                 size="small"
-                className="mb3 ba b--black-10"
+                className="ba b--black-10"
                 style={cardHeightStyle}
                 >                     
                 <MonthlyIncidentRateChart/>
@@ -31,7 +31,7 @@ const Safety = () => (
                 title="Incident Occurence by Department"
                 
                 size="small"
-                className="mb3 ba b--black-10" 
+                className="ba b--black-10" 
                 style={cardHeightStyle}
                 >
                 <IncidentByDeptChart/>
@@ -41,7 +41,7 @@ const Safety = () => (
             <Card 
                 title="Incidents"
                 size="small"
-                className="mb3 ba b--black-10"
+                className="ba b--black-10"
                 style={cardHeightStyle}>
                 <IncidentTable/>
             </Card>

@@ -22,14 +22,14 @@ const cardHeightStyle = {
 }
 
  const Logistics = ({ isStockOverviewFetching }) => (
-     <Row gutter={16}>
+     <Row gutter={[12,12]}>
 
         <Col span={24} >
             <Card 
                 title="Stock Overview By Storage Location"
                 size="small"
                 style={cardHeightStyle}
-                className="mb3 ba b--black-10"
+                className="ba b--black-10"
             >
                 <StockOverViewSlocChart/>
             </Card>
@@ -39,7 +39,7 @@ const cardHeightStyle = {
             <Card 
                 title="Stock Overview"
                 size="small"
-                className="mb3 ba b--black-10"
+                className="ba b--black-10"
             >
                 <StockOverviewTable/>
             </Card>
@@ -49,7 +49,7 @@ const cardHeightStyle = {
             <Card 
                 title="Stock Overview By Program"
                 size="small"
-                className="mb3 ba b--black-10"
+                className="ba b--black-10"
                 style={cardHeightStyle}
                 loading={isStockOverviewFetching}
             >
@@ -61,7 +61,7 @@ const cardHeightStyle = {
             <Card 
                 title="Inventory Status"
                 size="small"
-                className="mb3 ba b--black-10"
+                className="ba b--black-10"
                 style={cardHeightStyle}
             >
                 <InventoryStatusTable/>
@@ -72,7 +72,7 @@ const cardHeightStyle = {
             <Card 
                 title="Inventory Cost"
                 size="small"
-                className="mb3 ba b--black-10"
+                className="ba b--black-10"
                 style={cardHeightStyle}
             >
                 <InventoryCost/>
@@ -83,7 +83,7 @@ const cardHeightStyle = {
             <Card 
                 title="Comments"
                 size="small"
-                className="mb3 ba b--black-10"
+                className="ba b--black-10"
                 style={cardHeightStyle}
             >
                 <CustomerComments/>
@@ -94,7 +94,7 @@ const cardHeightStyle = {
             <Card 
                 title="Days on Hand"
                 size="small"
-                className="mb3 ba b--black-10"
+                className="ba b--black-10"
                 >
                 <div className="mb2">
                     <Tag color="#e33545">DOH is between 0 and 2</Tag>

@@ -216,13 +216,13 @@ const PerformanceLevel0Page = ({
                 </Button>
 
                 <div className="mt3">
-                    <Row gutter={12}>  
+                    <Row gutter={[12,12]}>  
 
                         <Col span={8}>
                             <Card 
                                 title={`Lvl 0: ${scrapAreaNameTitle} Scrap Variance (${monthStartFormart} - ${monthEndFormat})`}
                                 size="small"
-                                className="mb3 ba b--black-10"
+                                className="ba b--black-10"
                                 style={cardHeightStyle}
                                 extra={<SelectScrapType onChange={onScrapVarianceSelectChange} />}
                             >
@@ -234,7 +234,7 @@ const PerformanceLevel0Page = ({
                             <Card 
                                 title="Lvl 0: PPMH Plant Wide Variance"
                                 size="small"
-                                className="mb3 ba b--black-10"
+                                className="ba b--black-10"
                                 style={cardHeightStyle}
                             >
                                 <PlantPpmhChart/>
@@ -245,7 +245,7 @@ const PerformanceLevel0Page = ({
                             <Card 
                                 title={`Lvl 0: ${scrapAreaNameTitle} OAE, Downtime, Scrap (${startDate} - ${endDate})`}
                                 size="small"
-                                className="mb3 ba b--black-10"
+                                className="ba b--black-10"
                                 style={cardHeightStyle}
                             >
                                 <DeptKpiChart/>
@@ -260,7 +260,7 @@ const PerformanceLevel0Page = ({
                             <Card 
                                 title={`Lvl 1: ${scrapAreaNameTitle} Scrap Variance per Program (${startDate} - ${endDate})`}
                                 size="small"
-                                className="mb3 ba b--black-10"
+                                className="ba b--black-10"
                                 style={cardHeightStyle}
                                 extra={<SelectScrapType onChange={onScrapVariancePerProgSelectChange} />}
                             >
@@ -272,7 +272,7 @@ const PerformanceLevel0Page = ({
                             <Card 
                                 title={`Lvl 1: ${scrapAreaNameTitle} Department PPMH Variance (${monthStartFormart} - ${monthEndFormat})`}
                                 size="small"
-                                className="mb3 ba b--black-10"
+                                className="ba b--black-10"
                                 style={cardHeightStyle}
                             >
                                 <PpmhVariancePerDeptChart/>
@@ -283,7 +283,7 @@ const PerformanceLevel0Page = ({
                             <Card 
                                 title={`Lvl 0: Downtime per Department (${startDate} - ${endDate})`}
                                 size="small"
-                                className="mb3 ba b--black-10"
+                                className="ba b--black-10"
                                 style={cardHeightStyle}
                                 extra={
                                     <Link to="/dashboard/morningmeeting/downtime">Drilldown</Link>

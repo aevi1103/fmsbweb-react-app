@@ -40,7 +40,7 @@ const OrderStatus = ({
     }
 
     return (
-        <Row gutter={16}>
+        <Row gutter={[12,12]}>
             {
                 workCenters.map(({workCenter, url, lastUpdate}) => (
                     <Col span={8} key={`order_${workCenter}`}>
@@ -48,7 +48,7 @@ const OrderStatus = ({
                             key={`card_${workCenter}`}
                             title={workCenter}    
                             size="small"
-                            className="mb3 ba b--black-10"
+                            className="ba b--black-10"
                             loading={isOrderStatusFetching}
                             style={{height: '25rem'}}
                             extra={<Button key={`btn_${workCenter}`}

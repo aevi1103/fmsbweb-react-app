@@ -240,14 +240,14 @@ const PerformanceLevel2Page = ({
                 </Tooltip>
 
                 <div className="mt3">
-                    <Row gutter={12}>  
+                    <Row gutter={[12,12]}>  
 
                         <Col span={8}>
                          
                             <Card 
                                 title={`Lvl 2: Scrap Variance per Dept (${startDate} - ${endDate})`}
                                 size="small"
-                                className="mb3 ba b--black-10"
+                                className="ba b--black-10"
                                 style={cardHeightStyle}
                                 extra={<SelectScrapType onChange={onScrapByDeptChange} />}
                             >
@@ -259,7 +259,7 @@ const PerformanceLevel2Page = ({
                             <Card 
                                 title={`Lvl 2: ${deptTitle} Dept Overtime  percentage (${monthStartFormart} - ${monthEndFormat})`}
                                 size="small"
-                                className="mb3 ba b--black-10"
+                                className="ba b--black-10"
                                 style={cardHeightStyle}
                             >
                                 <OvertimePercentPerDeptChart/>
@@ -270,7 +270,7 @@ const PerformanceLevel2Page = ({
                             <Card 
                                 title={`Lvl 2: ${deptTitle} Dept Downtime by Owner (${startDate} - ${endDate})`}
                                 size="small"
-                                className="mb3 ba b--black-10"
+                                className="ba b--black-10"
                                 style={cardHeightStyle}
                             >
                                 <DowntimeByOwnerChart/>
@@ -285,7 +285,7 @@ const PerformanceLevel2Page = ({
                             <Card 
                                 title={`Lvl 3: ${deptTitle} Dept Scrap Variance per Shift (${startDate} - ${endDate})`}
                                 size="small"
-                                className="mb3 ba b--black-10"
+                                className="ba b--black-10"
                                 style={cardHeightStyle}
                                 extra={<SelectScrapType onChange={onScrapByShiftChange} />}
                             >
@@ -297,7 +297,7 @@ const PerformanceLevel2Page = ({
                             <Card 
                                 title={`Lvl 3: ${deptTitle} Overtime Variance per Shift (${startDate} - ${endDate})`}
                                 size="small"
-                                className="mb3 ba b--black-10"
+                                className="ba b--black-10"
                                 style={cardHeightStyle}
                             >
                                 <OvertimePercentPerSiftChart/>
@@ -308,7 +308,7 @@ const PerformanceLevel2Page = ({
                             <Card 
                                 title={`Lvl 3: ${deptTitle} Downtime pareto - PLC (${startDate} - ${endDate})`}
                                 size="small"
-                                className="mb3 ba b--black-10"
+                                className="ba b--black-10"
                                 style={cardHeightStyle}
                                 extra={
                                     <Tooltip title="Set Min and Max Downtime Event">
