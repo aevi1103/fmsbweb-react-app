@@ -6,9 +6,9 @@ import {
     Card
  } from "antd";
 
- import SummaryByLineTable from './summary-by-line-table/summary-by-line-table.component'
- import SummaryByProgramTable from './summary-by-program/summary-by-program.component'
- import DefectSummaryTable from './defect-summary-table/defect-summary-table.component';
+import SummaryByLineTable from './summary-by-line-table/summary-by-line-table.component'
+import SummaryByProgramTable from './summary-by-program/summary-by-program.component'
+import DefectSummaryTable from './defect-summary-table/defect-summary-table.component';
 
 import ProductionDetailsSummary from './production-details-summary/production-details-summary.component'
 
@@ -18,8 +18,7 @@ const ProductionDetails = ({productionDetailsCollection, isProductionDetailsLoad
         <Col span={24}>
             <Card 
                 title="Department Summary"
-                bordered={false} size="small"
-                className="mb3"
+                className="mb3 ba b--black-20 shadow-4"
                 loading={isProductionDetailsLoading}
                 >       
                 {
