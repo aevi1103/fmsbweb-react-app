@@ -158,11 +158,11 @@ const fontGreen = {
             <Col span={6}>
                 <Card 
                     title="South Bend Scrap Rate by Code"
-                    bordered={false} size="small"
-                    className="mb3"
+                    size="small"
+                    className="mb3 b--black-20 shadow-4"
                     loading={isProdStatusFetching}
                     extra={
-                        <Text type="secondary">Target: {numeral(scrapRateTarget / 100).format('0.00%')}</Text>
+                        <Text type="secondary" className="b">Target: {numeral(scrapRateTarget / 100).format('0.00%')}</Text>
                     }
                 >
                      {
@@ -181,11 +181,11 @@ const fontGreen = {
             <Col span={6}>
                 <Card 
                     title="OAE %"
-                    bordered={false} size="small"
-                    className="mb3"
+                    size="small"
+                    className="mb3 b--black-20 shadow-4"
                     loading={isProdStatusFetching}
                     extra={
-                        <Text type="secondary">Target: {numeral(oaeTarget / 100).format('0%')}</Text>
+                        <Text type="secondary" className="b">Target: {numeral(oaeTarget / 100).format('0%')}</Text>
                     }
                 >
 
@@ -205,17 +205,17 @@ const fontGreen = {
             <Col span={6}>
                 <Card 
                     title={getppmhTitle(laborHours)}
-                    bordered={false} size="small"
-                    className="mb3"
+                    size="small"
+                    className="mb3 b--black-20 shadow-4"
                     loading={isProdStatusFetching}
                     extra={
-                        <Text type="secondary">Target: {numeral(ppmhTarget).format('0')}</Text>
+                        <Text type="secondary" className="b">Target: {numeral(ppmhTarget).format('0')}</Text>
                     }
                 >
                 {
                     productionStatusCollection 
                     ? (<KpiContainer>
-                            <h1 style={{color: ppmhColorCode}}>{numeral(ppmh).format('0')}</h1>
+                            <h1 style={{color: ppmhColorCode}} className="b">{numeral(ppmh).format('0')}</h1>
                         </KpiContainer>)
                     : <Empty/>
                  }
