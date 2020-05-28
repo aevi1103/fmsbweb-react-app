@@ -18,7 +18,8 @@ const ProductionDetails = ({productionDetailsCollection, isProductionDetailsLoad
         <Col span={24}>
             <Card 
                 title="Department Summary"
-                className="mb3 ba b--black-20 shadow-4"
+                size="small"
+                className="mb3 ba b--black-10"
                 loading={isProductionDetailsLoading}
                 >       
                 {
@@ -32,7 +33,7 @@ const ProductionDetails = ({productionDetailsCollection, isProductionDetailsLoad
             <Card 
                 title="Summary by Line"
                 bordered={false} size="small"
-                className="mb3"
+                className="mb3 ba b--black-10"
                 >       
                 <SummaryByLineTable/>          
             </Card>     
@@ -42,7 +43,7 @@ const ProductionDetails = ({productionDetailsCollection, isProductionDetailsLoad
                 title="Summary by Program"
                 bordered={false} 
                 size="small"
-                className="mb3"
+                className="mb3 ba b--black-10"
                 >
                 <SummaryByProgramTable/>
             </Card>
@@ -52,7 +53,7 @@ const ProductionDetails = ({productionDetailsCollection, isProductionDetailsLoad
                 title="SB Scrap Summary"
                 bordered={false}
                 size="small"
-                className="mb3">
+                className="mb3 ba b--black-10">
                 <DefectSummaryTable 
                     scrapData={(!productionDetailsCollection 
                                 ? [] 
@@ -64,7 +65,7 @@ const ProductionDetails = ({productionDetailsCollection, isProductionDetailsLoad
                 title="Purchase Scrap Summary"
                 bordered={false}
                 size="small"
-                className="mb3">
+                className="mb3 ba b--black-10">
                 <DefectSummaryTable 
                     scrapData={(!productionDetailsCollection 
                                 ? [] 

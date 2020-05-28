@@ -47,8 +47,8 @@ const OrderStatus = ({
                         <Card
                             key={`card_${workCenter}`}
                             title={workCenter}    
-                            bordered={false} size="small"
-                            className="mb3"
+                            size="small"
+                            className="mb3 ba b--black-10"
                             loading={isOrderStatusFetching}
                             style={{height: '25rem'}}
                             extra={<Button key={`btn_${workCenter}`}

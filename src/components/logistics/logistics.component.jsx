@@ -27,9 +27,9 @@ const cardHeightStyle = {
         <Col span={24} >
             <Card 
                 title="Stock Overview By Storage Location"
-                bordered={false} size="small"
+                size="small"
                 style={cardHeightStyle}
-                className="mb3"
+                className="mb3 ba b--black-10"
             >
                 <StockOverViewSlocChart/>
             </Card>
@@ -38,8 +38,8 @@ const cardHeightStyle = {
         <Col span={24}>
             <Card 
                 title="Stock Overview"
-                bordered={false} size="small"
-                className="mb3"
+                size="small"
+                className="mb3 ba b--black-10"
             >
                 <StockOverviewTable/>
             </Card>
@@ -48,8 +48,8 @@ const cardHeightStyle = {
         <Col span={24}>
             <Card 
                 title="Stock Overview By Program"
-                bordered={false} size="small"
-                className="mb3"
+                size="small"
+                className="mb3 ba b--black-10"
                 style={cardHeightStyle}
                 loading={isStockOverviewFetching}
             >
@@ -60,8 +60,8 @@ const cardHeightStyle = {
         <Col span={8} lg={8} md={24} xs={24}>
             <Card 
                 title="Inventory Status"
-                bordered={false} size="small"
-                className="mb3"
+                size="small"
+                className="mb3 ba b--black-10"
                 style={cardHeightStyle}
             >
                 <InventoryStatusTable/>
@@ -71,8 +71,8 @@ const cardHeightStyle = {
         <Col span={8} lg={8} md={24} xs={24}>
             <Card 
                 title="Inventory Cost"
-                bordered={false} size="small"
-                className="mb3"
+                size="small"
+                className="mb3 ba b--black-10"
                 style={cardHeightStyle}
             >
                 <InventoryCost/>
@@ -82,8 +82,8 @@ const cardHeightStyle = {
         <Col span={8} lg={8} md={24} xs={24}>
             <Card 
                 title="Comments"
-                bordered={false} size="small"
-                className="mb3"
+                size="small"
+                className="mb3 ba b--black-10"
                 style={cardHeightStyle}
             >
                 <CustomerComments/>
@@ -93,8 +93,8 @@ const cardHeightStyle = {
         <Col span={24}>
             <Card 
                 title="Days on Hand"
-                bordered={false} size="small"
-                className="mb3"
+                size="small"
+                className="mb3 ba b--black-10"
                 >
                 <div className="mb2">
                     <Tag color="#e33545">DOH is between 0 and 2</Tag>

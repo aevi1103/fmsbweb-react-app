@@ -86,7 +86,7 @@ const OrderStatusChart = ({
                 const config = {
                         type: 'msbar2d',
                         width: '100%',
-                        height: '85%',
+                        height: '84%',
                         dataFormat: 'json',
                         dataSource: dataSource
                     }

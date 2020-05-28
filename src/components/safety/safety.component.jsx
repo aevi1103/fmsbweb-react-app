@@ -19,8 +19,8 @@ const Safety = () => (
         <Col span={8} lg={8} md={24} xs={24}>
             <Card 
                 title="Monthly Incident Date"
-                bordered={false} size="small"
-                className="mb3"
+                size="small"
+                className="mb3 ba b--black-10"
                 style={cardHeightStyle}
                 >                     
                 <MonthlyIncidentRateChart/>
@@ -29,9 +29,9 @@ const Safety = () => (
         <Col span={8} lg={8} md={24} xs={24}>
             <Card 
                 title="Incident Occurence by Department"
-                bordered={false} 
+                
                 size="small"
-                className="mb3" 
+                className="mb3 ba b--black-10" 
                 style={cardHeightStyle}
                 >
                 <IncidentByDeptChart/>
@@ -40,9 +40,8 @@ const Safety = () => (
         <Col span={8} lg={8} md={24} xs={24}>
             <Card 
                 title="Incidents"
-                bordered={false}
                 size="small"
-                className="mb3"
+                className="mb3 ba b--black-10"
                 style={cardHeightStyle}>
                 <IncidentTable/>
             </Card>

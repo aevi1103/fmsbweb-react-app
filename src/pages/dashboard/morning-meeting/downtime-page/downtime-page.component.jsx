@@ -87,13 +87,13 @@ import {
                 </Button>
 
                 <div className="mt3">
-                    <Row gutter={12}>  
+                    <Row gutter={[12,12]}>  
 
                         <Col span={12}>
                             <Card 
                                 title="Downtime by Department and Shift (Minutes)"
-                                bordered={false} size="small"
-                                className="mb3"
+                                size="small"
+                                className="ba b--black-10"
                                 style={cardHeightStyle}
                             >
                                 <DowntimeChart/>
@@ -103,8 +103,8 @@ import {
                         <Col span={12}>
                             <Card 
                                 title={ownerTitle}
-                                bordered={false} size="small"
-                                className="mb3"
+                                size="small"
+                                className="ba b--black-10"
                                 style={cardHeightStyle}
                             >
                                 <DowntimeByOwnerChart/>
@@ -114,8 +114,8 @@ import {
                         <Col span={24}>
                             <Card 
                                 title={lineTitle}
-                                bordered={false} size="small"
-                                className="mb3"
+                                size="small"
+                                className="ba b--black-10"
                                 style={cardHeightStyle}
                             >
                                 <DowntimeByLineChart/>

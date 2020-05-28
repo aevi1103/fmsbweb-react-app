@@ -95,44 +95,43 @@ const App = ( { collapsed, setSiderCollapse } ) => {
 
     </Sider>
     
-    <Layout>
+    <Layout className="site-layout-bg">
 
-    <Switch>
-      <Route exact path="/" component={HomePage} />
+      <Switch>
+        <Route exact path="/" component={HomePage} />
 
-      {/* Monring Meeting */}
-      <Route exact path="/dashboard/morningmeeting/safety" component={SafetyPage} />
-      <Route exact path="/dashboard/morningmeeting/logistics" component={LogisticsPage} />
+        {/* Monring Meeting */}
+        <Route exact path="/dashboard/morningmeeting/safety" component={SafetyPage} />
+        <Route exact path="/dashboard/morningmeeting/logistics" component={LogisticsPage} />
 
-      <Route exact path="/dashboard/morningmeeting/foundry" component={RenderedFoundryPage} />
-      <Route exact path="/dashboard/morningmeeting/machining" component={RenderedMachiningPage} />
-      <Route exact path="/dashboard/morningmeeting/finishing" component={RenderedFinishingPage}/>
-      <Route exact path="/dashboard/morningmeeting/assembly" component={RenderedAssemblyPage} />
-      <Route exact path="/dashboard/morningmeeting/finance" component={FinancePage} />
-      <Route exact path="/dashboard/morningmeeting/quality" component={QualityPage} />
-      <Route exact path="/dashboard/morningmeeting/downtime" component={DowntimePage} />
+        <Route exact path="/dashboard/morningmeeting/foundry" component={RenderedFoundryPage} />
+        <Route exact path="/dashboard/morningmeeting/machining" component={RenderedMachiningPage} />
+        <Route exact path="/dashboard/morningmeeting/finishing" component={RenderedFinishingPage}/>
+        <Route exact path="/dashboard/morningmeeting/assembly" component={RenderedAssemblyPage} />
+        <Route exact path="/dashboard/morningmeeting/finance" component={FinancePage} />
+        <Route exact path="/dashboard/morningmeeting/quality" component={QualityPage} />
+        <Route exact path="/dashboard/morningmeeting/downtime" component={DowntimePage} />
 
-      {/* morning meeting details */}
-      <Route exact path="/dashboard/*/details" component={ProductionDetailsPage} />
+        {/* morning meeting details */}
+        <Route exact path="/dashboard/*/details" component={ProductionDetailsPage} />
 
-      {/* SWOT */}
-      <Route exact path="/dashboard/swot" component={SwotPage} />
+        {/* SWOT */}
+        <Route exact path="/dashboard/swot" component={SwotPage} />
 
-      {/* Order Status */}
-      <Route exact path="/orderstatus/foundry" component={RenderedFoundryOrderStatPage} />
-      <Route exact path="/orderstatus/machining" component={RenderedMachiningOrderStatPage} />
-      <Route exact path="/orderstatus/finishing" component={RenderedFinishingOrderStatPage} />
-      <Route exact path="/orderstatus/assembly" component={RenderedAssemblyOrderStatPage} />
+        {/* Order Status */}
+        <Route exact path="/orderstatus/foundry" component={RenderedFoundryOrderStatPage} />
+        <Route exact path="/orderstatus/machining" component={RenderedMachiningOrderStatPage} />
+        <Route exact path="/orderstatus/finishing" component={RenderedFinishingOrderStatPage} />
+        <Route exact path="/orderstatus/assembly" component={RenderedAssemblyOrderStatPage} />
 
-      {/* performance Page */}
-      <Route exact path="/dashboard/morningmeeting/level0" component={PerformanceLevel0Page} />
-      <Route exact path="/dashboard/morningmeeting/level2" component={PerformanceLevel2Page} />
+        {/* performance Page */}
+        <Route exact path="/dashboard/morningmeeting/level0" component={PerformanceLevel0Page} />
+        <Route exact path="/dashboard/morningmeeting/level2" component={PerformanceLevel2Page} />
 
-      <Route component={NotFound} />
-    </Switch>
+        <Route component={NotFound} />
+      </Switch>
       
-
-      <Footer style={{ textAlign: "center" }}>
+      <Footer style={{ textAlign: "center" }} className="site-layout-bg">
         FMSBWeb &copy; {new Date().getFullYear()}
       </Footer>
 

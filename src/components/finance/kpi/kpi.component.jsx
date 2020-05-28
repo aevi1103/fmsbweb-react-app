@@ -15,8 +15,8 @@ const FinanceKpi = () => (
         <Col span={24}>
             <Card 
                 title="Finance Daily KPI"
-                bordered={false} size="small"
-                className="mb3"
+                size="small"
+                className="mb3 ba b--black-10"
                 >       
                     <KpiTable/>              
             </Card>     
@@ -24,9 +24,8 @@ const FinanceKpi = () => (
         <Col span={12}>
             <Card 
                 title="Department Forecast"
-                bordered={false} 
                 size="small"
-                className="mb3"
+                className="mb3 ba b--black-10"
                 >
                 <DeptForecastTable/>
             </Card>
@@ -34,9 +33,8 @@ const FinanceKpi = () => (
         <Col span={12}>
             <Card 
                 title="Flash Projections"
-                bordered={false}
                 size="small"
-                className="mb3">
+                className="mb3 ba b--black-10">
                     <FlashProjectionTable/>
             </Card>
         </Col>

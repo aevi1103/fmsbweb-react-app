@@ -25,8 +25,8 @@ const Quality = ({isQualityFetching, qualityCollection}) => (
         <Col span={6}>
             <Card 
                 title="PRR / PIR / QR"
-                bordered={false} size="small"
-                className="mb3"
+                size="small"
+                className="mb3 ba b--black-10"
                 loading={isQualityFetching}
                 >       
                     {
@@ -41,8 +41,8 @@ const Quality = ({isQualityFetching, qualityCollection}) => (
         <Col span={6}>
             <Card 
                 title="YTD Open Status MRR"
-                bordered={false} size="small"
-                className="mb3"
+                size="small"
+                className="mb3 ba b--black-10"
                 loading={isQualityFetching}
                 >       
                     {
@@ -57,8 +57,8 @@ const Quality = ({isQualityFetching, qualityCollection}) => (
         <Col span={6}>
             <Card 
                 title="MTD Open Status MRR"
-                bordered={false} size="small"
-                className="mb3"
+                size="small"
+                className="mb3 ba b--black-10"
                 loading={isQualityFetching}
                 >       
                     {
@@ -73,8 +73,8 @@ const Quality = ({isQualityFetching, qualityCollection}) => (
         <Col span={6}>
             <Card 
                 title="Last 24 Hours Open MRR"
-                bordered={false} size="small"
-                className="mb3"
+                size="small"
+                className="mb3 ba b--black-10"
                 loading={isQualityFetching}
                 >       
                     {
@@ -90,9 +90,9 @@ const Quality = ({isQualityFetching, qualityCollection}) => (
         <Col span={24}>
             <Card 
                 title="Customer Complaint"
-                bordered={false} 
+                
                 size="small"
-                className="mb3"
+                className="mb3 ba b--black-10"
                 >
                     <CustomerComplaintTable/>
             </Card>
