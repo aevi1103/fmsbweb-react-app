@@ -11,7 +11,9 @@ import {
 
  import {
     fetchProductionDetailsStartAsync,
-    setTitle
+    setTitle,
+    setDetailsStartDate,
+    setDetailsEndDate
  } from '../../../../redux/production-details/production-details.actions'
 
 const { Header, Content } = Layout;
@@ -25,11 +27,16 @@ const ProductionDetailsPage = ({
         setTitle, 
 
         startDate,
-        endDate
+        endDate,
+
+        setDetailsStartDate,
+        setDetailsEndDate,
+        detailsStartDate,
+        detailsEndDate
     }) => {
 
-    const [detailsStartDate, setDetailsStartDate] = useState(startDate);
-    const [detailsEndDate, setDetailsEndDate] = useState(endDate);
+    // const [detailsStartDate, setDetailsStartDate] = useState(startDate);
+    // const [detailsEndDate, setDetailsEndDate] = useState(endDate);
 
     const [startFormat, setStartFormat] = useState(startDate);
     const [endFormat, setSendFormat] = useState(endDate);
@@ -40,6 +47,7 @@ const ProductionDetailsPage = ({
 
     const onClick = () => {
 
+        //apply state to reducer when button click
         setDetailsStartDate(startFormat)
         setDetailsEndDate(endFormat);  
 
@@ -54,8 +62,13 @@ const ProductionDetailsPage = ({
 
     const onCalendarChange = (dates) => {
         const [start, end] = dates;
-        setStartFormat(start ? start.format(dateFormat) : null);
-        setSendFormat(end ? end.format(dateFormat) : null);
+
+        const startFormat = start ? start.format(dateFormat) : null;
+        const endFormat = end ? end.format(dateFormat) : null;
+        
+        //store formatted date in state on calendar change
+        setStartFormat(startFormat);
+        setSendFormat(endFormat);
     }
 
     useEffect(() => {
@@ -87,13 +100,18 @@ const mapStateToProps = ( { productionDetails, morningMeeting } ) => ({
     area: productionDetails.area,
 
     startDate: morningMeeting.startDate,
-    endDate: morningMeeting.endDate
+    endDate: morningMeeting.endDate,
+
+    detailsStartDate: productionDetails.detailsStartDate,
+    detailsEndDate: productionDetails.detailsEndDate
 })
 
 
 const mapDispatchToProps = dispatch => ({
     fetchProductionDetailsStartAsync: (start, end, area) => dispatch(fetchProductionDetailsStartAsync(start, end, area)),
-    setTitle: title => dispatch(setTitle(title))
+    setTitle: title => dispatch(setTitle(title)),
+    setDetailsStartDate: date => dispatch(setDetailsStartDate(date)),
+    setDetailsEndDate: date => dispatch(setDetailsEndDate(date))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductionDetailsPage);
