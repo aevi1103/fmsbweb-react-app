@@ -22,7 +22,9 @@ import {
 
 import { 
     setTitle,
-    setArea
+    setArea,
+    setDetailsStartDate,
+    setDetailsEndDate
 } from '../../../../redux/production-details/production-details.actions';
 
 import { 
@@ -58,6 +60,8 @@ const ProductionPage = ({
 
         setStartDate,
         setEndDate,
+        setDetailsStartDate,
+        setDetailsEndDate,
 
         startDate,
         endDate,
@@ -98,8 +102,12 @@ const ProductionPage = ({
     };
 
     const onClick = () => {
+
         setStartDate(startFormat);
         setEndDate(endFormat);
+        setDetailsStartDate(startFormat);
+        setDetailsEndDate(endFormat);
+
         fetchData(startFormat, endFormat);
     };
 
@@ -182,6 +190,13 @@ const ProductionPage = ({
     </> 
 )}
 
+const mapStateToProps = ({morningMeeting}) => ({
+    startDate: morningMeeting.startDate,
+    endDate: morningMeeting.endDate,
+    ppmhChartType: morningMeeting.ppmhChartType,
+    isProdStatusFetching: morningMeeting.isProdStatusFetching,
+})
+
 const mapDispatchToProps = dispatch => ({
     setProductionData: (start, end, area, cancelToken) => dispatch(fetchProductionStatusStartAsync(start, end, area, cancelToken)),
     fetchDailyScrapRateStartAsync: (start, end, area, cancelToken) => dispatch(fetchDailyScrapRateStartAsync(start, end, area, cancelToken)),
@@ -194,14 +209,10 @@ const mapDispatchToProps = dispatch => ({
     setArea: area => dispatch(setArea(area)),
 
     setStartDate: (date) => dispatch(setStartDate(date)),
-    setEndDate: (date) => dispatch(setEndDate(date))
+    setEndDate: (date) => dispatch(setEndDate(date)),
+    setDetailsStartDate: date => dispatch(setDetailsStartDate(date)),
+    setDetailsEndDate: date => dispatch(setDetailsEndDate(date))
 })
 
-const mapStateToProps = ({morningMeeting}) => ({
-    startDate: morningMeeting.startDate,
-    endDate: morningMeeting.endDate,
-    ppmhChartType: morningMeeting.ppmhChartType,
-    isProdStatusFetching: morningMeeting.isProdStatusFetching,
-})
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ProductionPage));
