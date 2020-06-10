@@ -15,13 +15,15 @@ import './sass/main.scss'
 
 
 ReactDOM.render(
-    <Provider store={store}>
-        <BrowserRouter>
-            <PersistGate loading={null} persistor={persistor}>
+    
+    <BrowserRouter>
+        <PersistGate loading={null} persistor={persistor}>
+            <Provider store={store}>
                 <App />
-            </PersistGate>
-        </BrowserRouter>
-    </Provider>
+            </Provider>
+        </PersistGate>
+    </BrowserRouter>
+    
     ,document.getElementById('root')
 );
 
