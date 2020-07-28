@@ -1,6 +1,6 @@
 {
   "name": "fmsbweb.react-app",
-  "version": "0.1.124",
+  "version": "0.1.125",
   "private": true,
   "dependencies": {
     "antd": "^4.4.3",
@@ -36,15 +36,15 @@
     "uid-generator": "^2.0.0"
   },
   "scripts": {
-    "start": "react-app-rewired start --no-cache",
-    "build": "npm run release && react-app-rewired build && npm run post-build",
+    "start": "react-scripts start --no-cache",
+    "build": "npm run release && react-scripts build && npm run post-build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "release": "standard-version",
     "delete-post-build-dir": "rm -r /q/react.app/",
     "copy-build-to-prod-dir": "cp -a /c/Users/rontoa20/source/repos/fmsbweb3/fmsbweb.react-app/build/. /q/react.app/",
     "copy-web-config": "cp /c/Users/rontoa20/source/repos/fmsbweb3/fmsbweb.react-app/web.config /q/react.app/",
-    "post-build": "npm run delete-post-build-dir && npm run copy-build-to-prod-dir && npm run copy-web-config",
-    "test": "react-app-rewired test",
-    "eject": "react-scripts eject",
-    "release": "standard-version"
+    "post-build": "npm run delete-post-build-dir && npm run copy-build-to-prod-dir && npm run copy-web-config"
   },
   "eslintConfig": {
     "extends": "react-app"
