@@ -10,6 +10,11 @@ import {
  import DeptForecastTable from '../../../components/finance/kpi/dept-forecast-table/dept-forecast-table.compoennt'
  import FlashProjectionTable from '../../../components/finance/kpi/flash-projections/flash-projections.component'
 
+ const responsiveProps = {
+    xs: 24,
+    xl: 12
+}
+
 const FinanceKpi = () => (
     <Row gutter={[12,12]}>
         <Col span={24}>
@@ -21,7 +26,7 @@ const FinanceKpi = () => (
                     <KpiTable/>              
             </Card>     
         </Col>
-        <Col span={12}>
+        <Col {...responsiveProps}>
             <Card 
                 title="Department Forecast"
                 size="small"
@@ -30,7 +35,7 @@ const FinanceKpi = () => (
                 <DeptForecastTable/>
             </Card>
         </Col>
-        <Col span={12}>
+        <Col {...responsiveProps}>
             <Card 
                 title="Flash Projections"
                 size="small"

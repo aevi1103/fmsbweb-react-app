@@ -69,8 +69,6 @@ const ProductionPage = ({
         ppmhChartType
     }) => {
         
-    
-
     const [startFormat, setStartFormat] = useState(startDate);
     const [endFormat, setSendFormat] = useState(endDate);
 

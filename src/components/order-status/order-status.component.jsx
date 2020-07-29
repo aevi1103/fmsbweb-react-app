@@ -43,7 +43,7 @@ const OrderStatus = ({
         <Row gutter={[12,12]}>
             {
                 workCenters.map(({workCenter, url, lastUpdate}) => (
-                    <Col span={8} key={`order_${workCenter}`}>
+                    <Col xs={24} md={24} lg={24} xl={8} key={`order_${workCenter}`}>
                         <Card
                             key={`card_${workCenter}`}
                             title={workCenter}    

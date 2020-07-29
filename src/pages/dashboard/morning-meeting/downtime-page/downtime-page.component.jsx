@@ -69,6 +69,11 @@ import {
         fetchData();
     }, [])
 
+    const responsiveProps = {
+        xs: 24,
+        xl: 12
+    }
+
     return (
         <>
             <Header className="pa0 custom-header" >
@@ -83,13 +88,13 @@ import {
                     onCalendarChange={onCalendarChange}/>
 
                 <Button type="primary" className="ml2">
-                    <a href="http://10.129.224.149/FMSB/Engineering/Downtime.aspx" target="_blank">View More Charts</a>
+                    <a href="http://10.129.224.149/FMSB/Engineering/Downtime.aspx" target="_blank" rel="noopener noreferrer">View More Charts</a>
                 </Button>
 
                 <div className="mt3">
                     <Row gutter={[12,12]}>  
 
-                        <Col span={12}>
+                        <Col {...responsiveProps}>
                             <Card 
                                 title="Downtime by Department and Shift (Minutes)"
                                 size="small"
@@ -100,7 +105,7 @@ import {
                             </Card>         
                         </Col>
 
-                        <Col span={12}>
+                        <Col {...responsiveProps}>
                             <Card 
                                 title={ownerTitle}
                                 size="small"

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Empty, Layout } from 'antd';
-const { Content } = Layout;
 
 const NotFound = () => (
     <Layout>

@@ -40,8 +40,7 @@ import {
     Card,
     Button,
     Tooltip,
-    DatePicker,
-    Empty
+    DatePicker
  } from "antd";
 
  const { Header, Content } = Layout;
@@ -161,6 +160,11 @@ const PerformanceLevel0Page = ({
         setScrapAreaNameTitle(setTitleFn(performaceSelectedDepartment));
     }, [])
 
+    const responsiveProps = {
+        xs: 24,
+        xl: 8
+    }
+
     return (
         <>
             <Header className="pa0 custom-header" >
@@ -218,7 +222,7 @@ const PerformanceLevel0Page = ({
                 <div className="mt3">
                     <Row gutter={[12,12]}>  
 
-                        <Col span={8}>
+                        <Col {...responsiveProps}>
                             <Card 
                                 title={`Lvl 0: ${scrapAreaNameTitle} Scrap Variance (${monthStartFormart} - ${monthEndFormat})`}
                                 size="small"
@@ -230,7 +234,7 @@ const PerformanceLevel0Page = ({
                             </Card>         
                         </Col>
 
-                        <Col span={8}>
+                        <Col {...responsiveProps}>
                             <Card 
                                 title="Lvl 0: PPMH Plant Wide Variance"
                                 size="small"
@@ -241,7 +245,7 @@ const PerformanceLevel0Page = ({
                             </Card>         
                         </Col>
 
-                        <Col span={8}>
+                        <Col {...responsiveProps}>
                             <Card 
                                 title={`Lvl 0: ${scrapAreaNameTitle} OAE, Downtime, Scrap (${startDate} - ${endDate})`}
                                 size="small"
@@ -254,9 +258,9 @@ const PerformanceLevel0Page = ({
 
                     </Row>
 
-                    <Row gutter={12}>  
+                    <Row gutter={[12,12]}>  
 
-                        <Col span={8}>
+                        <Col {...responsiveProps}>
                             <Card 
                                 title={`Lvl 1: ${scrapAreaNameTitle} Scrap Variance per Program (${startDate} - ${endDate})`}
                                 size="small"
@@ -268,7 +272,7 @@ const PerformanceLevel0Page = ({
                             </Card>         
                         </Col>
 
-                        <Col span={8}>
+                        <Col {...responsiveProps}>
                             <Card 
                                 title={`Lvl 1: ${scrapAreaNameTitle} Department PPMH Variance (${monthStartFormart} - ${monthEndFormat})`}
                                 size="small"
@@ -279,7 +283,7 @@ const PerformanceLevel0Page = ({
                             </Card>         
                         </Col>
 
-                        <Col span={8}>
+                        <Col {...responsiveProps}>
                             <Card 
                                 title={`Lvl 0: Downtime per Department (${startDate} - ${endDate})`}
                                 size="small"

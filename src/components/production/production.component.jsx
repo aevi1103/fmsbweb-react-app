@@ -8,7 +8,6 @@ import axios from 'axios';
 import ScrapByCodeTable from '../../components/production/scrap-by-code-table/scrap-by-code-table.component';
 import ProductionByTypeTable from '../../components/production/production-by-type-table/production-by-type-table.component';
 import ScrapByDeptTable from '../../components/production/scrap-by-dept-table/scrap-by-dept-tale.component';
-import LaborHoursTable from '../../components/production/labor-hours-table/labor-hours-table.component';
 import DailyScrapChart from '../../components/production/daily-scrap-rate-chart/daily-scrap-rate.component';
 import DailyKpi from '../../components/production/daily-kpi-chart/daily-kpi.component';
 import WeeklyPpmhChart from '../../components/production/weekly-ppmh-chart/weekly-ppmh-chart.component';
@@ -111,8 +110,6 @@ const fontGreen = {
     const purchasedScrapList = purchaseScrapByCode ? purchaseScrapByCode.details : [];
     const prodByTypeList = sapProductionByType ? sapProductionByType.details : [];
 
-    const laborHoursDetails = laborHours ? laborHours.details : [];
-
     //MTD
     const mtdStart = prodScrapCollection ? prodScrapCollection.startDate : '';
     const mtdEnd = prodScrapCollection ? prodScrapCollection.endDate : '';
@@ -149,13 +146,20 @@ const fontGreen = {
         return numeral(laborHours[propName]).format('0.00');
     };
 
+    const responsiveProps = {
+        xs: 24,
+        md: 12,
+        lg:12,
+        xl: 6
+    }
+
     return (
 
         <>
     
         <Row gutter={[12,12]}>
         
-            <Col span={6}>
+            <Col {...responsiveProps}>
                 <Card 
                     title="South Bend Scrap Rate by Code"
                     size="small"
@@ -178,7 +182,7 @@ const fontGreen = {
                 </Card>
             </Col>
 
-            <Col span={6}>
+            <Col {...responsiveProps}>
                 <Card 
                     title="OAE %"
                     size="small"
@@ -202,7 +206,7 @@ const fontGreen = {
                 </Card>
             </Col>
 
-            <Col span={6}>
+            <Col {...responsiveProps}>
                 <Card 
                     title={getppmhTitle(laborHours)}
                     size="small"
@@ -223,7 +227,7 @@ const fontGreen = {
                 </Card>
             </Col>
 
-            <Col span={6}>
+            <Col {...responsiveProps}>
                 <Card 
                     title={`MTD Production (${moment(mtdStart).format(dateFormat)} - ${moment(mtdEnd).format(dateFormat)})`}
                     size="small"
@@ -246,7 +250,7 @@ const fontGreen = {
 
         <Row gutter={[12,12]}>
         
-            <Col span={6}>
+            <Col {...responsiveProps}>
                 <Card 
                     title="South Bend Scrap by Code Trend"
                     size="small"
@@ -257,7 +261,7 @@ const fontGreen = {
                 </Card>
             </Col>
 
-            <Col span={6}>
+            <Col {...responsiveProps}>
                 <Card 
                     title="Department KPI"
                     size="small"
@@ -268,7 +272,7 @@ const fontGreen = {
                 </Card>
             </Col>
 
-            <Col span={6}>
+            <Col {...responsiveProps}>
                 <Card 
                     title={ppmhChartType === 'ppmhByShift' ? `PPMH by Shift (${startDate} - ${endDate})` : 'Weekly PPMH (Kronos)'}
                     size="small"
@@ -291,7 +295,7 @@ const fontGreen = {
                 </Card>
             </Col>
 
-            <Col span={6}>
+            <Col {...responsiveProps}>
                 <Card 
                     title={`MTD Daily SAP Production`}
                     size="small"
@@ -306,7 +310,7 @@ const fontGreen = {
 
         <Row gutter={[12,12]}>
 
-            <Col span={6}>
+            <Col {...responsiveProps}>
                 <Card 
                     title="Scrap Details"
                     size="small"
@@ -352,7 +356,7 @@ const fontGreen = {
                 </Card>
             </Col>
 
-            <Col span={6}>
+            <Col {...responsiveProps}>
                 <Card 
                     title="Production Details" 
                     size="small"
@@ -410,7 +414,7 @@ const fontGreen = {
                 </Card>
             </Col>
 
-            <Col span={6}>
+            <Col {...responsiveProps}>
                 <Card 
                     title={getppmhTitle(laborHours)}
                     size="small"
@@ -449,7 +453,7 @@ const fontGreen = {
                 </Card>
             </Col>
 
-            <Col span={6}>
+            <Col {...responsiveProps}>
                 <Card 
                     title="MTD Details"
                     size="small"

@@ -77,7 +77,7 @@ const SafetyPage = ({
                 onCalendarChange={onCalendarChange} />
 
             <Button type="primary" className="ml2">
-                <a href="http://10.129.224.149/FMSB/Safety2/Charts.aspx" target="_blank">View More Charts</a>
+                <a href="http://10.129.224.149/FMSB/Safety2/Charts.aspx" target="_blank" rel="noopener noreferrer">View More Charts</a>
             </Button>
 
             <div className="mt3">

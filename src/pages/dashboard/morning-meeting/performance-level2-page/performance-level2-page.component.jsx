@@ -187,6 +187,11 @@ const PerformanceLevel2Page = ({
         fetch();
     }, []);
 
+    const responsiveProps = {
+        xs: 24,
+        xl: 8
+    }
+
     return (
         <>
             <Header className="pa0 custom-header" >
@@ -242,7 +247,7 @@ const PerformanceLevel2Page = ({
                 <div className="mt3">
                     <Row gutter={[12,12]}>  
 
-                        <Col span={8}>
+                        <Col {...responsiveProps}>
                          
                             <Card 
                                 title={`Lvl 2: Scrap Variance per Dept (${startDate} - ${endDate})`}
@@ -255,7 +260,7 @@ const PerformanceLevel2Page = ({
                             </Card>         
                         </Col>
 
-                        <Col span={8}>
+                        <Col {...responsiveProps}>
                             <Card 
                                 title={`Lvl 2: ${deptTitle} Dept Overtime  percentage (${monthStartFormart} - ${monthEndFormat})`}
                                 size="small"
@@ -266,7 +271,7 @@ const PerformanceLevel2Page = ({
                             </Card>         
                         </Col>
 
-                        <Col span={8}>
+                        <Col {...responsiveProps}>
                             <Card 
                                 title={`Lvl 2: ${deptTitle} Dept Downtime by Owner (${startDate} - ${endDate})`}
                                 size="small"
@@ -279,9 +284,9 @@ const PerformanceLevel2Page = ({
 
                     </Row>
 
-                    <Row gutter={12}>  
+                    <Row gutter={[12,12]}>  
 
-                        <Col span={8}>
+                        <Col {...responsiveProps}>
                             <Card 
                                 title={`Lvl 3: ${deptTitle} Dept Scrap Variance per Shift (${startDate} - ${endDate})`}
                                 size="small"
@@ -293,7 +298,7 @@ const PerformanceLevel2Page = ({
                             </Card>         
                         </Col>
 
-                        <Col span={8}>
+                        <Col {...responsiveProps}>
                             <Card 
                                 title={`Lvl 3: ${deptTitle} Overtime Variance per Shift (${startDate} - ${endDate})`}
                                 size="small"
@@ -304,7 +309,7 @@ const PerformanceLevel2Page = ({
                             </Card>         
                         </Col>
 
-                        <Col span={8}>
+                        <Col {...responsiveProps}>
                             <Card 
                                 title={`Lvl 3: ${deptTitle} Downtime pareto - PLC (${startDate} - ${endDate})`}
                                 size="small"

@@ -57,7 +57,7 @@ const QualityPage = ({
                     defaultValue={moment(endDatePlusOneDay, dateFormat)} />
 
             <Button type="primary" className="ml2">
-                <a href="http://10.129.224.149/FMSB/Quality/Customer/Record.aspx" target="_blank">Enter Data</a>
+                <a href="http://10.129.224.149/FMSB/Quality/Customer/Record.aspx" target="_blank" rel="noopener noreferrer">Enter Data</a>
             </Button>
             
             <div className="mt3">

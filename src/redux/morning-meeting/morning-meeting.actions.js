@@ -15,19 +15,11 @@ import {
     TransformDeptKpiData
 } from '../../helpers/dept-kpi-helper';
 
-const fetchStart = (actionType) => ({
-    type: actionType
-});
-
-const fetchSuccess = (actionType, data) => ({
-    type: actionType,
-    payload: data
-});
-
-const fetchFailure = (actionType, errorMsg) => ({
-    type: actionType,
-    payload: errorMsg
-});
+import {
+    fetchStart,
+    fetchSuccess,
+    fetchFailure
+} from '../../helpers/helpers'
 
 //MONTHLY_INCIDENT_RATE
 

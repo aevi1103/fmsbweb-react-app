@@ -19,10 +19,16 @@ import {
     height: 140px;
     font-size: 2.5rem;
 `
+const responsiveProps = {
+    xs: 24,
+    md: 12,
+    lg:12,
+    xl: 6
+}
 
 const Quality = ({isQualityFetching, qualityCollection}) => (
     <Row gutter={[12,12]}>
-        <Col span={6}>
+        <Col {...responsiveProps}>
             <Card 
                 title="PRR / PIR / QR"
                 size="small"
@@ -38,7 +44,7 @@ const Quality = ({isQualityFetching, qualityCollection}) => (
                     }
             </Card>     
         </Col>
-        <Col span={6}>
+        <Col {...responsiveProps}>
             <Card 
                 title="YTD Open Status MRR"
                 size="small"
@@ -54,7 +60,7 @@ const Quality = ({isQualityFetching, qualityCollection}) => (
                     }
             </Card>     
         </Col>
-        <Col span={6}>
+        <Col {...responsiveProps}>
             <Card 
                 title="MTD Open Status MRR"
                 size="small"
@@ -70,7 +76,7 @@ const Quality = ({isQualityFetching, qualityCollection}) => (
                     }    
             </Card>     
         </Col>
-        <Col span={6}>
+        <Col {...responsiveProps}>
             <Card 
                 title="Last 24 Hours Open MRR"
                 size="small"

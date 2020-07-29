@@ -22,7 +22,7 @@ import { Menu } from "antd";
 const MorningMeetingMenu = ( { location } ) => { 
 
   return (
-      <Menu theme="dark" defaultSelectedKeys={[location.pathname]} mode="inline">
+      <Menu theme="dark" defaultSelectedKeys={[location.pathname]}>
 
           <Menu.Item key="/">
               <HomeOutlined />

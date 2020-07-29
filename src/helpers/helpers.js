@@ -18,3 +18,26 @@ export const fetchFailure = (actionType, errorMsg) => ({
     type: actionType,
     payload: errorMsg
 })
+
+export const setColorCode = (value, target, type) => {
+
+    try {
+        const green = '#3f8600';
+        const red = '#cf1322';
+    
+        if (type === 'scrap') {
+            if (parseFloat(value) < parseFloat(target)) return green //green
+            return red
+        }
+    
+        if (type === 'oae') {
+            if (parseFloat(value) >= parseFloat(target)) return green //green
+            return red
+        }
+    
+        return '';
+    } catch (error) {
+        return '';
+    }
+
+}

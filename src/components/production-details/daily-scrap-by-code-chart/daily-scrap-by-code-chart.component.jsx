@@ -6,12 +6,12 @@ import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
-FusionCharts.options.creditLabel = false;
-ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
-
 import {
     tooltipStyle
 } from '../../../helpers/chart-config'
+
+FusionCharts.options.creditLabel = false;
+ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
 const DailyScrapByCodeChart = ({
     chartData

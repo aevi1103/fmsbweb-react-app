@@ -18,7 +18,7 @@ const { SubMenu } = Menu;
 const HomeMenu = ( { location } ) => { 
 
   return (
-    <Menu theme="dark" defaultSelectedKeys={[location.pathname]} mode="inline">
+    <Menu theme="dark" defaultSelectedKeys={[location.pathname]} >
 
       <Menu.Item key="/">
         <HomeOutlined />
@@ -66,7 +66,6 @@ const HomeMenu = ( { location } ) => {
         <Menu.Item key="incident">Incident Report</Menu.Item>
         <Menu.Item key="history">History</Menu.Item>
         <Menu.Item key="report">Reports</Menu.Item>
-        <Menu.Item key="chart">Charts</Menu.Item>
       </SubMenu>
 
       <SubMenu
@@ -78,12 +77,16 @@ const HomeMenu = ( { location } ) => {
           </span>
         }
       >
-        <Menu.Item key="foundryHourByHour">Hour by Hour</Menu.Item>
-        <Menu.Item key="hxhHistoryFoundry">HxH History</Menu.Item>
+        <Menu.Item key="foundryHourByHour">
+          <a href="http://10.129.224.149/FMSBHXH/HxH/Lines?dept=Foundry&h=1" target="_blank" rel="noopener noreferrer">Hour by Hour</a>
+        </Menu.Item>
+        <Menu.Item key="hxhHistoryFoundry">
+          <a href="http://10.129.224.149/FMSB/hourbyhour/hxh/History.aspx?dept=Foundry" target="_blank" rel="noopener noreferrer">HxH History</a>
+        </Menu.Item>
         <Menu.Item key="furnaceTracker">Furnace Tracker</Menu.Item>
         <Menu.Item key="castingParameter">Casting Parameter</Menu.Item>
         <Menu.Item key="foundryEos">EOS</Menu.Item>
-        <Menu.Item key="foundryEosEmail">EOS Email</Menu.Item>
+        <Menu.Item key="foundryEosEmail">EOS Recipients</Menu.Item>
       </SubMenu>
 
       <SubMenu
@@ -95,12 +98,14 @@ const HomeMenu = ( { location } ) => {
           </span>
         }
       >
-        <Menu.Item key="machHourByHour">Hour by Hour</Menu.Item>
-        <Menu.Item key="hxhHistoryMach">HxH History</Menu.Item>
+        <Menu.Item key="machHourByHour">
+          <a href="http://10.129.224.149/FMSBHXH/HxH/Lines?dept=Machining&h=1" target="_blank" rel="noopener noreferrer">Hour by Hour</a>
+        </Menu.Item>
+        <Menu.Item key="hxhHistoryMach">
+          <a href="http://10.129.224.149/FMSB/hourbyhour/hxh/History.aspx?dept=Machining" target="_blank" rel="noopener noreferrer">HxH History</a>
+        </Menu.Item>
         <Menu.Item key="machEos">EOS</Menu.Item>
-        <Menu.Item key="machEosEmail">EOS Email</Menu.Item>
-        <Menu.Item key="machCheckSheets">Mach. Checksheets</Menu.Item>
-        <Menu.Item key="lta">LTA</Menu.Item>
+        <Menu.Item key="machEosEmail">EOS Recipients</Menu.Item>
       </SubMenu>
 
       <SubMenu
@@ -112,16 +117,25 @@ const HomeMenu = ( { location } ) => {
           </span>
         }
       >
-        <Menu.Item key="afHourByHour">Hour by Hour</Menu.Item>
-
-        <Menu.Item key="hxhHistoryAnod">Anodize HxH History</Menu.Item>
-        <Menu.Item key="hxhHistorySc">SC HxH History</Menu.Item>
-        <Menu.Item key="hxhHistoryAssy">Assembly HxH History</Menu.Item>
-
-        <Menu.Item key="machEos">EOS</Menu.Item>
-        <Menu.Item key="machEosEmail">EOS Email</Menu.Item>
-
-        <Menu.Item key="compTraceability">Component Traceability</Menu.Item>
+        <Menu.Item key="afHourByHour">
+          <a href="http://10.129.224.149/FMSB/AssemblyFinishing/Inputs/Home.aspx" target="_blank" rel="noopener noreferrer">Hour by Hour</a>
+        </Menu.Item>
+        <Menu.Item key="/af/history">
+          <span>HxH History</span>
+          <Link to="/af/history" />
+        </Menu.Item>
+        <Menu.Item key="/af/eos">
+          <span>EOS</span>
+          <Link to="/af/eos" />
+        </Menu.Item>
+        <Menu.Item key="/af/recipients">
+          <span>EOS Recipients</span>
+          <Link to="/af/recipients" />
+        </Menu.Item>
+        <Menu.Item key="/af/traceability">
+          <span>Component Traceability</span>
+          <Link to="/af/traceability" />
+        </Menu.Item>
       </SubMenu>
 
       <SubMenu
@@ -133,9 +147,21 @@ const HomeMenu = ( { location } ) => {
           </span>
         }
       >
-        <Menu.Item key="pm">PM Status</Menu.Item>
-        <Menu.Item key="maintJobs">Maint. Jobs</Menu.Item>
-
+        <Menu.Item key="pm">
+          <a href="http://10.129.224.149/FMSBWEBHR/PreventiveMaintenances/MaintenanceDashboard" target="_blank" rel="noopener noreferrer">PM Status</a>
+        </Menu.Item>
+        <Menu.Item key="maintJobs">
+          <a href="http://10.129.224.149/FMSBWEBHR/MaintenanceAlerts" target="_blank" rel="noopener noreferrer">Job Status</a>
+        </Menu.Item>
+        <Menu.Item key="maintEos">
+          <a href="http://10.129.224.149/FMSBWEBHR/MaintenanceEndOfShift" target="_blank" rel="noopener noreferrer">EOS</a>
+        </Menu.Item>
+        <Menu.Item key="maintPlanner">
+          <a href="http://10.129.224.149/FMSBWEBHR/MaintenancePlanner" target="_blank" rel="noopener noreferrer">Planner Log</a>
+        </Menu.Item>
+        <Menu.Item key="maintPlannedWorkLog">
+          <a href="http://10.129.224.149/FMSBWEBHR/MaintenancePlannedWork" target="_blank" rel="noopener noreferrer">Planned Work Log</a>
+        </Menu.Item>
       </SubMenu>
 
       <SubMenu

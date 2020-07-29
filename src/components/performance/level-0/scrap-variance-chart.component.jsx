@@ -39,7 +39,7 @@ const ScrapVarianceChart = ({
             setCollection(defaultCollection);
         }
         
-    },[scrapVarianceCollection]);
+    },[scrapVarianceCollection, defaultCollection]);
 
     const chartProps = {
         showValues: '1',
