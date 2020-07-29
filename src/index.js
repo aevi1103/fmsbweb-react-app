@@ -6,6 +6,8 @@ import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { store, persistor} from './redux/store';
 
+import AppErrorBoundary from './components/error-boundaries/app-error-boundary.component';
+
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
@@ -19,7 +21,9 @@ ReactDOM.render(
     <BrowserRouter>
         <PersistGate loading={null} persistor={persistor}>
             <Provider store={store}>
-                <App />
+                <AppErrorBoundary>
+                    <App />
+                </AppErrorBoundary>
             </Provider>
         </PersistGate>
     </BrowserRouter>
