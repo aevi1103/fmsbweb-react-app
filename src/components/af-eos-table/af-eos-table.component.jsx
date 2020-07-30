@@ -53,7 +53,7 @@ const EosTable = ({loading, data, summaryData}) => {
             title: 'Shift Date',
             dataIndex: 'shiftDate',
             render: (text, record, index) => {
-                return moment(record.dateScanned).format('l');
+                return moment(record.shiftDate).format('l');
             },
             sorter: (a, b) => new Date(a.shiftDate) - new Date(b.shiftDate),
             sortDirections: ['descend', 'ascend'],
@@ -76,51 +76,6 @@ const EosTable = ({loading, data, summaryData}) => {
             width: 70,
             fixed: 'left',
         },
-        // {
-        //     title: <span className="parent-danger">Targets</span>,
-        //     children: [
-        //         {
-        //             title: 'Target',
-        //             dataIndex: 'target',
-        //             sorter: (a, b) => a.target - b.target,
-        //             render: (text, record, index) => {
-        //                 return numeral(record.target).format('0,0');
-        //             },
-        //             sortDirections: ['descend', 'ascend'],
-        //             width: 70
-        //         },
-        //         {
-        //             title: 'OAE',
-        //             dataIndex: 'oaeTarget',
-        //             render: (text, record, index) => {
-        //                 return numeral(record.oaeTarget).format('0%');  
-        //             },
-        //             sorter: (a, b) => a.oaeTarget - b.oaeTarget,
-        //             sortDirections: ['descend', 'ascend'],
-        //             width: 70
-        //         },
-        //         {
-        //             title: 'A&F Scrap',
-        //             dataIndex: 'afScrapRateTarget',
-        //             render: (text, record, index) => {
-        //                 return numeral(record.afScrapRateTarget).format('0.00%');  
-        //             },
-        //             sorter: (a, b) => a.afScrapRateTarget - b.afScrapRateTarget,
-        //             sortDirections: ['descend', 'ascend'],
-        //             width: 70
-        //         },
-        //         {
-        //             title: 'Overall Scrap',
-        //             dataIndex: 'overallScrapRateTarget',
-        //             render: (text, record, index) => {
-        //                 return numeral(record.overallScrapRateTarget).format('0.00%');  
-        //             },
-        //             sorter: (a, b) => a.overallScrapRateTarget - b.overallScrapRateTarget,
-        //             sortDirections: ['descend', 'ascend'],
-        //             width: 80
-        //         },
-        //     ]
-        // },
         {
             title: <span className="parent-danger">HxH</span>,
             children: [
