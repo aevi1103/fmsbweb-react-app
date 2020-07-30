@@ -41,3 +41,5 @@ export const setColorCode = (value, target, type) => {
     }
 
 }
+
+export const getUrlParameter = (qry) => new URLSearchParams(new URL(window.location.href).search).get(qry);
