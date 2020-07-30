@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import numeral from 'numeral';
 import api from '../../../API'
-
 import SapNetTable from '../../../components/production-details/sap-net-table/sap-net-table.component';
 import DefectSummaryTable from '../../../components/production-details/defect-summary-table/defect-summary-table.component';
 import EosTable from '../../../components/af-eos-table/af-eos-table.component'
@@ -15,6 +14,10 @@ import {
     fetchDeptEosCollectionStartAsync,
     setDeptEosCollection
 } from '../../../redux/af-eos/af-eos.actions'
+
+import {
+    getUrlParameter
+} from '../../../helpers/helpers'
 
 import {
     Layout,
@@ -33,7 +36,7 @@ import {
     Modal,
     Tooltip,
     message,
-    Alert 
+    Alert
 } from "antd";
 
 import {
@@ -73,12 +76,6 @@ const gridLayout = {
     xl: 6
 }
 
-const green = { color: '#3f8600' }
-const red = { color: '#cf1322' }
-const dateFormat = 'MM/DD/YYYY';
-const today = moment();
-const todayStr = today.format(dateFormat);
-
 const EosPage = ({
     fetchDeptLineStartAsync,
     isDeptLinesFetching,
@@ -93,18 +90,30 @@ const EosPage = ({
     setDeptEosCollection
 }) => {
 
+    const green = { color: '#3f8600' }
+    const red = { color: '#cf1322' }
+    const dateFormat = 'MM/DD/YYYY';
+    
+    const deptQry = getUrlParameter('dept');
+    const dateQry = getUrlParameter('date');
+    const shiftQry = getUrlParameter('shift');
+    
+    const defaultDept = getUrlParameter('dept') ? deptQry : "Assembly";
+    const defaultShiftDate = dateQry ? moment(dateQry) : moment();
+    const defaultShiftDateStr = defaultShiftDate.format(dateFormat);
+    const defaultShift = shiftQry ? shiftQry : null;
+
     useEffect(() => {
         fetchDeptLineStartAsync();
         clearDeptEosResult();
         setDeptEosCollection();
+
     }, [])
 
-    const defaultDept = "Assembly";
-
     const [dept, setDept] = useState(defaultDept);
-    const [shiftDate, setShiftDate] = useState(today);
-    const [shiftDateStr, setShiftDateStr] = useState(todayStr)
-    const [shift, setShift] = useState(null);
+    const [shiftDate, setShiftDate] = useState(defaultShiftDate);
+    const [shiftDateStr, setShiftDateStr] = useState(defaultShiftDateStr)
+    const [shift, setShift] = useState(defaultShift);
     const [line, setLine] = useState(null);
     const [machine, setMachine] = useState(null);
     const [title, setTitle] = useState('Production Summary');
@@ -145,6 +154,7 @@ const EosPage = ({
 
         if (dept && shiftDateStr && shift) {
             fetchDeptEosCollectionStartAsync(dept, shiftDateStr, shift);
+
         }
 
     }, [dept, shiftDateStr, shift, fetchDeptEosCollectionStartAsync])
@@ -175,17 +185,23 @@ const EosPage = ({
     }, [deptEosResult, form])
 
     useEffect(() => {
-        const s = shift ? `- Shift: ${shift}` : '';
-        const ttl = `A&F End of Shift Report: ${shiftDateStr} ${s}`;
-        setEosTitle(ttl);
+
+        const url = new URL(window.location.href);
+        const newUrl = `${url.origin + url.pathname}?dept=${dept}&date=${shiftDateStr}&shift=${shift ? shift : ''}`;
+
+        const s = shift ? ` - Shift: ${shift}` : '';
+        const ttl = `${dept} EOS Report : ${shiftDateStr} ${s}`;
+        window.history.pushState('updateUrl', ttl, newUrl);
         document.title = ttl;
+
+        setEosTitle(ttl);
 
         return () => setEosTitle('')
 
-    }, [shiftDateStr, shift]);
+    }, [dept, shiftDateStr, shift]);
 
     useEffect(() => {
-        
+
         setLineData(deptEosCollection?.data ?? []);
         setSummaryData(deptEosCollection?.total)
 
@@ -265,6 +281,9 @@ const EosPage = ({
 
     }
 
+    const onRefresh = () => {
+        fetchDeptEosCollectionStartAsync(dept, shiftDateStr, shift);
+    }
 
     const onDeptChange = (value) => {
         setDept(value);
@@ -435,6 +454,7 @@ const EosPage = ({
                                 <Form.Item
                                     label="Shift"
                                     name="shift"
+                                    initialValue={shift}
                                     rules={[
                                         {
                                             required: true,
@@ -661,12 +681,20 @@ const EosPage = ({
 
                     <Col xs={24} xl={24}>
 
-                        <Card title="Machine Summary" 
-                                extra={<Button htmlType="button" type="primary" loading={sendReportLoading}
-                                            onClick={onSendReport}
-                                            disabled={isDeptEosCollectionFetching} >
-                                            Send Report
-                                        </Button>}>
+                        <Card title="Machine Summary"
+                                extra={<Fragment>
+                                            <Button htmlType="button" type="primary" loading={sendReportLoading} className="mr2"
+                                                onClick={onRefresh}
+                                                disabled={isDeptEosCollectionFetching} >
+                                                Refresh
+                                            </Button>
+                                            <Button htmlType="button" type="primary" loading={sendReportLoading}
+                                                onClick={onSendReport}
+                                                disabled={isDeptEosCollectionFetching} >
+                                                Send Report
+                                            </Button>
+                                        </Fragment>
+                                        }>
                             <EosTable data={lineData}  loading={isDeptEosCollectionFetching} summaryData={summaryData}/>
                         </Card>
 
