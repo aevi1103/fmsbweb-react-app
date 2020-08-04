@@ -16,6 +16,7 @@ import {
     onCalendarChange,
     dateRangeValue = null,
     isRenderButton = true,
+    isLoading = false,
     ...otherState
     }) => {
      
@@ -68,7 +69,7 @@ import {
         {
             isRenderButton 
             ? (<Tooltip placement="top" title={<span>Click to reload dashboard</span>}>
-                    <Button type="primary" onClick={onButtonClick}>Go</Button>
+                    <Button type="primary" onClick={onButtonClick} loading={isLoading}>Go</Button>
                 </Tooltip>)
             : null
         }

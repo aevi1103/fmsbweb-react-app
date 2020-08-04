@@ -27,17 +27,16 @@ import {
     setDetailsEndDate
 } from '../../../../redux/production-details/production-details.actions';
 
+import '../morning-meeting.styles.scss';
+
 import { 
     Layout,
     Button,
     Tooltip,
-    Spin  
+    Spin
  } from "antd";
 
-import '../morning-meeting.styles.scss';
-
 const { Header, Content } = Layout;
-
 const dateFormat = 'MM/DD/YYYY';
 
 const ProductionPage = ({
@@ -158,20 +157,28 @@ const ProductionPage = ({
         </Header>
 
         <Content className="ma3 mt0">
+
             <DateRangePicker 
                 dateRangeValue={{startDate: startDate, endDate: endDate}}
                 onButtonClick={onClick}
-                onCalendarChange={onCalendarChange}  />
+                onCalendarChange={onCalendarChange}
+                isLoading={isProdStatusFetching}  />
             
             <Tooltip placement="top" title={<span>Click to view Productivity Details by Work Center</span>}>
-                <Button type="primary" onClick={onDetailsButtonClick} className="ml2">
-                    <Link to={`${location.pathname}/details`}>Work Center Details</Link>
+                <Button type="primary" onClick={onDetailsButtonClick} className="ml2" loading={isProdStatusFetching}>
+                    <Link className="white" to={`${location.pathname}/details`}>Work Center Details</Link>
                 </Button>
             </Tooltip>
             
             <Tooltip placement="top" title={<span>View active orders by Work Center</span>}>
                 <Button type="primary" className="ml2">
                     <Link to={`/orderstatus/${route}`} target="_blank">View Active Orders</Link>
+                </Button>
+            </Tooltip>
+
+            <Tooltip placement="top" title={<span>View 24 hour Production</span>}>
+                <Button type="primary" className="ml2">
+                    <Link to={`${location.pathname}/hourly-production`}>Hourly Production</Link>
                 </Button>
             </Tooltip>
             

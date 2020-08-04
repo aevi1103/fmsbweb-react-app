@@ -36,7 +36,8 @@ import {
     Modal,
     Tooltip,
     message,
-    Alert
+    Alert,
+    Popconfirm
 } from "antd";
 
 import {
@@ -85,7 +86,7 @@ const EosPage = ({
     isDeptEosFetching,
     deptEosResult,
     clearDeptEosResult,
-    deptEosCollection,
+    deptEosCollectionResult,
     isDeptEosCollectionFetching,
     setDeptEosCollection
 }) => {
@@ -154,7 +155,6 @@ const EosPage = ({
 
         if (dept && shiftDateStr && shift) {
             fetchDeptEosCollectionStartAsync(dept, shiftDateStr, shift);
-
         }
 
     }, [dept, shiftDateStr, shift, fetchDeptEosCollectionStartAsync])
@@ -202,10 +202,10 @@ const EosPage = ({
 
     useEffect(() => {
 
-        setLineData(deptEosCollection?.data ?? []);
-        setSummaryData(deptEosCollection?.total)
+        setLineData(deptEosCollectionResult ? deptEosCollectionResult.data : []);
+        setSummaryData(deptEosCollectionResult ? deptEosCollectionResult.total : null);
 
-    }, [deptEosCollection])
+    }, [deptEosCollectionResult])
 
     const reset = () => {
         setShift(null);
@@ -248,6 +248,8 @@ const EosPage = ({
         })
         .finally(() => setSubmitLoading(false))
     }
+
+    const onPopConfirmSubmit = () => form.submit();
 
     const onDelete = () => {
 
@@ -412,6 +414,16 @@ const EosPage = ({
                                     <Alert message="Please make sure to select the correct shift date and shift." type="info" showIcon />
                                 </Form.Item>
 
+                                {
+                                    deptEosResult
+                                    ? !deptEosResult.hxHUrl 
+                                        ? <Form.Item>
+                                                <Alert message="Warning" description={`No HxH page found ${machine ? ` for line ${machine}, ${shiftDateStr} - ${shift} Shift` : ''}`} type="warning" showIcon />
+                                            </Form.Item>
+                                        : null
+                                    : null
+                                }
+
                                 <Form.Item
                                     label="Department"
                                     name="dept"
@@ -568,15 +580,23 @@ const EosPage = ({
                                                 <Button type="primary" htmlType="submit" disabled={isDeptEosFetching} loading={submitLoading}>Update</Button>
                                                 <Button type="danger" className="ml2" onClick={onDelete} disabled={isDeptEosFetching} loading={deleteLoading}>Delete</Button>
                                             </Fragment>
-                                        : <Button type="primary" htmlType="submit" disabled={isDeptEosFetching} loading={submitLoading}>Create</Button>
+                                        : deptEosResult && deptEosResult.hxHUrl 
+                                            ? <Button type="primary" htmlType="submit" disabled={isDeptEosFetching} loading={submitLoading}>Create</Button>
+                                            : <Popconfirm title="No HxH page found, do you like to continue submitting this report?" onConfirm={onPopConfirmSubmit} okText="Yes" cancelText="No" placement="top" >
+                                                    <Button type="primary" htmlType="submit" disabled={isDeptEosFetching} loading={submitLoading}>Create</Button>
+                                                </Popconfirm>
                                     }
 
-                                    <Button htmlType="button"
-                                        onClick={onReset}
-                                        className="ml2"
-                                        disabled={isDeptEosFetching} >
+                                    <Button htmlType="button" type="primary" onClick={onReset} className="ml2" disabled={isDeptEosFetching} >
                                         Reset
                                     </Button>
+
+                                    <Popconfirm title="Are you sure you want to send A&F EOS report?" onConfirm={onSendReport} okText="Yes" cancelText="No" placement="topRight" >
+                                        <Button className="ml2" htmlType="button" type="primary" loading={sendReportLoading} disabled={isDeptEosCollectionFetching} >
+                                            Send Report
+                                        </Button>
+                                    </Popconfirm>
+
                                 </Form.Item>
 
                             </Form>
@@ -682,19 +702,12 @@ const EosPage = ({
                     <Col xs={24} xl={24}>
 
                         <Card title="Machine Summary"
-                                extra={<Fragment>
-                                            <Button htmlType="button" type="primary" loading={sendReportLoading} className="mr2"
-                                                onClick={onRefresh}
-                                                disabled={isDeptEosCollectionFetching} >
-                                                Refresh
-                                            </Button>
-                                            <Button htmlType="button" type="primary" loading={sendReportLoading}
-                                                onClick={onSendReport}
-                                                disabled={isDeptEosCollectionFetching} >
-                                                Send Report
-                                            </Button>
-                                        </Fragment>
-                                        }>
+                                extra={<Button htmlType="button" type="primary" loading={sendReportLoading} className="mr2"
+                                            onClick={onRefresh}
+                                            disabled={isDeptEosCollectionFetching} >
+                                            Refresh
+                                        </Button>}
+                            >
                             <EosTable data={lineData}  loading={isDeptEosCollectionFetching} summaryData={summaryData}/>
                         </Card>
 
@@ -738,7 +751,7 @@ const mapStateToProps = ({ afEos }) => ({
     deptLinesCollection: afEos.deptLinesCollection,
     isDeptEosFetching: afEos.isDeptEosFetching,
     deptEosResult: afEos.deptEosResult,
-    deptEosCollection: afEos.deptEosCollection,
+    deptEosCollectionResult: afEos.deptEosCollectionResult,
     isDeptEosCollectionFetching: afEos.isDeptEosCollectionFetching
 });
 

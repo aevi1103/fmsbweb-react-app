@@ -10,8 +10,8 @@ const INITIAL_STATE = {
     deptEosErrorMsg: undefined,
 
     isDeptEosCollectionFetching: false,
-    deptEosCollection: [],
-    deptEosCollectionErrorMsg: undefined,
+    deptEosCollectionResult: null,
+    deptEosCollectionResultErrorMsg: undefined,
 
 }
 
@@ -84,15 +84,15 @@ const afEosReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isDeptEosCollectionFetching: false,
-                deptEosCollection: action.payload
+                deptEosCollectionResult: action.payload
             };
 
         case afEosTypes.FETCH_DEPT_EOS_COLLECTION_FAILURE:
             return {
                 ...state,
                 isDeptEosCollectionFetching: false,
-                deptEosCollection: [],
-                deptEosCollectionErrorMsg: action.payload
+                deptEosCollectionResult: null,
+                deptEosCollectionResultErrorMsg: action.payload
             };
 
         default:

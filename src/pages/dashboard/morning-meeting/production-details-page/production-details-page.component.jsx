@@ -32,7 +32,9 @@ const ProductionDetailsPage = ({
         setDetailsStartDate,
         setDetailsEndDate,
         detailsStartDate,
-        detailsEndDate
+        detailsEndDate,
+
+        isProductionDetailsLoading
     }) => {
 
     // const [detailsStartDate, setDetailsStartDate] = useState(startDate);
@@ -83,7 +85,7 @@ const ProductionDetailsPage = ({
         </Header>
 
         <Content className="ma3 mt0">
-            <DateRangePicker defaultValue={previousDay} onButtonClick={onClick} onCalendarChange={onCalendarChange} 
+            <DateRangePicker defaultValue={previousDay} onButtonClick={onClick} onCalendarChange={onCalendarChange} isLoading={isProductionDetailsLoading}
                                 dateRangeValue={{startDate: startDate, endDate: endDate}} />
             
             <div className="mt3">
@@ -103,7 +105,8 @@ const mapStateToProps = ( { productionDetails, morningMeeting } ) => ({
     endDate: morningMeeting.endDate,
 
     detailsStartDate: productionDetails.detailsStartDate,
-    detailsEndDate: productionDetails.detailsEndDate
+    detailsEndDate: productionDetails.detailsEndDate,
+    isProductionDetailsLoading: productionDetails.isProductionDetailsLoading,
 })
 
 

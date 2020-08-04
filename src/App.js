@@ -44,6 +44,9 @@ import PerformanceLevel2Page from './pages/dashboard/morning-meeting/performance
 //A&F Pages
 import AfEosPage from './pages/af/eos-page/eos-page.component';
 
+//hourly prod
+import HourlyProdPage from './pages/dashboard/morning-meeting/hourly-production-page/hourly-production-page.component'
+
 import ProductionPage from './pages/dashboard/morning-meeting/production-page/production-page.component';
 const GetRenderedProdPage = (area, header) => <ProductionPage area={area} headerTitle={header} />
 const RenderedFoundryPage = () => GetRenderedProdPage("foundry cell", "Foundry");
@@ -57,6 +60,8 @@ const RenderedFoundryOrderStatPage = () => GetRenderedOrderPage("foundry cell", 
 const RenderedMachiningOrderStatPage = () => GetRenderedOrderPage("machine line", "Machining Active Orders");
 const RenderedFinishingOrderStatPage = () => GetRenderedOrderPage("finishing", "Finishing Active Orders");
 const RenderedAssemblyOrderStatPage = () => GetRenderedOrderPage("assembly", "Assembly Active Orders");
+
+
 
 const { Footer, Sider } = Layout;
 
@@ -113,14 +118,19 @@ const App = ( { collapsed, setSiderCollapse } ) => {
         {/* Monring Meeting */}
         <Route exact path="/dashboard/morningmeeting/safety" component={SafetyPage} />
         <Route exact path="/dashboard/morningmeeting/logistics" component={LogisticsPage} />
+
         <Route exact path="/dashboard/morningmeeting/foundry" component={RenderedFoundryPage} />
         <Route exact path="/dashboard/morningmeeting/machining" component={RenderedMachiningPage} />
         <Route exact path="/dashboard/morningmeeting/finishing" component={RenderedFinishingPage}/>
         <Route exact path="/dashboard/morningmeeting/assembly" component={RenderedAssemblyPage} />
+
         <Route exact path="/dashboard/morningmeeting/finance" component={FinancePage} />
         <Route exact path="/dashboard/morningmeeting/quality" component={QualityPage} />
         <Route exact path="/dashboard/morningmeeting/downtime" component={DowntimePage} />
         <Route exact path="/dashboard/*/details" component={ProductionDetailsPage} />
+
+        {/* Hourly Prod Page */}
+        <Route exact path="/dashboard/*/hourly-production" component={HourlyProdPage} />
 
         {/* Order Status */}
         <Route exact path="/orderstatus/foundry" component={RenderedFoundryOrderStatPage} />

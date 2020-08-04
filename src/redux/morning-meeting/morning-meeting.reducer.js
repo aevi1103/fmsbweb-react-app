@@ -111,6 +111,10 @@ const INITIAL_STATE = {
     deptKpiCollection: null,
     deptKpiErrorMessage: undefined,
 
+    isHourlyProdFetching: false,
+    hourlyProdCollection: null,
+    hourlyProdErrorMsg: undefined,
+
     startDate: previousDayFormatted,
     endDate: previousDayFormatted,
 
@@ -118,7 +122,8 @@ const INITIAL_STATE = {
     downtimeByLineCollection: [],
 
     performaceSelectedDepartment: 'Foundry Cell',
-    ppmhChartType: 'ppmhByShift'
+    ppmhChartType: 'ppmhByShift',
+    
 };
 
 const morningMeetingReducer = (state = INITIAL_STATE, action) => {
@@ -820,6 +825,31 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 ppmhChartType: action.payload
+            };
+
+        //hourly prod
+        case morningMeetingTypes.FETCH_HOURLY_PROD_START:
+
+            return {
+                ...state,
+                isHourlyProdFetching: true
+            };
+
+        case morningMeetingTypes.FETCH_HOURLY_PROD_SUCCESS:
+
+            return {
+                ...state,
+                isHourlyProdFetching: false,
+                hourlyProdCollection: action.payload
+            };
+
+        case morningMeetingTypes.FETCH_HOURLY_PROD_FAILURE:
+
+            return {
+                ...state,
+                isHourlyProdFetching: false,
+                hourlyProdCollection: null,
+                hourlyProdErrorMsg: action.payload
             };
     
         default:

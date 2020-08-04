@@ -207,6 +207,16 @@ const EosTable = ({loading, data, summaryData}) => {
             sortDirections: ['descend', 'ascend'],
             width: 70
         },
+        {
+            title: 'Time Stamp',
+            dataIndex: 'timeStamp',
+            render: (text, record, index) => {
+                return moment(record.timeStamp).format('MM/DD/YYYY hh:mm A')
+            },
+            sorter: (a, b) => new Date(a.timeStamp) - new Date(b.timeStamp),
+            sortDirections: ['descend', 'ascend'],
+            width: 160
+        },
       ];
       
       const dataSource = data.map((data, i) => ({key: i, ...data}))
@@ -279,9 +289,10 @@ const EosTable = ({loading, data, summaryData}) => {
                     <Table.Summary.Cell>
                         <Text strong>{numeral(manning).format('0,0')}</Text>
                     </Table.Summary.Cell>
-                    <Table.Summary.Cell>
+                    <Table.Summary.Cell >
                         <Text strong>{numeral(ppmh).format('0,0')}</Text>
                     </Table.Summary.Cell>
+                    <Table.Summary.Cell ></Table.Summary.Cell>
 
                 </Table.Summary.Row>
             </React.Fragment>
