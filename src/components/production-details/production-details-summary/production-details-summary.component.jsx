@@ -25,32 +25,13 @@ const formatScrap = (data, scrap) => {
         }
         
     }
+
     return formatScrapText(rate, qty)    
 }
 
 const formatNetOae = (net, oae) => `${numeral(oae).format('0%')} (${numeral(net).format('0,0')})`;
-
-const getStatusState = (value, target) => {
-
-    if (value <= target) {
-        return {
-            color: '#FF4136' //red
-        }
-    } else {
-        return {
-            color: '#19A974' //green
-        }
-    }
-}
-
-const getPrefix = (value, target) => {
-
-    if (value <= target) {
-        return <ArrowDownOutlined />
-    } else {
-        return <ArrowUpOutlined />
-    }
-}
+const getStatusState = (value, target) => (value <= target) ? { color: '#FF4136' } : { color: '#19A974' } 
+const getPrefix = (value, target) => (value <= target) ? <ArrowDownOutlined /> : <ArrowUpOutlined />
 
 const ProductionDetailsSummary = ({ data }) => (
 
@@ -68,17 +49,8 @@ const ProductionDetailsSummary = ({ data }) => (
         </Col>
 
         <Col span={3}>
-            <Statistic title="Total SB Scrap" value={formatScrapText(
-                                                        data.totalSbScrapRate,
-                                                        data.totalSbScrap)} />
+            <Statistic title="Total SB Scrap" value={formatScrapText(data.totalSbScrapRate, data.totalSbScrap)} />
         </Col>
-
-        {/* <Col span={3}>
-            <Statistic title="Total Purchased Scrap" 
-            value={formatScrapText(
-                data.totalPurchaseScrapRate,
-                data.totalPurchaseScrap)} />
-        </Col> */}
 
         <Col span={3}>
             <Statistic title="Total FS" value={formatScrap(data, 'Foundry')} />

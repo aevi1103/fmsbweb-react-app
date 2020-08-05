@@ -832,7 +832,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
 
             return {
                 ...state,
-                isHourlyProdFetching: true
+                isHourlyProdFetching: true,
             };
 
         case morningMeetingTypes.FETCH_HOURLY_PROD_SUCCESS:

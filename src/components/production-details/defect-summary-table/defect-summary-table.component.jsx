@@ -9,7 +9,8 @@ import {
     Button,
     Row,
     Col,
-    Card
+    Card,
+    Typography
  } from "antd";
 
  import ScrapLink  from '../../scrap-link/scrap-link.component'
@@ -20,9 +21,9 @@ import {
 
  import DailyScrapByCodeChart from '../daily-scrap-by-code-chart/daily-scrap-by-code-chart.component'
 
- const cardHeightStyle = {
-    height: "300px"
- }
+ const cardHeightStyle = { height: "300px" }
+ const { Text } = Typography;
+
 const DefectSummaryTable = ({
     isProductionDetailsLoading,
     scrapData,
@@ -118,8 +119,25 @@ const DefectSummaryTable = ({
         // console.log('params', pagination, filters, sorter, extra);
       }
 
+      const summary = pageData => {
+
+        const totalQty = pageData.reduce((prev, { qty }) => prev + qty, 0);
+
+        return (
+            <Table.Summary.Row style={{ backgroundColor: '#fafafa'}}>
+                <Table.Summary.Cell colSpan="4">
+                    <Text strong>Total</Text>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell>
+                    <Text>{numeral(totalQty).format('0,0')}</Text>
+                </Table.Summary.Cell>
+            </Table.Summary.Row>
+        )
+
+      }
+
     return (
-        <>
+        <React.Fragment>
             <Table 
                 loading={isProductionDetailsLoading}
                 columns={columns}
@@ -127,7 +145,8 @@ const DefectSummaryTable = ({
                 onChange={onChange}
                 size="middle"
                 bordered={true}
-                pagination={false} />   
+                pagination={false}
+                summary={summary} />   
                 
                 <Modal
                     title={modalTitle}
@@ -169,9 +188,7 @@ const DefectSummaryTable = ({
                             </Row>
                         }
                 </Modal>
-
-        </>
-        
+        </React.Fragment>
     )
 }
 

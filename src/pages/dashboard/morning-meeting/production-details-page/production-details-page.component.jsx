@@ -79,7 +79,7 @@ const ProductionDetailsPage = ({
     }, [])
 
     return (
-    <>
+    <React.Fragment>
         <Header className="pa0 custom-header" >
             <h2 className="ml3">{`${title ? title.headerTitle : ''} Details: ${detailsStartDate} - ${detailsEndDate}`}</h2>
         </Header>
@@ -93,7 +93,7 @@ const ProductionDetailsPage = ({
             </div>
 
         </Content>  
-    </>
+    </React.Fragment>
     )
 };
 

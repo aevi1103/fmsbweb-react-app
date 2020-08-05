@@ -23,8 +23,9 @@ const ProductionDetails = ({productionDetailsCollection, isProductionDetailsLoad
                 loading={isProductionDetailsLoading}
                 >       
                 {
-                    !productionDetailsCollection ? "" : <ProductionDetailsSummary data={productionDetailsCollection} 
-                                                        area={productionDetailsCollection.area} />
+                    !productionDetailsCollection 
+                        ? "" 
+                        : <ProductionDetailsSummary data={productionDetailsCollection} />
                 }
             </Card>     
         </Col>
@@ -33,9 +34,8 @@ const ProductionDetails = ({productionDetailsCollection, isProductionDetailsLoad
             <Card 
                 title="Summary by Line"
                 bordered={false} size="small"
-                className="ba b--black-10"
-                >       
-                <SummaryByLineTable/>          
+                className="ba b--black-10">       
+                    <SummaryByLineTable/>          
             </Card>     
         </Col>
         <Col span={24}>
@@ -43,9 +43,8 @@ const ProductionDetails = ({productionDetailsCollection, isProductionDetailsLoad
                 title="Summary by Program"
                 bordered={false} 
                 size="small"
-                className="ba b--black-10"
-                >
-                <SummaryByProgramTable/>
+                className="ba b--black-10">
+                    <SummaryByProgramTable/>
             </Card>
         </Col>
         <Col span={24}>
@@ -54,10 +53,10 @@ const ProductionDetails = ({productionDetailsCollection, isProductionDetailsLoad
                 bordered={false}
                 size="small"
                 className="ba b--black-10">
-                <DefectSummaryTable 
-                    scrapData={(!productionDetailsCollection 
-                                ? [] 
-                                : productionDetailsCollection.sbScrapDetails )} />
+                    <DefectSummaryTable 
+                        scrapData={(!productionDetailsCollection 
+                                    ? [] 
+                                    : productionDetailsCollection.sbScrapDetails )} />
             </Card>
         </Col>
         <Col span={24}>
@@ -66,10 +65,10 @@ const ProductionDetails = ({productionDetailsCollection, isProductionDetailsLoad
                 bordered={false}
                 size="small"
                 className="ba b--black-10">
-                <DefectSummaryTable 
-                    scrapData={(!productionDetailsCollection 
-                                ? [] 
-                                : productionDetailsCollection.purchaseScrapDetails )} />
+                    <DefectSummaryTable 
+                        scrapData={(!productionDetailsCollection 
+                                    ? [] 
+                                    : productionDetailsCollection.purchaseScrapDetails )} />
             </Card>
         </Col>
     </Row>

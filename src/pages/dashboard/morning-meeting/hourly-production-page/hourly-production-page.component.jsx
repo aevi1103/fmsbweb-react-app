@@ -60,6 +60,7 @@ const HourlyProductionPage = ({
                     onChange={onDateChange}
                     format={dateFormat}
                     value={date}
+                    disabledDate={current => current && current > moment().endOf('day')}
                     style={{
                         width: '150px',
                     }} />

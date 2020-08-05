@@ -11,6 +11,7 @@ import {
 import ScrapLink  from '../../scrap-link/scrap-link.component'
 import DefectSummaryTable from '../defect-summary-table/defect-summary-table.component'
 import SapNetTable from '../sap-net-table/sap-net-table.component'
+import ProductionDetailsTableFooter from '../production-details-table-footer.component'
 
 import '../production-details.styles.scss'
 
@@ -208,7 +209,7 @@ const SummaryByProgramTable = ({isProductionDetailsLoading, productionDetailsCol
                     render: (text, record, index) => {
                         const net =  numeral(record.sapNet).format('0,0');
                         return <Tooltip placement="top" title="Click to see sap production details">
-                                    <Button type="link" onClick={() => onSapNetModalShow(record.sapNetDetails, record)}>
+                                    <Button className="pl0" type="link" onClick={() => onSapNetModalShow(record.sapNetDetails, record)}>
                                         <span>{net}</span>        
                                     </Button>
                                 </Tooltip>
@@ -303,7 +304,8 @@ const SummaryByProgramTable = ({isProductionDetailsLoading, productionDetailsCol
                 onChange={onChange}
                 size="middle"
                 bordered={true}
-                pagination={false} />     
+                pagination={false}
+                summary={() => <ProductionDetailsTableFooter data={productionDetailsCollection} />} />     
 
             <Modal
                 title={modalTitle}

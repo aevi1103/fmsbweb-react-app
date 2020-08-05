@@ -71,7 +71,7 @@ const afEosReducer = (state = INITIAL_STATE, action) => {
         case afEosTypes.SET_DEPT_EOS_COLLECTION:
             return {
                 ...state,
-                deptEosCollection: action.payload
+                deptEosCollectionResult: action.payload
             };
 
         case afEosTypes.FETCH_DEPT_EOS_COLLECTION_START:

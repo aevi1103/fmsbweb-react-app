@@ -12,6 +12,7 @@ import {
 import ScrapLink  from '../../scrap-link/scrap-link.component'
 import DefectSummaryTable from '../defect-summary-table/defect-summary-table.component'
 import SapNetTable from '../sap-net-table/sap-net-table.component'
+import ProductionDetailsTableFooter from '../production-details-table-footer.component'
 
 import '../production-details.styles.scss'
 
@@ -63,7 +64,6 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
     const [modalVisible, setModalVisible] = useState(false);
     const [scrapDetails, setScrapDetails] = useState([]);
     const [modalTitle, setModalTitle] = useState("Scrap Details");
-
     const [sapNetModalVisible, setSapNetModalVisible] = useState(false);
     const [sapNetModalTitle, setSapNetModalTitle] = useState("SAP Production Details");
     const [sapNetData, setSapNetData] = useState([]);
@@ -256,7 +256,7 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
                     render: (text, record, index) => {
                         const net =  numeral(record.sapNet).format('0,0');
                         return <Tooltip placement="top" title="Click to see sap production details">
-                                    <Button type="link" onClick={() => onSapNetModalShow(record.sapNetDetails, record)}>
+                                    <Button className="pl0" type="link" onClick={() => onSapNetModalShow(record.sapNetDetails, record)}>
                                         <span>{net}</span>        
                                     </Button>
                                 </Tooltip>
@@ -271,7 +271,7 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
                     render: (text, record, index) => {
 
                         const { oaeTarget, sapOae } = record;
-                        const format = '0.0%';
+                        const format = '0%';
                         if (sapOae >= oaeTarget) {
                             return <span className="green">{numeral(sapOae).format(format)}</span>;
                         } else {
@@ -302,7 +302,7 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
                     render: (text, record, index) => {
 
                         const { oaeTarget, hxHOae } = record;
-                        const format = '0.0%';
+                        const format = '0%';
                         if (hxHOae >= oaeTarget) {
                             return <span className="green">{numeral(hxHOae).format(format)}</span>;
                         } else {
@@ -315,24 +315,6 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
                 },
             ]
         },
-        // {
-        //     title: 'Component Scrap %',
-        //     dataIndex: 'componentScrap',
-        //     render: (text, record, index) => {
-        //         return <span>{numeral(record.componentScrapRate).format('0.0%')} ({record.componentScrap})</span>
-        //     },
-        //     sorter: (a, b) => a.componentScrapRate - b.componentScrapRate,
-        //     sortDirections: ['descend', 'ascend'],
-        // },
-        // {
-        //     title: 'Downtime %',
-        //     dataIndex: 'downtime',
-        //     render: (text, record, index) => {
-        //         return numeral(record.downtimeRate).format('0.0%');
-        //     },
-        //     sorter: (a, b) => a.downtimeRate - b.downtimeRate,
-        //     sortDirections: ['descend', 'ascend'],
-        // }    
       ];
       
       const data = !productionDetailsCollection 
@@ -378,7 +360,7 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
       }, [])
 
     return (
-        <>
+        <React.Fragment>
             <Table 
                 loading={isProductionDetailsLoading}
                 columns={columns}
@@ -386,7 +368,8 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
                 onChange={onChange}
                 size="middle"
                 bordered={true}
-                pagination={false} />     
+                pagination={false}
+                summary={() => <ProductionDetailsTableFooter data={productionDetailsCollection} type="line" />} />     
 
             <Modal
                 title={modalTitle}
@@ -413,8 +396,8 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
                   ]}>
                   <SapNetTable sapNetData={sapNetData}/>
             </Modal>
-        </>
-        
+
+        </React.Fragment>
     )
 }
 
