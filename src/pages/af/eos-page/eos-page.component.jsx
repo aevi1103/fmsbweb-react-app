@@ -105,6 +105,7 @@ const EosPage = ({
     const defaultShift = shiftQry ? shiftQry : null;
 
     useEffect(() => {
+
         fetchDeptLineStartAsync();
         clearDeptEosResult();
         setDeptEosCollection();
@@ -132,6 +133,8 @@ const EosPage = ({
 
     const [lineData, setLineData] = useState([]);
     const [summaryData, setSummaryData] = useState(null);
+
+    const [sendErrorMsg, setSendErrorMsg] = useState(null);
 
     useEffect(() => {
 
@@ -271,13 +274,14 @@ const EosPage = ({
 
     const onSendReport = () => {
 
-        setSendReportLoading(true)
+        setSendReportLoading(true);
+        setSendErrorMsg(null);
 
         api.get(`kpi/eosemail?dept=${dept}&shiftDate=${shiftDateStr}&shift=${shift}`)
         .then(response => message.success('EOS Report Sent!'))
         .catch(error => {
             const { response: { data } } = error;
-            message.error(data);
+            setSendErrorMsg(data);
         })
         .finally(() => setSendReportLoading(false));
 
@@ -394,6 +398,8 @@ const EosPage = ({
         </Fragment>
     )
 
+    const disabledDate = current => current && current > moment().endOf('day');
+
     return (
         <>
             <Header className="pa0 custom-header" >
@@ -410,17 +416,32 @@ const EosPage = ({
 
                             <Form {...formLayout} onFinish={onFinish} form={form}>
 
-                                <Form.Item>
-                                    <Alert message="Please make sure to select the correct shift date and shift." type="info" showIcon />
-                                </Form.Item>
+                                <Alert message="Please make sure to select the correct shift date and shift." type="info" showIcon className="mb3" />
 
                                 {
                                     deptEosResult
                                     ? !deptEosResult.hxHUrl 
-                                        ? <Form.Item>
-                                                <Alert message="Warning" description={`No HxH page found ${machine ? ` for line ${machine}, ${shiftDateStr} - ${shift} Shift` : ''}`} type="warning" showIcon />
-                                            </Form.Item>
+                                        ? <Alert 
+                                            message="Warning" 
+                                            description={`No HxH page found ${machine ? ` for line ${machine}, ${shiftDateStr} - ${shift} Shift` : ''}`} 
+                                            type="warning" 
+                                            className="mb3"
+                                            showIcon />
                                         : null
+                                    : null
+                                }
+
+                                {
+                                    sendErrorMsg 
+                                    ? 
+                                        <Alert
+                                            message="Error"
+                                            description={sendErrorMsg}
+                                            type="error"
+                                            closable
+                                            showIcon
+                                            className="mb3"
+                                        />
                                     : null
                                 }
 
@@ -456,6 +477,7 @@ const EosPage = ({
 
                                     <DatePicker
                                         onChange={onDatePickerChange}
+                                        disabledDate={disabledDate}
                                         format={dateFormat}
                                         style={{
                                             width: '100%',
@@ -760,7 +782,7 @@ const mapDispatchToProps = dispatch => ({
     fetchDeptEosStartAsync: (line, dept, shiftDate, shift) => dispatch(fetchDeptEosStartAsync(line, dept, shiftDate, shift)),
     fetchDeptEosCollectionStartAsync: (dept, shiftDate, shift) => dispatch(fetchDeptEosCollectionStartAsync(dept, shiftDate, shift)),
     clearDeptEosResult: () => dispatch(clearDeptEosResult()),
-    setDeptEosCollection: () => dispatch(setDeptEosCollection([]))
+    setDeptEosCollection: () => dispatch(setDeptEosCollection(null))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(EosPage);
