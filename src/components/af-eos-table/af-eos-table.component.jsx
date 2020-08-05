@@ -246,56 +246,52 @@ const EosTable = ({loading, data, summaryData}) => {
         } = summaryData;
 
         return (
-            <React.Fragment>
-                <Table.Summary.Row style={{
-                    backgroundColor: '#fafafa'
-                }} >
-                    <Table.Summary.Cell colSpan="4">
-                        <Text strong>Total</Text>
-                    </Table.Summary.Cell>
+            <Table.Summary.Row style={{ backgroundColor: '#fafafa'}} >
+                <Table.Summary.Cell colSpan="4">
+                    <Text strong>Total</Text>
+                </Table.Summary.Cell>
 
-                    <Table.Summary.Cell>
-                        <Text strong>{numeral(hxHGross).format('0,0')}</Text>
-                    </Table.Summary.Cell>
-                    <Table.Summary.Cell>
-                        <Text strong>{numeral(hxHNet).format('0,0')}</Text>
-                    </Table.Summary.Cell>
-                    <Table.Summary.Cell>
-                        <Text strong>{renderOae(hxHOae, oaeTarget)}</Text>
-                    </Table.Summary.Cell>
+                <Table.Summary.Cell>
+                    <Text strong>{numeral(hxHGross).format('0,0')}</Text>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell>
+                    <Text strong>{numeral(hxHNet).format('0,0')}</Text>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell>
+                    <Text strong>{renderOae(hxHOae, oaeTarget)}</Text>
+                </Table.Summary.Cell>
 
-                    <Table.Summary.Cell>
-                        <Text strong>{numeral(sapNet).format('0,0')}</Text>
-                    </Table.Summary.Cell>
-                    <Table.Summary.Cell>
-                        <Text strong>{renderOae(sapOae, oaeTarget)}</Text>
-                    </Table.Summary.Cell>
+                <Table.Summary.Cell>
+                    <Text strong>{numeral(sapNet).format('0,0')}</Text>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell>
+                    <Text strong>{renderOae(sapOae, oaeTarget)}</Text>
+                </Table.Summary.Cell>
 
-                    <Table.Summary.Cell>
-                        <Text strong>{renderScrap(totalSbScrap, totalSbScrapRate)}</Text>
-                    </Table.Summary.Cell>
-                    <Table.Summary.Cell>
-                        <Text strong>{renderScrap(totalPurchaseScrap, totalPurchaseScrapRate)}</Text>
-                    </Table.Summary.Cell>
-                    <Table.Summary.Cell>
-                        <Text strong>{renderScrap(totalAfScrap, totalAfScrapRate)}</Text>
-                    </Table.Summary.Cell>
-                    <Table.Summary.Cell>
-                        <Text strong>{renderScrap(totalScrap, totalScrapRate)}</Text>
-                    </Table.Summary.Cell>
+                <Table.Summary.Cell>
+                    <Text strong>{renderScrap(totalSbScrap, totalSbScrapRate)}</Text>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell>
+                    <Text strong>{renderScrap(totalPurchaseScrap, totalPurchaseScrapRate)}</Text>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell>
+                    <Text strong>{renderScrap(totalAfScrap, totalAfScrapRate)}</Text>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell>
+                    <Text strong>{renderScrap(totalScrap, totalScrapRate)}</Text>
+                </Table.Summary.Cell>
 
-                    <Table.Summary.Cell colSpan="2"></Table.Summary.Cell>
-                    
-                    <Table.Summary.Cell>
-                        <Text strong>{numeral(manning).format('0,0')}</Text>
-                    </Table.Summary.Cell>
-                    <Table.Summary.Cell >
-                        <Text strong>{numeral(ppmh).format('0,0')}</Text>
-                    </Table.Summary.Cell>
-                    <Table.Summary.Cell ></Table.Summary.Cell>
+                <Table.Summary.Cell colSpan="2"></Table.Summary.Cell>
+                
+                <Table.Summary.Cell>
+                    <Text strong>{numeral(manning).format('0,0')}</Text>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell >
+                    <Text strong>{numeral(ppmh).format('0,0')}</Text>
+                </Table.Summary.Cell>
+                <Table.Summary.Cell ></Table.Summary.Cell>
 
-                </Table.Summary.Row>
-            </React.Fragment>
+            </Table.Summary.Row>
         )
 
       }
