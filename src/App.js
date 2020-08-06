@@ -100,7 +100,7 @@ const App = ( { collapsed, setSiderCollapse } ) => {
         <Route exact path="/" component={HomeMenu} />
         <Route path="/dashboard/morningmeeting" component={MorningMeetingMenu} />
         <Route exact path="/dashboard/swot" component={HomeMenu} />
-        <Route path="/orderstatus" component={OrderStatusMenu} />
+        <Route path="/orderstatus" component={MorningMeetingMenu} />
         <Route path="/af" component={AfMenu} />
       </Switch>
 
