@@ -58,7 +58,6 @@ const DepartmentSubMenu = ({dept, icon, ...other}) => {
                 }}/>
             </Menu.Item>
         </Menu.SubMenu>
-
         )
 }
 

@@ -47,7 +47,11 @@ const ProductionDetailsPage = ({
     const defaultShift = shiftQry ? shiftQry : '';
 
     const dept = department ? department : (new URL(window.location.href)).pathname.split('/')[3];
-    const fetchData = (start = detailsStartDate, end = detailsEndDate, shift = defaultShift) => fetchProductionDetailsStartAsync(start, end, dept, shift);
+
+    const [startFormat, setStartFormat] = useState(defaultStartDate);
+    const [endFormat, setSendFormat] = useState(defaultEndDate);
+    const [shift, setShift] = useState(defaultShift);
+    const [headerTitle, setHeaderTitle] = useState(`${dept} Details: ${defaultStartDate} - ${defaultEndDate} Shift: ${defaultShift || 'All'}`);
 
     const updateUrl = (start, end, shift = 'All') => {
         const qry = { start, end, shift }
@@ -57,20 +61,15 @@ const ProductionDetailsPage = ({
 
     useEffect(() => {
         document.title = `Morning Meeting Details`;
-        fetchData();
-        updateUrl(defaultStartDate, defaultEndDate, defaultShift);
+        fetchProductionDetailsStartAsync(startFormat, endFormat, dept, shift);
+        updateUrl(startFormat, endFormat, shift);
         setHeaderTitle(`${dept} Details: ${startFormat} - ${endFormat} Shift: ${shift || 'All'}`);
     }, [dept])
         
-    const [startFormat, setStartFormat] = useState(defaultStartDate);
-    const [endFormat, setSendFormat] = useState(defaultEndDate);
-    const [shift, setShift] = useState(defaultShift);
-    const [headerTitle, setHeaderTitle] = useState(`${dept} Details: ${defaultStartDate} - ${defaultEndDate} Shift: ${defaultShift || 'All'}`);
-
     const onClick = () => {
         setDetailsStartDate(startFormat);
         setDetailsEndDate(endFormat);  
-        fetchData(startFormat, endFormat, shift);
+        fetchProductionDetailsStartAsync(startFormat, endFormat, dept, shift);
         updateUrl(startFormat, endFormat, shift);
     }
 

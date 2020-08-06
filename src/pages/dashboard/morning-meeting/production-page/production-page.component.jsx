@@ -77,7 +77,7 @@ const ProductionPage = ({
     const weeklyLaborHrsKpiTokenSrc = axios.CancelToken.source();
     const prodScrapLaborHrsKpiTokenSrc = axios.CancelToken.source();
 
-    const fetchData = (start = defaultStartDate, end = defaultEndDate) => {
+    const fetchData = (start = startFormat, end = endFormat) => {
 
         setProductionData(start,end,area, prodTokenSrc);
 
@@ -157,13 +157,13 @@ const ProductionPage = ({
     return (
     <React.Fragment>
         <Header className="pa0 custom-header" >
-            <h2 className="ml3">{headerTitle}: {startDate} - {endDate}</h2>
+            <h2 className="ml3">{headerTitle}: {startFormat} - {endFormat}</h2>
         </Header>
 
         <Content className="ma3 mt0">
 
             <DateRangePicker 
-                dateRangeValue={{startDate: startDate, endDate: endDate}}
+                dateRangeValue={{startDate: startFormat, endDate: endFormat}}
                 onButtonClick={onClick}
                 onCalendarChange={onCalendarChange}
                 isLoading={isProdStatusFetching}  />
