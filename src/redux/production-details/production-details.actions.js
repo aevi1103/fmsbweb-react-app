@@ -35,14 +35,29 @@ const fetchFailure = (actionType, errorMsg) => ({
     payload: errorMsg
 })
 
-export const fetchProductionDetailsStartAsync = (start, end, area) => {
+export const fetchProductionDetailsStartAsync = (start, end, dept, shift = '') => {
+
+    let area = dept;
+    switch (dept) {
+        case 'machining':
+            area = 'machine line';
+            break;
+        case 'foundry':
+            area = 'foundry cell';
+            break;
+        case 'finishing':
+            area = 'skirt coat';
+            break;
+        default:
+            break;
+    }
 
     return dispatch => {
 
         dispatch(fetchStart(
             productionDetailsType.FETCH_PRODUCTION_DETAILS_START))
 
-        api.get(`sap/departmentdetails?start=${start}&end=${end}&area=${area}`)
+        api.get(`sap/departmentdetails?start=${start}&end=${end}&area=${area}&shift=${shift}`)
         .then(response => {
 
             dispatch(fetchSuccess(
