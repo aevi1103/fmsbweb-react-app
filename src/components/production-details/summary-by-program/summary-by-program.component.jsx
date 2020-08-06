@@ -13,8 +13,6 @@ import DefectSummaryTable from '../defect-summary-table/defect-summary-table.com
 import SapNetTable from '../sap-net-table/sap-net-table.component'
 import ProductionDetailsTableFooter from '../production-details-table-footer.component'
 
-import '../production-details.styles.scss'
-
 const getScrapRate = (data, scrapArea, onClick) => {
     const scrap = data.sbScrapAreaDetails.find(({scrapAreaName}) => scrapAreaName === scrapArea);
     const qty = scrap ? scrap.qty : 0;
@@ -114,7 +112,7 @@ const SummaryByProgramTable = ({isProductionDetailsLoading, productionDetailsCol
             sortDirections: ['descend', 'ascend'],
         },
         {
-            title: <span className="parent-danger">Total Scrap</span>,
+            title: <span>Total Scrap</span>,
             children: [
                 {
                     title: 'South Bend',
@@ -141,7 +139,7 @@ const SummaryByProgramTable = ({isProductionDetailsLoading, productionDetailsCol
             ]
         },
         {
-            title: <span className="parent-danger">South Bend Scrap</span>,
+            title: <span>South Bend Scrap</span>,
             children: [
                 {
                     title: 'FS',
@@ -201,7 +199,7 @@ const SummaryByProgramTable = ({isProductionDetailsLoading, productionDetailsCol
             ]
         },
         {
-            title: <span className="parent-success">SAP Production</span>,
+            title: <span>SAP Production</span>,
             children: [
                 {
                     title: 'Net',
@@ -230,7 +228,7 @@ const SummaryByProgramTable = ({isProductionDetailsLoading, productionDetailsCol
             ]
         },
         {
-            title: <span className="parent-warning">HxH Production</span>,
+            title: <span>HxH Production</span>,
             children: [
                 {
                     title: 'Net',

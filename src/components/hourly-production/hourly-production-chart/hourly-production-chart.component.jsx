@@ -1,11 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import moment from 'moment'
 import numeral from 'numeral'
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.powercharts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
-
 import { tooltipStyle } from '../../../helpers/chart-config'
 
 // Resolves charts dependancy
@@ -21,7 +20,7 @@ const HourlyProductionChart = ({
     const { rows, columns, dataSet } = data;
 
     const mappedRows = rows.map(({machineId, line}) => ({
-        id: machineId.toString(),
+        id: line,
         label: line
     }));
 
@@ -48,7 +47,8 @@ const HourlyProductionChart = ({
         totalScrapDefects
     }) => {
 
-        const { netRate, oaeTarget } = swotTarget;
+        const { oaeTarget } = swotTarget;
+        const targetNetRate = target * oaeTarget;
         const oae = target === 0 ? 0 : net / target;
         const defects = totalScrapDefects.map(({ scrapAreaName, scrapDesc , qty }) => `<li><b>${scrapDesc}:</b> ${numeral(qty).format('0,0')} (${scrapAreaName})</li>`).join('');
 
@@ -56,7 +56,7 @@ const HourlyProductionChart = ({
             <b>${moment(shiftDate).format('MM/DD/YYYY')} - Shift ${shift} - Hr ${hour}</b> <br>
             <b>Line:</b> ${line} <br><br>
 
-            <b>Target:</b> ${numeral(netRate).format('0,0')} / ${numeral(oaeTarget).format('0%')} <br>
+            <b>Target:</b> ${numeral(targetNetRate).format('0,0')} / ${numeral(oaeTarget).format('0%')} <br>
             <b>Net:</b> ${numeral(net).format('0,0')} / ${numeral(oae).format('0%')} <br>
             <b>SOL Scrap:</b> ${numeral(sol).format('0,0')} <br>
             <b>EOL Scrap:</b> ${numeral(eol).format('0,0')} <br>
@@ -65,17 +65,21 @@ const HourlyProductionChart = ({
             <b>Defects:</b>
             <ol>${defects}</ol> 
 
-            ${department === 'Foundry' ? '<span>*Combined production for Cell A and Cell B</span><br>' : ''}
             <span>*Click to view Hxh Page</span>
             `
     }
 
+    const setColor = (target, oaeTarget, net) => {
+        // if(target === 0) return '#a4a4a5';
+        return net < (target * oaeTarget) ? '#FF4136' : '#28A745'
+    }
+
     const mappedDataSet = dataSet.map(d => ({
         columnid: `${moment(d.shiftDate).format('X')}${d.shiftOrder}${d.hour}`,
-        rowid: d.machineId.toString(),
+        rowid: d.line,
         value: d.net.toString(),
         toolText: getToolText(d),
-        color: d.net < d.swotTarget.netRate ? '#FF4136' : '#28A745',
+        color: setColor(d.target, d.swotTarget.oaeTarget, d.net),
         valueFontColor: '#ffffff',
         link: `n-${d.hxHUrl}`
     }))
@@ -111,16 +115,22 @@ const HourlyProductionChart = ({
             "color": [
                 {
                     "code": "E24B1A",
-                    "minvalue": "1",
+                    "minvalue": "-999",
                     "maxvalue": "2",
                     "label": "Bad"
                 },
                 {
                     "code": "6DA81E",
                     "minvalue": "3",
-                    "maxvalue": "9999",
+                    "maxvalue": "999",
                     "label": "Good"
-                }
+                },
+                // {
+                //     "code": "a4a4a5",
+                //     "minvalue": "999",
+                //     "maxvalue": "9999",
+                //     "label": "Not Running"
+                // }
             ]
         }
     }
