@@ -27,6 +27,7 @@ import {
     setDetailsEndDate
 } from '../../../../redux/production-details/production-details.actions';
 
+import { getUrlParameter, updateUrlQryParameter } from '../../../../helpers/helpers'
 import '../morning-meeting.styles.scss';
 
 import { 
@@ -46,30 +47,28 @@ const ProductionPage = ({
         fetchWeeklyLaborHrsStartAsync,
         fetchPpmhPerShiftStartAsync,
         fetchProdScrapStartAsync,
-
         isProdStatusFetching,
-
         area,
         headerTitle,
-
         location,
-
         setTitle,
         setArea,
-
         setStartDate,
         setEndDate,
         setDetailsStartDate,
         setDetailsEndDate,
-
         startDate,
         endDate,
-
         ppmhChartType
     }) => {
         
-    const [startFormat, setStartFormat] = useState(startDate);
-    const [endFormat, setSendFormat] = useState(endDate);
+    const dateStartQry = getUrlParameter('start');
+    const dateEndQry = getUrlParameter('end');
+    const defaultStartDate = dateStartQry ? dateStartQry : startDate;
+    const defaultEndDate = dateEndQry ? dateEndQry : endDate;
+
+    const [startFormat, setStartFormat] = useState(defaultStartDate);
+    const [endFormat, setSendFormat] = useState(defaultEndDate);
 
     //cancel token
     const prodTokenSrc = axios.CancelToken.source();
@@ -78,7 +77,7 @@ const ProductionPage = ({
     const weeklyLaborHrsKpiTokenSrc = axios.CancelToken.source();
     const prodScrapLaborHrsKpiTokenSrc = axios.CancelToken.source();
 
-    const fetchData = (start = startDate, end = endDate) => {
+    const fetchData = (start = defaultStartDate, end = defaultEndDate) => {
 
         setProductionData(start,end,area, prodTokenSrc);
 
@@ -98,18 +97,22 @@ const ProductionPage = ({
         fetchProdScrapStartAsync(mtdStart, mtdEnd, area, prodScrapLaborHrsKpiTokenSrc);
     };
 
-    const onClick = () => {
+    const updateUrl = (start, end) => {
+        const qry = { start, end }
+        const title =  `Morning Meeting - ${headerTitle} : ${startFormat} - ${endFormat}`;
+        updateUrlQryParameter(qry, title);
+    }
 
+    const onClick = () => {
         setStartDate(startFormat);
         setEndDate(endFormat);
         setDetailsStartDate(startFormat);
         setDetailsEndDate(endFormat);
-
         fetchData(startFormat, endFormat);
+        updateUrl(startFormat, endFormat);
     };
 
     const onCalendarChange = (dates) => {
-
         const [start, end] = dates;
         setStartFormat(start ? start.format(dateFormat) : null);
         setSendFormat(end ? end.format(dateFormat) : null);
@@ -118,6 +121,7 @@ const ProductionPage = ({
     useEffect(() => {
         document.title = `Morning Meeting - ${headerTitle}`;
         fetchData();
+        updateUrl(defaultStartDate, defaultEndDate);
 
         return function cleanup() {
             prodTokenSrc.cancel('Operation cancelled');
@@ -151,7 +155,7 @@ const ProductionPage = ({
     `;
 
     return (
-    <>
+    <React.Fragment>
         <Header className="pa0 custom-header" >
             <h2 className="ml3">{headerTitle}: {startDate} - {endDate}</h2>
         </Header>
@@ -166,7 +170,7 @@ const ProductionPage = ({
             
             <Tooltip placement="top" title={<span>Click to view Productivity Details by Work Center</span>}>
                 <Button type="primary" onClick={onDetailsButtonClick} className="ml2" loading={isProdStatusFetching}>
-                    <Link className="white" to={`${location.pathname}/details`}>Work Center Details</Link>
+                    <Link className="white" to={`${location.pathname}/details?start=${startFormat}&end=${endFormat}&shift=`}>Work Center Details</Link>
                 </Button>
             </Tooltip>
             
@@ -191,8 +195,8 @@ const ProductionPage = ({
                 
             </div>
 
-        </Content>      
-    </> 
+        </Content>
+    </React.Fragment>
 )}
 
 const mapStateToProps = ({morningMeeting}) => ({

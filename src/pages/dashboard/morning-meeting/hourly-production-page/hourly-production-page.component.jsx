@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import moment from 'moment';
 
 import {
@@ -15,35 +15,49 @@ import {
 
 import HourlyProductionChart from '../../../../components/hourly-production/hourly-production-chart/hourly-production-chart.component'
 
+import { getUrlParameter, updateUrlQryParameter } from '../../../../helpers/helpers'
+
 const { Header, Content } = Layout;
 const dateFormat = 'MM/DD/YYYY';
 
 const HourlyProductionPage = ({
-    location,
     fetchHourlyProdStartAsync,
     isHourlyProdFetching,
     hourlyProdCollection
 }) => {
 
-    const today = moment();
-    const dept = location.pathname.split('/')[3];
+    const location = useLocation();
+    const { state } = location;
+    const { department } = state || {}
+
+    const dateQry = getUrlParameter('date');
+    const defaultShiftDate = dateQry ? moment(dateQry) : moment();
+    const dept = department ? department : location.pathname.split('/')[3];
     const getTitle = date => `${dept} Hourly Production: ${date.format(dateFormat)}`
 
-    const [title, setTitle] = useState(getTitle(today));
-    const [date, setDate] = useState(today);
+    const [title, setTitle] = useState(getTitle(defaultShiftDate));
+    const [date, setDate] = useState(defaultShiftDate);
     
+    const updateUrl = () => {
+        const dateStr = moment(date).format('MM/DD/YYYY');
+        const ttl = `${dept.toUpperCase()} Hourly Production: ${dateStr}`;
+        const qry = { date: dateStr }
+        updateUrlQryParameter(qry, ttl);
+        setTitle(getTitle(date));
+    }
 
     useEffect(() => {
         fetchHourlyProdStartAsync(dept, date.format(dateFormat));
-    }, [])
+        updateUrl(defaultShiftDate);
+    }, [dept])
 
     const onDateChange = (value) => {
         setDate(value);
-        setTitle(getTitle(value));
     }
 
     const onBtnClick = () => {
         fetchHourlyProdStartAsync(dept, date.format(dateFormat));
+        updateUrl();
     }
 
     return (
@@ -85,4 +99,4 @@ const mapDispatchToProps = dispatch => ({
     fetchHourlyProdStartAsync: (dept, shiftDate) => dispatch(fetchHourlyProdStartAsync(dept, shiftDate))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(HourlyProductionPage));
+export default connect(mapStateToProps, mapDispatchToProps)(HourlyProductionPage);

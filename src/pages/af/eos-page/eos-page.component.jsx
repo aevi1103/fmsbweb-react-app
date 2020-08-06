@@ -15,9 +15,7 @@ import {
     setDeptEosCollection
 } from '../../../redux/af-eos/af-eos.actions'
 
-import {
-    getUrlParameter
-} from '../../../helpers/helpers'
+import { getUrlParameter, updateUrlQryParameter } from '../../../helpers/helpers'
 
 import {
     Layout,
@@ -189,14 +187,13 @@ const EosPage = ({
 
     useEffect(() => {
 
-        const url = new URL(window.location.href);
-        const newUrl = `${url.origin + url.pathname}?dept=${dept}&date=${shiftDateStr}&shift=${shift ? shift : ''}`;
-
-        const s = shift ? ` - Shift: ${shift}` : '';
-        const ttl = `${dept} EOS Report : ${shiftDateStr} ${s}`;
-        window.history.pushState('updateUrl', ttl, newUrl);
-        document.title = ttl;
-
+        const qry = {
+            dept,
+            date: shiftDateStr,
+            shift: shift ? shift : ''
+        }
+        const ttl = `${dept} EOS Report : ${shiftDateStr} ${qry.shift}`;
+        updateUrlQryParameter(qry, ttl)
         setEosTitle(ttl);
 
         return () => setEosTitle('')
