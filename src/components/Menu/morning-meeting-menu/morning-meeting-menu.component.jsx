@@ -17,90 +17,73 @@ import {
     DashboardOutlined
 } from '@ant-design/icons';
 
+import DepartmentSubMenu from './department-sub-menu.component'
+
 import { Menu } from "antd";
+const { SubMenu } = Menu
 
 const MorningMeetingMenu = ( { location } ) => { 
 
+    const menuProps = {
+        theme:"dark",
+        defaultSelectedKeys:[location.pathname]
+    }
+
   return (
-      <Menu theme="dark" defaultSelectedKeys={[location.pathname]}>
+      <Menu {...menuProps}>
 
-          <Menu.Item key="/">
-              <HomeOutlined />
-              <span>Home</span>
-              <Link to="/" />
-          </Menu.Item>
+        <Menu.Item key="/">
+            <HomeOutlined />
+            <span>Home</span>
+            <Link to="/" />
+        </Menu.Item>
 
-          <Menu.Item key="/orderstatus/foundry">
-              <InboxOutlined />
-              <span>Active Orders</span>
-              <Link to="/orderstatus/foundry" />
-          </Menu.Item>
+        <Menu.Item key="/dashboard/morningmeeting/safety">
+            <SafetyOutlined />
+            <span>Safety</span>
+            <Link to="/dashboard/morningmeeting/safety" />
+        </Menu.Item>
 
-          <Menu.Item key="/dashboard/morningmeeting/safety">
-              <SafetyOutlined />
-              <span>Safety</span>
-              <Link to="/dashboard/morningmeeting/safety" />
-          </Menu.Item>
+        <Menu.Item key="/dashboard/morningmeeting/quality">
+            <ExperimentOutlined />
+            <span>Quality</span>
+            <Link to="/dashboard/morningmeeting/quality" />
+        </Menu.Item>
 
-          <Menu.Item key="/dashboard/morningmeeting/quality">
-              <ExperimentOutlined />
-              <span>Quality</span>
-              <Link to="/dashboard/morningmeeting/quality" />
-          </Menu.Item>
+        <Menu.Item key="/dashboard/morningmeeting/logistics">
+            <CarOutlined />
+            <span>Logistics</span>
+            <Link to="/dashboard/morningmeeting/logistics" />
+        </Menu.Item>
 
-          <Menu.Item key="/dashboard/morningmeeting/logistics">
-              <CarOutlined />
-              <span>Logistics</span>
-              <Link to="/dashboard/morningmeeting/logistics" />
-          </Menu.Item>
+        <Menu.Item key="/dashboard/morningmeeting/level0">
+            <HeatMapOutlined />
+            <span>Performance: L0 - L1</span>
+            <Link to="/dashboard/morningmeeting/level0" />
+        </Menu.Item>
 
-          <Menu.Item key="/dashboard/morningmeeting/level0">
-              <HeatMapOutlined />
-              <span>Performance: L0 - L1</span>
-              <Link to="/dashboard/morningmeeting/level0" />
-          </Menu.Item>
+        <Menu.Item key="/dashboard/morningmeeting/level2">
+            <DashboardOutlined />
+            <span>Performance: L2 - L3</span>
+            <Link to="/dashboard/morningmeeting/level2" />
+        </Menu.Item>
 
-          <Menu.Item key="/dashboard/morningmeeting/level2">
-              <DashboardOutlined />
-              <span>Performance: L2 - L3</span>
-              <Link to="/dashboard/morningmeeting/level2" />
-          </Menu.Item>
+        <DepartmentSubMenu dept="foundry" icon={<AreaChartOutlined/>} /> 
+        <DepartmentSubMenu dept="machining" icon={<BarChartOutlined/>} /> 
+        <DepartmentSubMenu dept="finishing" icon={<DotChartOutlined/>} /> 
+        <DepartmentSubMenu dept="assembly" icon={<PieChartOutlined/>} /> 
 
-          <Menu.Item key="/dashboard/morningmeeting/foundry">
-              <AreaChartOutlined />
-              <span>Foundry</span>
-              <Link to="/dashboard/morningmeeting/foundry" />
-          </Menu.Item>
+        <Menu.Item key="/dashboard/morningmeeting/finance">
+            <DollarOutlined />
+            <span>Finance</span>
+            <Link to="/dashboard/morningmeeting/finance" />
+        </Menu.Item>
 
-          <Menu.Item key="/dashboard/morningmeeting/machining">
-              <PieChartOutlined />
-              <span>Machining</span>
-              <Link to="/dashboard/morningmeeting/machining" />
-          </Menu.Item>
-
-          <Menu.Item key="/dashboard/morningmeeting/finishing">
-              <BarChartOutlined />
-              <span>Finishing</span>
-              <Link to="/dashboard/morningmeeting/finishing" />
-          </Menu.Item>
-
-          <Menu.Item key="/dashboard/morningmeeting/assembly">
-              <DotChartOutlined />
-              <span>Assembly</span>
-              <Link to="/dashboard/morningmeeting/assembly" />
-          </Menu.Item>
-
-          <Menu.Item key="/dashboard/morningmeeting/finance">
-              <DollarOutlined />
-              <span>Finance</span>
-              <Link to="/dashboard/morningmeeting/finance" />
-          </Menu.Item>
-
-          <Menu.Item key="/dashboard/morningmeeting/downtime">
-              <SettingOutlined />
-              <span>Downtime</span>
-              <Link to="/dashboard/morningmeeting/downtime" />
-          </Menu.Item>
+        <Menu.Item key="/dashboard/morningmeeting/downtime">
+            <SettingOutlined />
+            <span>Downtime</span>
+            <Link to="/dashboard/morningmeeting/downtime" />
+        </Menu.Item>
 
         
       </Menu>
