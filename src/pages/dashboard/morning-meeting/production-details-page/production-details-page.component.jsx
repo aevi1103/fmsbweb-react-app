@@ -28,10 +28,6 @@ const previousDay = moment().add(-1, 'd');
 
 const ProductionDetailsPage = ({
         fetchProductionDetailsStartAsync,
-        setDetailsStartDate,
-        setDetailsEndDate,
-        detailsStartDate,
-        detailsEndDate,
         isProductionDetailsLoading
     }) => {
 
@@ -57,13 +53,14 @@ const ProductionDetailsPage = ({
         const qry = { start, end, shift }
         const title =  `${dept.toUpperCase()} Details: ${start} - ${end} Shift: ${shift}`;
         updateUrlQryParameter(qry, title);
+        setHeaderTitle(`${dept} Details: ${startFormat} - ${endFormat} Shift: ${shift || 'All'}`);
     }
 
     useEffect(() => {
         document.title = `Morning Meeting Details`;
         fetchProductionDetailsStartAsync(startFormat, endFormat, dept, shift);
         updateUrl(startFormat, endFormat, shift);
-        setHeaderTitle(`${dept} Details: ${startFormat} - ${endFormat} Shift: ${shift || 'All'}`);
+        
     }, [dept])
         
     const onClick = () => {
@@ -116,17 +113,11 @@ const ProductionDetailsPage = ({
 };
 
 const mapStateToProps = ( { productionDetails, morningMeeting } ) => ({
-    startDate: morningMeeting.startDate,
-    endDate: morningMeeting.endDate,
-    detailsStartDate: productionDetails.detailsStartDate,
-    detailsEndDate: productionDetails.detailsEndDate,
     isProductionDetailsLoading: productionDetails.isProductionDetailsLoading,
 })
 
 const mapDispatchToProps = dispatch => ({
-    fetchProductionDetailsStartAsync: (start, end, dept, shift) => dispatch(fetchProductionDetailsStartAsync(start, end, dept, shift)),
-    setDetailsStartDate: date => dispatch(setDetailsStartDate(date)),
-    setDetailsEndDate: date => dispatch(setDetailsEndDate(date))
+    fetchProductionDetailsStartAsync: (start, end, dept, shift) => dispatch(fetchProductionDetailsStartAsync(start, end, dept, shift))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProductionDetailsPage);

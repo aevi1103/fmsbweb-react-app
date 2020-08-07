@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const url = 'https://localhost:44384/api/';
-const url = 'http://10.129.224.149:83/api/';
+const url = 'https://localhost:44384/api/';
+// const url = 'http://10.129.224.149:83/api/';
 
 export default axios.create({
     baseURL: url,

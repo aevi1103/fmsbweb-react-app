@@ -27,8 +27,6 @@ import {
 const DefectSummaryTable = ({
     isProductionDetailsLoading,
     scrapData,
-    detailsEndDate,
-
     fetchDailyScrapByCodeStartAsync,
     isDailyScrapByCodeLoading,
     dailyScrapByCodeCollection
@@ -40,17 +38,19 @@ const DefectSummaryTable = ({
     const onSapNetModalCancel = () => setModalVisible(false)
     const onScrapClick = data => {
 
-        const f = 'MM/DD/YYYY'
-        const start = moment(detailsEndDate).add('d', -30).format(f)
-        const end = detailsEndDate
         const { 
             line,
             department, 
             isPurchasedExclude, 
             scrapCode, 
             scrapDesc, 
-            program } = data
+            program,
+            endDate
+        } = data
 
+        const dateFormat = 'MM/DD/YYYY';
+        const start = moment(endDate).add('d', -30).format(dateFormat);
+        const end = moment(endDate).format(dateFormat);
         const line2 = department === 'Machining' ? `Line ${line}` : line
 
         if (line) {
@@ -195,8 +195,7 @@ const DefectSummaryTable = ({
 const mapStateToProps = ({ productionDetails }) => ({
     isProductionDetailsLoading: productionDetails.isProductionDetailsLoading,
     isDailyScrapByCodeLoading: productionDetails.isDailyScrapByCodeLoading,
-    dailyScrapByCodeCollection: productionDetails.dailyScrapByCodeCollection,
-    detailsEndDate: productionDetails.detailsEndDate
+    dailyScrapByCodeCollection: productionDetails.dailyScrapByCodeCollection
 })
 
 const mapDispatchToProps = dispatch => ({

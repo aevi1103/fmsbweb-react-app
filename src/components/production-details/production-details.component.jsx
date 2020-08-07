@@ -9,7 +9,6 @@ import {
 import SummaryByLineTable from './summary-by-line-table/summary-by-line-table.component'
 import SummaryByProgramTable from './summary-by-program/summary-by-program.component'
 import DefectSummaryTable from './defect-summary-table/defect-summary-table.component';
-
 import ProductionDetailsSummary from './production-details-summary/production-details-summary.component'
 
 const ProductionDetails = ({productionDetailsCollection, isProductionDetailsLoading}) => (
@@ -53,10 +52,7 @@ const ProductionDetails = ({productionDetailsCollection, isProductionDetailsLoad
                 bordered={false}
                 size="small"
                 className="ba b--black-10">
-                    <DefectSummaryTable 
-                        scrapData={(!productionDetailsCollection 
-                                    ? [] 
-                                    : productionDetailsCollection.sbScrapDetails )} />
+                    <DefectSummaryTable scrapData={(!productionDetailsCollection ? [] : productionDetailsCollection.sbScrapDetails )} />
             </Card>
         </Col>
         <Col span={24}>
@@ -65,10 +61,7 @@ const ProductionDetails = ({productionDetailsCollection, isProductionDetailsLoad
                 bordered={false}
                 size="small"
                 className="ba b--black-10">
-                    <DefectSummaryTable 
-                        scrapData={(!productionDetailsCollection 
-                                    ? [] 
-                                    : productionDetailsCollection.purchaseScrapDetails )} />
+                    <DefectSummaryTable scrapData={(!productionDetailsCollection ? [] : productionDetailsCollection.purchaseScrapDetails )} />
             </Card>
         </Col>
     </Row>
