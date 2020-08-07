@@ -66,3 +66,8 @@ export const mapDeptToArea = dept => {
     }
 
 }
+
+export const oDataQryString = (odataQry) => {
+    if (!!!odataQry) return '';
+    return odataQry.startsWith('?') ? odataQry : `?${odataQry}`;
+}

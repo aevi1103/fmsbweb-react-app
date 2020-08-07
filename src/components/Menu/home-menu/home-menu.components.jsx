@@ -177,6 +177,16 @@ const HomeMenu = ( { location } ) => {
         <Menu.Item key="viewQa">View QA</Menu.Item>
         <Menu.Item key="scrapEscalation">Scrap Escalation</Menu.Item>
 
+        <Menu.Item key="/quality/checksheets">
+          <span>Check Sheet</span>
+          <Link to="/quality/checksheets" />
+        </Menu.Item>
+
+        <Menu.Item key="/quality/checksheets/settings">
+          <span>Check Sheet Settings</span>
+          <Link to="/quality/checksheets/settings" />
+        </Menu.Item>
+
       </SubMenu>
 
       <SubMenu

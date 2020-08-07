@@ -1,5 +1,10 @@
 import productionDetailsType from './production-details.types'
 import api from '../../API'
+import {
+    fetchStart,
+    fetchSuccess,
+    fetchFailure
+} from '../../helpers/helpers'; 
 
 export const setTitle = title => ({
     type: productionDetailsType.SET_PRODUCTION_DETAILS_TITLE,
@@ -19,20 +24,6 @@ export const setDetailsStartDate = date => ({
 export const setDetailsEndDate = date => ({
     type: productionDetailsType.SET_PRODUCTION_DETAILS_END_DATE,
     payload: date
-})
-
-const fetchStart = (actionType) => ({
-    type: actionType
-})
-
-const fetchSuccess = (actionType, data) => ({
-    type: actionType,
-    payload: data
-})
-
-const fetchFailure = (actionType, errorMsg) => ({
-    type: actionType,
-    payload: errorMsg
 })
 
 export const fetchProductionDetailsStartAsync = (start, end, dept, shift = '') => {

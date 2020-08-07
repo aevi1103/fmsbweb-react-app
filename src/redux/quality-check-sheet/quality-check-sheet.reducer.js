@@ -1,0 +1,157 @@
+import qualityCheckSheetTypes from './quality-check-sheet.types'
+
+const INITIAL_STATE = {
+
+    isLineLoading: false,
+    lineCollection: [],
+    lineErrorMsg: undefined,
+
+    isMachineLoading: false,
+    machineCollection: [],
+    machineErrorMsg: undefined,
+
+    isSubMachineLoading: false,
+    subMachineCollection: [],
+    subMachineErrorMsg: undefined,
+
+    isPartLoading: false,
+    partCollection: [],
+    partErrorMsg: undefined,
+
+    isCharacteristicsLoading: false,
+    characteristicsCollection: [],
+    characteristicsErrorMsg: undefined
+
+}
+
+const qualityCheckSheetsReducer = (state = INITIAL_STATE, action) => {
+
+    switch (action.type) {
+
+        //line
+        case qualityCheckSheetTypes.FETCH_LINE_START:
+            
+            return {
+                ...state,
+                isLineLoading: true
+            }
+
+        case qualityCheckSheetTypes.FETCH_LINE_SUCCESS:
+            
+            return {
+                ...state,
+                isLineLoading: false,
+                lineCollection: action.payload
+            }
+
+        case qualityCheckSheetTypes.FETCH_LINE_FAILURE:
+            
+            return {
+                ...state,
+                isLineLoading: false,
+                lineErrorMsg: action.payload
+            }
+    
+        //machine
+        case qualityCheckSheetTypes.FETCH_MACHINE_START:
+        
+            return {
+                ...state,
+                isMachineLoading: true
+            }
+
+        case qualityCheckSheetTypes.FETCH_MACHINE_SUCCESS:
+            
+            return {
+                ...state,
+                isMachineLoading: false,
+                machineCollection: action.payload
+            }
+
+        case qualityCheckSheetTypes.FETCH_MACHINE_FAILURE:
+            
+            return {
+                ...state,
+                isMachineLoading: false,
+                machineErrorMsg: action.payload
+            }
+
+        //machine
+        case qualityCheckSheetTypes.FETCH_SUB_MACHINE_START:
+
+            return {
+                ...state,
+                isSubMachineLoading: true
+            }
+
+        case qualityCheckSheetTypes.FETCH_SUB_MACHINE_SUCCESS:
+            
+            return {
+                ...state,
+                isSubMachineLoading: false,
+                subMachineCollection: action.payload
+            }
+
+        case qualityCheckSheetTypes.FETCH_SUB_MACHINE_FAILURE:
+            
+            return {
+                ...state,
+                isSubMachineLoading: false,
+                subMachineErrorMsg: action.payload
+            }
+
+        //part
+        case qualityCheckSheetTypes.FETCH_PART_START:
+
+            return {
+                ...state,
+                isPartLoading: true
+            }
+
+        case qualityCheckSheetTypes.FETCH_PART_SUCCESS:
+            
+            return {
+                ...state,
+                isPartLoading: false,
+                partCollection: action.payload
+            }
+
+        case qualityCheckSheetTypes.FETCH_PART_FAILURE:
+            
+            return {
+                ...state,
+                isPartLoading: false,
+                partErrorMsg: action.payload
+            }
+
+        //characteristic
+        case qualityCheckSheetTypes.FETCH_CHARACTERISTICS_START:
+
+            return {
+                ...state,
+                isCharacteristicsLoading: true
+            }
+
+        case qualityCheckSheetTypes.FETCH_CHARACTERISTICS_SUCCESS:
+            
+            return {
+                ...state,
+                isCharacteristicsLoading: false,
+                characteristicsCollection: action.payload
+            }
+
+        case qualityCheckSheetTypes.FETCH_CHARACTERISTICS_FAILURE:
+            
+            return {
+                ...state,
+                isCharacteristicsLoading: false,
+                characteristicsErrorMsg: action.payload
+            }
+
+        default:
+            return state;
+    }
+
+}
+
+export default qualityCheckSheetsReducer;

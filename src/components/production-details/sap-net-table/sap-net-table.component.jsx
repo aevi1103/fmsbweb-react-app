@@ -82,8 +82,7 @@ const SapNetTable = ({isProductionDetailsLoading, sapNetData}) => {
       }
 
     return (
-        <>
-            <Table 
+        <Table 
                 loading={isProductionDetailsLoading}
                 columns={columns}
                 dataSource={data}
@@ -91,9 +90,6 @@ const SapNetTable = ({isProductionDetailsLoading, sapNetData}) => {
                 size="middle"
                 bordered={true}
                 pagination={false} />    
-
-        </>
-        
     )
 }
 
