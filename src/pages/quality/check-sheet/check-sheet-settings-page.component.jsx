@@ -1,41 +1,19 @@
-import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
+import React from 'react'
 import { 
     Layout,
     Tabs
  } from "antd";
 
-import {
-    fetchLineStartAsync,
-    fetchMachineStartAsync,
-    fetchSubMachineStartAsync,
-    fetchPartStartAsync
- } from '../../../redux/quality-check-sheet/quality-check-sheet.actions'
-
 import LineComponent from '../../../components/quality/check-sheet-settings/line.component'
 import MachineComponent from '../../../components/quality/check-sheet-settings/machine.component'
 import SubMachineComponent from '../../../components/quality/check-sheet-settings/sub-machine.component'
 import PartComponent from '../../../components/quality/check-sheet-settings/part.component'
+import CharacteristicsComponent from '../../../components/quality/check-sheet-settings/characteristics.component'
 
 const { Header, Content } = Layout;
 const { TabPane } = Tabs;
 
-const CheckSheetSettingsPage = ({
-    fetchLineStartAsync,
-    fetchMachineStartAsync,
-    fetchSubMachineStartAsync,
-    fetchPartStartAsync
-}) => {
-
-    useEffect(() => {
-        document.title = 'Quality Check Sheet Settings';
-
-        fetchLineStartAsync();
-        fetchMachineStartAsync('$select=line,value,timestamp&$expand=line($select=value)');
-        fetchSubMachineStartAsync('$select=value,machine,timestamp&$expand=machine($expand=line($select=value))');
-        fetchPartStartAsync();
-
-    }, [])
+const CheckSheetSettingsPage = () => {
 
     return (
         <React.Fragment>
@@ -59,7 +37,7 @@ const CheckSheetSettingsPage = ({
                         <PartComponent/>
                     </TabPane>
                     <TabPane tab="Characteristics" key="5">
-                        Content of Tab Pane 5
+                        <CharacteristicsComponent/>
                     </TabPane>
                 </Tabs>
 
@@ -68,11 +46,4 @@ const CheckSheetSettingsPage = ({
     )
 }
 
-const mapDispatchToProps = dispatch => ({
-    fetchLineStartAsync: (odataQry) => dispatch(fetchLineStartAsync(odataQry)),
-    fetchMachineStartAsync: (odataQry) => dispatch(fetchMachineStartAsync(odataQry)),
-    fetchSubMachineStartAsync: (odataQry) => dispatch(fetchSubMachineStartAsync(odataQry)),
-    fetchPartStartAsync: (odataQry) => dispatch(fetchPartStartAsync(odataQry))
-})
-
-export default connect(null, mapDispatchToProps)(CheckSheetSettingsPage);
+export default CheckSheetSettingsPage;

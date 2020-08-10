@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
 
@@ -7,11 +7,22 @@ import {
     Button
 } from 'antd'
 
+import {
+    fetchPartStartAsync
+} from './../../../redux/quality-check-sheet/quality-check-sheet.actions'
+
+import { PlusOutlined } from '@ant-design/icons';
+
 const LineComponent = ({ 
+    fetchPartStartAsync,
     isPartLoading,
     partCollection,
     partErrorMsg
 }) => {
+
+    useEffect(() => {
+        fetchPartStartAsync();
+    }, [])
 
     const columns = [
         {
@@ -43,7 +54,7 @@ const LineComponent = ({
 
     return (
         <React.Fragment>
-            <Button type="primary" className="mb2">Add</Button>
+            <Button type="primary" className="mb2"><PlusOutlined/> New Part</Button>
             <Table 
                 loading={isPartLoading}
                 columns={columns}
@@ -60,4 +71,8 @@ const mapStateToProps = ({ qualityCheckSheet }) => ({
     partErrorMsg: qualityCheckSheet.partErrorMsg
 })
 
-export default connect(mapStateToProps)(LineComponent);
+const mapDispatchToProps = dispatch => ({
+    fetchPartStartAsync: (odataQry) => dispatch(fetchPartStartAsync(odataQry))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(LineComponent);

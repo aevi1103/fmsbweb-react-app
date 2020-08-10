@@ -398,7 +398,7 @@ const EosPage = ({
     const disabledDate = current => current && current > moment().endOf('day');
 
     return (
-        <>
+        <React.Fragment>
             <Header className="pa0 custom-header" >
                 <h2 className="ml3">{eosTitle}</h2>
             </Header>
@@ -761,7 +761,7 @@ const EosPage = ({
                 </Modal>
 
             </Content>
-        </>
+        </React.Fragment>
     )
 }
 

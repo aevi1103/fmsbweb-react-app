@@ -72,3 +72,18 @@ export const fetchCharacteristicStartAsync = (odataQry = '') => {
         })
     }
 }
+
+export const setControlMethod = value => ({
+    type: qualityCheckSheetTypes.SET_CONTROL_METHOD,
+    payload: value
+})
+
+export const setPart = value => ({
+    type: qualityCheckSheetTypes.SET_PART,
+    payload: value
+})
+
+export const setLine = value => ({
+    type: qualityCheckSheetTypes.SET_LINE,
+    payload: value
+})

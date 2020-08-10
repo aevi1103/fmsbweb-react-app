@@ -20,7 +20,11 @@ const INITIAL_STATE = {
 
     isCharacteristicsLoading: false,
     characteristicsCollection: [],
-    characteristicsErrorMsg: undefined
+    characteristicsErrorMsg: undefined,
+
+    controlMethod: null,
+    part: null,
+    line: null
 
 }
 
@@ -146,6 +150,27 @@ const qualityCheckSheetsReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 isCharacteristicsLoading: false,
                 characteristicsErrorMsg: action.payload
+            }
+
+        case qualityCheckSheetTypes.SET_CONTROL_METHOD:
+            
+            return {
+                ...state,
+                controlMethod: action.payload
+            }
+
+        case qualityCheckSheetTypes.SET_PART:
+            
+            return {
+                ...state,
+                part: action.payload
+            }
+
+        case qualityCheckSheetTypes.SET_LINE:
+            
+            return {
+                ...state,
+                line: action.payload
             }
 
         default:

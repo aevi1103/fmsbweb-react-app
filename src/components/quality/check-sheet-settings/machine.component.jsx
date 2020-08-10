@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
 
@@ -7,11 +7,22 @@ import {
     Button
 } from 'antd'
 
+import {
+    fetchMachineStartAsync
+} from './../../../redux/quality-check-sheet/quality-check-sheet.actions'
+
+import { PlusOutlined } from '@ant-design/icons';
+
 const LineComponent = ({ 
+    fetchMachineStartAsync,
     isMachineLoading,
     machineCollection,
     machineErrorMsg
 }) => {
+
+    useEffect(() => {
+        fetchMachineStartAsync('$select=line,value,timestamp&$expand=line($select=value)');
+    }, [])
 
     const columns = [
         {
@@ -41,7 +52,7 @@ const LineComponent = ({
 
     return (
         <React.Fragment>
-            <Button type="primary" className="mb2">Add</Button>
+            <Button type="primary" className="mb2"><PlusOutlined/> New Machine</Button>
             <Table 
                 loading={isMachineLoading}
                 columns={columns}
@@ -58,4 +69,8 @@ const mapStateToProps = ({ qualityCheckSheet }) => ({
     machineErrorMsg: qualityCheckSheet.machineErrorMsg
 })
 
-export default connect(mapStateToProps)(LineComponent);
+const mapDispatchToProps = dispatch => ({
+    fetchMachineStartAsync: (odataQry) => dispatch(fetchMachineStartAsync(odataQry)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(LineComponent);

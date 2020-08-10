@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
 
@@ -6,11 +6,20 @@ import {
     Table
 } from 'antd'
 
+import {
+    fetchLineStartAsync
+} from './../../../redux/quality-check-sheet/quality-check-sheet.actions'
+
 const LineComponent = ({ 
+    fetchLineStartAsync,
     isLineLoading,
     lineCollection,
     lineErrorMsg
 }) => {
+
+    useEffect(() => {
+        fetchLineStartAsync();
+    }, [])
 
     const columns = [
         {
@@ -45,4 +54,8 @@ const mapStateToProps = ({ qualityCheckSheet }) => ({
     lineErrorMsg: qualityCheckSheet.lineErrorMsg
 })
 
-export default connect(mapStateToProps)(LineComponent);
+const mapDispatchToProps = dispatch => ({
+    fetchLineStartAsync: (odataQry) => dispatch(fetchLineStartAsync(odataQry)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(LineComponent);

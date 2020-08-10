@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
 
@@ -7,11 +7,22 @@ import {
     Button
 } from 'antd'
 
+import {
+    fetchSubMachineStartAsync
+} from './../../../redux/quality-check-sheet/quality-check-sheet.actions'
+
+import { PlusOutlined } from '@ant-design/icons';
+
 const LineComponent = ({ 
+    fetchSubMachineStartAsync,
     isSubMachineLoading,
     subMachineCollection,
     subMachineErrorMsg
 }) => {
+
+    useEffect(() => {
+        fetchSubMachineStartAsync('$select=value,machine,timestamp&$expand=machine($expand=line($select=value))');
+    }, [])
 
     const columns = [
         {
@@ -49,7 +60,7 @@ const LineComponent = ({
 
     return (
         <React.Fragment>
-            <Button type="primary" className="mb2">Add</Button>
+            <Button type="primary" className="mb2"><PlusOutlined/> New Sub-Machine</Button>
             <Table 
                 loading={isSubMachineLoading}
                 columns={columns}
@@ -66,4 +77,8 @@ const mapStateToProps = ({ qualityCheckSheet }) => ({
     subMachineErrorMsg: qualityCheckSheet.subMachineErrorMsg
 })
 
-export default connect(mapStateToProps)(LineComponent);
+const mapDispatchToProps = dispatch => ({
+    fetchSubMachineStartAsync: (odataQry) => dispatch(fetchSubMachineStartAsync(odataQry)),
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(LineComponent);
