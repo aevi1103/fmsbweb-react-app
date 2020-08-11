@@ -27,16 +27,22 @@ const LineComponent = ({
     const columns = [
         {
             title: 'Line',
-            dataIndex: 'value',
+            dataIndex: 'line',
             render: (text, record, index) => {
                 return record.line.value
             },
-            key: 'value',
+            key: 'line',
+            sorter: (a, b) => a.line.value - b.line.value,
+            filters:  [...new Set(machineCollection.map(({ line }) => line.value))].map(i => ({text: i, value: i})),
+            onFilter: (value, record) => record.line.value.indexOf(value) === 0
         },
         {
             title: 'Machine',
             dataIndex: 'value',
             key: 'value',
+            sorter: (a, b) => a.value.length - b.value.length,
+            filters:  [...new Set(machineCollection.map(({ value }) => value))].map(i => ({text: i, value: i})),
+            onFilter: (value, record) => record.value.indexOf(value) === 0
         },
         {
             title: 'Time Stamp',

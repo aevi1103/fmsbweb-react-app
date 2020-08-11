@@ -29,16 +29,25 @@ const LineComponent = ({
             title: 'Left Hand',
             dataIndex: 'leftHandPart',
             key: 'leftHandPart',
+            sorter: (a, b) => a.leftHandPart.length - b.leftHandPart.length,
+            filters:  [...new Set(partCollection.map(({ leftHandPart }) => leftHandPart))].map(i => ({text: i, value: i})),
+            onFilter: (value, record) => record.leftHandPart.indexOf(value) === 0
         },
         {
             title: 'Right Hand',
             dataIndex: 'rightHandPart',
             key: 'rightHandPart',
+            sorter: (a, b) => a.rightHandPart.length - b.rightHandPart.length,
+            filters:  [...new Set(partCollection.map(({ rightHandPart }) => rightHandPart))].map(i => ({text: i, value: i})),
+            onFilter: (value, record) => record.rightHandPart.indexOf(value) === 0
         },
         {
             title: 'Part',
             dataIndex: 'part',
             key: 'part',
+            sorter: (a, b) => a.part.length - b.part.length,
+            filters:  [...new Set(partCollection.map(({ part }) => part))].map(i => ({text: i, value: i})),
+            onFilter: (value, record) => record.part.indexOf(value) === 0
         },
         {
             title: 'Time Stamp',

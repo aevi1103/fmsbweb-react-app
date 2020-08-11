@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { 
     Layout,
     Tabs
  } from "antd";
+ import { useLocation, useHistory  } from 'react-router-dom'
 
 import LineComponent from '../../../components/quality/check-sheet-settings/line.component'
 import MachineComponent from '../../../components/quality/check-sheet-settings/machine.component'
@@ -15,28 +16,48 @@ const { TabPane } = Tabs;
 
 const CheckSheetSettingsPage = () => {
 
+    const { hash } = useLocation();
+    const history = useHistory();
+    const [tabName, setTabName] = useState(hash || '#Line');
+    const [title, setTitle] = useState('')
+
+    useEffect(() => {
+        history.push(tabName)
+    }, [])
+
+    useEffect(() => {
+        const ttl = `Quality Check Sheet Settings: ${tabName.replace('#','')}`;
+        document.title = ttl;
+        setTitle(ttl)
+    }, [tabName])
+
+    const onTabClick = key => {
+        history.push(key)
+        setTabName(key)
+    }
+
     return (
         <React.Fragment>
             <Header className="pa0 custom-header" >
-                <h2 className="ml3">Quality Check Sheet Settings</h2>
+                <h2 className="ml3">{title}</h2>
             </Header>
 
             <Content className="ma3 mt0">
 
-                <Tabs defaultActiveKey="1" >
-                    <TabPane tab="Line" key="1">
+                <Tabs defaultActiveKey={hash} onTabClick={onTabClick}>
+                    <TabPane tab="Line" key="#Line">
                         <LineComponent/>
                     </TabPane>
-                    <TabPane tab="Machine" key="2">
+                    <TabPane tab="Machine" key="#Machine">
                         <MachineComponent/>
                     </TabPane>
-                    <TabPane tab="Sub-Machine" key="3">
+                    <TabPane tab="Sub-Machine" key="#Sub-Machine">
                         <SubMachineComponent/>
                     </TabPane>
-                    <TabPane tab="Part" key="4">
+                    <TabPane tab="Part" key="#Part">
                         <PartComponent/>
                     </TabPane>
-                    <TabPane tab="Characteristics" key="5">
+                    <TabPane tab="Characteristics" key="#Characteristics">
                         <CharacteristicsComponent/>
                     </TabPane>
                 </Tabs>

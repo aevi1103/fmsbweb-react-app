@@ -27,11 +27,14 @@ const LineComponent = ({
     const columns = [
         {
             title: 'Line',
-            dataIndex: 'value',
+            dataIndex: 'line',
             render: (text, record, index) => {
                 return record.machine.line.value
             },
-            key: 'value',
+            key: 'line',
+            sorter: (a, b) => a.machine.line.value - b.machine.line.value,
+            filters:  [...new Set(subMachineCollection.map(({ machine }) => machine.line.value))].map(i => ({text: i, value: i})),
+            onFilter: (value, record) => record.machine.line.value.indexOf(value) === 0
         },
         {
             title: 'Machine',
@@ -40,11 +43,17 @@ const LineComponent = ({
                 return record.machine.value
             },
             key: 'value',
+            sorter: (a, b) => a.machine.value.length - b.machine.value.length,
+            filters:  [...new Set(subMachineCollection.map(({ machine }) => machine.value))].map(i => ({text: i, value: i})),
+            onFilter: (value, record) => record.machine.value.indexOf(value) === 0
         },
         {
             title: 'Sub-Machine',
             dataIndex: 'value',
             key: 'value',
+            sorter: (a, b) => a.value - b.value,
+            filters:  [...new Set(subMachineCollection.map(({ value }) => value))].map(i => ({text: i, value: i})),
+            onFilter: (value, record) => record.value.indexOf(value) === 0
         },
         {
             title: 'Time Stamp',
