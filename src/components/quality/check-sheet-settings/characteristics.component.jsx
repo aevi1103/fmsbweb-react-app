@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import numeral from 'numeral'
 import api from '../../../API'
+import axios from 'axios'
 
 import {
     Table,
@@ -52,60 +53,72 @@ const Characteristics = ({
 
     const [errors, setErrors] = useState([])
 
-    const [controlMethodLoading, setControlMethodLoading] = useState(false)
+    const [fetchLoading, setFetchLoading] = useState(false);
     const [controlMethods, setControlMethods] = useState([]);
-
-    const [partLoading, setPartLoading] = useState(false)
     const [parts, setParts] = useState([]);
-
-    const [lineLoading, setLineLoading] = useState(false)
     const [lines, setLines] = useState([]);
+    const [displayAs, setDisplayAs] = useState([]);
 
     const [machineLoading, setMachineLoading] = useState(false)
     const [machines, setMachines] = useState([]);
-
-    const [displayAsLoading, setDisplayAsLoading] = useState(false)
-    const [displayAs, setDisplayAs] = useState([]);
 
     const [passFail, setPassFail] = useState(null)
     const [formVisible, setFormVisible] = useState(false);
     const [submitLoading, setSubmitLoading] = useState(false);
 
+    const [isDraweVisible, setIsDrawerVisible] = useState(false);
+    const [isEdit, setIsEdit] = useState(false);
+    const [rowData, setRowData] = useState(null);
+
+    const [formTitle, setFormTitle] = useState('');
+
     const [form] = Form.useForm();
 
-    const addError = (error) => setErrors(errors.push(error))
-
     useEffect(() => {
-        
-        //control method
-        setControlMethodLoading(true);
-        api.get('quality/checksheets/controlmethod')
-        .then(response => setControlMethods(response.data))
-        .catch(err => addError(err.message))
-        .finally(() => setControlMethodLoading(false))
 
-        //part number
-        setPartLoading(true);
-        api.get('quality/checksheets/organizationpart')
-        .then(response => setParts(response.data))
-        .catch(err => addError(err.message))
-        .finally(() => setPartLoading(false))
+        setFetchLoading(true);
 
-        //line
-        setLineLoading(true);
-        api.get('quality/checksheets/line')
-        .then(response => setLines(response.data))
-        .catch(err => addError(err.message))
-        .finally(() => setLineLoading(false))
+        axios.all([
+            api.get('quality/checksheets/controlmethod'),
+            api.get('quality/checksheets/organizationpart'),
+            api.get('quality/checksheets/line'),
+            api.get('quality/checksheets/displayas')
+        ])
+        .then(axios.spread((...responses) => {
 
-        //display as
-        setDisplayAsLoading(true);
-        api.get('quality/checksheets/displayas')
-        .then(response => setDisplayAs(response.data))
-        .catch(err => addError(err.message))
-        .finally(() => setDisplayAsLoading(false))
+            setControlMethods(responses[0].data) 
+            setParts(responses[1].data)
+            setLines(responses[2].data)
+            setDisplayAs(responses[3].data)
+
+        }))
+        .catch(errors => setErrors(errors.push(errors)))
+        .finally(() => setFetchLoading(false))
 
     }, [])
+
+    useEffect(() => {
+
+        const getMachine = (lineId) => {
+
+            form.resetFields(['machine']);
+            setMachineLoading(true);
+    
+            api.get(`quality/checksheets/machine?$filter=lineId eq ${lineId}`)
+            .then(response => setMachines(response.data))
+            .catch(err => setErrors(errors.push(err.message)))
+            .finally(() => setMachineLoading(false))
+
+        }
+
+        if (isDraweVisible && isEdit) {
+            const { machine: { lineId }, passFail } = rowData;
+            getMachine(lineId);
+            setPassFail(!!passFail);
+            form.setFieldsValue({...rowData, lineId })
+        }
+
+    }, [isDraweVisible, isEdit, rowData, form, errors])
 
     const onSearch = () => {
         const expand = `$expand=controlMethod,displayAs,organizationPart,machine($expand=line)`
@@ -114,22 +127,120 @@ const Characteristics = ({
     }
 
     const onEditRow = (record) => {
-
-        console.log(record)
-
+        setFormTitle('Edit Characteristic')
+        setRowData(record);
+        setIsEdit(true)
         setFormVisible(true);
     }
 
     const onDeleteRow = record => {
-
         api.delete(`quality/checksheets/characteristic/${record.characteristicId}`)
         .then(response => {
             message.success('New Charateristic Successfully Deleted!', 10);
             onSearch();
         })
         .catch(err => message.error(err.message))
+    }
+
+    const onFormClose = () => {
+        setFormVisible(false);
+        setPassFail(false);
+        setIsEdit(false)
+        form.resetFields();
+    }
+
+    const onLinesChange = (value) => {
+
+        form.resetFields(['machine']);
+        setMachineLoading(true);
+
+        api.get(`quality/checksheets/machine?$filter=lineId eq ${value}`)
+        .then(response => setMachines(response.data))
+        .catch(err => setErrors(errors.push(err.message)))
+        .finally(() => setMachineLoading(false))
 
     }
+
+    const onFinish = async (values) => {
+
+        let req = null;
+        let msg = '';
+        let body = {};
+
+        setSubmitLoading(true)
+
+        if (!isEdit) {
+
+            body = {
+                ...values,
+                passFail: passFail ? true : null
+            }
+
+            req = api.post('quality/checksheets/characteristic', body)
+            msg = 'New Charateristic Successfully Added!';
+
+        } else {
+
+            body = {
+                ...values,
+                passFail: passFail ? true : null,
+                characteristicId: rowData.characteristicId
+            }
+
+            req = api.put('quality/checksheets/characteristic', body)
+            msg = 'New Charateristic Successfully Updated!';
+
+        }
+
+        req.then(response => {
+
+            message.success(msg, 10);
+            form.resetFields();
+            onSearch();
+
+            if (isEdit) onFormClose();
+
+        })
+        .catch(err => {
+            message.error(err.message)
+        })
+        .finally(() => {
+            setSubmitLoading(false)
+            setPassFail(false)
+        })
+
+    }
+
+    const onFormShow = () => {
+        setFormTitle('Create New Characteristic')
+        setFormVisible(true);
+    }
+
+    const onChangeDisplayAs = (value, option) => {
+
+        if (option.children === 'PassFail') {
+
+            setPassFail(true)
+            form.resetFields(['min', 'nom', 'max'])
+
+        } else {
+
+            setPassFail(false)
+
+            if (rowData) {
+                const { min, nom, max } = rowData;
+                form.setFieldsValue({min, nom, max })
+            }
+
+        }
+
+    }
+
+    const afterVisibleChange = (visible) => setIsDrawerVisible(visible);
+    const onSubmit = () => form.submit();
+    const onControlPlanChange = value => setControlMethod(value)
+    const onPartChange = value => setPart(value)
+    const onLineChange = value => setLine(value)
 
     const columns = [
         {
@@ -181,8 +292,8 @@ const Characteristics = ({
             render: (text, record, index) => {
                 return record.machine.value;
             },
-            sorter: (a, b) => a.machine.value.length - b.machine.value.length,
             key: 'machine',
+            sorter: (a, b) => a.machine.value.length - b.machine.value.length,
             filters:  [...new Set(characteristicsCollection.map(({ machine }) => machine.value))].map(i => ({text: i, value: i})),
             onFilter: (value, record) => record.machine.value.indexOf(value) === 0,
         },
@@ -329,65 +440,12 @@ const Characteristics = ({
 
     const data = characteristicsCollection.map((data, i) => ({key: i, ...data}));
 
-    const onFormClose = () => {
-        setFormVisible(false);
-        setPassFail(false);
-        form.resetFields();
-    }
-
-    const onFormShow = () => setFormVisible(true);
-
-    const onLinesChange = (value) => {
-
-        form.resetFields(['machine']);
-
-        setMachineLoading(true);
-        api.get(`quality/checksheets/machine?$filter=lineId eq ${value}`)
-        .then(response => setMachines(response.data))
-        .catch(err => addError(err.message))
-        .finally(() => setMachineLoading(false))
-
-    }
-
-    const onChangeDisplayAs = (value, option) => {
-        if (option.children === 'PassFail') {
-            setPassFail(true)
-        } else {
-            setPassFail(false)
-        }
-    }
-
-    const onFinish = async (values) => {
-
-        setSubmitLoading(true)
-        api.post('quality/checksheets/characteristic', {...values, passFail: passFail ? true : null})
-        .then(response => {
-            message.success('New Charateristic Successfully Added!', 10);
-            form.resetFields();
-            onSearch();
-        })
-        .catch(err => {
-            message.error(err.message)
-        })
-        .finally(() => {
-            setSubmitLoading(false)
-            setPassFail(false)
-        })
-        
-    }
-
-    const onSubmit = () => form.submit();
-
-    const onControlPlanChange = value => setControlMethod(value)
-    const onPartChange = value => setPart(value)
-    const onLineChange = value => setLine(value)
-
     return (
         <React.Fragment>
             <Button type="primary" className="mb2" onClick={onFormShow}><PlusOutlined/> New Characteristic</Button>
 
             <Tooltip title="Select Control Method">
-                <Select loading={controlMethodLoading} 
+                <Select loading={fetchLoading} 
                     className="ml2" style={{width: '13rem'}} 
                     onChange={onControlPlanChange} 
                     defaultValue={controlMethod}>
@@ -400,7 +458,7 @@ const Characteristics = ({
             </Tooltip>
             
             <Tooltip title="Select Part Number">
-                <Select loading={partLoading} 
+                <Select loading={fetchLoading} 
                     className="ml2" 
                     style={{width: '9rem'}} 
                     defaultValue={part}
@@ -414,7 +472,7 @@ const Characteristics = ({
             </Tooltip>
 
             <Tooltip title="Select Line">
-                <Select loading={lineLoading} 
+                <Select loading={fetchLoading} 
                     className="ml2" 
                     style={{width: '4rem'}} 
                     defaultValue={line}
@@ -438,11 +496,12 @@ const Characteristics = ({
                 pagination={false} />
             
             <Drawer
-                title="Create a new characteristics"
+                title={formTitle}
                 width={720}
                 onClose={onFormClose}
                 visible={formVisible}
                 bodyStyle={{ paddingBottom: 80 }}
+                afterVisibleChange={afterVisibleChange}
                 footer={
                 <div
                     style={{
@@ -468,7 +527,7 @@ const Characteristics = ({
                         name="controlMethodId"
                         label="Control Method"
                         rules={[{ required: true, message: 'Please select control method' }]}>
-                        <Select loading={controlMethodLoading} >
+                        <Select loading={fetchLoading} >
                             {
                                 controlMethods.map(({controlMethodId, method}) => (
                                     <Option key={controlMethodId} value={controlMethodId}>{method}</Option>
@@ -483,7 +542,7 @@ const Characteristics = ({
                         name="organizationPartId"
                         label="Part No"
                         rules={[{ required: true, message: 'Please select part number' }]}>
-                        <Select loading={partLoading}>
+                        <Select loading={fetchLoading}>
                             {
                                 parts.map(({organizationPartId, part}) => (
                                     <Option key={organizationPartId} value={organizationPartId}>{part}</Option>
@@ -503,7 +562,7 @@ const Characteristics = ({
                         name="lineId"
                         label="Line"
                         rules={[{ required: true, message: 'Please select line' }]}>
-                        <Select loading={lineLoading} onChange={onLinesChange}>
+                        <Select loading={fetchLoading} onChange={onLinesChange}>
                             {
                                 lines.map(({lineId, value}) => (
                                     <Option key={lineId} value={lineId}>{value}</Option>
@@ -579,7 +638,7 @@ const Characteristics = ({
                             name="displayAsId"
                             label="Display As"
                             rules={[{ required: true, message: 'Please enter display as' }]}>
-                            <Select onChange={onChangeDisplayAs} loading={displayAsLoading}>
+                            <Select onChange={onChangeDisplayAs} loading={fetchLoading}>
                                 {
                                     displayAs.map(({displayAsId, display}) => (
                                         <Option key={displayAsId} value={displayAsId}>{display}</Option>
