@@ -24,7 +24,7 @@ const INITIAL_STATE = {
 
     controlMethod: null,
     part: null,
-    line: null
+    machine: null
 
 }
 
@@ -37,7 +37,9 @@ const qualityCheckSheetsReducer = (state = INITIAL_STATE, action) => {
             
             return {
                 ...state,
-                isLineLoading: true
+                isLineLoading: true,
+                lineCollection: [],
+                lineErrorMsg: null
             }
 
         case qualityCheckSheetTypes.FETCH_LINE_SUCCESS:
@@ -61,7 +63,9 @@ const qualityCheckSheetsReducer = (state = INITIAL_STATE, action) => {
         
             return {
                 ...state,
-                isMachineLoading: true
+                isMachineLoading: true,
+                machineCollection: [],
+                machineErrorMsg: null
             }
 
         case qualityCheckSheetTypes.FETCH_MACHINE_SUCCESS:
@@ -85,7 +89,9 @@ const qualityCheckSheetsReducer = (state = INITIAL_STATE, action) => {
 
             return {
                 ...state,
-                isSubMachineLoading: true
+                isSubMachineLoading: true,
+                subMachineCollection: [],
+                subMachineErrorMsg: null
             }
 
         case qualityCheckSheetTypes.FETCH_SUB_MACHINE_SUCCESS:
@@ -109,7 +115,9 @@ const qualityCheckSheetsReducer = (state = INITIAL_STATE, action) => {
 
             return {
                 ...state,
-                isPartLoading: true
+                isPartLoading: true,
+                partCollection: [],
+                partErrorMsg: null
             }
 
         case qualityCheckSheetTypes.FETCH_PART_SUCCESS:
@@ -117,7 +125,7 @@ const qualityCheckSheetsReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isPartLoading: false,
-                partCollection: action.payload
+                partCollection: action.payload,
             }
 
         case qualityCheckSheetTypes.FETCH_PART_FAILURE:
@@ -133,7 +141,9 @@ const qualityCheckSheetsReducer = (state = INITIAL_STATE, action) => {
 
             return {
                 ...state,
-                isCharacteristicsLoading: true
+                isCharacteristicsLoading: true,
+                characteristicsCollection: [],
+                characteristicsErrorMsg: null
             }
 
         case qualityCheckSheetTypes.FETCH_CHARACTERISTICS_SUCCESS:
@@ -166,11 +176,11 @@ const qualityCheckSheetsReducer = (state = INITIAL_STATE, action) => {
                 part: action.payload
             }
 
-        case qualityCheckSheetTypes.SET_LINE:
+        case qualityCheckSheetTypes.SET_MACHINE:
             
             return {
                 ...state,
-                line: action.payload
+                machine: action.payload
             }
 
         default:

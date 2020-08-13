@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 
 import {
-    Table
+    Table,
+    Alert 
 } from 'antd'
 
 import {
@@ -39,13 +40,21 @@ const LineComponent = ({
 
     const data = lineCollection.map((data, i) => ({key: i, ...data}));
 
-    return <Table 
-        loading={isLineLoading}
-        columns={columns}
-        dataSource={data}
-        size="middle"
-        bordered={true}
-        pagination={false} />  
+    return (
+        <React.Fragment>
+            {
+                lineErrorMsg 
+                ? <Alert message={lineErrorMsg} type="error" showIcon className="mb2" />
+                : null
+            }
+            <Table 
+                loading={isLineLoading}
+                columns={columns}
+                dataSource={data}
+                size="middle"
+                bordered={true}
+                pagination={false} />
+        </React.Fragment>)
 }
 
 const mapStateToProps = ({ qualityCheckSheet }) => ({

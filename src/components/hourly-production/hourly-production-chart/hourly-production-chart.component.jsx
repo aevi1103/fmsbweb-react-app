@@ -29,25 +29,27 @@ const HourlyProductionChart = ({
         label: `${moment(shiftDate).format('MM/DD/YY')} - Shift ${shift} - Hr ${hour}`
     }));
 
-    const getToolText = ({
-        shiftDate,
-        shift,
-        line,
-        hour,
-        department,
+    const getToolText = (item) => {
 
-        net,
-        target,
-        swotTarget,
+        const {
+            shiftDate,
+            shift,
+            line,
+            hour,
+            department,
+    
+            net,
+            target,
+            swotTarget,
+    
+            sol,
+            eol,
+            totalScrap,
+    
+            totalScrapDefects
+        } = item;
 
-        sol,
-        eol,
-        totalScrap,
-
-        totalScrapDefects
-    }) => {
-
-        const { oaeTarget } = swotTarget;
+        const { oaeTarget } = swotTarget || {};
         const targetNetRate = target * oaeTarget;
         const oae = target === 0 ? 0 : net / target;
         const defects = totalScrapDefects.map(({ scrapAreaName, scrapDesc , qty }) => `<li><b>${scrapDesc}:</b> ${numeral(qty).format('0,0')} (${scrapAreaName})</li>`).join('');
@@ -79,7 +81,7 @@ const HourlyProductionChart = ({
         rowid: d.line,
         value: d.net.toString(),
         toolText: getToolText(d),
-        color: setColor(d.target, d.swotTarget.oaeTarget, d.net),
+        color: setColor(d.target, d.swotTarget?.oaeTarget, d.net),
         valueFontColor: '#ffffff',
         link: `n-${d.hxHUrl}`
     }))

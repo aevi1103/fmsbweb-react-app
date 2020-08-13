@@ -24,7 +24,7 @@ import {
     fetchCharacteristicStartAsync,
     setControlMethod,
     setPart,
-    setLine
+    setMachine
  } from '../../../redux/quality-check-sheet/quality-check-sheet.actions'
 
 import { 
@@ -44,35 +44,48 @@ const Characteristics = ({
 
     setControlMethod,
     setPart,
-    setLine,
+    setMachine,
 
     controlMethod,
     part,
-    line
+    machine
 }) => {
 
-    const [errors, setErrors] = useState([])
+    const [error, setError] = useState(null) //check if error handler works
 
     const [fetchLoading, setFetchLoading] = useState(false);
-    const [controlMethods, setControlMethods] = useState([]);
-    const [parts, setParts] = useState([]);
-    const [lines, setLines] = useState([]);
+    const [controlMethods, setControlMethods] = useState([]);   
     const [displayAs, setDisplayAs] = useState([]);
+
+    const [partsLoading, setPartsLoading] = useState(false);
+    const [parts, setParts] = useState([]);
+
+    const [formPartsLoading, setFormPartsLoading] = useState(false);
+    const [formParts, setFormParts] = useState([]);
 
     const [machineLoading, setMachineLoading] = useState(false)
     const [machines, setMachines] = useState([]);
 
-    const [passFail, setPassFail] = useState(null)
+    const [passFail, setPassFail] = useState(null);
+    const [reference, setReference] = useState(null);
     const [formVisible, setFormVisible] = useState(false);
     const [submitLoading, setSubmitLoading] = useState(false);
 
     const [isDraweVisible, setIsDrawerVisible] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [rowData, setRowData] = useState(null);
-
     const [formTitle, setFormTitle] = useState('');
-
     const [form] = Form.useForm();
+
+    const getParts = controlId => {
+        setControlMethod(controlId)
+        setPartsLoading(true);
+        // setPart(null)
+        api.get(`/quality/checksheets/organizationpart?$filter=controlMethodId eq ${controlId}`)
+            .then(response => setParts(response.data))
+            .catch(err => setError(err.message))
+            .finally(() => setPartsLoading(false))
+    }
 
     useEffect(() => {
 
@@ -80,20 +93,22 @@ const Characteristics = ({
 
         axios.all([
             api.get('quality/checksheets/controlmethod'),
-            api.get('quality/checksheets/organizationpart'),
-            api.get('quality/checksheets/line'),
-            api.get('quality/checksheets/displayas')
+            api.get('quality/checksheets/displayas'),
+            api.get(`quality/checksheets/machine?$apply=groupby((value))`)
         ])
         .then(axios.spread((...responses) => {
 
             setControlMethods(responses[0].data) 
-            setParts(responses[1].data)
-            setLines(responses[2].data)
-            setDisplayAs(responses[3].data)
+            setDisplayAs(responses[1].data)
+            setMachines(responses[2].data)
 
         }))
-        .catch(errors => setErrors(errors.push(errors)))
+        .catch(errors => setError(errors.message))
         .finally(() => setFetchLoading(false))
+
+        if (controlMethod) {
+            getParts(controlMethod)
+        }
 
     }, [])
 
@@ -101,28 +116,37 @@ const Characteristics = ({
 
         const getMachine = (lineId) => {
 
-            form.resetFields(['machine']);
+            form.resetFields(['machineName']);
             setMachineLoading(true);
     
-            api.get(`quality/checksheets/machine?$filter=lineId eq ${lineId}`)
+            api.get(`quality/checksheets/machine?$apply=groupby((value))`)
             .then(response => setMachines(response.data))
-            .catch(err => setErrors(errors.push(err.message)))
+            .catch(err => setError(err.message))
             .finally(() => setMachineLoading(false))
 
         }
 
-        if (isDraweVisible && isEdit) {
-            const { machine: { lineId }, passFail } = rowData;
-            getMachine(lineId);
-            setPassFail(!!passFail);
-            form.setFieldsValue({...rowData, lineId })
+        const getParts = (controlId) => {
+            setFormPartsLoading(true);
+            api.get(`/quality/checksheets/organizationpart?$filter=controlMethodId eq ${controlId}`)
+                .then(response => setFormParts(response.data))
+                .catch(err => setError(err.message))
+                .finally(() => setFormPartsLoading(false))
         }
 
-    }, [isDraweVisible, isEdit, rowData, form, errors])
+        if (isDraweVisible && isEdit) {
+            const { machineName, passFail, organizationPart: { controlMethodId } } = rowData;
+            getMachine(machineName);
+            getParts(controlMethodId);
+            setPassFail(!!passFail);
+            form.setFieldsValue({...rowData, controlMethodId })
+        }
+
+    }, [isDraweVisible, isEdit, rowData, form, error])
 
     const onSearch = () => {
-        const expand = `$expand=controlMethod,displayAs,organizationPart,machine($expand=line)`
-        const filter = `&$filter=controlMethodId eq ${controlMethod} and organizationPartId eq ${part} and machine/lineId eq ${line}`
+        const expand = `$expand=displayAs,organizationPart($expand=controlMethod)`
+        const filter = `&$filter=organizationPartId eq ${part} and machineName eq '${machine}' and organizationPart/controlMethodId eq ${controlMethod}`
         fetchCharacteristicStartAsync(expand + filter);
     }
 
@@ -145,20 +169,9 @@ const Characteristics = ({
     const onFormClose = () => {
         setFormVisible(false);
         setPassFail(false);
-        setIsEdit(false)
+        setReference(false);
+        setIsEdit(false);
         form.resetFields();
-    }
-
-    const onLinesChange = (value) => {
-
-        form.resetFields(['machine']);
-        setMachineLoading(true);
-
-        api.get(`quality/checksheets/machine?$filter=lineId eq ${value}`)
-        .then(response => setMachines(response.data))
-        .catch(err => setErrors(errors.push(err.message)))
-        .finally(() => setMachineLoading(false))
-
     }
 
     const onFinish = async (values) => {
@@ -219,28 +232,45 @@ const Characteristics = ({
     const onChangeDisplayAs = (value, option) => {
 
         if (option.children === 'PassFail') {
-
             setPassFail(true)
             form.resetFields(['min', 'nom', 'max'])
+            return;
+        } 
 
-        } else {
+        if (option.children === 'Reference') {
+            setPassFail(false);
+            setReference(true);
+            form.resetFields(['nom', 'max'])
+            return;
+        }
 
-            setPassFail(false)
+        setPassFail(false);
+        setReference(false);
 
-            if (rowData) {
-                const { min, nom, max } = rowData;
-                form.setFieldsValue({min, nom, max })
-            }
-
+        if (rowData) {
+            const { min, nom, max } = rowData;
+            form.setFieldsValue({min, nom, max })
         }
 
     }
 
+    const onFormControlPlanChange = value => {
+        setFormPartsLoading(true);
+        api.get(`/quality/checksheets/organizationpart?$filter=controlMethodId eq ${value}`)
+            .then(response => setFormParts(response.data))
+            .catch(err => setError(err.message))
+            .finally(() => setFormPartsLoading(false))
+    }
+
+    const onControlPlanChange = value => {
+        setPart(null);
+        getParts(value);
+    }
+
     const afterVisibleChange = (visible) => setIsDrawerVisible(visible);
     const onSubmit = () => form.submit();
-    const onControlPlanChange = value => setControlMethod(value)
     const onPartChange = value => setPart(value)
-    const onLineChange = value => setLine(value)
+    const onMachineChange = value => setMachine(value)
 
     const columns = [
         {
@@ -264,11 +294,11 @@ const Characteristics = ({
         },
         {
             title: 'Control Method',
-            dataIndex: 'controlMethod',
+            dataIndex: 'method',
             render: (text, record, index) => {
-                return record.controlMethod.method;
+                return record.organizationPart.controlMethod.method;
             },
-            key: 'controlMethod',
+            key: 'method',
         },
         {
             title: 'Part',
@@ -279,23 +309,15 @@ const Characteristics = ({
             key: 'organizationPart',
         },
         {
-            title: 'Line',
-            dataIndex: 'line',
-            render: (text, record, index) => {
-                return record.machine.line.value;
-            },
-            key: 'line',
-        },
-        {
             title: 'Machine',
-            dataIndex: 'machine',
+            dataIndex: 'machineName',
             render: (text, record, index) => {
-                return record.machine.value;
+                return record.machineName;
             },
-            key: 'machine',
-            sorter: (a, b) => a.machine.value.length - b.machine.value.length,
-            filters:  [...new Set(characteristicsCollection.map(({ machine }) => machine.value))].map(i => ({text: i, value: i})),
-            onFilter: (value, record) => record.machine.value.indexOf(value) === 0,
+            key: 'machineName',
+            sorter: (a, b) => a.machineName.length - b.machineName.length,
+            filters:  [...new Set(characteristicsCollection.map(({ machineName }) => machineName))].map(i => ({text: i, value: i})),
+            onFilter: (value, record) => record.machineName.indexOf(value) === 0,
         },
         {
             title: 'Ref No',
@@ -346,10 +368,12 @@ const Characteristics = ({
                         return numeral(val).format('0.00%');
                     case 'Degrees':      
                         return val ? <span>{val}&deg;</span> : null;
-                    case 'PositiveNegative':      
+                    case 'NegativePositive':      
                         return `-${val}`;
                     case 'PassFail':      
                         return `Pass / Fail`;
+                    case 'Reference':      
+                        return val;
                     default:
                         return val
                 }
@@ -373,8 +397,10 @@ const Characteristics = ({
                         return numeral(val).format('0.00%');
                     case 'Degrees':      
                     return val ? <span>{val}&deg;</span> : null;
-                    case 'PassFail':      
-                        return `Pass / Fail`;
+                    case 'PassFail':   
+                        return `-`;
+                    case 'Reference':    
+                        return `Ref`;
                     default:
                         return val
                 }
@@ -398,10 +424,13 @@ const Characteristics = ({
                         return numeral(val).format('0.00%');
                     case 'Degrees':      
                         return val ? <span>{val}&deg;</span> : null;
-                    case 'PositiveNegative':      
+                    case 'NegativePositive':      
                         return `+${val}`;
-                    case 'PassFail':      
-                        return `Pass / Fail`;
+                    case 'PassFail':    
+                    case 'Reference':   
+                        return `-`;
+                    case 'Positive':      
+                        return `+${val}`;
                     default:
                         return val
                 }
@@ -458,10 +487,11 @@ const Characteristics = ({
             </Tooltip>
             
             <Tooltip title="Select Part Number">
-                <Select loading={fetchLoading} 
+                <Select loading={partsLoading} 
                     className="ml2" 
                     style={{width: '9rem'}} 
                     defaultValue={part}
+                    value={part}
                     onChange={onPartChange}>
                     {
                         parts.map(({organizationPartId, part}) => (
@@ -471,15 +501,15 @@ const Characteristics = ({
                 </Select>
             </Tooltip>
 
-            <Tooltip title="Select Line">
+            <Tooltip title="Select Machine">
                 <Select loading={fetchLoading} 
                     className="ml2" 
-                    style={{width: '4rem'}} 
-                    defaultValue={line}
-                    onChange={onLineChange}>
+                    style={{width: '9rem'}} 
+                    defaultValue={machine}
+                    onChange={onMachineChange}>
                     {
-                        lines.map(({lineId, value}) => (
-                            <Option key={lineId} value={lineId}>{value}</Option>
+                        machines.map(({ value }) => (
+                            <Option key={value} value={value}>{value}</Option>
                         ))
                     }
                 </Select>
@@ -497,7 +527,7 @@ const Characteristics = ({
             
             <Drawer
                 title={formTitle}
-                width={720}
+                width={900}
                 onClose={onFormClose}
                 visible={formVisible}
                 bodyStyle={{ paddingBottom: 80 }}
@@ -527,7 +557,7 @@ const Characteristics = ({
                         name="controlMethodId"
                         label="Control Method"
                         rules={[{ required: true, message: 'Please select control method' }]}>
-                        <Select loading={fetchLoading} >
+                        <Select loading={fetchLoading} onChange={onFormControlPlanChange}>
                             {
                                 controlMethods.map(({controlMethodId, method}) => (
                                     <Option key={controlMethodId} value={controlMethodId}>{method}</Option>
@@ -542,9 +572,9 @@ const Characteristics = ({
                         name="organizationPartId"
                         label="Part No"
                         rules={[{ required: true, message: 'Please select part number' }]}>
-                        <Select loading={fetchLoading}>
+                        <Select loading={formPartsLoading}>
                             {
-                                parts.map(({organizationPartId, part}) => (
+                                formParts.map(({organizationPartId, part}) => (
                                     <Option key={organizationPartId} value={organizationPartId}>{part}</Option>
                                 ))
                             }
@@ -556,42 +586,22 @@ const Characteristics = ({
 
                   <Row gutter={16}>
 
-                    <Col span={12}>
+                    <Col span={8}>
                       <Form.Item
-                        
-                        name="lineId"
-                        label="Line"
-                        rules={[{ required: true, message: 'Please select line' }]}>
-                        <Select loading={fetchLoading} onChange={onLinesChange}>
-                            {
-                                lines.map(({lineId, value}) => (
-                                    <Option key={lineId} value={lineId}>{value}</Option>
-                                ))
-                            }
-                        </Select>
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={12}>
-                      <Form.Item
-                        name="machineId"
+                        name="machineName"
                         label="Machine"
                         rules={[{ required: true, message: 'Please select machine' }]}>
                         <Select loading={machineLoading}>
                             {
-                                machines.map(({machineId, value}) => (
-                                    <Option key={machineId} value={machineId}>{value}</Option>
+                                machines.map(({ value }) => (
+                                    <Option key={value} value={value}>{value}</Option>
                                 ))
                             }
                         </Select>
                       </Form.Item>
                     </Col>
 
-                  </Row>
-
-                  <Row gutter={16}>
-
-                    <Col span={12}>
+                    <Col span={8}>
                       <Form.Item
                         name="referenceNo"
                         label="Reference Number"
@@ -600,7 +610,7 @@ const Characteristics = ({
                       </Form.Item>
                     </Col>
 
-                    <Col span={12}>
+                    <Col span={8}>
                       <Form.Item
                         name="value"
                         label="Characteristics"
@@ -666,7 +676,7 @@ const Characteristics = ({
                         <Form.Item
                             name="nom"
                             label="Nom">
-                            <InputNumber disabled={passFail} style={{
+                            <InputNumber disabled={passFail || reference} style={{
                                 width: '100%',
                             }}/>
                         </Form.Item>
@@ -676,7 +686,7 @@ const Characteristics = ({
                         <Form.Item
                             name="max"
                             label="Max">
-                            <InputNumber disabled={passFail} style={{
+                            <InputNumber disabled={passFail || reference} style={{
                                 width: '100%',
                             }}/>
                         </Form.Item>
@@ -705,7 +715,7 @@ const mapDispatchToProps = dispatch => ({
     fetchCharacteristicStartAsync: (odataQry) => dispatch(fetchCharacteristicStartAsync(odataQry)),
     setControlMethod: value => dispatch(setControlMethod(value)),
     setPart: value => dispatch(setPart(value)),
-    setLine: value => dispatch(setLine(value))
+    setMachine: value => dispatch(setMachine(value))
 })
 
 const mapStateToProps = ({ qualityCheckSheet }) => ({
@@ -714,7 +724,7 @@ const mapStateToProps = ({ qualityCheckSheet }) => ({
     characteristicsErrorMsg: qualityCheckSheet.characteristicsErrorMsg,
     controlMethod: qualityCheckSheet.controlMethod,
     part: qualityCheckSheet.part,
-    line: qualityCheckSheet.line,
+    machine: qualityCheckSheet.machine,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Characteristics)

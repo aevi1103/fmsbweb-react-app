@@ -21,7 +21,7 @@ const qualityCheckSheetTypes = {
 
     SET_CONTROL_METHOD: 'SET_CONTROL_METHOD',
     SET_PART: 'SET_PART',
-    SET_LINE: 'SET_LINE'
+    SET_MACHINE: 'SET_MACHINE'
 }
 
 export default qualityCheckSheetTypes;

@@ -21,10 +21,21 @@ const LineComponent = ({
 }) => {
 
     useEffect(() => {
-        fetchPartStartAsync();
+        fetchPartStartAsync(`$expand=controlMethod`);
     }, [])
 
     const columns = [
+        {
+            title: 'Control Method',
+            dataIndex: 'controlMethod',
+            key: 'controlMethod',
+            render: (text, record, index) => {
+                return record.controlMethod.method
+            },
+            sorter: (a, b) => a.controlMethod.method.length - b.controlMethod.method.length,
+            filters:  [...new Set(partCollection.map(({ controlMethod }) => controlMethod.method))].map(i => ({text: i, value: i})),
+            onFilter: (value, record) => record.controlMethod.method.indexOf(value) === 0
+        },
         {
             title: 'Left Hand',
             dataIndex: 'leftHandPart',

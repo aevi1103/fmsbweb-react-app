@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from "react-router-dom";
+import api from '../../../API'
 
 import {
   DashboardOutlined,
@@ -16,6 +17,22 @@ import { Menu } from "antd";
 const { SubMenu } = Menu;
 
 const HomeMenu = ( { location } ) => { 
+
+  const [controlMethods, setControlMethods] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+
+      setLoading(true);
+      api.get('quality/checksheets/controlmethod')
+      .then(response => {
+          setControlMethods(response.data)
+      })
+      .catch(err => setError(err.message))
+      .finally(() => setLoading(false))
+
+  }, [])
 
   return (
     <Menu theme="dark" defaultSelectedKeys={[location.pathname]} >
@@ -177,10 +194,22 @@ const HomeMenu = ( { location } ) => {
         <Menu.Item key="viewQa">View QA</Menu.Item>
         <Menu.Item key="scrapEscalation">Scrap Escalation</Menu.Item>
 
-        <Menu.Item key="/quality/checksheets">
-          <span>Check Sheet</span>
-          <Link to="/quality/checksheets" />
-        </Menu.Item>
+        <SubMenu key="sub3" title="Check Sheet">
+          {
+            controlMethods.map(({controlMethodId, method}) => (
+                <Menu.Item key={`/quality/checksheets/controlmethod/${controlMethodId}`}>
+                  <span>{method}</span>
+                  <Link to={{
+                    pathname: `/quality/checksheets/controlmethod/${controlMethodId}`,
+                    state: {
+                      name: method,
+                      id: controlMethodId
+                    }
+                  }} />
+                </Menu.Item>
+            ))
+          }
+        </SubMenu>
 
         <Menu.Item key="/quality/checksheets/settings">
           <span>Check Sheet Settings</span>

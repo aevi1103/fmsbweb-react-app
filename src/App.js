@@ -37,6 +37,9 @@ import AfEosPage from './pages/af/eos-page/eos-page.component';
 
 //quality pages
 import CheckSheetSettingsPage from './pages/quality/check-sheet/check-sheet-settings-page.component'
+import ControlMethodPage from './pages/quality/check-sheet/control-method-page.component'
+import CheckSheetLogInPage from './pages/quality/check-sheet/check-sheet-login-page.component'
+import CheckSheetDataEntryPage from './pages/quality/check-sheet/check-sheet-data-entry.component'
 
 const GetRenderedProdPage = (area, header) => <ProductionPage area={area} headerTitle={header} />
 const RenderedFoundryPage = () => GetRenderedProdPage("foundry cell", "Foundry");
@@ -130,6 +133,9 @@ const App = ( { collapsed, setSiderCollapse } ) => {
 
           {/* Quality */}
           <Route exact path="/quality/checksheets/settings" component={CheckSheetSettingsPage} />
+          <Route exact path="/quality/checksheets/controlmethod/:controlName/:controlId/line/:lineId" component={CheckSheetLogInPage} />
+          <Route exact path="/quality/checksheets/controlmethod/:controlId" component={ControlMethodPage} />
+          <Route exact path="/quality/checksheets/:controlName/:controlId/line/:lineId/checkSheet/:checkSheetId" component={CheckSheetDataEntryPage} />
 
           <Route component={NotFound} />
         </Switch>

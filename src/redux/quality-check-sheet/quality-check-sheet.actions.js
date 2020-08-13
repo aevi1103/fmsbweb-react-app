@@ -83,7 +83,7 @@ export const setPart = value => ({
     payload: value
 })
 
-export const setLine = value => ({
-    type: qualityCheckSheetTypes.SET_LINE,
+export const setMachine = value => ({
+    type: qualityCheckSheetTypes.SET_MACHINE,
     payload: value
 })
