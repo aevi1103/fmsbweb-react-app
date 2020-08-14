@@ -87,3 +87,18 @@ export const setMachine = value => ({
     type: qualityCheckSheetTypes.SET_MACHINE,
     payload: value
 })
+
+export const setCheckSheetPart = value => ({
+    type: qualityCheckSheetTypes.SET_CHECK_SHEET_PART,
+    payload: value
+})
+
+export const setCheckSheetSubMachine = value => ({
+    type: qualityCheckSheetTypes.SET_CHECK_SHEET_SUB_MACHINE,
+    payload: value
+})
+
+export const setCheckSheetMachineName = value => ({
+    type: qualityCheckSheetTypes.SET_CHECK_SHEET_MACHINE_NAME,
+    payload: value
+})

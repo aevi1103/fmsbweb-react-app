@@ -73,7 +73,9 @@ const App = ( { collapsed, setSiderCollapse } ) => {
     <Layout style={{ minHeight: "100vh" }}>
 
       <Sider
-        collapsible
+        breakpoint="lg"
+        collapsedWidth="0"
+        // collapsible
         collapsed={collapsed}
         onCollapse={setSiderCollapse}
       >

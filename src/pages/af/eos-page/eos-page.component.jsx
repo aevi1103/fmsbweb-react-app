@@ -53,20 +53,20 @@ const { TextArea  } = Input;
 const formLayout = {
     labelCol: {
         xs: {
-        span: 24,
+            span: 24,
         },
         sm: {
-        span: 8,
+            span: 8,
         }
     },
     wrapperCol: {
         xs: {
-        span: 24,
+            span: 24,
         },
         sm: {
-        span:24,
+            span:24,
         },
-    },
+    }
 };
 
 const gridLayout = {

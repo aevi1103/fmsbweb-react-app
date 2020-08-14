@@ -74,12 +74,29 @@ const CheckSheetLogInPage = () => {
     }, [checkSheetId, history, controlName, controlId, lineId])
 
     const layout = {
-        labelCol: { span: 2 },
-        wrapperCol: { span: 4 },
+        labelCol: {
+            sm: {
+                span: 5,
+            },
+            lg: {
+                span: 2
+            }
+        },
+        wrapperCol: {
+            sm: {
+                span:12,
+            },
+            lg: {
+                span: 5
+            }
+        }
       };
 
     const tailLayout = {
-        wrapperCol: { offset: 2, span: 4 },
+        wrapperCol: {
+            lg: { offset: 2, span: 4 },
+            sm: { offset: 5, span: 4 }
+        },
     };
 
     return (

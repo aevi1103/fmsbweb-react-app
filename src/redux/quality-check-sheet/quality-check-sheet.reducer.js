@@ -24,7 +24,11 @@ const INITIAL_STATE = {
 
     controlMethod: null,
     part: null,
-    machine: null
+    machine: null,
+
+    checkSheetPart: null,
+    checkSheetSubMachine: null,
+    checkSheetMachineName: 'Okuma SP'
 
 }
 
@@ -181,6 +185,27 @@ const qualityCheckSheetsReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 machine: action.payload
+            }
+
+        case qualityCheckSheetTypes.SET_CHECK_SHEET_PART:
+        
+            return {
+                ...state,
+                checkSheetPart: action.payload
+            }
+
+        case qualityCheckSheetTypes.SET_CHECK_SHEET_SUB_MACHINE:
+        
+            return {
+                ...state,
+                checkSheetSubMachine: action.payload
+            }
+
+        case qualityCheckSheetTypes.SET_CHECK_SHEET_MACHINE_NAME:
+        
+            return {
+                ...state,
+                checkSheetMachineName: action.payload
             }
 
         default:

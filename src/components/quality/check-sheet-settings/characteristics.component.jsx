@@ -256,6 +256,7 @@ const Characteristics = ({
 
     const onFormControlPlanChange = value => {
         setFormPartsLoading(true);
+        form.resetFields(['organizationPartId'])
         api.get(`/quality/checksheets/organizationpart?$filter=controlMethodId eq ${value}`)
             .then(response => setFormParts(response.data))
             .catch(err => setError(err.message))
