@@ -1,7 +1,8 @@
-import React, { useEffect, useReducer } from 'react'
+import React, { useEffect, useReducer, useCallback } from 'react'
 import { useParams, useHistory, useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
 import moment from 'moment'
+import axios from 'axios'
 import api from '../../../API'
 
 import { 
@@ -13,7 +14,8 @@ import {
     Tabs,
     Radio,
     Row,
-    Col
+    Col,
+    message
  } from "antd";
 
 import {
@@ -32,6 +34,10 @@ const initialState = {
     checkSheetLoading: false,
     checkSheet: null,
     checkSheetErrorMsg: null,
+
+    checkSheetValuesLoading: false,
+    checkSheetValues: [],
+    checkSheetValuesErrorMsg: null,
 
     machinesLoading: false,
     machinesCollection: [],
@@ -59,6 +65,22 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 checkSheetErrorMsg: action.payload
+            }
+
+        case 'SET_CHECK_SHEET_VALUES_LOADING':
+            return {
+                ...state,
+                checkSheetValuesLoading: action.payload
+            }
+        case 'SET_CHECK_SHEET_VALUES':
+            return {
+                ...state,
+                checkSheetValues: action.payload
+            }
+        case 'SET_CHECK_SHEET_VALUES_ERROR_MSG':
+            return {
+                ...state,
+                checkSheetValuesErrorMsg: action.payload
             }
 
         case 'SET_MACHINES_LOADING':
@@ -123,12 +145,30 @@ const CheckSheetDataEntryPage = ({
     const { controlId, controlName, lineId, checkSheetId } = useParams();
     const [state, dispatch] = useReducer(reducer, initialState);
 
-    const getCharacteristics = (checkSheet, machineName) => {
+    const getCharacteristics = useCallback((checkSheet, machineName) => {
         if (!machineName) return;
         const { organizationPart: { characteristics } } = checkSheet;
-        return characteristics.filter(d => d.machineName.toLowerCase().trim() === machineName.toLowerCase().trim())
-                                .map(d => ({...d, key: d.characteristicId}))
-    }
+        return characteristics
+                .filter(d => d.machineName.toLowerCase().trim() === machineName.toLowerCase().trim())
+                .map(d => ({...d, key: d.characteristicId}))
+    }, [])
+
+    const getValues = useCallback((checkSheetId, subMachineId, part) => {
+        dispatch({type: 'SET_CHECK_SHEET_VALUES_LOADING', payload: true})
+        api.get(`/quality/checksheets/checksheetentry?$filter=checkSheetId eq ${checkSheetId} and part eq '${part}' and subMachineId eq ${subMachineId}`)
+            .then(response => {
+                dispatch({type: 'SET_CHECK_SHEET_VALUES', payload: response.data})
+
+                const msg = response.data.length > 0 
+                            ? `${response.data.length} records successfully loaded`
+                            : `No records loaded`;
+                            
+                message.success(msg)
+            })
+            .catch(error => dispatch({type: 'SET_CHECK_SHEET_VALUES_ERROR_MSG', payload: error.message}))
+            .finally(() => dispatch({type: 'SET_CHECK_SHEET_VALUES_LOADING', payload: false}))
+            
+    }, [])
 
     useEffect(() => {
 
@@ -139,7 +179,7 @@ const CheckSheetDataEntryPage = ({
                 .catch(error => dispatch({type: 'SET_MACHINES_ERROR_MSG', payload: error.message}))
                 .finally(() => dispatch({type: 'SET_MACHINES_LOADING', payload: false}))
         }
-        
+
         dispatch({type: 'SET_CHECK_SHEET_LOADING', payload: true})
         api.get(`/quality/checksheets/checksheet?$expand=controlMethod,line,organizationPart($expand=characteristics($expand=displayAs))&$filter=checkSheetId eq ${checkSheetId}`)
             .then(response => {
@@ -148,10 +188,9 @@ const CheckSheetDataEntryPage = ({
                 getMachines(data.lineId)
 
                 //check characteristics on load
-                if (checkSheetSubMachine && checkSheetMachineName) {
-                    dispatch({type: 'SET_CHARACTERISTICS', payload: getCharacteristics(data, checkSheetMachineName)})
-                }
-                
+                if (checkSheetSubMachine && checkSheetMachineName) 
+                    dispatch({type: 'SET_CHARACTERISTICS', payload: getCharacteristics(data, checkSheetMachineName)})  
+
             })
             .catch(error => dispatch({type: 'SET_CHECK_SHEET_ERROR_MSG', payload: error.message}))
             .finally(() => dispatch({type: 'SET_CHECK_SHEET_LOADING', payload: false}))
@@ -175,15 +214,21 @@ const CheckSheetDataEntryPage = ({
         }
 
     }, [state.checkSheet])
+
+    useEffect(() => {
+
+        if (checkSheetId && checkSheetSubMachine && checkSheetPart && state.checkSheet) {
+            getValues(checkSheetId, checkSheetSubMachine, checkSheetPart)
+        }
+
+    }, [checkSheetId, checkSheetSubMachine, checkSheetPart, state.checkSheet, getValues])
     
     const onTabClick = (key) => {
         history.push(key);
         setCheckSheetSubMachine(null);
         const machineName = key.replace(/_/g, ' ').replace('#','');
         setCheckSheetMachineName(machineName);
-
-        dispatch({type: 'SET_CHARACTERISTICS', payload: getCharacteristics(state.checkSheet, machineName)})
-        
+        dispatch({type: 'SET_CHARACTERISTICS', payload: getCharacteristics(state.checkSheet, machineName)})  
     }
     const onSubMachineChange = e => {
         setCheckSheetSubMachine(e.target.value);
@@ -250,7 +295,7 @@ const CheckSheetDataEntryPage = ({
                                         </Col>
 
                                         <Col span={24}>
-                                            <CheckSheetDataEntry data={state.characteristics} />
+                                            <CheckSheetDataEntry data={state.characteristics} values={state.checkSheetValues} />
                                         </Col>
                                         
                                     </Row>

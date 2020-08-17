@@ -6,13 +6,12 @@ import PassFailSelect from './pass-fail-select.component'
 import CustomInputNumber from './custom-input-number.component'
 
 import {
-    Table,
-    InputNumber,
-    Select,
+    Table
 } from 'antd'
 
 const CheckSheetDataEntry = ({
     data = [],
+    values = [],
     checkSheetSubMachine,
     checkSheetPart
 }) => {
@@ -25,26 +24,39 @@ const CheckSheetDataEntry = ({
 
     const maxFrequency = Math.max(...data.map(({frequency}) => frequency));
 
+    const getCurrentValue = (record, i) => values.find(({ characteristicId, frequency }) => characteristicId === record.characteristicId && frequency === i) 
+                                        ? values.find(({ characteristicId, frequency }) => characteristicId === record.characteristicId && frequency === i).value
+                                        : null;
+
+    const getCurrentValueBool = (record, i) => values.find(({ characteristicId, frequency }) => characteristicId === record.characteristicId && frequency === i) 
+                                            ? values.find(({ characteristicId, frequency }) => characteristicId === record.characteristicId && frequency === i).valueBool
+                                            : null
+
     const frequencies = [];
     for (let i = 1; i <= maxFrequency; i++) {
         frequencies.push({
             title: `Frequency ${i}`,
             dataIndex: `f_${i}`,
-            width: '10rem',
+            width: '6.5rem',
             render: (text, record, index) => {
 
-                const { frequency, displayAs: { display }, min, nom, max } = record;
+                const { frequency, displayAs: { display } } = record;
 
-                if (display === 'Reference') return;
-                
+                if (display === 'Reference') return; 
                 if (frequency >= i) {
 
-                    if (display === 'PassFail') {
-                        return <PassFailSelect isDisabled={isDisabled} />
-                    }
+                    if (display === 'PassFail')  
+                        return <PassFailSelect 
+                            isDisabled={isDisabled}
+                            record={record} 
+                            frequency={i} 
+                            defaultValue={getCurrentValueBool(record, i)} />
 
-                    return <CustomInputNumber isDisabled={isDisabled} min={min} nom={nom} max={max} />
-                    
+                    return <CustomInputNumber 
+                                isDisabled={isDisabled} 
+                                record={record} 
+                                frequency={i} 
+                                defaultValue={getCurrentValue(record, i)} />       
                 } 
 
                 return;
