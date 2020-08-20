@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import numeral from 'numeral'
 import api from '../../../API'
-import axios from 'axios'
+import axios from 'axios';
+import _ from 'lodash'
 
 import {
     Table,
@@ -351,6 +352,9 @@ const Characteristics = ({
             key: 'frequency',
             filters:  [...new Set(characteristicsCollection.map(({ frequency }) => frequency))].map(i => ({text: i, value: i})),
             onFilter: (value, record) => record.frequency.indexOf(value) === 0,
+            render: (text, record, index) => {
+                return `Every ${record.frequency} hour${record.frequency > 1 ? 's' : ''}`
+            },
         },
         {
             title: 'Min',
@@ -638,9 +642,11 @@ const Characteristics = ({
                         name="frequency"
                         label="Frequency"
                         rules={[{ required: true, message: 'Please enter frequency' }]}>
-                        <InputNumber style={{
-                            width: '100%',
-                        }}/>
+                            <Select onChange={onChangeDisplayAs} loading={fetchLoading}>
+                                {
+                                    _.range(8).map(i => <Option key={i+1} value={i+1}>{`Every ${i+1} hour${i+1 > 1 ? 's' : ''}`}</Option>)
+                                }   
+                            </Select>
                       </Form.Item>
                     </Col>
 
@@ -651,9 +657,7 @@ const Characteristics = ({
                             rules={[{ required: true, message: 'Please enter display as' }]}>
                             <Select onChange={onChangeDisplayAs} loading={fetchLoading}>
                                 {
-                                    displayAs.map(({displayAsId, display}) => (
-                                        <Option key={displayAsId} value={displayAsId}>{display}</Option>
-                                    ))
+                                    displayAs.map(({displayAsId, display}) => <Option key={displayAsId} value={displayAsId}>{display}</Option>)
                                 }   
                             </Select>
                         </Form.Item>

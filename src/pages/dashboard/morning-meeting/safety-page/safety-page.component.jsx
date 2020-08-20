@@ -65,7 +65,7 @@ const SafetyPage = ({
     }, [])
 
     return (
-    <>
+    <React.Fragment>
         <Header className="pa0 custom-header" >
             <h2 className="ml3">Safety: {startDate} - {endDate}</h2>
         </Header>
@@ -85,7 +85,7 @@ const SafetyPage = ({
             </div>
             
         </Content>      
-    </> 
+    </React.Fragment>
 )}
 
 const mapDispatchToProps = dispatch => ({

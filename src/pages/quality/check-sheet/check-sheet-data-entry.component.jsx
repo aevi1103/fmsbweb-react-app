@@ -2,7 +2,6 @@ import React, { useEffect, useReducer, useCallback } from 'react'
 import { useParams, useHistory, useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
 import moment from 'moment'
-import axios from 'axios'
 import api from '../../../API'
 
 import { 
@@ -180,6 +179,7 @@ const CheckSheetDataEntryPage = ({
                 .finally(() => dispatch({type: 'SET_MACHINES_LOADING', payload: false}))
         }
 
+        //get check sheet
         dispatch({type: 'SET_CHECK_SHEET_LOADING', payload: true})
         api.get(`/quality/checksheets/checksheet?$expand=controlMethod,line,organizationPart($expand=characteristics($expand=displayAs))&$filter=checkSheetId eq ${checkSheetId}`)
             .then(response => {

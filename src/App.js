@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch } from "react-router-dom";
 import { ReactComponent as Logo } from './assets/logo.svg';
@@ -6,6 +6,7 @@ import { ReactComponent as LogoIcon } from './assets/logoIcon.svg';
 import { LogoContainer } from './App.styles';
 import { setSiderCollapse } from './redux/home/home.actions';
 import { Layout, BackTop } from "antd";
+import { useWindowSize, useScroll } from 'react-use'
 
 import './App.css';
 
@@ -69,16 +70,45 @@ const logoStylesWhite = {
 
 const App = ( { collapsed, setSiderCollapse } ) => { 
 
+  const defaultSiderProps = {
+    collapsible: true,
+    collapsed,
+    onCollapse: setSiderCollapse
+  }
+
+  const { width, height } = useWindowSize();
+  const [siderProps, setSiderProps] = useState(defaultSiderProps);
+
+  useEffect(() => {
+
+    if (width <= 1024) {
+
+      setSiderProps({
+        breakpoint: 'lg',
+        collapsedWidth: '0',
+        collapsible: true,
+        collapsed,
+        onCollapse: setSiderCollapse
+      })
+
+    } else {
+
+      setSiderProps({
+        collapsible: true,
+        collapsed,
+        onCollapse: setSiderCollapse
+      })
+
+    }
+
+  }, [width, collapsed, setSiderCollapse])
+
+
   return (
     <Layout style={{ minHeight: "100vh" }}>
 
-      <Sider
-        breakpoint="xl"
-        collapsedWidth="0"
-        // collapsible
-        collapsed={collapsed}
-        onCollapse={setSiderCollapse}
-      >
+      <Sider {...siderProps}>
+
         <LogoContainer>
           {
             collapsed 

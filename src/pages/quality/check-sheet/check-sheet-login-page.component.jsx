@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
+import { connect } from 'react-redux'
 import api from '../../../API'
 import { 
     Layout,
@@ -21,7 +22,9 @@ import 'antd/dist/antd.css';
 const { Content } = Layout;
 const { Option } = Select
 
-const CheckSheetLogInPage = () => {
+const CheckSheetLogInPage = ({
+    checkSheetMachineName
+}) => {
 
     const history = useHistory();
     const { controlId, controlName, lineId } = useParams();
@@ -68,10 +71,10 @@ const CheckSheetLogInPage = () => {
 
     useEffect(() => {
         if (checkSheetId) {
-            const redirect = `/quality/checksheets/${controlName}/${controlId}/line/${lineId}/checkSheet/${checkSheetId}`;
+            const redirect = `/quality/checksheets/${controlName}/${controlId}/line/${lineId}/checkSheet/${checkSheetId}#${checkSheetMachineName}`;
             history.push(redirect)
         }
-    }, [checkSheetId, history, controlName, controlId, lineId])
+    }, [checkSheetId, history, controlName, controlId, lineId, checkSheetMachineName])
 
     const layout = {
         labelCol: {
@@ -151,4 +154,8 @@ const CheckSheetLogInPage = () => {
     )
 }
 
-export default CheckSheetLogInPage;
+const mapStateToProps = ({qualityCheckSheet}) => ({
+    checkSheetMachineName: qualityCheckSheet.checkSheetMachineName
+})
+
+export default connect(mapStateToProps)(CheckSheetLogInPage);

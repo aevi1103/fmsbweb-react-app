@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import numeral from 'numeral'
 import { connect } from 'react-redux'
+import api from '../../../API'
 
 import PassFailSelect from './pass-fail-select.component'
 import CustomInputNumber from './custom-input-number.component'
 
 import {
-    Table
-} from 'antd'
+    Table,
+    Input,
+    Badge
+} from 'antd';
+
+const { TextArea } = Input;
 
 const CheckSheetDataEntry = ({
     data = [],
@@ -18,52 +23,94 @@ const CheckSheetDataEntry = ({
 
     const [isDisabled, setIsDisabled] = useState(false);
 
+
     useEffect(() => {       
         setIsDisabled(!(!!checkSheetSubMachine && !!checkSheetPart))
     }, [checkSheetSubMachine, checkSheetPart])
 
-    const maxFrequency = Math.max(...data.map(({frequency}) => frequency));
+    const getCurrentValue = (record, i, type) => {
+        const result = values.find(({ characteristicId, frequency }) => characteristicId === record.characteristicId && frequency === i);
+        if (!result) return null;
 
-    const getCurrentValue = (record, i) => values.find(({ characteristicId, frequency }) => characteristicId === record.characteristicId && frequency === i) 
-                                        ? values.find(({ characteristicId, frequency }) => characteristicId === record.characteristicId && frequency === i).value
-                                        : null;
-
-    const getCurrentValueBool = (record, i) => values.find(({ characteristicId, frequency }) => characteristicId === record.characteristicId && frequency === i) 
-                                            ? values.find(({ characteristicId, frequency }) => characteristicId === record.characteristicId && frequency === i).valueBool
-                                            : null
+        switch (type) {
+            case 'number':
+                return result.value;
+            case 'bool':
+                return result.valueBool;
+            case 'comment':
+                return result.comment;
+            case 'timeStamp':
+                return result.timeStamp;
+            default:
+                return null;
+        }
+    }
 
     const frequencies = [];
-    for (let i = 1; i <= maxFrequency; i++) {
+    const shiftHours = 8;
+    
+
+    for (let i = 1; i <= shiftHours; i++) {
+
+
         frequencies.push({
-            title: `Frequency ${i}`,
-            dataIndex: `f_${i}`,
+            title: `Hour ${i}`,
+            dataIndex: `hour_${i}`,
             width: '6.5rem',
+            key: `hour_${i}`,
             render: (text, record, index) => {
 
                 const { frequency, displayAs: { display } } = record;
 
                 if (display === 'Reference') return; 
-                if (frequency >= i) {
+
+                const mod = i % (frequency);
+
+                if (frequency === 1) {
 
                     if (display === 'PassFail')  
-                        return <PassFailSelect 
+                        return (<PassFailSelect 
                             isDisabled={isDisabled}
                             record={record} 
                             frequency={i} 
-                            defaultValue={getCurrentValueBool(record, i)} />
+                            defaultTimeStamp={getCurrentValue(record, i, 'timeStamp')}
+                            defaultComment={getCurrentValue(record, i, 'comment')}
+                            defaultValue={getCurrentValue(record, i, 'bool')} />)
 
                     return <CustomInputNumber 
                                 isDisabled={isDisabled} 
                                 record={record} 
                                 frequency={i} 
-                                defaultValue={getCurrentValue(record, i)} />       
-                } 
+                                defaultTimeStamp={getCurrentValue(record, i, 'timeStamp')}
+                                defaultComment={getCurrentValue(record, i, 'comment')}
+                                defaultValue={getCurrentValue(record, i, 'number')} /> 
+                }
+
+                if (mod === 1) {
+
+                    if (display === 'PassFail')  
+                        return (<PassFailSelect 
+                            isDisabled={isDisabled}
+                            record={record} 
+                            frequency={i} 
+                            defaultTimeStamp={getCurrentValue(record, i, 'timeStamp')}
+                            defaultComment={getCurrentValue(record, i, 'comment')}
+                            defaultValue={getCurrentValue(record, i, 'bool')} />)
+
+                    return <CustomInputNumber 
+                                isDisabled={isDisabled} 
+                                record={record} 
+                                frequency={i} 
+                                defaultTimeStamp={getCurrentValue(record, i, 'timeStamp')}
+                                defaultComment={getCurrentValue(record, i, 'comment')}
+                                defaultValue={getCurrentValue(record, i, 'number')} /> 
+                }
 
                 return;
                 
-            },
-            key: `f_${i}`
-        })  
+            }
+        })
+
     }
 
     const columns = [
@@ -103,7 +150,10 @@ const CheckSheetDataEntry = ({
             key: 'frequency',
             filters:  [...new Set(data.map(({ frequency }) => frequency))].map(i => ({text: i, value: i})),
             onFilter: (value, record) => record.frequency.indexOf(value) === 0,
-            width: '8rem'
+            width: '8rem',
+            render: (text, record, index) => {
+                return `Every ${record.frequency} hour${record.frequency > 1 ? 's' : ''}`
+            },
         },
         {
             title: 'Min',
@@ -216,14 +266,18 @@ const CheckSheetDataEntry = ({
         ...frequencies
     ]
 
+    return <React.Fragment>
+                <Table 
+                    columns={columns}
+                    dataSource={data}
+                    size="middle"
+                    bordered={true}
+                    pagination={false}
+                    scroll={{ x: 1500, y: 1500 }} />
 
-    return <Table 
-        columns={columns}
-        dataSource={data}
-        size="middle"
-        bordered={true}
-        pagination={false}
-        scroll={{ x: 1500, y: 1500 }} />
+
+            </React.Fragment>
+        
 }
 
 const mapStateToProps = ({qualityCheckSheet}) => ({
