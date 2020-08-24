@@ -1,18 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import numeral from 'numeral'
 import { connect } from 'react-redux'
-import api from '../../../API'
 
-import PassFailSelect from './pass-fail-select.component'
-import CustomInputNumber from './custom-input-number.component'
+import CheckSheetInput from './check-sheet-input.component'
 
 import {
-    Table,
-    Input,
-    Badge
+    Table
 } from 'antd';
-
-const { TextArea } = Input;
 
 const CheckSheetDataEntry = ({
     data = [],
@@ -66,44 +60,24 @@ const CheckSheetDataEntry = ({
 
                 const mod = i % (frequency);
 
-                if (frequency === 1) {
+                if (frequency === 1 || mod === 1) {
 
-                    if (display === 'PassFail')  
-                        return (<PassFailSelect 
-                            isDisabled={isDisabled}
-                            record={record} 
-                            frequency={i} 
-                            defaultTimeStamp={getCurrentValue(record, i, 'timeStamp')}
-                            defaultComment={getCurrentValue(record, i, 'comment')}
-                            defaultValue={getCurrentValue(record, i, 'bool')} />)
+                    const isPassFail = display === 'PassFail' ? true : false;
+                    const value = isPassFail
+                                    ? getCurrentValue(record, i, 'bool')
+                                    : getCurrentValue(record, i, 'number');
 
-                    return <CustomInputNumber 
+                    const timeStamp = getCurrentValue(record, i, 'timeStamp');
+                    const comment = getCurrentValue(record, i, 'comment');
+
+                    return <CheckSheetInput 
                                 isDisabled={isDisabled} 
                                 record={record} 
                                 frequency={i} 
-                                defaultTimeStamp={getCurrentValue(record, i, 'timeStamp')}
-                                defaultComment={getCurrentValue(record, i, 'comment')}
-                                defaultValue={getCurrentValue(record, i, 'number')} /> 
-                }
-
-                if (mod === 1) {
-
-                    if (display === 'PassFail')  
-                        return (<PassFailSelect 
-                            isDisabled={isDisabled}
-                            record={record} 
-                            frequency={i} 
-                            defaultTimeStamp={getCurrentValue(record, i, 'timeStamp')}
-                            defaultComment={getCurrentValue(record, i, 'comment')}
-                            defaultValue={getCurrentValue(record, i, 'bool')} />)
-
-                    return <CustomInputNumber 
-                                isDisabled={isDisabled} 
-                                record={record} 
-                                frequency={i} 
-                                defaultTimeStamp={getCurrentValue(record, i, 'timeStamp')}
-                                defaultComment={getCurrentValue(record, i, 'comment')}
-                                defaultValue={getCurrentValue(record, i, 'number')} /> 
+                                isPassFail={isPassFail}
+                                defaultTimeStamp={timeStamp}
+                                defaultComment={comment}
+                                defaultValue={value} /> 
                 }
 
                 return;

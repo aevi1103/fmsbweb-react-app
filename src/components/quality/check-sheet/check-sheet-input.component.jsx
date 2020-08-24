@@ -16,15 +16,19 @@ import {
     Badge,
     Popover,
     Row,
-    Col
+    Col,
+    Select
 } from 'antd'
 
 const { TextArea } = Input;
+const { Option } = Select;
 
-const CustomInputNumber = ({
+const CheckSheetInput = ({
     isDisabled,
     record,
     frequency,
+    isPassFail = false,
+
     defaultValue,
     defaultComment,
     defaultTimeStamp,
@@ -62,17 +66,27 @@ const CustomInputNumber = ({
 
     const updateStatus = useCallback((value) => {
 
-        if (!value) setValidateStatus(null);
-        const { min, max, lowerBound, upperBound } = getTargets(record);
-        const result = parseFloat(value);
+        if (isPassFail) {
 
-        if (result < min) setValidateStatus('error');
-        if (result >= min && result <= lowerBound) setValidateStatus('warning'); 
-        if (result > lowerBound && result < upperBound) setValidateStatus('success');
-        if (result >= upperBound && result <= max) setValidateStatus('warning');     
-        if (result > max) setValidateStatus('error');
+            if (!value) setValidateStatus("error");
+            if (value) setValidateStatus("success");
+            if (value === undefined || value === null) setValidateStatus(null);
 
-    },[record])
+        } else {
+
+            if (!value) setValidateStatus(null);
+            const { min, max, lowerBound, upperBound } = getTargets(record);
+            const result = parseFloat(value);
+    
+            if (result < min) setValidateStatus('error');
+            if (result >= min && result <= lowerBound) setValidateStatus('warning'); 
+            if (result > lowerBound && result < upperBound) setValidateStatus('success');
+            if (result >= upperBound && result <= max) setValidateStatus('warning');     
+            if (result > max) setValidateStatus('error');
+
+        }
+
+    },[record, isPassFail])
 
     useEffect(() => {
         setVal(defaultValue);
@@ -85,64 +99,58 @@ const CustomInputNumber = ({
         setCurrentTimeStamp(defaultTimeStamp);
     }, [defaultComment, defaultTimeStamp, checkSheetSubMachine, checkSheetPart])
 
-    const debouncedPostData = useCallback(_.debounce((body) => {
-
+    const postData = body => {
         const key = `${record.characteristicId}_${frequency}`;
         message.loading({ content: 'Saving...', key });
-
         api.post('/quality/checksheets/checksheetentry', body)
             .then(response => { 
 
                 const { value, timeStamp } = response.data;
-
                 message.success({
                     content: `Value of '${value}' saved for ${record.value} Frequency ${frequency}.`,
                     key,
                     duration: 10
                 });
-
                 setCurrentTimeStamp(timeStamp);
 
             })
-            .catch(err => message.error(`Error: ${record.value} frequency ${frequency} => ${err.message}`, 20))
-            
-    }, 500), [])
+            .catch(err => message.error(`Error: ${record.value} frequency ${frequency} => ${err.message}`, 20))        
+    }
+
+    const debouncedPostData = useCallback(_.debounce(body => postData(body), 500), []);
 
     const onChange = (e) => {
 
-        const value = e.target.value;
+        const value = isPassFail ? e : e.target.value;
         setVal(value);
         updateStatus(value);
 
         const { characteristicId } = record;
 
-        debouncedPostData({
-                checkSheetId,
-                subMachineId: checkSheetSubMachine,
-                characteristicId,
-                part: checkSheetPart,
-                frequency,
-                value: parseFloat(value),
-                comment: null
-            })
+        const body = {
+            checkSheetId,
+            subMachineId: checkSheetSubMachine,
+            characteristicId,
+            part: checkSheetPart,
+            frequency,
+            value: isPassFail ? null : parseFloat(value),
+            valueBool: isPassFail ? value : null,
+            comment: currentComment
+        };
+
+        if (isPassFail) {
+            postData(body);
+        } else {
+            debouncedPostData(body);
+        }
+        
     }
 
     const onOpenModal = () => {
-
         setModalVisible(true);
-        const { characteristicId } = record;
-        api.get(`/quality/checksheets/checksheetentry?
-                    $filter=characteristicId eq ${characteristicId} 
-                    and frequency eq ${frequency} 
-                    and part eq '${checkSheetPart}' 
-                    and subMachineId eq ${checkSheetSubMachine}`)
-                .then(response => {
-                    if (response.data.length === 0) return;
-                    form.setFieldsValue({
-                        comment: response.data[0].comment
-                    });              
-                })
-                .catch(err => message.error(err.message, 10))
+        form.setFieldsValue({
+            comment: currentComment
+        });  
     }
 
     const onCloseModal = () => {
@@ -162,7 +170,8 @@ const CustomInputNumber = ({
             characteristicId,
             part: checkSheetPart,
             frequency,
-            value: parseFloat(val),
+            value: isPassFail ? null : parseFloat(val),
+            valueBool: isPassFail ? val : null,
             comment
         }
 
@@ -196,18 +205,23 @@ const CustomInputNumber = ({
 
         return (
             <Row gutter={[12,12]} style={{width: '300px'}}>
-                <Col span={24}>
-                    <Row className="tc">
-                        <b>Tolerance:</b>
-                    </Row>
-                    <Row className="tc">
-                        <Col span={4} className="bg-red pt1 pb1">{`<${minStr}`}</Col>
-                        <Col span={5} className="bg-yellow pt1 pb1">{`${minStr} - ${lowerStr}`}</Col>
-                        <Col span={6} className="bg-green pt1 pb1">{`${lowerStr} - ${upperStr}`}</Col>
-                        <Col span={5} className="bg-yellow pt1 pb1">{`${upperStr} - ${maxStr}`}</Col>
-                        <Col span={4} className="bg-red pt1 pb1">{`>${maxStr}`}</Col>
-                    </Row>
-                </Col>
+
+                {
+                    !isPassFail 
+                    ?   <Col span={24}>
+                            <Row className="tc">
+                                <b>Tolerance:</b>
+                            </Row>
+                            <Row className="tc">
+                                <Col span={4} className="bg-red pt1 pb1">{`<${minStr}`}</Col>
+                                <Col span={5} className="bg-yellow pt1 pb1">{`${minStr} - ${lowerStr}`}</Col>
+                                <Col span={6} className="bg-green pt1 pb1">{`${lowerStr} - ${upperStr}`}</Col>
+                                <Col span={5} className="bg-yellow pt1 pb1">{`${upperStr} - ${maxStr}`}</Col>
+                                <Col span={4} className="bg-red pt1 pb1">{`>${maxStr}`}</Col>
+                            </Row>
+                        </Col>
+                    : null
+                }
 
                 {
                     dot 
@@ -219,9 +233,16 @@ const CustomInputNumber = ({
                 }
 
                 <Col span={24}>
-                    <Button onClick={onOpenModal} type="primary">{  dot ? 'Edit Comment' : 'Add Comment' }</Button>
+                    <Button onClick={onOpenModal} type="primary" className="mr2">{  dot ? 'Edit Comment' : 'Add Comment' }</Button>
+
+                    {
+                        validateStatus === 'error' 
+                        ?  <Button type="danger">Add Re-Check</Button>
+                        : null
+                    }
+
                 </Col>
-                
+
                 {
                     currentTimeStamp 
                     ? <Col span={24}>
@@ -238,10 +259,19 @@ const CustomInputNumber = ({
     return (
         <React.Fragment>
 
-            <Badge dot={dot}>
+            <Badge dot={dot} className="db">
                 <Form.Item hasFeedback validateStatus={validateStatus} className="mb0">
                     <Popover content={PopOverInfo(record)} title={record.value} trigger="hover">
-                        <InputNumber type="number" style={{ width: '100%' }} disabled={isDisabled} onKeyUp={onChange} value={val} />
+
+                        {
+                            isPassFail
+                            ?   <Select style={{ width: '100%' }} allowClear={true} onChange={onChange} disabled={isDisabled} value={val} >
+                                    <Option value={true}>Pass</Option>
+                                    <Option value={false}>Fail</Option>
+                                </Select>
+                            :   <InputNumber type="number" style={{ width: '100%' }} disabled={isDisabled} onKeyUp={onChange} value={val} />
+                        }
+                        
                     </Popover>
                 </Form.Item>
             </Badge>
@@ -274,7 +304,10 @@ const CustomInputNumber = ({
                 </Form.Item>
 
                 </Form>
-            </Modal>   
+            </Modal>  
+
+
+
         </React.Fragment>
     )
 }
@@ -284,4 +317,4 @@ const mapStateToProps = ({qualityCheckSheet}) => ({
     checkSheetPart: qualityCheckSheet.checkSheetPart,
 })
 
-export default connect(mapStateToProps)(CustomInputNumber);
+export default connect(mapStateToProps)(CheckSheetInput);
