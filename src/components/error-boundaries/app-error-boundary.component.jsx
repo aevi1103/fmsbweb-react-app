@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Result, Button } from 'antd';
+import { Result, Button, Layout } from 'antd';
+const { Content } = Layout;
 
 class AppErrorBoundary extends Component {
 
@@ -18,15 +19,19 @@ class AppErrorBoundary extends Component {
     }
 
     render(){
-        if (this.state.hasError){
-            return <Result
-                        status="500"
-                        title="500"
-                        subTitle="Sorry, something went wrong."
-                        extra={<Button type="primary">
-                            <a href="/" >Back to Home</a>
-                        </Button>}
-                    />
+        if (this.state.hasError) {
+            return  <Content>
+                        <Result
+                            style={{ top: '50%', transform: 'translateY(50%)' }}
+                            status="500"
+                            title="500"
+                            subTitle="Sorry, something went wrong."
+                            extra={<Button type="primary">
+                                <a href="/" >Back to Home</a>
+                            </Button>}
+                        />
+                    </Content>
+
         }
         return this.props.children;
     }

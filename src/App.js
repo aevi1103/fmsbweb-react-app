@@ -6,7 +6,7 @@ import { ReactComponent as LogoIcon } from './assets/logoIcon.svg';
 import { LogoContainer } from './App.styles';
 import { setSiderCollapse } from './redux/home/home.actions';
 import { Layout, BackTop } from "antd";
-import { useWindowSize, useScroll } from 'react-use'
+import { useWindowSize } from 'react-use'
 
 import './App.css';
 
@@ -42,6 +42,9 @@ import ControlMethodPage from './pages/quality/check-sheet/control-method-page.c
 import CheckSheetLogInPage from './pages/quality/check-sheet/check-sheet-login-page.component'
 import CheckSheetDataEntryPage from './pages/quality/check-sheet/check-sheet-data-entry.component'
 
+//machining
+import MachiningManningPage from './pages/machining/manning/manning-page.component'
+
 const GetRenderedProdPage = (area, header) => <ProductionPage area={area} headerTitle={header} />
 const RenderedFoundryPage = () => GetRenderedProdPage("foundry cell", "Foundry");
 const RenderedMachiningPage = () => GetRenderedProdPage("machine line", "Machining");
@@ -76,7 +79,7 @@ const App = ( { collapsed, setSiderCollapse } ) => {
     onCollapse: setSiderCollapse
   }
 
-  const { width, height } = useWindowSize();
+  const { width } = useWindowSize();
   const [siderProps, setSiderProps] = useState(defaultSiderProps);
 
   useEffect(() => {
@@ -124,6 +127,7 @@ const App = ( { collapsed, setSiderCollapse } ) => {
           <Route path="/orderstatus" component={MorningMeetingMenu} />
           <Route path="/af" component={AfMenu} />
           <Route path="/quality" component={HomeMenu} />
+          <Route path="/machining/manning" component={HomeMenu} />
         </Switch>
 
       </Sider>
@@ -168,6 +172,9 @@ const App = ( { collapsed, setSiderCollapse } ) => {
           <Route exact path="/quality/checksheets/controlmethod/:controlName/:controlId/line/:lineId" component={CheckSheetLogInPage} />
           <Route exact path="/quality/checksheets/controlmethod/:controlId" component={ControlMethodPage} />
           <Route exact path="/quality/checksheets/:controlName/:controlId/line/:lineId/checkSheet/:checkSheetId" component={CheckSheetDataEntryPage} />
+
+          {/* Machining Page */}
+          <Route exact path="/machining/manning/:eosId" component={MachiningManningPage} />
 
           <Route component={NotFound} />
         </Switch>
