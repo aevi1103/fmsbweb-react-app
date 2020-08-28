@@ -9,7 +9,8 @@ import {
 } from '../../../helpers/check-sheet-helpers'
 
 import {
-    setReChecksCollection
+    setReChecksCollection,
+    setCheckSheetValues
 } from '../../../redux/quality-check-sheet/quality-check-sheet.actions.js'
 
 import {
@@ -36,7 +37,9 @@ const ReCheckInput = ({
     item,
 
     reChecksCollection,
-    setReChecksCollection
+    setReChecksCollection,
+    checkSheetValues,
+    setCheckSheetValues
 }) => {
 
     const [validateStatus, setValidateStatus] = useState(null);
@@ -52,7 +55,23 @@ const ReCheckInput = ({
     const [deleteLoading, setDeleteLoading] = useState(false);
     const [errMsg, setErrMsg] = useState(null);
 
-    //todo: createa  redux action to store recheck status by checksheetentry Id
+    // todo: add a post to update check status in check sheet entry model
+
+    const getCheckSheetEntry = () => {
+
+        api.get(`/quality/checksheets/checksheetentry?$filter=checkSheetEntryId eq ${entryId}&$expand=rechecks`)
+            .then(response => {
+
+                const data = response.data[0];
+                const newArr = checkSheetValues.filter(i => i.checkSheetEntryId !== entryId);
+                newArr.push(data);
+
+                setCheckSheetValues(newArr);
+
+            })
+            .catch(err => console.error(err))
+
+    }
 
     const postData = (body, collection) => {
         setLoading(true);
@@ -73,6 +92,7 @@ const ReCheckInput = ({
                 });
 
                 setReChecksCollection(newArr);
+                getCheckSheetEntry();
                 message.success(`Successfully Saved!`);
             })
             .catch(err => setErrMsg(err.message))
@@ -138,6 +158,7 @@ const ReCheckInput = ({
                 .then(response => {
                     message.success('Successfully deleted!')
                     removeItem(reCheckId);
+                    getCheckSheetEntry();
                 })
                 .catch(err => setErrMsg(err.message))
                 // .finally(() => setDeleteLoading(false))
@@ -207,11 +228,13 @@ const ReCheckInput = ({
 }
 
 const mapDispatchToProps = dispatch => ({
-    setReChecksCollection: items => dispatch(setReChecksCollection(items))
+    setReChecksCollection: items => dispatch(setReChecksCollection(items)),
+    setCheckSheetValues: items => dispatch(setCheckSheetValues(items))
 });
 
 const mapStateToProps = ({ qualityCheckSheet }) => ({
-    reChecksCollection: qualityCheckSheet.reChecksCollection
+    reChecksCollection: qualityCheckSheet.reChecksCollection,
+    checkSheetValues: qualityCheckSheet.checkSheetValues
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReCheckInput);

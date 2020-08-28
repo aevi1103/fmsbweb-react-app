@@ -144,6 +144,7 @@ const CheckSheetDataEntryPage = ({
     setCheckSheetPart,
     setCheckSheetSubMachine,
     setCheckSheetMachineName,
+    setCheckSheetValues,
 
     checkSheetPart,
     checkSheetSubMachine,
@@ -168,8 +169,8 @@ const CheckSheetDataEntryPage = ({
         api.get(`/quality/checksheets/checksheetentry?$filter=checkSheetId eq ${checkSheetId} and part eq '${part}' and subMachineId eq ${subMachineId}&$expand=rechecks`)
             .then(response => {
 
-                // setCheckSheetValues(response.data);
-                dispatch({type: 'SET_CHECK_SHEET_VALUES', payload: response.data});
+                setCheckSheetValues(response.data);
+                // dispatch({type: 'SET_CHECK_SHEET_VALUES', payload: response.data});
 
                 const msg = response.data.length > 0 
                             ? `${response.data.length} records successfully loaded`
@@ -314,7 +315,7 @@ const CheckSheetDataEntryPage = ({
                                         </Col>
 
                                         <Col span={24}>
-                                            <CheckSheetDataEntry data={state.characteristics} values={state.checkSheetValues} />
+                                            <CheckSheetDataEntry data={state.characteristics} />
                                         </Col>
                                         
                                     </Row>

@@ -10,7 +10,6 @@ import {
 
 const CheckSheetDataEntry = ({
     data = [],
-    values = [],
 
     checkSheetSubMachine,
     checkSheetPart,
@@ -45,7 +44,7 @@ const CheckSheetDataEntry = ({
                 if (frequency === 1 || mod === 1) {
 
                     const isPassFail = display === 'PassFail' ? true : false;
-                    const item = values.find(({ characteristicId, frequency }) => characteristicId === record.characteristicId && frequency === i);
+                    const item = checkSheetValues.find(({ characteristicId, frequency }) => characteristicId === record.characteristicId && frequency === i);
 
                     return <CheckSheetInput 
                                 isDisabled={isDisabled} 
