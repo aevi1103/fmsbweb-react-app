@@ -1,10 +1,20 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { useParams  } from 'react-router-dom'
 import api from '../../../API'
 import _ from 'lodash'
-import numeral from 'numeral'
-import moment from 'moment';
+
+import ReCheckModal from './re-check-modal.component'
+import CheckSheetPopOverInfo from './check-sheet-pop-over-info.compoent'
+
+import {
+    setReChecksCollection
+} from '../../../redux/quality-check-sheet/quality-check-sheet.actions.js'
+
+import {
+    getTargets,
+    getValidationStatus
+} from '../../../helpers/check-sheet-helpers'
 
 import {
     InputNumber,
@@ -15,114 +25,118 @@ import {
     Button,
     Badge,
     Popover,
-    Row,
-    Col,
     Select
 } from 'antd'
 
 const { TextArea } = Input;
 const { Option } = Select;
 
+const initialState = {
+
+    validateStatus: null,
+    modalVisible: false,
+    modalVisibleReCheck: false,
+
+    item: null,
+    val: null,
+    dot: false,
+}
+
+const reducer = (state = initialState, action) => {
+    
+    switch (action.type) {
+
+        case 'SET_VALIDATE_STATUS':        
+            return { ...state, validateStatus: action.payload }
+        case 'SET_MODAL_VISIBLE':        
+            return { ...state, modalVisible: action.payload }
+        case 'SET_MODAL_VISIBLE_RECHECK':        
+            return { ...state, modalVisibleReCheck: action.payload }
+
+        case 'SET_ITEM':        
+            return { ...state, item: action.payload }
+            
+        case 'SET_DOT':        
+            return { ...state, dot: action.payload }
+        case 'SET_VALUE':        
+            return { ...state, val: action.payload }
+
+        default:
+            break;
+    }
+
+}
+
 const CheckSheetInput = ({
     isDisabled,
     record,
     frequency,
-    isPassFail = false,
-
-    defaultValue,
-    defaultComment,
-    defaultTimeStamp,
-
+    isPassFail = false,  
+    item,
     checkSheetSubMachine,
     checkSheetPart
 }) => {
 
     const { checkSheetId } = useParams();
-    const [validateStatus, setValidateStatus] = useState(null);
-    const [val, setVal] = useState(null);
-
-    const [modalVisible, setModalVisible] = useState(false);
-    const [dot, setDot] = useState(defaultComment ? true : false);
-    const [currentComment, setCurrentComment] = useState(defaultComment);
-    const [currentTimeStamp, setCurrentTimeStamp] = useState(defaultTimeStamp);
-    
     const [form] = Form.useForm();
-
-    const getTargets = record => {
-
-        const { min, max } = record;
-        const nom = (max + min) / 2;
-        const lowerBound = ((min + nom) / 2);
-        const upperBound = ((max + nom) / 2);
-    
-        return {
-            min,
-            lowerBound,
-            nom,
-            upperBound,
-            max
-        }
-    }
+    const [state, dispatch] = useReducer(reducer, initialState);
 
     const updateStatus = useCallback((value) => {
+        const stat = getValidationStatus(value, getTargets(record), isPassFail);
+        dispatch({ type: 'SET_VALIDATE_STATUS', payload: stat })
+    } ,[record, isPassFail])
 
-        if (isPassFail) {
-
-            if (!value) setValidateStatus("error");
-            if (value) setValidateStatus("success");
-            if (value === undefined || value === null) setValidateStatus(null);
-
-        } else {
-
-            if (!value) setValidateStatus(null);
-            const { min, max, lowerBound, upperBound } = getTargets(record);
-            const result = parseFloat(value);
-    
-            if (result < min) setValidateStatus('error');
-            if (result >= min && result <= lowerBound) setValidateStatus('warning'); 
-            if (result > lowerBound && result < upperBound) setValidateStatus('success');
-            if (result >= upperBound && result <= max) setValidateStatus('warning');     
-            if (result > max) setValidateStatus('error');
-
-        }
-
-    },[record, isPassFail])
-
+    // * update input status
     useEffect(() => {
-        setVal(defaultValue);
-        updateStatus(defaultValue);
-    }, [defaultValue, updateStatus, record, checkSheetPart])
+        
+        const value = isPassFail ? item?.valueBool : item?.value;
+        dispatch({ type: 'SET_VALUE', payload: value ?? null});
+        updateStatus(value);
 
+    }, [item, updateStatus, record, checkSheetPart, isPassFail])
+
+    // * set initial values
     useEffect(() => {
-        setDot(defaultComment ? true : false);
-        setCurrentComment(defaultComment);
-        setCurrentTimeStamp(defaultTimeStamp);
-    }, [defaultComment, defaultTimeStamp, checkSheetSubMachine, checkSheetPart])
+
+        dispatch({ type: 'SET_ITEM', payload: item });
+
+        const isDot = (item?.comment ? true : false) || (item?.rechecks.length ?? [])> 0 ? true : false
+        dispatch({ type: 'SET_DOT', payload: isDot });
+
+        const value = isPassFail ? item?.valueBool : item?.value;
+        dispatch({ type: 'SET_VALUE', payload: value ?? null});
+
+    }, [item, checkSheetSubMachine, checkSheetPart, isPassFail])
 
     const postData = body => {
+
         const key = `${record.characteristicId}_${frequency}`;
         message.loading({ content: 'Saving...', key });
         api.post('/quality/checksheets/checksheetentry', body)
             .then(response => { 
 
-                const { value, timeStamp } = response.data;
+                const data = response.data;
+                const { value } = data;
                 message.success({
                     content: `Value of '${value}' saved for ${record.value} Frequency ${frequency}.`,
                     key,
                     duration: 10
                 });
-                setCurrentTimeStamp(timeStamp);
+
+                dispatch({ type: 'SET_ITEM', payload: data });
 
             })
-            .catch(err => message.error(`Error: ${record.value} frequency ${frequency} => ${err.message}`, 20))        
+            .catch(err => message.error(`Error: ${record.value} frequency ${frequency} => ${err.message}`, 20)) 
+
     }
 
     const debouncedPostData = useCallback(_.debounce(body => postData(body), 500), []);
+    const onSubmitComment = () => form.submit();
 
     const onChange = (e) => {
 
         const value = isPassFail ? e : e.target.value;
-        setVal(value);
+        dispatch({ type: 'SET_VALUE', payload: value});
         updateStatus(value);
 
         const { characteristicId } = record;
@@ -135,7 +149,8 @@ const CheckSheetInput = ({
             frequency,
             value: isPassFail ? null : parseFloat(value),
             valueBool: isPassFail ? value : null,
-            comment: currentComment
+            comment: state.item?.comment,
+            isReChecked: state.item?.isReChecked ?? false
         };
 
         if (isPassFail) {
@@ -147,18 +162,16 @@ const CheckSheetInput = ({
     }
 
     const onOpenModal = () => {
-        setModalVisible(true);
+        dispatch({ type: 'SET_MODAL_VISIBLE', payload: true});
         form.setFieldsValue({
-            comment: currentComment
+            comment: state.item?.comment
         });  
     }
 
     const onCloseModal = () => {
-        setModalVisible(false);
+        dispatch({ type: 'SET_MODAL_VISIBLE', payload: false});
         form.resetFields();
     }
-
-    const onSubmitComment = () => form.submit();
 
     const onFinish = values => {
 
@@ -170,106 +183,55 @@ const CheckSheetInput = ({
             characteristicId,
             part: checkSheetPart,
             frequency,
-            value: isPassFail ? null : parseFloat(val),
-            valueBool: isPassFail ? val : null,
+            value: isPassFail ? null : parseFloat(state.val),
+            valueBool: isPassFail ? state.val : null,
             comment
         }
 
         api.post('/quality/checksheets/checksheetentry', body)
         .then(response => { 
 
-            const { comment, timeStamp } = response.data;
-            setCurrentComment(comment);
-            setCurrentTimeStamp(timeStamp);
+            const data = response.data;
+            dispatch({ type: 'SET_ITEM', payload: data });
         
             if (comment.length > 0) {
-                setDot(true);
+                dispatch({ type: 'SET_DOT', payload: true });
             }
 
             message.success('Comment Added');
-            setModalVisible(false);    
+            dispatch({ type: 'SET_MODAL_VISIBLE', payload: false});   
         })
         .catch(err => message.error(`Error: ${record.value} frequency ${frequency} => ${err.message}`, 20))
 
     }
 
-    const PopOverInfo = record => {
+    //re-checks
+    const onOpenReCheckModal = () => {
+        dispatch({ type: 'SET_MODAL_VISIBLE_RECHECK', payload: true });
 
-        const { min, max, lowerBound, upperBound } = getTargets(record);
-    
-        const format = '0.[00]'
-        const minStr = numeral(min).format(format)
-        const maxStr = numeral(max).format(format)
-        const lowerStr = numeral(lowerBound).format(format)
-        const upperStr = numeral(upperBound).format(format)
-
-        return (
-            <Row gutter={[12,12]} style={{width: '300px'}}>
-
-                {
-                    !isPassFail 
-                    ?   <Col span={24}>
-                            <Row className="tc">
-                                <b>Tolerance:</b>
-                            </Row>
-                            <Row className="tc">
-                                <Col span={4} className="bg-red pt1 pb1">{`<${minStr}`}</Col>
-                                <Col span={5} className="bg-yellow pt1 pb1">{`${minStr} - ${lowerStr}`}</Col>
-                                <Col span={6} className="bg-green pt1 pb1">{`${lowerStr} - ${upperStr}`}</Col>
-                                <Col span={5} className="bg-yellow pt1 pb1">{`${upperStr} - ${maxStr}`}</Col>
-                                <Col span={4} className="bg-red pt1 pb1">{`>${maxStr}`}</Col>
-                            </Row>
-                        </Col>
-                    : null
-                }
-
-                {
-                    dot 
-                    ?   <Col span={24}>
-                            <b className="db">Comment:</b>
-                            <p>{currentComment}</p>
-                        </Col>
-                    : null
-                }
-
-                <Col span={24}>
-                    <Button onClick={onOpenModal} type="primary" className="mr2">{  dot ? 'Edit Comment' : 'Add Comment' }</Button>
-
-                    {
-                        validateStatus === 'error' 
-                        ?  <Button type="danger">Add Re-Check</Button>
-                        : null
-                    }
-
-                </Col>
-
-                {
-                    currentTimeStamp 
-                    ? <Col span={24}>
-                        <b className="db">Last Updated:</b>
-                        <span>{moment(currentTimeStamp).format('lll')}</span>
-                    </Col>
-                    : null
-                }
-            
-            </Row>
-        )
+        
     }
+    const onCloseReCheckModal = () => dispatch({ type: 'SET_MODAL_VISIBLE_RECHECK', payload: false });
 
     return (
         <React.Fragment>
 
-            <Badge dot={dot} className="db">
-                <Form.Item hasFeedback validateStatus={validateStatus} className="mb0">
-                    <Popover content={PopOverInfo(record)} title={record.value} trigger="hover">
+            <Badge dot={state.dot} className="db">
+                <Form.Item hasFeedback validateStatus={state.validateStatus} className="mb0">
+                    <Popover title={record.value} trigger="hover" content={<CheckSheetPopOverInfo 
+                                                                                isPassFail={isPassFail} 
+                                                                                targets={getTargets(record)}
+                                                                                state={state}
+                                                                                onOpenModal={onOpenModal}
+                                                                                onOpenReCheckModal={onOpenReCheckModal} />} >
 
                         {
                             isPassFail
-                            ?   <Select style={{ width: '100%' }} allowClear={true} onChange={onChange} disabled={isDisabled} value={val} >
+                            ?   <Select style={{ width: '100%' }} allowClear={true} onChange={onChange} disabled={isDisabled} value={state.val} >
                                     <Option value={true}>Pass</Option>
                                     <Option value={false}>Fail</Option>
                                 </Select>
-                            :   <InputNumber type="number" style={{ width: '100%' }} disabled={isDisabled} onKeyUp={onChange} value={val} />
+                            :   <InputNumber type="number" style={{ width: '100%' }} disabled={isDisabled} onKeyUp={onChange} value={state.val} />
                         }
                         
                     </Popover>
@@ -277,9 +239,8 @@ const CheckSheetInput = ({
             </Badge>
 
             <Modal
-                title="Comment"
-                visible={modalVisible}
-                onOk={onSubmitComment}
+                title={`Comment: ${record.value}`}
+                visible={state.modalVisible}
                 onCancel={onCloseModal}
                 footer={[
                     <Button key="back" onClick={onCloseModal}>
@@ -304,17 +265,27 @@ const CheckSheetInput = ({
                 </Form.Item>
 
                 </Form>
-            </Modal>  
+            </Modal>
 
-
+            <ReCheckModal  
+                visible={state.modalVisibleReCheck} 
+                onCloseModal={onCloseReCheckModal}
+                checkSheetEntryId={state.item?.checkSheetEntryId}
+                characteristic={record.value}
+                isPassFail={isPassFail}
+                targets={getTargets(record)} />
 
         </React.Fragment>
     )
 }
+
+const mapDispatchToProps = dispatch => ({
+    setReChecksCollection: items => dispatch(setReChecksCollection(items))
+});
 
 const mapStateToProps = ({qualityCheckSheet}) => ({
     checkSheetSubMachine: qualityCheckSheet.checkSheetSubMachine,
     checkSheetPart: qualityCheckSheet.checkSheetPart,
 })
 
-export default connect(mapStateToProps)(CheckSheetInput);
+export default connect(mapStateToProps, mapDispatchToProps)(CheckSheetInput);

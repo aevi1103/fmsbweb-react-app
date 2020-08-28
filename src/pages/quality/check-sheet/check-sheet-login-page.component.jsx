@@ -124,7 +124,7 @@ const CheckSheetLogInPage = ({
                         name="clockNumber"
                         rules={[{ required: true, message: 'Please input your clock number' }]}
                     >
-                        <InputNumber min={0} className="w-100" />
+                        <InputNumber min={0} className="w-100" type="number" />
                     </Form.Item>
 
                     <Form.Item

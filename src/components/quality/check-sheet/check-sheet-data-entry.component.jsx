@@ -11,8 +11,10 @@ import {
 const CheckSheetDataEntry = ({
     data = [],
     values = [],
+
     checkSheetSubMachine,
-    checkSheetPart
+    checkSheetPart,
+    checkSheetValues
 }) => {
 
     const [isDisabled, setIsDisabled] = useState(false);
@@ -21,24 +23,6 @@ const CheckSheetDataEntry = ({
     useEffect(() => {       
         setIsDisabled(!(!!checkSheetSubMachine && !!checkSheetPart))
     }, [checkSheetSubMachine, checkSheetPart])
-
-    const getCurrentValue = (record, i, type) => {
-        const result = values.find(({ characteristicId, frequency }) => characteristicId === record.characteristicId && frequency === i);
-        if (!result) return null;
-
-        switch (type) {
-            case 'number':
-                return result.value;
-            case 'bool':
-                return result.valueBool;
-            case 'comment':
-                return result.comment;
-            case 'timeStamp':
-                return result.timeStamp;
-            default:
-                return null;
-        }
-    }
 
     const frequencies = [];
     const shiftHours = 8;
@@ -55,29 +39,21 @@ const CheckSheetDataEntry = ({
             render: (text, record, index) => {
 
                 const { frequency, displayAs: { display } } = record;
-
                 if (display === 'Reference') return; 
 
                 const mod = i % (frequency);
-
                 if (frequency === 1 || mod === 1) {
 
                     const isPassFail = display === 'PassFail' ? true : false;
-                    const value = isPassFail
-                                    ? getCurrentValue(record, i, 'bool')
-                                    : getCurrentValue(record, i, 'number');
-
-                    const timeStamp = getCurrentValue(record, i, 'timeStamp');
-                    const comment = getCurrentValue(record, i, 'comment');
+                    const item = values.find(({ characteristicId, frequency }) => characteristicId === record.characteristicId && frequency === i);
 
                     return <CheckSheetInput 
                                 isDisabled={isDisabled} 
                                 record={record} 
                                 frequency={i} 
                                 isPassFail={isPassFail}
-                                defaultTimeStamp={timeStamp}
-                                defaultComment={comment}
-                                defaultValue={value} /> 
+
+                                item={item}/> 
                 }
 
                 return;
@@ -257,6 +233,7 @@ const CheckSheetDataEntry = ({
 const mapStateToProps = ({qualityCheckSheet}) => ({
     checkSheetSubMachine: qualityCheckSheet.checkSheetSubMachine,
     checkSheetPart: qualityCheckSheet.checkSheetPart,
+    checkSheetValues: qualityCheckSheet.checkSheetValues
 })
 
 export default connect(mapStateToProps)(CheckSheetDataEntry);

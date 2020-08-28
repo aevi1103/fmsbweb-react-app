@@ -15,13 +15,12 @@ import {
     Space,
     Row,
     Col,
-    meesage,
     message
 } from 'antd'
 
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const { Option } = Select;
 
 const iniitalState = {
@@ -31,9 +30,7 @@ const iniitalState = {
     operators: [],
     operatorJobs: [],
     errorMsg: null,
-
     submitLoading: false,
-
     headerTitle: 'Machining Manning'
 
 }
@@ -41,56 +38,20 @@ const iniitalState = {
 const reducer = (state = iniitalState, action) => {
 
     switch (action.type) {
-
-        case 'SET_LOADING':
-            
-            return {
-                ...state,
-                loading: action.payload
-            }
-
-        case 'SET_EOS':
-            
-            return {
-                ...state,
-                eos: action.payload
-            }
-
-        case 'SET_OPERATORS':
-        
-            return {
-                ...state,
-                operators: action.payload
-            }
-
-        case 'SET_OPERATOR_JOBS':
-        
-            return {
-                ...state,
-                operatorJobs: action.payload
-            }
-
-        case 'SET_ERROR_MSG':
-        
-            return {
-                ...state,
-                errorMsg: action.payload
-            }
-
-        case 'SET_HEADER_TITLE':
-        
-            return {
-                ...state,
-                headerTitle: action.payload
-            }
-
-        case 'SET_SUBMIT_LOADING':
-        
-            return {
-                ...state,
-                submitLoading: action.payload
-            }
-    
+        case 'SET_LOADING':     
+            return { ...state, loading: action.payload }
+        case 'SET_EOS':       
+            return { ...state, eos: action.payload }
+        case 'SET_OPERATORS':   
+            return { ...state, operators: action.payload }
+        case 'SET_OPERATOR_JOBS':  
+            return { ...state, operatorJobs: action.payload }
+        case 'SET_ERROR_MSG':  
+            return { ...state, errorMsg: action.payload }
+        case 'SET_HEADER_TITLE':     
+            return { ...state, headerTitle: action.payload }
+        case 'SET_SUBMIT_LOADING':    
+            return { ...state, submitLoading: action.payload }  
         default:
             break;
     }

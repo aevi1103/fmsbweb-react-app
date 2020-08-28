@@ -102,3 +102,13 @@ export const setCheckSheetMachineName = value => ({
     type: qualityCheckSheetTypes.SET_CHECK_SHEET_MACHINE_NAME,
     payload: value
 })
+
+export const setReChecksCollection = collection => ({
+    type: qualityCheckSheetTypes.SET_RE_CHECKS,
+    payload: collection
+})
+
+export const setCheckSheetValues = collection => ({
+    type: qualityCheckSheetTypes.SET_CHECK_SHEET_VALUES,
+    payload: collection
+})

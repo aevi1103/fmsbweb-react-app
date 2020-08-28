@@ -20,7 +20,8 @@ import {
 import {
     setCheckSheetPart,
     setCheckSheetSubMachine,
-    setCheckSheetMachineName
+    setCheckSheetMachineName,
+    setCheckSheetValues
 } from '../../../redux/quality-check-sheet/quality-check-sheet.actions'
 
 import CheckSheetDataEntry from '../../../components/quality/check-sheet/check-sheet-data-entry.component'
@@ -44,7 +45,9 @@ const initialState = {
     
     title: '',
     subTitle: '',
-    characteristics: []
+    characteristics: [],
+    tags: null,
+    parts: []
 }
 
 const reducer = (state = initialState, action) => {
@@ -113,15 +116,23 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 subMachine: action.payload
             }
-        case 'SET_PART':
-            return {
-                ...state,
-                part: action.payload
-            }
+
         case 'SET_CHARACTERISTICS':
             return {
                 ...state,
                 characteristics: action.payload
+            }
+
+        case 'SET_TAGS':
+            return {
+                ...state,
+                tags: action.payload
+            }
+            
+        case 'SET_PARTS':
+            return {
+                ...state,
+                parts: action.payload
             }
         
         default:
@@ -154,9 +165,11 @@ const CheckSheetDataEntryPage = ({
 
     const getValues = useCallback((checkSheetId, subMachineId, part) => {
         dispatch({type: 'SET_CHECK_SHEET_VALUES_LOADING', payload: true})
-        api.get(`/quality/checksheets/checksheetentry?$filter=checkSheetId eq ${checkSheetId} and part eq '${part}' and subMachineId eq ${subMachineId}`)
+        api.get(`/quality/checksheets/checksheetentry?$filter=checkSheetId eq ${checkSheetId} and part eq '${part}' and subMachineId eq ${subMachineId}&$expand=rechecks`)
             .then(response => {
-                dispatch({type: 'SET_CHECK_SHEET_VALUES', payload: response.data})
+
+                // setCheckSheetValues(response.data);
+                dispatch({type: 'SET_CHECK_SHEET_VALUES', payload: response.data});
 
                 const msg = response.data.length > 0 
                             ? `${response.data.length} records successfully loaded`
@@ -183,9 +196,14 @@ const CheckSheetDataEntryPage = ({
         dispatch({type: 'SET_CHECK_SHEET_LOADING', payload: true})
         api.get(`/quality/checksheets/checksheet?$expand=controlMethod,line,organizationPart($expand=characteristics($expand=displayAs))&$filter=checkSheetId eq ${checkSheetId}`)
             .then(response => {
+
                 const data = response.data[0];
-                dispatch({type: 'SET_CHECK_SHEET', payload: data})
-                getMachines(data.lineId)
+
+                dispatch({type: 'SET_CHECK_SHEET', payload: data});
+                getMachines(data.lineId);
+
+                dispatch({type: 'SET_TAGS', payload: data.organizationPart.part})
+                dispatch({type: 'SET_PARTS', payload: data.organizationPart.parts})
 
                 //check characteristics on load
                 if (checkSheetSubMachine && checkSheetMachineName) 
@@ -247,14 +265,14 @@ const CheckSheetDataEntryPage = ({
                 title={state.checkSheetLoading ? <span><Spin/> Loading...</span> : state.title}
                 subTitle={state.subTitle}
                 onBack={() => history.push(`/quality/checksheets/controlmethod/${controlName}/${controlId}/line/${lineId}`)}
-                tags={<Tag color="blue">{state.checkSheet && state.checkSheet.organizationPart.part}</Tag>}
+                tags={<Tag color="blue">{state.tags}</Tag>}
                 extra={
                     <Radio.Group
                         onChange={onPartChange}
                         optionType="button"
                         buttonStyle="solid"
                         defaultValue={checkSheetPart}
-                        options={mapParts(state?.checkSheet?.organizationPart?.parts || [])}
+                        options={mapParts(state.parts)}
                     />
                 }
             />
@@ -292,6 +310,7 @@ const CheckSheetDataEntryPage = ({
                                                 value={checkSheetSubMachine}
                                                 defaultValue={checkSheetSubMachine}
                                             />
+
                                         </Col>
 
                                         <Col span={24}>
@@ -320,7 +339,8 @@ const mapStateToProps = ({qualityCheckSheet}) => ({
 const mapDispatchToProps = dispatch => ({
     setCheckSheetPart: value => dispatch(setCheckSheetPart(value)),
     setCheckSheetSubMachine: value => dispatch(setCheckSheetSubMachine(value)),
-    setCheckSheetMachineName: value => dispatch(setCheckSheetMachineName(value))
+    setCheckSheetMachineName: value => dispatch(setCheckSheetMachineName(value)),
+    setCheckSheetValues: collection => dispatch(setCheckSheetValues(collection))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CheckSheetDataEntryPage)
