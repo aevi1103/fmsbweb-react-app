@@ -26,9 +26,7 @@ const CheckSheetDataEntry = ({
     const frequencies = [];
     const shiftHours = 8;
     
-
     for (let i = 1; i <= shiftHours; i++) {
-
 
         frequencies.push({
             title: `Hour ${i}`,
@@ -51,7 +49,6 @@ const CheckSheetDataEntry = ({
                                 record={record} 
                                 frequency={i} 
                                 isPassFail={isPassFail}
-
                                 item={item}/> 
                 }
 

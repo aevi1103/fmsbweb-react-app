@@ -5,7 +5,8 @@ import api from '../../../API'
 import _ from 'lodash'
 import moment from 'moment';
 import {
-    getValidationStatus
+    getValidationStatus,
+    getCheckSheetEntry
 } from '../../../helpers/check-sheet-helpers'
 
 import {
@@ -18,7 +19,6 @@ import {
     Form,
     Input,
     Select,
-    Space,
     message,
     Typography,
     Col,
@@ -29,6 +29,7 @@ import {
 const { TextArea } = Input;
 const { Option } = Select;
 const { Text } = Typography
+
 
 const ReCheckInput = ({ 
     isPassFail,
@@ -44,62 +45,61 @@ const ReCheckInput = ({
 
     const [validateStatus, setValidateStatus] = useState(null);
     const [entryId, setEntryid] = useState(checkSheetEntryId);
-
     const [value, setValue] = useState(item.value);
+
     const [valueBool, setValueBool] = useState(item.valueBool);
     const [comment, setComment] = useState(item.comment);
     const [timeStamp, setTimeStamp] = useState(item.timeStamp);
     const [reCheckId, setReCheckId] = useState(item.reCheckId);
-
+    
     const [loading, setLoading] = useState(false);
     const [deleteLoading, setDeleteLoading] = useState(false);
     const [errMsg, setErrMsg] = useState(null);
 
     // todo: add a post to update check status in check sheet entry model
 
-    const getCheckSheetEntry = () => {
+    const setCheckSheetEntry = async (data) => {
+        const {checkSheetEntry, reCheck: { checkSheetEntryId } } = data;
+        const newArr = checkSheetValues.filter(i => i.checkSheetEntryId !== checkSheetEntryId);
+        newArr.push(checkSheetEntry);
+        setCheckSheetValues(newArr);
+    }
 
-        api.get(`/quality/checksheets/checksheetentry?$filter=checkSheetEntryId eq ${entryId}&$expand=rechecks`)
-            .then(response => {
+    const postData = async (body, collection) => {
 
-                const data = response.data[0];
-                const newArr = checkSheetValues.filter(i => i.checkSheetEntryId !== entryId);
-                newArr.push(data);
+        try {
+            
+            setLoading(true);
+            setErrMsg(null);
+            const response = await api.post(`/quality/checksheets/rechecks`, body);
 
-                setCheckSheetValues(newArr);
+            const data =  response.data;
+            const { reCheck  } = data;
+            const { reCheckId, timeStamp } = reCheck
 
-            })
-            .catch(err => console.error(err))
+            setReCheckId(reCheckId);
+            setTimeStamp(timeStamp);
+
+            //* update state
+            const newArr = collection.map(i => {
+                if (i.key === item.key) return { ...reCheck, key: item.key }
+                return i;
+            });
+
+            setReChecksCollection(newArr);
+            setCheckSheetEntry(data);
+
+            message.success(`Successfully Saved!`);
+
+        } catch (error) {
+            setErrMsg(error);
+        } finally {
+            setLoading(false);
+        }
 
     }
 
-    const postData = (body, collection) => {
-        setLoading(true);
-        setErrMsg(null);
-        api.post(`/quality/checksheets/rechecks`, body)
-            .then(response => {
-
-                const data =  response.data;
-                const { reCheckId, timeStamp } = data;
-
-                setReCheckId(reCheckId);
-                setTimeStamp(timeStamp);
-
-                //* update state
-                const newArr = collection.map(i => {
-                    if (i.key === item.key) return { ...data, key: item.key }
-                    return i
-                });
-
-                setReChecksCollection(newArr);
-                getCheckSheetEntry();
-                message.success(`Successfully Saved!`);
-            })
-            .catch(err => setErrMsg(err.message))
-            .finally(() => setLoading(false));
-    }
-
-    const debouncedPostData = useCallback(_.debounce((body, collection) => postData(body, collection), 500), []);
+    const debouncedPostData = useCallback(_.debounce((body, collection) => postData(body, collection), 800), []);
 
     //* update validation status
     useEffect(() => {
@@ -144,24 +144,30 @@ const ReCheckInput = ({
         postData(body, reChecksCollection);
     }
 
-    const remove = () => {
+    const remove = async () => {
 
-        const removeItem = (id) => {
-            const newArr = reChecksCollection.filter(({ reCheckId }) => reCheckId !== id)
+        const removeItem = () => {
+            const newArr = reChecksCollection.filter(({ key }) => key !== item.key)
             setReChecksCollection(newArr)
         }
 
         if (reCheckId > 0) {
             setDeleteLoading(true);
             setErrMsg(null);
-            api.delete(`/quality/checksheets/rechecks/${reCheckId}`)
-                .then(response => {
-                    message.success('Successfully deleted!')
-                    removeItem(reCheckId);
-                    getCheckSheetEntry();
-                })
-                .catch(err => setErrMsg(err.message))
-                // .finally(() => setDeleteLoading(false))
+
+            try {
+                
+                const response =  await api.delete(`/quality/checksheets/rechecks/${reCheckId}`);
+                const data = response.data;
+
+                message.success('Successfully deleted!')
+                removeItem();
+                setCheckSheetEntry(data);
+
+            } catch (error) {
+                setErrMsg(error)
+            }
+
         } else {
             removeItem();
         }
@@ -174,7 +180,11 @@ const ReCheckInput = ({
 
                     <Col span={1} className="v-mid">
                         {
-                            deleteLoading ? <Spin /> : <CloseOutlined onClick={remove} />
+                            deleteLoading 
+                                ? <Spin /> 
+                                : !item.isInitialValue
+                                    ? <CloseOutlined onClick={remove} />
+                                    : null
                         }
                     </Col>
 
@@ -186,12 +196,14 @@ const ReCheckInput = ({
                                             placeholder="Enter Re-Check Value" 
                                             type="number" 
                                             onKeyUp={onNumberChange} 
+                                            disabled={item.isInitialValue}
                                             value={value} />
 
                                     :   <Select style={{ width: '100%' }} 
                                             allowClear={true} 
                                             onChange={onPassFailChange} 
                                             placeholder="Select Re-Check Value" 
+                                            disabled={item.isInitialValue}
                                             value={valueBool} >
                                             <Option value={true}>Pass</Option>
                                             <Option value={false}>Fail</Option>
@@ -201,12 +213,21 @@ const ReCheckInput = ({
                     </Col>
 
                     <Col span={7}>
-                        <TextArea placeholder="Enter Comments" autoSize={true} onChange={onCommentChange} value={comment} />
+                        <TextArea placeholder="Enter Comments" 
+                            autoSize={true} 
+                            onChange={onCommentChange} 
+                            value={comment} 
+                            disabled={item.isInitialValue} />
                     </Col>
 
                     <Col span={9}>
                             {
-                                loading ? <span><Spin/> Saving...</span> : <Text>{!timeStamp ? null : moment(timeStamp).format('lll')}</Text>
+                                loading 
+                                    ?   <span><Spin/> Saving...</span> 
+                                    :   <React.Fragment>
+                                            <Text>{ !timeStamp ? null : moment(timeStamp).format('lll') }</Text> 
+                                            { item.isInitialValue ? <small className="ml2">(1st Check)</small> : null }
+                                        </React.Fragment> 
                             }
                     </Col>
 

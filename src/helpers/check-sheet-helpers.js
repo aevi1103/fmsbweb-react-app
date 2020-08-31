@@ -1,3 +1,5 @@
+import api from '../API'
+
 export const getTargets = record => {
     const { min, max } = record;
     const nom = (max + min) / 2;
@@ -51,6 +53,25 @@ export const getValidationStatusColorName = (value, targets, isPassFail) => {
             return 'yellow'
         default:
             return null
+    }
+
+}
+
+export const getCheckSheetEntry = async (checkSheetValues, entryId, onSuccess = () => {}, onFailure = () => {}) => {
+
+    try {
+            
+        const response = await api.get(`/quality/checksheets/checksheetentry?$filter=checkSheetEntryId eq ${entryId}&$expand=rechecks`);  
+        const data = response.data[0];
+        const newArr = checkSheetValues.filter(i => i.checkSheetEntryId !== entryId);
+        newArr.push(data);
+        onSuccess(newArr);
+
+    } catch (error) {
+
+        console.error(error);
+        onFailure(error);
+        
     }
 
 }

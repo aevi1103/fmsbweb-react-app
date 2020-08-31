@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     Row,
     Col,
-    Button
+    Button,
+    Alert
 } from 'antd'
 import moment from 'moment'
 import numeral from 'numeral'
@@ -13,18 +14,43 @@ import {
     getValidationStatusColorName
 } from '../../../helpers/check-sheet-helpers'
 
+
+
 const CheckSheetPopOverInfo = ({ 
     isPassFail,
     targets,
     state,
     onOpenModal,
     onOpenReCheckModal
-}) => (<Row gutter={[12,12]} style={{width: '300px'}}>
+}) => {
+
+    const alertMsg = 'Input has been disabled because your in re-check mode, please enter data in re-check form.';
+    const getTimeStamp = timeStamp => moment(timeStamp).format('MM/DD/YY hh:mm A');
+    const getPassFail = valueBool => valueBool ? 'Pass' : 'Fail';
+    const getNumber = number => numeral(number).format('0.0[0]');
+
+    const [rechecks, setRechecks] = useState(state.item?.rechecks ?? []);
+
+    useEffect(() => {
+
+        const items = state.item?.rechecks ?? [];
+        const sortedItems = items.sort((a,b) => a.reCheckId - b.reCheckId);
+        setRechecks(sortedItems);
+
+    }, [state.item])
+
+    return <Row gutter={[12,12]} style={{width: '300px'}}>
+
+            {
+                rechecks.length > 0
+                    ? <Alert style={{ width: '100%' }} message={alertMsg} type="info" showIcon />
+                    : null
+            }
 
             <ToloranceBar isPassFail={isPassFail} targets={targets} />
 
             {
-                state?.item?.comment
+                state.item?.comment
                     ?   <Col span={24}>
                             <b className="db">Comment:</b>
                             <p>{state.item?.comment}</p>
@@ -33,17 +59,23 @@ const CheckSheetPopOverInfo = ({
             }
 
             {
-                (state.item?.rechecks.length ?? []) > 0 
+                rechecks.length > 0 
                     ?   <Col span={24}>
                             <b className="db mb2">Re-checks:</b>
-                            <ul>
+                            <ol>
                                 {
-                                    state.item.rechecks.map(({ value, valueBool, timeStamp }, key) => (isPassFail 
-                                            ? <li key={key} className={getValidationStatusColorName(valueBool, targets, isPassFail)}>{`${valueBool ? 'Pass' : 'Fail'} @ ${moment(timeStamp).format('lll')}` }</li>
-                                            : <li key={key} className={getValidationStatusColorName(value, targets, isPassFail)}>{`${numeral(value).format('0.0[0]')} @ ${moment(timeStamp).format('lll')}` }</li>
+                                    rechecks.map(({ value, valueBool, timeStamp, isInitialValue }, key) => (isPassFail 
+                                            ?   <li key={key} className={getValidationStatusColorName(valueBool, targets, isPassFail)}>
+                                                    { `${getPassFail(valueBool)} @ ${getTimeStamp(timeStamp)}` } 
+                                                    { isInitialValue ? <small className="ml2">(1st Check)</small> : null }
+                                                </li>
+                                            :   <li key={key} className={getValidationStatusColorName(value, targets, isPassFail)}>
+                                                    { `${getNumber(value)} @ ${getTimeStamp(timeStamp)}` }
+                                                    { isInitialValue ? <small className="ml2">(1st Check)</small> : null }
+                                                </li>
                                     ))
                                 }
-                            </ul>
+                            </ol>
 
                         </Col>
                     : null
@@ -67,13 +99,14 @@ const CheckSheetPopOverInfo = ({
                 }
                 
                 {
-                    state.validateStatus === 'error' 
+                    state.validateStatus === 'error' || rechecks.length > 0 
                         ?  <Button type="danger" onClick={onOpenReCheckModal}>Add Re-Check</Button>
                         : null
                 }
 
             </Col>
 
-        </Row>)
+        </Row>
+}
 
 export default CheckSheetPopOverInfo;
