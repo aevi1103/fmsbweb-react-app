@@ -9,23 +9,28 @@ import {
 } from 'antd';
 
 const CheckSheetDataEntry = ({
-    data = [],
-
     checkSheetSubMachine,
     checkSheetPart,
-    checkSheetValues
+    checkSheetValues,
+
+    csCharacteristicsCollection,
+    isCsCharacteristicsLoading
 }) => {
 
     const [isDisabled, setIsDisabled] = useState(false);
-
 
     useEffect(() => {       
         setIsDisabled(!(!!checkSheetSubMachine && !!checkSheetPart))
     }, [checkSheetSubMachine, checkSheetPart])
 
+    const characteristics = csCharacteristicsCollection ?? [];
+    const data = characteristics.length > 0 ?  characteristics : [];
+
+    // console.log({data, csCharacteristicsCollection})
+
     const frequencies = [];
     const shiftHours = 8;
-    
+
     for (let i = 1; i <= shiftHours; i++) {
 
         frequencies.push({
@@ -43,6 +48,8 @@ const CheckSheetDataEntry = ({
 
                     const isPassFail = display === 'PassFail' ? true : false;
                     const item = checkSheetValues.find(({ characteristicId, frequency }) => characteristicId === record.characteristicId && frequency === i);
+
+                    // return;
 
                     return <CheckSheetInput 
                                 isDisabled={isDisabled} 
@@ -78,7 +85,7 @@ const CheckSheetDataEntry = ({
             filters:  [...new Set(data.map(({ value }) => value))].map(i => ({text: i, value: i})),
             onFilter: (value, record) => record.value.indexOf(value) === 0,
             fixed: 'left',
-            width: '10rem'
+            width: '11rem'
         },
         {
             title: 'Gauge',
@@ -212,24 +219,24 @@ const CheckSheetDataEntry = ({
         ...frequencies
     ]
 
-    return <React.Fragment>
-                <Table 
-                    columns={columns}
-                    dataSource={data}
-                    size="middle"
-                    bordered={true}
-                    pagination={false}
-                    scroll={{ x: 1500, y: 1500 }} />
-
-
-            </React.Fragment>
+    return <Table 
+                loading={isCsCharacteristicsLoading}
+                columns={columns}
+                dataSource={data}
+                size="middle"
+                bordered={true}
+                pagination={false}
+                scroll={{ x: 1500, y: 1500 }} />
         
 }
 
 const mapStateToProps = ({qualityCheckSheet}) => ({
     checkSheetSubMachine: qualityCheckSheet.checkSheetSubMachine,
     checkSheetPart: qualityCheckSheet.checkSheetPart,
-    checkSheetValues: qualityCheckSheet.checkSheetValues
+    checkSheetValues: qualityCheckSheet.checkSheetValues,
+
+    csCharacteristicsCollection: qualityCheckSheet.csCharacteristicsCollection,
+    isCsCharacteristicsLoading: qualityCheckSheet.isCsCharacteristicsLoading
 })
 
 export default connect(mapStateToProps)(CheckSheetDataEntry);

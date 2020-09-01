@@ -73,6 +73,21 @@ export const fetchCharacteristicStartAsync = (odataQry = '') => {
     }
 }
 
+export const fetchCsCharacteristicStartAsync = (partId, machineName) => {
+    return dispatch => {
+        dispatch(fetchStart(qualityCheckSheetTypes.FETCH_CS_CHARACTERISTICS_START))
+        api.get(`quality/checksheets/characteristic?$filter=organizationPartId eq ${partId} and machineName eq '${machineName}'&$expand=displayAs`)
+        .then(response => {
+
+            const data = response.data.map((i,key) => ({ ...i, key}))
+            dispatch(fetchSuccess(qualityCheckSheetTypes.FETCH_CS_CHARACTERISTICS_SUCCESS, data))
+        })
+        .catch(error => {   
+            dispatch(fetchFailure(qualityCheckSheetTypes.FETCH_CS_CHARACTERISTICS_FAILURE, error.message))
+        })
+    }
+}
+
 export const setControlMethod = value => ({
     type: qualityCheckSheetTypes.SET_CONTROL_METHOD,
     payload: value
@@ -112,3 +127,9 @@ export const setCheckSheetValues = collection => ({
     type: qualityCheckSheetTypes.SET_CHECK_SHEET_VALUES,
     payload: collection
 })
+
+export const setCheckSheet = collection => ({
+    type: qualityCheckSheetTypes.SET_CHECK_SHEET,
+    payload: collection
+})
+

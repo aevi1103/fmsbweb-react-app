@@ -14,8 +14,7 @@ import {
 
 import {
     getTargets,
-    getValidationStatus,
-    getCheckSheetEntry
+    getValidationStatus
 } from '../../../helpers/check-sheet-helpers'
 
 import {
@@ -91,12 +90,12 @@ const CheckSheetInput = ({
 
     // * update input status
     useEffect(() => {
-        
+    
         const value = isPassFail ? item?.valueBool : item?.value;
         dispatch({ type: 'SET_VALUE', payload: value ?? null});
         updateStatus(value);
 
-    }, [item, updateStatus, record, checkSheetPart, isPassFail])
+    }, [item, updateStatus, record, checkSheetPart, checkSheetSubMachine, isPassFail])
 
     // * set initial values
     useEffect(() => {

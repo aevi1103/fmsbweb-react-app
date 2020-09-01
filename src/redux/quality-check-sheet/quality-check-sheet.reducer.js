@@ -31,7 +31,12 @@ const INITIAL_STATE = {
     checkSheetMachineName: 'Okuma SP',
 
     reChecksCollection: [],
-    checkSheetValues: []
+    checkSheetValues: [],
+    checkSheet: null,
+
+    isCsCharacteristicsLoading: false,
+    csCharacteristicsCollection: [],
+    csCharacteristicsErrorMsg: null
 
 }
 
@@ -223,6 +228,41 @@ const qualityCheckSheetsReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 checkSheetValues: action.payload
+            }
+
+        case qualityCheckSheetTypes.SET_CHECK_SHEET:
+    
+            return {
+                ...state,
+                checkSheet: action.payload
+            }
+
+        //CS Characteristics
+        case qualityCheckSheetTypes.FETCH_CS_CHARACTERISTICS_START:
+
+            return {
+                ...state,
+                isCsCharacteristicsLoading: true,
+                // csCharacteristicsCollection: [],
+                csCharacteristicsErrorMsg: null
+            }
+
+        case qualityCheckSheetTypes.FETCH_CS_CHARACTERISTICS_SUCCESS:
+
+            return {
+                ...state,
+                isCsCharacteristicsLoading: false,
+                csCharacteristicsCollection: action.payload,
+                csCharacteristicsErrorMsg: null
+            }
+
+        case qualityCheckSheetTypes.FETCH_CS_CHARACTERISTICS_FAILURE:
+
+            return {
+                ...state,
+                isCsCharacteristicsLoading: false,
+                // csCharacteristicsCollection: [],
+                csCharacteristicsErrorMsg: action.payload
             }
 
         default:
