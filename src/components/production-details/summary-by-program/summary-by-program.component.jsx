@@ -142,6 +142,15 @@ const SummaryByProgramTable = ({isProductionDetailsLoading, productionDetailsCol
             title: <span>South Bend Scrap</span>,
             children: [
                 {
+                    title: 'Warmers',
+                    dataIndex: 'totalWarmers',
+                    render: (text, record, index) => {
+                        return record.totalWarmers;
+                    },
+                    sorter: (a, b) => a.totalWarmers - b.totalWarmers,
+                    sortDirections: ['descend', 'ascend']
+                },
+                {
                     title: 'FS',
                     dataIndex: 'fs',
                     render: (text, record, index) => {

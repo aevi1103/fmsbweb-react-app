@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom'
 import numeral from 'numeral';
 import 'tachyons'
 import { 
@@ -8,6 +9,10 @@ import {
     Button,
     Tooltip
  } from "antd";
+
+ import {
+    InfoCircleOutlined
+  } from '@ant-design/icons';
 
 import ScrapLink  from '../../scrap-link/scrap-link.component'
 import DefectSummaryTable from '../defect-summary-table/defect-summary-table.component'
@@ -57,7 +62,17 @@ const getScrapRate = (data, scrapArea, onClick, isAfScrap = false, afScrapRate =
 
 };
 
+const sortScrap = (a, b, type) => {
+    const filteredDataA = a.sbScrapDetails.filter(({scrapAreaName}) => scrapAreaName === type);
+    const filteredDataB = b.sbScrapDetails.filter(({scrapAreaName}) => scrapAreaName === type); 
+    const totalA = filteredDataA.reduce((acc, {qty}) => parseInt(acc) + parseInt(qty), 0);
+    const totalB = filteredDataB.reduce((acc, {qty}) => parseInt(acc) + parseInt(qty), 0);
+    return totalA - totalB;
+};
+
 const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollection}) => {
+
+    const { department } = useParams();
 
     const [modalVisible, setModalVisible] = useState(false);
     const [scrapDetails, setScrapDetails] = useState([]);
@@ -91,17 +106,6 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
 
     };
 
-    const sortScrap = (a, b, type) => {
-
-        const filteredDataA = a.sbScrapDetails.filter(({scrapAreaName}) => scrapAreaName === type);
-        const filteredDataB = b.sbScrapDetails.filter(({scrapAreaName}) => scrapAreaName === type); 
-
-        const totalA = filteredDataA.reduce((acc, {qty}) => parseInt(acc) + parseInt(qty), 0);
-        const totalB = filteredDataB.reduce((acc, {qty}) => parseInt(acc) + parseInt(qty), 0);
-        
-        return totalA - totalB;
-    };
-
     const columns = !productionDetailsCollection ? [] : [
         {
             title: 'Area',
@@ -132,13 +136,14 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
             sortDirections: ['descend', 'ascend'],
         },
         {
-            title: 'HxH Gross',
+            title: `HxH Gross ${department === 'foundry' ? 'w/ warmers' : ''}`,
             dataIndex: 'hxhGross',
             render: (text, record, index) => {
                 return numeral(record.hxHGross).format('0,0');   
             },
             sorter: (a, b) => a.hxHGross - b.hxHGross,
             sortDirections: ['descend', 'ascend'],
+            width: '6rem'
         },
         {
             title: 'SAP Gross',
@@ -177,8 +182,17 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
             ]
         },
         {
-            title: <span>South Bend Scrap</span>,
+            title: <span><span>South Bend Scrap</span> <Tooltip title="Scrap"><InfoCircleOutlined className="ml2" /></Tooltip></span>,
             children: [
+                {
+                    title: 'Warmers',
+                    dataIndex: 'totalWarmers',
+                    render: (text, record, index) => {
+                        return record.totalWarmers;
+                    },
+                    sorter: (a, b) => a.totalWarmers - b.totalWarmers,
+                    sortDirections: ['descend', 'ascend']
+                },
                 {
                     title: 'FS',
                     dataIndex: 'fs',
@@ -283,7 +297,7 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
             ]
         },
         {
-            title: <span>HxH Production</span>,
+        title: <span>{ department === 'machining' ? 'EOS Production' : 'HxH Production' }</span>,
             children: [
                 {
                     title: 'Net',

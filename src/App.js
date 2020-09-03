@@ -151,7 +151,7 @@ const App = ( { collapsed, setSiderCollapse } ) => {
           <Route exact path="/dashboard/morningmeeting/finance" component={FinancePage} />
           <Route exact path="/dashboard/morningmeeting/quality" component={QualityPage} />
           <Route exact path="/dashboard/morningmeeting/downtime" component={DowntimePage} />
-          <Route exact path="/dashboard/morningmeeting/*/details" component={ProductionDetailsPage} />
+          <Route exact path="/dashboard/morningmeeting/:department/details" component={ProductionDetailsPage} />
           <Route exact path="/dashboard/morningmeeting/*/hourly-production" component={HourlyProdPage} />
 
           {/* Order Status */}

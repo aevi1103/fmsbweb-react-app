@@ -3,6 +3,7 @@ import { useParams, useHistory, useLocation } from 'react-router-dom'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import api from '../../../API'
+import axios from 'axios'
 
 import { 
     Layout,
@@ -31,16 +32,16 @@ const { Content } = Layout;
 
 const initialState = {
 
+    loading: false,
+    machines: [],
+    machinesCollection: [],
+    errorMsg: null,
+
     checkSheetLoading: false,
     checkSheetErrorMsg: null,
 
     checkSheetValuesLoading: false,
     checkSheetValuesErrorMsg: null,
-
-    machinesLoading: false,
-    machines: [],
-    machinesCollection: [],
-    machinesErrorMsg: null,
     
     title: '',
     subTitle: '',
@@ -55,6 +56,15 @@ const initialState = {
 const reducer = (state = initialState, action) => {
     switch (action.type) {
 
+        case 'SET_INIT_LOADING':
+            return { ...state, loading: action.payload }
+        case 'SET_MACHINES':
+            return { ...state, machines: action.payload }
+        case 'SET_MACHINES_COLLECTION':
+            return { ...state, machinesCollection: action.payload }
+        case 'SET_INIT_ERROR_MSG':
+            return { ...state, errorMsg: action.payload }
+
         case 'SET_CHECK_SHEET_LOADING':
             return { ...state, checkSheetLoading: action.payload }
         case 'SET_CHECK_SHEET_ERROR_MSG':
@@ -64,15 +74,6 @@ const reducer = (state = initialState, action) => {
             return { ...state, checkSheetValuesLoading: action.payload }
         case 'SET_CHECK_SHEET_VALUES_ERROR_MSG':
             return { ...state, checkSheetValuesErrorMsg: action.payload }
-
-        case 'SET_MACHINES_LOADING':
-            return { ...state, machinesLoading: action.payload }
-        case 'SET_MACHINES':
-            return { ...state, machines: action.payload }
-        case 'SET_MACHINES_COLLECTION':
-            return { ...state, machinesCollection: action.payload }
-        case 'SET_MACHINES_ERROR_MSG':
-            return { ...state, machinesErrorMsg: action.payload }
 
         case 'SET_TITLE':
             return { ...state, title: action.payload }
@@ -113,7 +114,6 @@ const CheckSheetDataEntryPage = ({
     fetchCsCharacteristicStartAsync
 }) => {
     
-    const { hash } = useLocation();
     const history = useHistory();
     const { controlId, controlName, lineId, checkSheetId } = useParams();
     const [state, dispatch] = useReducer(reducer, initialState);
@@ -123,125 +123,124 @@ const CheckSheetDataEntryPage = ({
         return subMachines.map(({ subMachineId, value }) => ({ label: value, value: subMachineId }));
     }
 
-    // todo: combine fetch of characteristics and values into one request.
+    const getEntries = (checkSheetId, subMachine, part) => {
 
-    useEffect(() => {
-
-        const getMachines = lineId => {
-
-            dispatch({type: 'SET_MACHINES_LOADING', payload: true})
-            api.get(`/quality/checksheets/machine?$filter=lineId eq ${lineId}&$expand=subMachines`)
-                .then(response => {
-
-                    const data = response.data;
-                    dispatch({type: 'SET_MACHINES_COLLECTION', payload: data })
-
-                    const machines = data.map(({ machineId, value, subMachines }) => ({ label: value, value: machineId }));
-                    dispatch({type: 'SET_MACHINES', payload: machines })
-                    
-                    //* update sub-mahcines items
-                    const { machineId } = data.find(({ value }) => value === checkSheetMachineName);
-                    dispatch({type: 'SET_SUB_MACHINES', payload: getSubMachines(data, machineId) });
-
-                })
-                .catch(error => dispatch({type: 'SET_MACHINES_ERROR_MSG', payload: error.message}))
-                .finally(() => dispatch({type: 'SET_MACHINES_LOADING', payload: false}))
-
-        }
-
-        //* get check sheet object
-        dispatch({type: 'SET_CHECK_SHEET_LOADING', payload: true})
-        api.get(`/quality/checksheets/checksheet?$expand=controlMethod,line,organizationPart&$filter=checkSheetId eq ${checkSheetId}`)
+        dispatch({type: 'SET_CHECK_SHEET_VALUES_LOADING', payload: true})
+        api.get(`/quality/checksheets/checksheetentry?$filter=checkSheetId eq ${checkSheetId} and part eq '${part}' and subMachineId eq ${subMachine}&$expand=rechecks`)
             .then(response => {
 
-                const data = response.data[0];
-
-                setCheckSheet(data);
-                getMachines(data.lineId);
-
-                dispatch({type: 'SET_TAGS', payload: data.organizationPart.part});
-                dispatch({type: 'SET_PARTS', payload: data.organizationPart.parts});
-
-                const { 
-                    line,
-                    shiftDate,
-                    shift,
-                    controlMethod: { method },
-                } = data;
-                
-                dispatch({type: 'SET_TITLE', payload: `Line ${line.value} ${method}`});
-                dispatch({type: 'SET_SUB_TITLE', payload: `Shift Date: ${moment(shiftDate).format('MM/DD/YYYY')} | Shift: ${shift}`});
-
-                //* get characteristics
-                fetchCsCharacteristicStartAsync(data.organizationPartId, checkSheetMachineName);
-
+                const data = response.data;
+                setCheckSheetValues(data);
+                const msg = data.length > 0 
+                            ? `${data.length} records successfully loaded`
+                            : `No records loaded`;
+                            
+                message.success(msg)
             })
-            .catch(error => dispatch({type: 'SET_CHECK_SHEET_ERROR_MSG', payload: error.message}))
-            .finally(() => dispatch({type: 'SET_CHECK_SHEET_LOADING', payload: false}))
+            .catch(error => dispatch({type: 'SET_CHECK_SHEET_VALUES_ERROR_MSG', payload: error.message}))
+            .finally(() => dispatch({type: 'SET_CHECK_SHEET_VALUES_LOADING', payload: false}))
 
-    }, [])
+    }
 
-    //* effect to get checksheet entries
+    //* Load check-sheet and machine on mount
     useEffect(() => {
 
-        if (checkSheetId && checkSheetSubMachine && checkSheetPart) {
+        dispatch({type: 'SET_INIT_LOADING', payload: true})
+        axios.all([
+            api.get(`/quality/checksheets/machine?$filter=lineId eq ${lineId}&$expand=subMachines`),
+            api.get(`/quality/checksheets/checksheet?$expand=controlMethod,line,organizationPart&$filter=checkSheetId eq ${checkSheetId}`)
+        ])
+        .then(axios.spread((...responses) => {
 
-            dispatch({type: 'SET_CHECK_SHEET_VALUES_LOADING', payload: true})
-            api.get(`/quality/checksheets/checksheetentry?$filter=checkSheetId eq ${checkSheetId} and part eq '${checkSheetPart}' and subMachineId eq ${checkSheetSubMachine}&$expand=rechecks`)
-                .then(response => {
-    
-                    setCheckSheetValues(response.data);
-                    const msg = response.data.length > 0 
-                                ? `${response.data.length} records successfully loaded`
-                                : `No records loaded`;
-                                
-                    message.success(msg)
-                })
-                .catch(error => dispatch({type: 'SET_CHECK_SHEET_VALUES_ERROR_MSG', payload: error.message}))
-                .finally(() => dispatch({type: 'SET_CHECK_SHEET_VALUES_LOADING', payload: false}))
-        }
+            const machines = responses[0].data;
+            const checkSheet = responses[1].data[0]
 
-    }, [checkSheetId, checkSheetSubMachine, checkSheetPart, setCheckSheetValues])
+            //* set checksheet state to redux
+            setCheckSheet(checkSheet);
+
+            const { 
+                line,
+                shiftDate,
+                shift,
+                organizationPartId,
+                organizationPart: { part, parts },
+                controlMethod: { method },
+            } = checkSheet;
+            
+            //* set items to local state
+            dispatch({type: 'SET_TAGS', payload: part});
+            dispatch({type: 'SET_PARTS', payload: parts});
+            dispatch({type: 'SET_TITLE', payload: `Line ${line.value} ${method}`});
+            dispatch({type: 'SET_SUB_TITLE', payload: `Shift Date: ${moment(shiftDate).format('MM/DD/YYYY')} | Shift: ${shift}`});
+
+            //* set machines state to local state
+            dispatch({type: 'SET_MACHINES_COLLECTION', payload: machines })
+            dispatch({
+                type: 'SET_MACHINES',
+                payload: machines.map(({ machineId, value }) => ({ label: value, value: machineId }))
+            })
+            
+            //* update sub-mahcines items
+            const { machineId } = machines.find(({ value }) => value === checkSheetMachineName);
+            dispatch({type: 'SET_SUB_MACHINES', payload: getSubMachines(machines, machineId) });
+
+            //* get characteristics
+            fetchCsCharacteristicStartAsync(organizationPartId, checkSheetMachineName);
+
+            //* fetch data entries
+            getEntries(checkSheetId, checkSheetSubMachine, checkSheetPart);
+
+        }))
+        .catch(error => dispatch({type: 'SET_INIT_ERROR_MSG', payload: error.message}))
+        .finally(() => dispatch({type: 'SET_INIT_LOADING', payload: false}))
+
+    }, [])
 
     // * get machineId
     useEffect(() => {
         const machineId = state.machinesCollection?.find(e => e.value === checkSheetMachineName)?.machineId ?? 0;
-        dispatch({type: 'SET_MACHINE_ID', payload: machineId});
+        dispatch({ type: 'SET_MACHINE_ID', payload: machineId });
     }, [checkSheetMachineName, state.machinesCollection])
 
     useEffect(() => history.push(`#${checkSheetMachineName}`), [checkSheetMachineName, history])
 
     const onMachineChange = e => {
 
+        const machineId = e.target.value;
+        const machineName = state.machinesCollection.find(e => e.machineId === machineId).value;
+        const subMachines = getSubMachines(state.machinesCollection, machineId);
+
         //* reset sub-machines in redux store
         setCheckSheetSubMachine(null);
 
-        const machineId = e.target.value;
-        const machineName = state.machinesCollection.find(e => e.machineId === machineId).value;
-
-        //* assign new checksheet machine inr redux
+        //* assign new checksheet machine in redux
         setCheckSheetMachineName(machineName);
 
-        //* update sub-mahcines items
-        dispatch({type: 'SET_SUB_MACHINES', payload: getSubMachines(state.machinesCollection, machineId) });
+        //* set sub-mahcines items state
+        dispatch({type: 'SET_SUB_MACHINES', payload: subMachines });
 
-        //* get characteristics
-        fetchCsCharacteristicStartAsync(checkSheet?.organizationPartId ?? 0, machineName)
+        //* fetch characteristics
+        fetchCsCharacteristicStartAsync(checkSheet?.organizationPartId ?? 0, machineName);
+        getEntries(checkSheetId, checkSheetSubMachine, checkSheetPart);
+
     }
 
     const onSubMachineChange = e => { 
 
-        setCheckSheetSubMachine(e.target.value);
+        const subMachine = e.target.value;
+        setCheckSheetSubMachine(subMachine);
 
-        //* get characteristics
-        fetchCsCharacteristicStartAsync(checkSheet?.organizationPartId ?? 0, checkSheetMachineName)
+        //* fetch data entries, but wait for 1 seconds to finish animation on the radio button
+        setTimeout(() => getEntries(checkSheetId, subMachine, checkSheetPart), 1000);
+
     }
     const onPartChange = e => {
 
-        setCheckSheetPart(e.target.value);
+        const part = e.target.value;
+        setCheckSheetPart(part);
 
-         //* get characteristics
-         fetchCsCharacteristicStartAsync(checkSheet?.organizationPartId ?? 0, checkSheetMachineName)
+        //* fetch data entries, but wait 1 seconds to finish animation on the radio button
+        setTimeout(() => getEntries(checkSheetId, checkSheetSubMachine, part), 1000);
 
     }
 
@@ -250,7 +249,7 @@ const CheckSheetDataEntryPage = ({
 
             <PageHeader
                 className="site-page-header"
-                title={state.checkSheetLoading ? <span><Spin/> Loading...</span> : state.title}
+                title={state.loading ? <span><Spin/> Please wait...</span> : state.title}
                 subTitle={state.subTitle}
                 onBack={() => history.push(`/quality/checksheets/controlmethod/${controlName}/${controlId}/line/${lineId}`)}
                 tags={<Tag color="blue">{state.tags}</Tag>}
@@ -261,27 +260,22 @@ const CheckSheetDataEntryPage = ({
                 <Row gutter={[12,12]}>
 
                     {
-                        state.checkSheetErrorMsg 
-                            ? <Col span={24}><Alert message={state.checkSheetErrorMsg} type="error" showIcon /></Col> 
+                        state.errorMsg 
+                            ? <Col span={24}><Alert message={state.errorMsg} type="error" showIcon /></Col> 
                             : null
                     }
 
                     <Col span={24}>
 
-                        {
-                            state.machinesLoading 
-                            ?   <span><Spin /> Loading Machines...</span>  
-                            :   <Radio.Group 
-                                    options={state.machines}
-                                    onChange={onMachineChange}
-                                    optionType="button"
-                                    buttonStyle="solid"
-                                    value={state.machineId}
-                                    defaultValue={state.machineId}
-                                    className="mr2"
-                                    
-                                />
-                        }
+                        <Radio.Group id="machineRadio"
+                            options={state.machines}
+                            onChange={onMachineChange}
+                            optionType="button"
+                            buttonStyle="solid"
+                            value={state.machineId}
+                            defaultValue={state.machineId}
+                            className="mr2"
+                        />
 
                         <Radio.Group
                             options={state.subMachines}
@@ -313,9 +307,11 @@ const CheckSheetDataEntryPage = ({
                     }
 
                     <Col span={24}>
-                    
-                        <CheckSheetDataEntry />
 
+                        {
+                            !state.loading ? <CheckSheetDataEntry /> : null
+                        }
+                        
                     </Col>
 
                 </Row>

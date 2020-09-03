@@ -5,7 +5,8 @@ import { connect } from 'react-redux'
 import CheckSheetInput from './check-sheet-input.component'
 
 import {
-    Table
+    Table,
+    Alert
 } from 'antd';
 
 const CheckSheetDataEntry = ({
@@ -14,7 +15,8 @@ const CheckSheetDataEntry = ({
     checkSheetValues,
 
     csCharacteristicsCollection,
-    isCsCharacteristicsLoading
+    isCsCharacteristicsLoading,
+    csCharacteristicsErrorMsg
 }) => {
 
     const [isDisabled, setIsDisabled] = useState(false);
@@ -219,14 +221,16 @@ const CheckSheetDataEntry = ({
         ...frequencies
     ]
 
-    return <Table 
-                loading={isCsCharacteristicsLoading}
-                columns={columns}
-                dataSource={data}
-                size="middle"
-                bordered={true}
-                pagination={false}
-                scroll={{ x: 1500, y: 1500 }} />
+    return csCharacteristicsErrorMsg 
+            ?   <Alert message={csCharacteristicsErrorMsg} type="error" showIcon /> 
+            :   <Table 
+                    loading={isCsCharacteristicsLoading}
+                    columns={columns}
+                    dataSource={data}
+                    size="middle"
+                    bordered={true}
+                    pagination={false}
+                    scroll={{ x: 1500, y: 1500 }} />
         
 }
 
@@ -236,7 +240,8 @@ const mapStateToProps = ({qualityCheckSheet}) => ({
     checkSheetValues: qualityCheckSheet.checkSheetValues,
 
     csCharacteristicsCollection: qualityCheckSheet.csCharacteristicsCollection,
-    isCsCharacteristicsLoading: qualityCheckSheet.isCsCharacteristicsLoading
+    isCsCharacteristicsLoading: qualityCheckSheet.isCsCharacteristicsLoading,
+    csCharacteristicsErrorMsg: qualityCheckSheet.csCharacteristicsErrorMsg
 })
 
 export default connect(mapStateToProps)(CheckSheetDataEntry);

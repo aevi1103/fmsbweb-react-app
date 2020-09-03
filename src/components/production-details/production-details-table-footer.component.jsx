@@ -27,7 +27,8 @@ const ProductionDetailsTableFooter = ({data, type}) => {
         sapNet,
         sapOae,
         hxHNet,
-        hxHOae
+        hxHOae,
+        totalWarmers
 
      } = data || {};
 
@@ -57,6 +58,10 @@ const ProductionDetailsTableFooter = ({data, type}) => {
             </Table.Summary.Cell>
             <Table.Summary.Cell>
                 <Text strong>{scrapRate(totalPurchaseScrap, sapGross)}</Text>
+            </Table.Summary.Cell>
+
+            <Table.Summary.Cell>
+                <Text strong>{numeral(totalWarmers).format('0,0')}</Text>
             </Table.Summary.Cell>
 
             <Table.Summary.Cell>

@@ -36,7 +36,6 @@ const HourlyProductionChart = ({
             shift,
             line,
             hour,
-            department,
     
             net,
             target,
@@ -72,7 +71,7 @@ const HourlyProductionChart = ({
     }
 
     const setColor = (target, oaeTarget, net) => {
-        // if(target === 0) return '#a4a4a5';
+        if(target === 0) return '#a4a4a5';
         return net < (target * oaeTarget) ? '#FF4136' : '#28A745'
     }
 
@@ -127,12 +126,12 @@ const HourlyProductionChart = ({
                     "maxvalue": "999",
                     "label": "Good"
                 },
-                // {
-                //     "code": "a4a4a5",
-                //     "minvalue": "999",
-                //     "maxvalue": "9999",
-                //     "label": "Not Running"
-                // }
+                {
+                    "code": "a4a4a5",
+                    "minvalue": "999",
+                    "maxvalue": "9999",
+                    "label": "Not Running / No part selected"
+                }
             ]
         }
     }

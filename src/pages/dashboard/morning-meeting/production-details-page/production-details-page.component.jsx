@@ -7,7 +7,8 @@ import {
     Layout,
     Select,
     Button,
-    Tooltip
+    Tooltip,
+    Alert
  } from "antd";
 
  import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
@@ -44,6 +45,8 @@ const ProductionDetailsPage = ({
 
     const dept = department ? department : (new URL(window.location.href)).pathname.split('/')[3];
 
+        console.log(dept)
+        
     const [startFormat, setStartFormat] = useState(defaultStartDate);
     const [endFormat, setSendFormat] = useState(defaultEndDate);
     const [shift, setShift] = useState(defaultShift);
@@ -87,6 +90,7 @@ const ProductionDetailsPage = ({
             </Header>
 
             <Content className="ma3 mt0">
+
                 <DateRangePicker 
                     onCalendarChange={onCalendarChange}
                     dateRangeValue={{startDate: moment(startFormat), endDate: moment(endFormat)}}
