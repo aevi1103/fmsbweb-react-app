@@ -378,7 +378,7 @@ const fontGreen = {
                         </Col>
                         <Col span={8}>
                             <Statistic 
-                                title="HXH OAE %"
+                                title={`${area === 'machine line' ? 'EOS' : 'HxH'} OAE %`}
                                 valueStyle={{color: hxhOaeColorCode}}
                                 value={numeral(hxhOae).format('0%')} 
                                 suffix={<small>({numeral(hxHNet).format('0,0')})</small>}

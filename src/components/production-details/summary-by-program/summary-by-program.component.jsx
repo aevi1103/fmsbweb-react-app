@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import numeral from 'numeral';
+import { useParams } from 'react-router-dom'
 import { 
     Table,
     Modal,
@@ -22,6 +23,8 @@ const getScrapRate = (data, scrapArea, onClick) => {
 }
 
 const SummaryByProgramTable = ({isProductionDetailsLoading, productionDetailsCollection}) => {
+
+    const { department } = useParams();
 
     const [modalVisible, setModalVisible] = useState(false);
     const [scrapDetails, setScrapDetails] = useState([]);
@@ -94,23 +97,29 @@ const SummaryByProgramTable = ({isProductionDetailsLoading, productionDetailsCol
             sortDirections: ['descend', 'ascend'],
         },
         {
-            title: 'HxH Gross',
-            dataIndex: 'hxhGross',
-            render: (text, record, index) => {
-                return numeral(record.hxHGross).format('0,0');   
-            },
-            sorter: (a, b) => a.hxHGross - b.hxHGross,
-            sortDirections: ['descend', 'ascend'],
+            title: <span>Gross</span>,
+            children: [
+                {
+                    title: `${department === 'machining' ? 'EOS' : 'HxH'} ${department === 'foundry' ? 'w/ warmers' : ''}`,
+                    dataIndex: 'hxhGross',
+                    render: (text, record, index) => {
+                        return numeral(record.hxHGross).format('0,0');   
+                    },
+                    sorter: (a, b) => a.hxHGross - b.hxHGross,
+                    sortDirections: ['descend', 'ascend'],
+                },
+                {
+                    title: 'SAP',
+                    dataIndex: 'sapGross',
+                    render: (text, record, index) => {
+                        return numeral(record.sapGross).format('0,0');  
+                    },
+                    sorter: (a, b) => a.sapGross - b.sapGross,
+                    sortDirections: ['descend', 'ascend'],
+                },
+            ]
         },
-        {
-            title: 'SAP Gross',
-            dataIndex: 'sapGross',
-            render: (text, record, index) => {
-                return numeral(record.sapGross).format('0,0');  
-            },
-            sorter: (a, b) => a.sapGross - b.sapGross,
-            sortDirections: ['descend', 'ascend'],
-        },
+        
         {
             title: <span>Total Scrap</span>,
             children: [
@@ -237,7 +246,7 @@ const SummaryByProgramTable = ({isProductionDetailsLoading, productionDetailsCol
             ]
         },
         {
-            title: <span>HxH Production</span>,
+            title: <span>{ department === 'machining' ? 'EOS Production' : 'HxH Production' }</span>,
             children: [
                 {
                     title: 'Net',

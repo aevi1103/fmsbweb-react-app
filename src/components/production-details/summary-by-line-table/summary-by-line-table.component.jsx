@@ -136,24 +136,29 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
             sortDirections: ['descend', 'ascend'],
         },
         {
-            title: `HxH Gross ${department === 'foundry' ? 'w/ warmers' : ''}`,
-            dataIndex: 'hxhGross',
-            render: (text, record, index) => {
-                return numeral(record.hxHGross).format('0,0');   
-            },
-            sorter: (a, b) => a.hxHGross - b.hxHGross,
-            sortDirections: ['descend', 'ascend'],
-            width: '6rem'
-        },
-        {
-            title: 'SAP Gross',
-            dataIndex: 'sapGross',
-            render: (text, record, index) => {
-                return numeral(record.sapGross).format('0,0');  
-            },
-            sorter: (a, b) => a.sapGross - b.sapGross,
-            sortDirections: ['descend', 'ascend'],
-        },
+            title: <span>Gross</span>,
+            children: [
+                {
+                    title: `${department === 'machining' ? 'EOS' : 'HxH'} ${department === 'foundry' ? 'w/ warmers' : ''}`,
+                    dataIndex: 'hxhGross',
+                    render: (text, record, index) => {
+                        return numeral(record.hxHGross).format('0,0');   
+                    },
+                    sorter: (a, b) => a.hxHGross - b.hxHGross,
+                    sortDirections: ['descend', 'ascend'],
+                    width: '6rem'
+                },
+                {
+                    title: 'SAP',
+                    dataIndex: 'sapGross',
+                    render: (text, record, index) => {
+                        return numeral(record.sapGross).format('0,0');  
+                    },
+                    sorter: (a, b) => a.sapGross - b.sapGross,
+                    sortDirections: ['descend', 'ascend'],
+                },
+            ]
+        },  
         {
             title: <span>Total Scrap</span>,
             children: [
@@ -182,7 +187,7 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
             ]
         },
         {
-            title: <span><span>South Bend Scrap</span> <Tooltip title="Scrap"><InfoCircleOutlined className="ml2" /></Tooltip></span>,
+            title: <span>South Bend Scrap</span>,
             children: [
                 {
                     title: 'Warmers',
