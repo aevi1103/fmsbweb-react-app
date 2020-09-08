@@ -3,6 +3,8 @@ import numeral from 'numeral'
 import { connect } from 'react-redux'
 
 import CheckSheetInput from './check-sheet-input.component'
+import InspectionSummaryReCheckInput from './inspection-summary-recheck.component'
+import { useWindowSize } from 'react-use'
 
 import {
     Table,
@@ -14,29 +16,53 @@ const CheckSheetDataEntry = ({
     checkSheetPart,
     checkSheetValues,
 
+    checkSheet,
     csCharacteristicsCollection,
     isCsCharacteristicsLoading,
     csCharacteristicsErrorMsg
 }) => {
 
     const [isDisabled, setIsDisabled] = useState(false);
+    const {width, height} = useWindowSize();
+    const [scroll, setScroll] = useState()
+
+    useEffect(() => {
+
+        console.log({
+            width,
+            height
+        })
+
+        setScroll({
+            x: '100%',
+            y: height * .8
+        })
+
+    }, [height, width])
 
     useEffect(() => {       
         setIsDisabled(!(!!checkSheetSubMachine && !!checkSheetPart))
     }, [checkSheetSubMachine, checkSheetPart])
 
+    const controlMethodId = checkSheet?.controlMethodId ?? null;
     const characteristics = csCharacteristicsCollection ?? [];
     const data = characteristics.length > 0 ?  characteristics : [];
-
-    // console.log({data, csCharacteristicsCollection})
 
     const frequencies = [];
     const shiftHours = 8;
 
+    const getValue = (values, record, index) => values.find(({ characteristicId, frequency }) => characteristicId === record.characteristicId && frequency === index);
+
     for (let i = 1; i <= shiftHours; i++) {
 
+        const title = controlMethodId === 1 
+                        ? `Hour ${i}`
+                        : i === 1 
+                            ? '1st Check' 
+                            : `Recheck ${i-1}`
+
         frequencies.push({
-            title: `Hour ${i}`,
+            title: title,
             dataIndex: `hour_${i}`,
             width: '6.5rem',
             key: `hour_${i}`,
@@ -45,20 +71,33 @@ const CheckSheetDataEntry = ({
                 const { frequency, displayAs: { display } } = record;
                 if (display === 'Reference') return; 
 
-                const mod = i % (frequency);
+                const isPassFail = display === 'PassFail' ? true : false;
+
+                const mod = i % frequency;
                 if (frequency === 1 || mod === 1) {
 
-                    const isPassFail = display === 'PassFail' ? true : false;
-                    const item = checkSheetValues.find(({ characteristicId, frequency }) => characteristicId === record.characteristicId && frequency === i);
-
-                    // return;
-
+                    const value = getValue(checkSheetValues, record, i);
                     return <CheckSheetInput 
                                 isDisabled={isDisabled} 
                                 record={record} 
                                 frequency={i} 
                                 isPassFail={isPassFail}
-                                item={item}/> 
+                                item={value}/> 
+
+                }
+
+                //* render only in Inspection summary page
+                if (controlMethodId === 2) {
+
+                    //! always get hour 1 item only if the control method is inspection summary
+                    const value = getValue(checkSheetValues, record, 1);
+                    return <InspectionSummaryReCheckInput 
+                                isPassFail={isPassFail}
+                                frequency={i} 
+                                item={value}
+                                record={record} 
+                                isDisabled={isDisabled} 
+                                />
                 }
 
                 return;
@@ -133,6 +172,8 @@ const CheckSheetDataEntry = ({
                         return `Pass / Fail`;
                     case 'Reference':      
                         return val;
+                    case 'Micron':      
+                        return <span>{val} &micro;m</span>;
                     default:
                         return val
                 }
@@ -161,6 +202,8 @@ const CheckSheetDataEntry = ({
                         return `-`;
                     case 'Reference':    
                         return `Ref`;
+                    case 'Micron':      
+                        return <span>{val} &micro;m</span>;
                     default:
                         return val
                 }
@@ -192,6 +235,8 @@ const CheckSheetDataEntry = ({
                         return `-`;
                     case 'Positive':      
                         return `+${val}`;
+                    case 'Micron':      
+                        return <span>{val} &micro;m</span>;
                     default:
                         return val
                 }
@@ -230,7 +275,7 @@ const CheckSheetDataEntry = ({
                     size="middle"
                     bordered={true}
                     pagination={false}
-                    scroll={{ x: 1500, y: 1500 }} />
+                    scroll={scroll} />
         
 }
 
@@ -239,6 +284,7 @@ const mapStateToProps = ({qualityCheckSheet}) => ({
     checkSheetPart: qualityCheckSheet.checkSheetPart,
     checkSheetValues: qualityCheckSheet.checkSheetValues,
 
+    checkSheet: qualityCheckSheet.checkSheet,
     csCharacteristicsCollection: qualityCheckSheet.csCharacteristicsCollection,
     isCsCharacteristicsLoading: qualityCheckSheet.isCsCharacteristicsLoading,
     csCharacteristicsErrorMsg: qualityCheckSheet.csCharacteristicsErrorMsg

@@ -5,13 +5,12 @@ import api from '../../../API'
 import _ from 'lodash'
 import moment from 'moment';
 import {
-    getValidationStatus,
-    getCheckSheetEntry
+    getValidationStatus
 } from '../../../helpers/check-sheet-helpers'
 
 import {
     setReChecksCollection,
-    setCheckSheetValues
+    setCheckSheetEntry
 } from '../../../redux/quality-check-sheet/quality-check-sheet.actions.js'
 
 import {
@@ -40,11 +39,11 @@ const ReCheckInput = ({
     reChecksCollection,
     setReChecksCollection,
     checkSheetValues,
-    setCheckSheetValues
+    setCheckSheetEntry
 }) => {
 
     const [validateStatus, setValidateStatus] = useState(null);
-    const [entryId, setEntryid] = useState(checkSheetEntryId);
+    const [entryId] = useState(checkSheetEntryId);
     const [value, setValue] = useState(item.value);
 
     const [valueBool, setValueBool] = useState(item.valueBool);
@@ -56,16 +55,7 @@ const ReCheckInput = ({
     const [deleteLoading, setDeleteLoading] = useState(false);
     const [errMsg, setErrMsg] = useState(null);
 
-    // todo: add a post to update check status in check sheet entry model
-
-    const setCheckSheetEntry = async (data) => {
-        const {checkSheetEntry, reCheck: { checkSheetEntryId } } = data;
-        const newArr = checkSheetValues.filter(i => i.checkSheetEntryId !== checkSheetEntryId);
-        newArr.push(checkSheetEntry);
-        setCheckSheetValues(newArr);
-    }
-
-    const postData = async (body, collection) => {
+    const postData = async (body, reChecksCollection) => {
 
         try {
             
@@ -74,20 +64,20 @@ const ReCheckInput = ({
             const response = await api.post(`/quality/checksheets/rechecks`, body);
 
             const data =  response.data;
-            const { reCheck  } = data;
+            const { reCheck, checkSheetEntry } = data;
             const { reCheckId, timeStamp } = reCheck
 
             setReCheckId(reCheckId);
             setTimeStamp(timeStamp);
 
             //* update state
-            const newArr = collection.map(i => {
+            const newArr = reChecksCollection.map(i => {
                 if (i.key === item.key) return { ...reCheck, key: item.key }
                 return i;
             });
 
             setReChecksCollection(newArr);
-            setCheckSheetEntry(data);
+            setCheckSheetEntry(checkSheetEntry, checkSheetValues);
 
             message.success(`Successfully Saved!`);
 
@@ -99,7 +89,7 @@ const ReCheckInput = ({
 
     }
 
-    const debouncedPostData = useCallback(_.debounce((body, collection) => postData(body, collection), 800), []);
+    const debouncedPostData = useCallback(_.debounce((body, collection) => postData(body, collection), 1000), []);
 
     //* update validation status
     useEffect(() => {
@@ -158,11 +148,11 @@ const ReCheckInput = ({
             try {
                 
                 const response =  await api.delete(`/quality/checksheets/rechecks/${reCheckId}`);
-                const data = response.data;
+                const { checkSheetEntry } = response.data;
 
                 message.success('Successfully deleted!')
                 removeItem();
-                setCheckSheetEntry(data);
+                setCheckSheetEntry(checkSheetEntry, checkSheetValues);
 
             } catch (error) {
                 setErrMsg(error)
@@ -250,7 +240,7 @@ const ReCheckInput = ({
 
 const mapDispatchToProps = dispatch => ({
     setReChecksCollection: items => dispatch(setReChecksCollection(items)),
-    setCheckSheetValues: items => dispatch(setCheckSheetValues(items))
+    setCheckSheetEntry: (checkSheetEntry, checkSheetValues) => dispatch(setCheckSheetEntry(checkSheetEntry, checkSheetValues))
 });
 
 const mapStateToProps = ({ qualityCheckSheet }) => ({

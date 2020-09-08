@@ -133,3 +133,21 @@ export const setCheckSheet = collection => ({
     payload: collection
 })
 
+export const setCheckSheetEntry = (checkSheetEntry, checkSheetValues) => {
+
+    const { checkSheetEntryId } = checkSheetEntry;
+
+    //* remove the new item from the old collection
+    const items = checkSheetValues.filter(item => item.checkSheetEntryId !== checkSheetEntryId);
+
+    //* push the item to the cloned checkSheetValues items
+    items.push(checkSheetEntry);
+
+    //* set the new object to redux store
+
+     return {
+        type: qualityCheckSheetTypes.SET_CHECK_SHEET_VALUES,
+        payload: items
+     }
+
+}
