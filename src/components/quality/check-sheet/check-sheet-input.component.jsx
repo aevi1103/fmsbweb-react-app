@@ -18,7 +18,8 @@ import {
     getTargets,
     getValidationStatus,
     focusOnNextRow,
-    getInputId
+    getInputId,
+    isKeyboardNavKeys
 } from '../../../helpers/check-sheet-helpers'
 
 import {
@@ -40,7 +41,8 @@ const initialState = {
     val: null,
     dot: false,
     isRechecked: false,
-    popOverTrigger: 'focus'
+    popOverTrigger: 'focus',
+    checkSheetEntryId: 0
 }
 
 const reducer = (state = initialState, action) => {
@@ -61,6 +63,8 @@ const reducer = (state = initialState, action) => {
             return { ...state, isRechecked: action.payload }
         case 'SET_POP_OVER_TRIGGER':        
             return { ...state, popOverTrigger: action.payload }
+        case 'SET_CHECK_SHEET_ENTRY_ID':        
+            return { ...state, checkSheetEntryId: action.payload }
         default:
             return state;
     }
@@ -107,7 +111,7 @@ const CheckSheetInput = ({
     useEffect(() => {
         const isRechecked = (item?.rechecks ?? []).length > 0 ? true : false;
         dispatch({ type: 'SET_IS_RECHECKED', payload: isRechecked })
-    }, [item])
+    }, [item]);
 
     //* post entry
     const postData = (body, entries) => {
@@ -118,16 +122,44 @@ const CheckSheetInput = ({
             .then(response => { 
 
                 const data = response.data;
-                const { value, valueBool } = data;
-                const val = isPassFail ? (valueBool ? 'Pass' : 'Fail') : value;
-                
-                message.success({
-                    content: `Enterd '${val}' at ${record.value}, Hour # ${frequency} successfully saved!`,
-                    key,
-                    duration: 10
-                });
+                const { status, result } = data;
 
-                setCheckSheetEntry(data, entries);
+                switch (status) {
+                    case 0: //* null entry, dont do anything
+                        
+                        break;
+
+                    case 1: //* delete, remove item in store
+                        
+                        message.warn({
+                            content: `Entry removed at ${record.value}, Hour # ${frequency}.`,
+                            key,
+                            duration: 10
+                        });
+
+                        setCheckSheetEntry(result, entries, status);
+
+                        break;
+
+                    case 2: //* add/update item ins tore
+
+                        const { value, valueBool } = result;
+                        const val = isPassFail ? (valueBool ? 'Pass' : 'Fail') : value;
+
+                        message.success({
+                            content: `Enterd '${val}' at ${record.value}, Hour # ${frequency} successfully saved!`,
+                            key,
+                            duration: 10
+                        });
+
+                        setCheckSheetEntry(result, entries, status);
+                        
+                        break;
+                
+                    default:
+                        break;
+                }
+
 
             })
             .catch(err => message.error(`Error: ${record.value} frequency ${frequency} => ${err.message}`, 20)) 
@@ -146,7 +178,7 @@ const CheckSheetInput = ({
     const onInputNumberKeyUp = e => {
 
         //* check if key code is 13 or enter key, if not save entry else just go to next row
-        if (e.which !== 13) {
+        if (isKeyboardNavKeys(e)) {
 
             const value = e.target.value;
             dispatch({ type: 'SET_VALUE', payload: value});
@@ -163,7 +195,8 @@ const CheckSheetInput = ({
                 value: parseFloat(value),
                 valueBool: null,
                 comment: item?.comment,
-                isReChecked: item?.isReChecked ?? false
+                isReChecked: item?.isReChecked ?? false,
+                checkSheetEntryId: item?.checkSheetEntryId ?? 0
             }, checkSheetValues);
 
         } else {
@@ -188,7 +221,8 @@ const CheckSheetInput = ({
             value: null,
             valueBool: value,
             comment: item?.comment,
-            isReChecked: item?.isReChecked ?? false
+            isReChecked: item?.isReChecked ?? false,
+            checkSheetEntryId: item?.checkSheetEntryId ?? 0
         }, checkSheetValues);
         
     }
@@ -215,6 +249,7 @@ const CheckSheetInput = ({
             })
 
             const data = response.data;
+
             if (data) {
                 const newArr = checkSheetValues.filter(i => i.checkSheetEntryId !== data.checkSheetEntryId);
                 newArr.push(data);
@@ -303,7 +338,7 @@ const CheckSheetInput = ({
 const mapDispatchToProps = dispatch => ({
     setReChecksCollection: items => dispatch(setReChecksCollection(items)),
     setCheckSheetValues: items => dispatch(setCheckSheetValues(items)),
-    setCheckSheetEntry: (checkSheetEntry, checkSheetValues) => dispatch(setCheckSheetEntry(checkSheetEntry, checkSheetValues))
+    setCheckSheetEntry: (checkSheetEntry, checkSheetValues, status) => dispatch(setCheckSheetEntry(checkSheetEntry, checkSheetValues, status))
 });
 
 const mapStateToProps = ({qualityCheckSheet}) => ({

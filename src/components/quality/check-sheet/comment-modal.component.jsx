@@ -64,7 +64,8 @@ const CommentModal = ({
         .then(response => { 
 
             const data = response.data;
-            setCheckSheetEntry(data, checkSheetValues);
+            const { result } = data;
+            setCheckSheetEntry(result, checkSheetValues);
 
             message.success('Comment Added');
             dispatch({ type: 'SET_MODAL_VISIBLE', payload: false});

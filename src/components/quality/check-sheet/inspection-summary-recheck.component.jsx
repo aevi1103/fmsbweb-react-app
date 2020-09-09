@@ -10,7 +10,8 @@ import {
     getTargets,
     getValidationStatus,
     focusOnNextRow,
-    getInputId
+    getInputId,
+    isKeyboardNavKeys
 } from '../../../helpers/check-sheet-helpers'
 
 import {
@@ -135,12 +136,23 @@ const InspectionSummaryReCheckInput = ({
             const { reCheck, checkSheetEntry } = data;
             const { value, valueBool } = reCheck;
             const val = isPassFail ? (valueBool ? 'Pass' : 'Fail') : value;
+            const result = isPassFail ? valueBool : value;
 
-            message.success({
-                content: `Enterd '${val}' at ${record.value}, Recheck # ${frequency - 1} successfully saved!`,
-                key,
-                duration: 10
-            });
+            if (result !== null) {
+                message.success({
+                    content: `Enterd '${val}' at ${record.value}, Recheck # ${frequency - 1} successfully saved!`,
+                    key,
+                    duration: 10
+                });
+            }
+
+            if (result === null) {
+                message.error({
+                    content: `Invalid Entry at ${record.value}, Recheck # ${frequency}!`,
+                    key,
+                    duration: 10
+                });
+            }
 
             dispatch({ type: 'SET_VALUE', payload: isPassFail ? valueBool : value });
             setCheckSheetEntry(checkSheetEntry, values);
@@ -160,8 +172,8 @@ const InspectionSummaryReCheckInput = ({
 
     const onNumberChange = e => {
 
-        if (e.which !== 13) {
-            debouncedPostData({
+        if (isKeyboardNavKeys(e)) {
+            debouncedPostData({     
                 reCheckId: state.reCheck?.reCheckId ?? 0,
                 checkSheetEntryId: item?.checkSheetEntryId ?? 0,
                 value: parseFloat(e.target.value),
@@ -245,7 +257,7 @@ const InspectionSummaryReCheckInput = ({
 
                                     <Col span={24}>
                                         {
-                                            item?.checkSheetEntryId 
+                                            item?.checkSheetEntryId
                                                 ? <Button type="primary" onClick={onBtnCommentClick}>{ state.reCheck?.comment ? 'Edit' : 'Add' } Comment</Button> 
                                                 : null
                                         }

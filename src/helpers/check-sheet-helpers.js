@@ -73,21 +73,24 @@ export const getCheckSheetEntry = async (checkSheetValues, entryId, onSuccess = 
 
 export const focusOnNextRow = (e, characteristics, record, frequency) => {
 
-    const keyCode = e.which;
-    if (keyCode === 13) {
+    const { characteristicId } = record;
+    const notRefCharacteristics = characteristics.filter(e => e.displayAs.display !== 'Reference');
+    const currentIndex = notRefCharacteristics.map(e => e.characteristicId).indexOf(characteristicId);
 
-        const notRefCharacteristics = characteristics.filter(e => e.displayAs.display !== 'Reference');
-        const { characteristicId } = record;
-        const currentIndex = notRefCharacteristics.map(e => e.characteristicId).indexOf(characteristicId);
-        const nextItem = notRefCharacteristics[currentIndex+1];
+    let nextItem = null;
 
-        if (!nextItem) return;
-
-        const nextEl = document.getElementById(`id_${nextItem.characteristicId}_hour_${frequency}`);
-        if (nextEl) nextEl.focus();
-        
+    if (e.shiftKey && e.key === 'Enter') {
+        nextItem = notRefCharacteristics[currentIndex-1];
+    } else if  (e.key === 'Enter') {
+        nextItem = notRefCharacteristics[currentIndex+1];
     }
+
+    if (!nextItem) return;
+    const nextEl = document.getElementById(`id_${nextItem.characteristicId}_hour_${frequency}`);
+    if (nextEl) nextEl.focus();
+
 
 }
 
 export const getInputId = (id, frequency) => `id_${id}_hour_${frequency}`;
+export const isKeyboardNavKeys = e => (e.key !== 'Enter' || (e.shiftKey && e.key !== 'Enter')) && e.key !== 'Tab';
