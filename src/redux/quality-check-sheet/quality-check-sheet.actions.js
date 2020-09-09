@@ -79,7 +79,10 @@ export const fetchCsCharacteristicStartAsync = (partId, machineName) => {
         api.get(`quality/checksheets/characteristic?$filter=organizationPartId eq ${partId} and machineName eq '${machineName}'&$expand=displayAs`)
         .then(response => {
 
-            const data = response.data.map((i,key) => ({ ...i, key}))
+            const data = response.data
+                        .sort((a, b) => a.characteristicId - b.characteristicId)
+                        .map((i,key) => ({ ...i, key}));
+                        
             dispatch(fetchSuccess(qualityCheckSheetTypes.FETCH_CS_CHARACTERISTICS_SUCCESS, data))
         })
         .catch(error => {   

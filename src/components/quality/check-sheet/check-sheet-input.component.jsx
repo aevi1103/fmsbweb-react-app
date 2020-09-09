@@ -16,7 +16,9 @@ import {
 
 import {
     getTargets,
-    getValidationStatus
+    getValidationStatus,
+    focusOnNextRow,
+    getInputId
 } from '../../../helpers/check-sheet-helpers'
 
 import {
@@ -37,7 +39,8 @@ const initialState = {
 
     val: null,
     dot: false,
-    isRechecked: false
+    isRechecked: false,
+    popOverTrigger: 'focus'
 }
 
 const reducer = (state = initialState, action) => {
@@ -56,6 +59,8 @@ const reducer = (state = initialState, action) => {
             return { ...state, val: action.payload }
         case 'SET_IS_RECHECKED':        
             return { ...state, isRechecked: action.payload }
+        case 'SET_POP_OVER_TRIGGER':        
+            return { ...state, popOverTrigger: action.payload }
         default:
             return state;
     }
@@ -73,7 +78,8 @@ const CheckSheetInput = ({
     setCheckSheetEntry,
     checkSheetSubMachine,
     checkSheetPart,
-    checkSheetValues
+    checkSheetValues,
+    csCharacteristicsCollection
 }) => {
 
     const { checkSheetId } = useParams();
@@ -112,9 +118,11 @@ const CheckSheetInput = ({
             .then(response => { 
 
                 const data = response.data;
-                const { value } = data;
+                const { value, valueBool } = data;
+                const val = isPassFail ? (valueBool ? 'Pass' : 'Fail') : value;
+                
                 message.success({
-                    content: `Value of '${value}' saved for ${record.value} Frequency ${frequency}.`,
+                    content: `Enterd '${val}' at ${record.value}, Hour # ${frequency} successfully saved!`,
                     key,
                     duration: 10
                 });
@@ -126,37 +134,66 @@ const CheckSheetInput = ({
 
     }
 
+    //* efect for pop over trigger
+    useEffect(() => {
+        dispatch({ type: 'SET_POP_OVER_TRIGGER', payload: state.dot ? 'hover' : 'focus' })
+    }, [state.dot])
+
     //* debounse post when typing
     const debouncedPostData = useCallback(_.debounce((body, entries) => postData(body, entries), 1000), []);
 
     //* entries
-    const onChange = (e) => {
+    const onInputNumberKeyUp = e => {
 
-        const value = isPassFail ? e : e.target.value;
+        //* check if key code is 13 or enter key, if not save entry else just go to next row
+        if (e.which !== 13) {
+
+            const value = e.target.value;
+            dispatch({ type: 'SET_VALUE', payload: value});
+            updateStatus(value);
+    
+            const { characteristicId } = record;
+    
+            debouncedPostData({
+                checkSheetId,
+                subMachineId: checkSheetSubMachine,
+                characteristicId,
+                part: checkSheetPart,
+                frequency,
+                value: parseFloat(value),
+                valueBool: null,
+                comment: item?.comment,
+                isReChecked: item?.isReChecked ?? false
+            }, checkSheetValues);
+
+        } else {
+            focusOnNextRow(e, csCharacteristicsCollection, record, frequency)
+        }
+
+    }
+
+    const onPassFailChange = value => {
+
         dispatch({ type: 'SET_VALUE', payload: value});
         updateStatus(value);
 
         const { characteristicId } = record;
 
-        const body = {
+        postData({
             checkSheetId,
             subMachineId: checkSheetSubMachine,
             characteristicId,
             part: checkSheetPart,
             frequency,
-            value: isPassFail ? null : parseFloat(value),
-            valueBool: isPassFail ? value : null,
+            value: null,
+            valueBool: value,
             comment: item?.comment,
             isReChecked: item?.isReChecked ?? false
-        };
-
-        if (isPassFail) {
-            postData(body, checkSheetValues);
-        } else {
-            debouncedPostData(body, checkSheetValues);
-        }
+        }, checkSheetValues);
         
     }
+
+    const onKeyUpPassFail = e => focusOnNextRow(e, csCharacteristicsCollection, record, frequency);
 
     //* comments
     const onOpenCommentModal = () => {
@@ -205,7 +242,7 @@ const CheckSheetInput = ({
                 <Form.Item hasFeedback validateStatus={state.validateStatus} className="mb0">
                     <Popover 
                         title={record.value} 
-                        trigger="hover" 
+                        trigger={state.popOverTrigger}
                         content={<CheckSheetPopOverInfo 
                                     isPassFail={isPassFail} 
                                     targets={getTargets(record)}
@@ -219,20 +256,22 @@ const CheckSheetInput = ({
                         {
                             isPassFail
 
-                            ?   <Select 
+                            ?   <Select id={getInputId(record?.characteristicId, frequency)}
                                     style={{ width: '100%' }} 
                                     allowClear={true} 
-                                    onChange={onChange}
+                                    onChange={onPassFailChange}
+                                    onKeyUp={onKeyUpPassFail}
                                     disabled={isDisabled || state.isRechecked} 
                                     value={state.val} >
-                                    <Option value={true}>Pass</Option>
-                                    <Option value={false}>Fail</Option>
+                                        <Option value={true}>Pass</Option>
+                                        <Option value={false}>Fail</Option>
                                 </Select>
 
                             :   <InputNumber type="number" 
+                                    id={getInputId(record?.characteristicId, frequency)} 
                                     style={{ width: '100%' }} 
                                     disabled={isDisabled || state.isRechecked} 
-                                    onKeyUp={onChange} 
+                                    onKeyUp={onInputNumberKeyUp} 
                                     value={state.val} />
                         }
                         
@@ -270,7 +309,8 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = ({qualityCheckSheet}) => ({
     checkSheetSubMachine: qualityCheckSheet.checkSheetSubMachine,
     checkSheetPart: qualityCheckSheet.checkSheetPart,
-    checkSheetValues: qualityCheckSheet.checkSheetValues
+    checkSheetValues: qualityCheckSheet.checkSheetValues,
+    csCharacteristicsCollection: qualityCheckSheet.csCharacteristicsCollection
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CheckSheetInput);

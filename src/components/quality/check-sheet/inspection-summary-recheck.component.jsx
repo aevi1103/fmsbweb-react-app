@@ -8,7 +8,9 @@ import ToloranceBar from './tolerance-bar.component'
 
 import {
     getTargets,
-    getValidationStatus
+    getValidationStatus,
+    focusOnNextRow,
+    getInputId
 } from '../../../helpers/check-sheet-helpers'
 
 import {
@@ -81,7 +83,8 @@ const InspectionSummaryReCheckInput = ({
     checkSheetValues,
 
     checkSheetSubMachine,
-    checkSheetPart
+    checkSheetPart,
+    csCharacteristicsCollection
 }) => {
 
     const [form] = Form.useForm()
@@ -117,7 +120,6 @@ const InspectionSummaryReCheckInput = ({
         //* update status
         updateStatus(val);
 
-
     }, [item, record, frequency, isPassFail, updateStatus, checkSheetSubMachine, checkSheetPart])
 
     const postData = async (body, values, fnSuccess = () => {}) => {
@@ -131,11 +133,11 @@ const InspectionSummaryReCheckInput = ({
     
             const data =  response.data;
             const { reCheck, checkSheetEntry } = data;
-            const { value, valueBool, reCheckId } = reCheck;
+            const { value, valueBool } = reCheck;
             const val = isPassFail ? (valueBool ? 'Pass' : 'Fail') : value;
 
             message.success({
-                content: `Recheck entry of '${val}' successfully saved!`,
+                content: `Enterd '${val}' at ${record.value}, Recheck # ${frequency - 1} successfully saved!`,
                 key,
                 duration: 10
             });
@@ -158,14 +160,17 @@ const InspectionSummaryReCheckInput = ({
 
     const onNumberChange = e => {
 
-        debouncedPostData({
-            reCheckId: state.reCheck?.reCheckId ?? 0,
-            checkSheetEntryId: item?.checkSheetEntryId ?? 0,
-            value: parseFloat(e.target.value),
-            valueBool: null,
-            comment: state.reCheck?.comment
-        }, checkSheetValues);
-
+        if (e.which !== 13) {
+            debouncedPostData({
+                reCheckId: state.reCheck?.reCheckId ?? 0,
+                checkSheetEntryId: item?.checkSheetEntryId ?? 0,
+                value: parseFloat(e.target.value),
+                valueBool: null,
+                comment: state.reCheck?.comment
+            }, checkSheetValues);
+        } else {
+            focusOnNextRow(e, csCharacteristicsCollection, record, frequency);
+        }
     }
 
     const passFailChange = value => {
@@ -179,6 +184,8 @@ const InspectionSummaryReCheckInput = ({
         }, checkSheetValues);
 
     }
+
+    const onKeyUpPassFail = e => focusOnNextRow(e, csCharacteristicsCollection, record, frequency);
 
     const onBtnCommentClick = () => {
         dispatch({ type: 'SET_MODAL_VISIBLE', payload: true});
@@ -213,8 +220,8 @@ const InspectionSummaryReCheckInput = ({
             <Badge dot={state.dot} className="db">
                 <Form.Item hasFeedback validateStatus={state.validateStatus} className="mb0">
                     <Popover 
-                        title={`Recheck ${frequency}: ${record.value}`} 
-                        trigger="hover" 
+                        title={`Recheck ${frequency - 1}: ${record.value}`} 
+                        trigger="focus" 
                         content={<Row gutter={[12,12]} style={{width: '300px'}}>
                                     <ToloranceBar isPassFail={isPassFail} targets={getTargets(record)} />
 
@@ -250,10 +257,11 @@ const InspectionSummaryReCheckInput = ({
                         {
                             isPassFail
 
-                            ?   <Select 
+                            ?   <Select id={getInputId(record?.characteristicId, frequency)}
                                     style={{ width: '100%' }} 
                                     allowClear={true} 
                                     onChange={passFailChange}
+                                    onKeyUp={onKeyUpPassFail}
                                     disabled={isDisabled || !state.recheckDisabled} 
                                     value={state.val} >
                                     <Option value={true}>Pass</Option>
@@ -261,6 +269,7 @@ const InspectionSummaryReCheckInput = ({
                                 </Select>
 
                             :   <InputNumber type="number" 
+                                    id={getInputId(record?.characteristicId, frequency)}
                                     style={{ width: '100%' }} 
                                     disabled={isDisabled || !state.recheckDisabled} 
                                     onKeyUp={onNumberChange} 
@@ -315,6 +324,7 @@ const mapStateToProps = ({ qualityCheckSheet }) => ({
     checkSheetValues: qualityCheckSheet.checkSheetValues,
     checkSheetSubMachine: qualityCheckSheet.checkSheetSubMachine,
     checkSheetPart: qualityCheckSheet.checkSheetPart,
+    csCharacteristicsCollection: qualityCheckSheet.csCharacteristicsCollection
 })
 
 

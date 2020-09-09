@@ -125,6 +125,8 @@ const CheckSheetDataEntryPage = ({
 
     const getEntries = (checkSheetId, subMachine, part) => {
 
+        const key = `control_id_${controlId}_id_${checkSheetId}`;
+        message.loading({ content: 'Fetching data, please wait...', key });
         dispatch({type: 'SET_CHECK_SHEET_VALUES_LOADING', payload: true})
         api.get(`/quality/checksheets/checksheetentry?$filter=checkSheetId eq ${checkSheetId} and part eq '${part}' and subMachineId eq ${subMachine}&$expand=rechecks`)
             .then(response => {
@@ -135,7 +137,12 @@ const CheckSheetDataEntryPage = ({
                             ? `${data.length} records successfully loaded`
                             : `No records loaded`;
                             
-                message.success(msg)
+                message.success({
+                    content: msg,
+                    key,
+                    duration: 10
+                });
+                
             })
             .catch(error => dispatch({type: 'SET_CHECK_SHEET_VALUES_ERROR_MSG', payload: error.message}))
             .finally(() => dispatch({type: 'SET_CHECK_SHEET_VALUES_LOADING', payload: false}))
@@ -284,7 +291,7 @@ const CheckSheetDataEntryPage = ({
                             buttonStyle="solid"
                             value={checkSheetSubMachine}
                             defaultValue={checkSheetSubMachine}
-                            className="mr2"
+                            className="mr2 mt2-ns"
                         />
 
                         <Radio.Group
@@ -292,7 +299,7 @@ const CheckSheetDataEntryPage = ({
                             optionType="button"
                             buttonStyle="solid"
                             defaultValue={checkSheetPart}
-                            className="mr2"
+                            className="mr2 mt2-ns"
                             options={state.parts?.map(part => ({ label: part, value: part }))}
                         />
                     

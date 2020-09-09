@@ -27,12 +27,7 @@ const CheckSheetDataEntry = ({
     const [scroll, setScroll] = useState()
 
     useEffect(() => {
-
-        console.log({
-            width,
-            height
-        })
-
+        
         setScroll({
             x: '100%',
             y: height * .8
@@ -52,8 +47,9 @@ const CheckSheetDataEntry = ({
     const shiftHours = 8;
 
     const getValue = (values, record, index) => values.find(({ characteristicId, frequency }) => characteristicId === record.characteristicId && frequency === index);
-
+    
     for (let i = 1; i <= shiftHours; i++) {
+
 
         const title = controlMethodId === 1 
                         ? `Hour ${i}`
