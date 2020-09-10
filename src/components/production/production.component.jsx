@@ -184,7 +184,7 @@ const fontGreen = {
 
             <Col {...responsiveProps}>
                 <Card 
-                    title="OAE %"
+                    title={ area === 'skirt coat' ? 'HxH OAE %' : 'SAP OAE %' }
                     size="small"
                     className="b--black-10"
                     loading={isProdStatusFetching}
@@ -196,9 +196,15 @@ const fontGreen = {
                 {
                     productionStatusCollection 
                     ? (<KpiContainer>
-                            <h1 style={{color: sapOaeColorCode}}>
-                                {numeral(sapOae).format('0%')}
-                            </h1>
+                            {
+                                area !== 'skirt coat' 
+                                    ?   <h1 style={{color: sapOaeColorCode}}>
+                                            {numeral(sapOae).format('0%')}
+                                        </h1>
+                                    :   <h1 style={{color: hxhOaeColorCode}}>
+                                            {numeral(hxhOae).format('0%')}
+                                        </h1>
+                            }
                         </KpiContainer>)
                     : <Empty/>
                  }
