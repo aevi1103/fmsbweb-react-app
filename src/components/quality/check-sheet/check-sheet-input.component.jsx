@@ -141,13 +141,13 @@ const CheckSheetInput = ({
 
                         break;
 
-                    case 2: //* add/update item ins tore
+                    case 2: //* add/update item in store
 
                         const { value, valueBool } = result;
                         const val = isPassFail ? (valueBool ? 'Pass' : 'Fail') : value;
 
                         message.success({
-                            content: `Enterd '${val}' at ${record.value}, Hour # ${frequency} successfully saved!`,
+                            content: `Entered '${val}' at ${record.value}, Hour # ${frequency} successfully saved!`,
                             key,
                             duration: 10
                         });

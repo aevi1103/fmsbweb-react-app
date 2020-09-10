@@ -59,33 +59,85 @@ const ReCheckInput = ({
 
         try {
             
-            setLoading(true);
-            setErrMsg(null);
-            const response = await api.post(`/quality/checksheets/rechecks`, body);
-
-            const data =  response.data;
-            const { reCheck, checkSheetEntry } = data;
-            const { reCheckId, timeStamp } = reCheck
-
-            setReCheckId(reCheckId);
-            setTimeStamp(timeStamp);
-
-            //* update state
-            const newArr = reChecksCollection.map(i => {
-                if (i.key === item.key) return { ...reCheck, key: item.key }
-                return i;
+            const mapReCheckCollection = (reCheckCollection, reCheck) => reCheckCollection.map(i => {
+                return i.key === item.key ? { ...reCheck, key: item.key } : i;
             });
 
-            setReChecksCollection(newArr);
-            setCheckSheetEntry(checkSheetEntry, checkSheetValues);
+            setLoading(true);
+            setErrMsg(null);
+            const key = `${body.reCheckId}_${body.checkSheetEntryId}_${isPassFail ? body.valueBool : body.value}`;
 
-            message.success(`Successfully Saved!`);
+            message.loading({ content: 'Saving...', key })
+
+            const response = await api.post(`/quality/checksheets/rechecks`, body);
+            const data =  response.data;
+            const { status, result } = data;
+
+            const { reCheck, checkSheetEntry } = result || {};
+            const { reCheckId, timeStamp } = reCheck || {}
+
+            switch (status) {
+
+                case 0: // * null entry, dont do anything
+                    
+                    message.error({
+                        content: `Invalid Entry!`,
+                        key,
+                        duration: 10
+                    });
+
+                    setLoading(false);
+                    break;
+
+                case 1: //* delete, remove item in store
+                    
+                    setReCheckId(0);
+                    setTimeStamp(null);
+
+                    //* remove the deleted item from the collection
+                    const items = reChecksCollection.filter(e => e.reCheckId !== reCheckId);
+                    setReChecksCollection(mapReCheckCollection(items, reCheck));
+
+                    //* always set to 2 or add/update because you dont want to delete the checksheet entry
+                    setCheckSheetEntry(checkSheetEntry, checkSheetValues, 2);
+
+                    message.warn({
+                        content: `Entry Removed!`,
+                        key,
+                        duration: 10
+                    });
+
+                    break;
+
+                case 2://* add/update item in store
+                    
+                    setReCheckId(reCheckId);
+                    setTimeStamp(timeStamp);
+        
+                    //* update state
+                    setReChecksCollection(mapReCheckCollection(reChecksCollection, reCheck));
+
+                    //* always set to 2 or add/update because you dont want to delete the checksheet entry
+                    setCheckSheetEntry(checkSheetEntry, checkSheetValues, 2);
+        
+                    message.success({
+                        content: `Successfully Saved!`,
+                        key,
+                        duration: 10
+                    });
+
+                    setLoading(false);
+
+                    break;
+            
+                default:
+                    break;
+            }
 
         } catch (error) {
             setErrMsg(error);
-        } finally {
             setLoading(false);
-        }
+        } 
 
     }
 
@@ -112,26 +164,24 @@ const ReCheckInput = ({
 
     const onNumberChange = e => {
         setValue(e.target.value);
-        const body = {
+        debouncedPostData({
             reCheckId: reCheckId ?? 0,
             checkSheetEntryId: entryId,
             value: parseFloat(e.target.value),
             valueBool: null,
             comment
-        }
-        debouncedPostData(body, reChecksCollection);
+        }, reChecksCollection);
     }
 
     const onPassFailChange = value => {
         setValueBool(value);
-        const body = {
+        postData({
             reCheckId: reCheckId ?? 0,
             checkSheetEntryId: entryId,
             value: null,
             valueBool: value,
             comment
-        }
-        postData(body, reChecksCollection);
+        }, reChecksCollection);
     }
 
     const remove = async () => {
@@ -148,11 +198,15 @@ const ReCheckInput = ({
             try {
                 
                 const response =  await api.delete(`/quality/checksheets/rechecks/${reCheckId}`);
-                const { checkSheetEntry } = response.data;
+                
+                const data = response.data;
+                const { result: { checkSheetEntry } } = data;
 
                 message.success('Successfully deleted!')
                 removeItem();
-                setCheckSheetEntry(checkSheetEntry, checkSheetValues);
+
+                 //* always set to 2 or add/update because you dont want to delete the checksheet entry
+                setCheckSheetEntry(checkSheetEntry, checkSheetValues, 2);
 
             } catch (error) {
                 setErrMsg(error)
@@ -240,7 +294,7 @@ const ReCheckInput = ({
 
 const mapDispatchToProps = dispatch => ({
     setReChecksCollection: items => dispatch(setReChecksCollection(items)),
-    setCheckSheetEntry: (checkSheetEntry, checkSheetValues) => dispatch(setCheckSheetEntry(checkSheetEntry, checkSheetValues))
+    setCheckSheetEntry: (checkSheetEntry, checkSheetValues, status) => dispatch(setCheckSheetEntry(checkSheetEntry, checkSheetValues, status))
 });
 
 const mapStateToProps = ({ qualityCheckSheet }) => ({

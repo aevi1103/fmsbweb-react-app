@@ -130,34 +130,51 @@ const InspectionSummaryReCheckInput = ({
             const key = `${record.characteristicId}_${frequency}`;
             message.loading({ content: 'Saving...', key });
             dispatch({ type: 'SET_LOADING', payload: true });
+
             const response = await api.post(`/quality/checksheets/rechecks`, body);
     
             const data =  response.data;
-            const { reCheck, checkSheetEntry } = data;
-            const { value, valueBool } = reCheck;
+            const { status, result } = data;
+            const { reCheck, checkSheetEntry } = result || {};
+            const { value, valueBool } = reCheck || {};
             const val = isPassFail ? (valueBool ? 'Pass' : 'Fail') : value;
-            const result = isPassFail ? valueBool : value;
 
-            if (result !== null) {
-                message.success({
-                    content: `Enterd '${val}' at ${record.value}, Recheck # ${frequency - 1} successfully saved!`,
-                    key,
-                    duration: 10
-                });
+            switch (status) {
+
+                case 0: // * null entry, dont do anything
+                    
+                    break;
+
+                case 1: //* delete, remove item in store
+                    
+                    dispatch({ type: 'SET_VALUE', payload: null });
+                    setCheckSheetEntry(checkSheetEntry, values, 2);
+
+                    message.warn({
+                        content: `Entry removed at ${record.value}, Recheck # ${frequency - 1}.`,
+                        key,
+                        duration: 10
+                    });
+                
+                    break;
+
+                case 2://* add/update item in store
+                    
+                    dispatch({ type: 'SET_VALUE', payload: isPassFail ? valueBool : value });
+                    setCheckSheetEntry(checkSheetEntry, values, 2);
+                    fnSuccess(data);
+
+                    message.success({
+                        content: `Enterd '${val}' at ${record.value}, Recheck # ${frequency - 1} successfully saved!`,
+                        key,
+                        duration: 10
+                    });
+
+                    break;
+            
+                default:
+                    break;
             }
-
-            if (result === null) {
-                message.error({
-                    content: `Invalid Entry at ${record.value}, Recheck # ${frequency}!`,
-                    key,
-                    duration: 10
-                });
-            }
-
-            dispatch({ type: 'SET_VALUE', payload: isPassFail ? valueBool : value });
-            setCheckSheetEntry(checkSheetEntry, values);
-
-            fnSuccess(data);
 
         } catch (error) {
             dispatch({ type: 'SET_ERROR', payload: error });
@@ -222,6 +239,7 @@ const InspectionSummaryReCheckInput = ({
             dispatch({ type: 'SET_RE_CHECK', payload: reCheck })
             dispatch({ type: 'SET_MODAL_VISIBLE', payload: false});
         }
+
         postData(body, checkSheetValues, fnSuccess);
     }
 
@@ -328,7 +346,7 @@ const InspectionSummaryReCheckInput = ({
 
 const mapDispatchToProps = dispatch => ({
     setReChecksCollection: items => dispatch(setReChecksCollection(items)),
-    setCheckSheetEntry: (checkSheetEntry, checkSheetValues) => dispatch(setCheckSheetEntry(checkSheetEntry, checkSheetValues))
+    setCheckSheetEntry: (checkSheetEntry, checkSheetValues, status) => dispatch(setCheckSheetEntry(checkSheetEntry, checkSheetValues, status))
 });
 
 const mapStateToProps = ({ qualityCheckSheet }) => ({
