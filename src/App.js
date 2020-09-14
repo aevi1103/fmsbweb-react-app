@@ -40,23 +40,11 @@ import AfEosPage from './pages/af/eos-page/eos-page.component';
 import CheckSheetSettingsPage from './pages/quality/check-sheet/check-sheet-settings-page.component'
 import ControlMethodPage from './pages/quality/check-sheet/control-method-page.component'
 import CheckSheetLogInPage from './pages/quality/check-sheet/check-sheet-login-page.component'
-import CheckSheetDataEntryPage from './pages/quality/check-sheet/check-sheet-data-entry.component'
+import CheckSheetDataEntryPage from './pages/quality/check-sheet/check-sheet-data-entry-page.component'
+import CheckSheetHistoryPage from './pages/quality/check-sheet/check-sheet-history-page.component'
 
 //machining
 import MachiningManningPage from './pages/machining/manning/manning-page.component'
-
-const GetRenderedProdPage = (area, header) => <ProductionPage area={area} headerTitle={header} />
-const RenderedFoundryPage = () => GetRenderedProdPage("foundry cell", "Foundry");
-const RenderedMachiningPage = () => GetRenderedProdPage("machine line", "Machining");
-const RenderedFinishingPage = () => GetRenderedProdPage("skirt coat", "Finishing / Skirt Coat");
-const RenderedAssemblyPage = () => GetRenderedProdPage("assembly", "Assembly");
-
-//order status page
-const GetRenderedOrderPage = (area, header) => <OrderStatusPage area={area} headerTitle={header} />
-const RenderedFoundryOrderStatPage = () => GetRenderedOrderPage("foundry cell", "Foundry Active Orders");
-const RenderedMachiningOrderStatPage = () => GetRenderedOrderPage("machine line", "Machining Active Orders");
-const RenderedFinishingOrderStatPage = () => GetRenderedOrderPage("finishing", "Finishing Active Orders");
-const RenderedAssemblyOrderStatPage = () => GetRenderedOrderPage("assembly", "Assembly Active Orders");
 
 const { Footer, Sider } = Layout;
 
@@ -106,7 +94,6 @@ const App = ( { collapsed, setSiderCollapse } ) => {
 
   }, [width, collapsed, setSiderCollapse])
 
-
   return (
     <Layout style={{ minHeight: "100vh" }}>
 
@@ -144,21 +131,24 @@ const App = ( { collapsed, setSiderCollapse } ) => {
           {/* Monring Meeting */}
           <Route exact path="/dashboard/morningmeeting/safety" component={SafetyPage} />
           <Route exact path="/dashboard/morningmeeting/logistics" component={LogisticsPage} />
-          <Route exact path="/dashboard/morningmeeting/foundry" component={RenderedFoundryPage} />
-          <Route exact path="/dashboard/morningmeeting/machining" component={RenderedMachiningPage} />
-          <Route exact path="/dashboard/morningmeeting/finishing" component={RenderedFinishingPage}/>
-          <Route exact path="/dashboard/morningmeeting/assembly" component={RenderedAssemblyPage} />
+
+          <Route exact path="/dashboard/morningmeeting/foundry" render={() => <ProductionPage area="foundry cell" headerTitle="Foundry" />} />
+          <Route exact path="/dashboard/morningmeeting/machining" render={() => <ProductionPage area="machine line" headerTitle="Machining" />} />
+          <Route exact path="/dashboard/morningmeeting/finishing" render={() => <ProductionPage area="skirt coat" headerTitle="Finishing / Skirt Coat" />}/>
+          <Route exact path="/dashboard/morningmeeting/assembly" render={() => <ProductionPage area="assembly" headerTitle="Assembly" />} />
+
           <Route exact path="/dashboard/morningmeeting/finance" component={FinancePage} />
           <Route exact path="/dashboard/morningmeeting/quality" component={QualityPage} />
           <Route exact path="/dashboard/morningmeeting/downtime" component={DowntimePage} />
+
           <Route exact path="/dashboard/morningmeeting/:department/details" component={ProductionDetailsPage} />
           <Route exact path="/dashboard/morningmeeting/*/hourly-production" component={HourlyProdPage} />
 
           {/* Order Status */}
-          <Route exact path="/orderstatus/foundry" component={RenderedFoundryOrderStatPage} />
-          <Route exact path="/orderstatus/machining" component={RenderedMachiningOrderStatPage} />
-          <Route exact path="/orderstatus/finishing" component={RenderedFinishingOrderStatPage} />
-          <Route exact path="/orderstatus/assembly" component={RenderedAssemblyOrderStatPage} />
+          <Route exact path="/orderstatus/foundry" render={() => <OrderStatusPage area="foundry cell" headerTitle="Foundry Active Orders" />} />
+          <Route exact path="/orderstatus/machining" render={() => <OrderStatusPage area="machine line" headerTitle="Machining Active Orderss" />} />
+          <Route exact path="/orderstatus/finishing" render={() => <OrderStatusPage area="finishing" headerTitle="Finishing Active Orders" />} />
+          <Route exact path="/orderstatus/assembly" render={() => <OrderStatusPage area="assembly" headerTitle="Assembly Active Orders" />} />
 
           {/* performance Page */}
           <Route exact path="/dashboard/morningmeeting/level0" component={PerformanceLevel0Page} />
@@ -169,10 +159,12 @@ const App = ( { collapsed, setSiderCollapse } ) => {
 
           {/* Quality */}
           <Route exact path="/quality/checksheets/settings" component={CheckSheetSettingsPage} />
+          <Route exact path="/quality/checksheets/history" component={CheckSheetHistoryPage} />
+          <Route exact path="/quality/checksheets/history/:controlName/:controlId/line/:lineId/checkSheet/:checkSheetId" render={() => <CheckSheetDataEntryPage isReadOnly={true} />} />
           <Route exact path="/quality/checksheets/controlmethod/:controlName/:controlId/line/:lineId" component={CheckSheetLogInPage} />
           <Route exact path="/quality/checksheets/controlmethod/:controlId" component={ControlMethodPage} />
           <Route exact path="/quality/checksheets/:controlName/:controlId/line/:lineId/checkSheet/:checkSheetId" component={CheckSheetDataEntryPage} />
-
+          
           {/* Machining Page */}
           <Route exact path="/machining/manning/:eosId" component={MachiningManningPage} />
 

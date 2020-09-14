@@ -9,7 +9,6 @@ import {
     DotChartOutlined,
     ExperimentOutlined,
     HomeOutlined,
-    InboxOutlined,
     PieChartOutlined,
     HeatMapOutlined,
     SafetyOutlined,
@@ -20,7 +19,6 @@ import {
 import DepartmentSubMenu from './department-sub-menu.component'
 
 import { Menu } from "antd";
-const { SubMenu } = Menu
 
 const MorningMeetingMenu = ( { location } ) => { 
 
