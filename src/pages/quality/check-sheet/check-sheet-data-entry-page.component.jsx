@@ -1,5 +1,5 @@
-import React, { useEffect, useReducer, useCallback, useState } from 'react'
-import { useParams, useHistory, useLocation } from 'react-router-dom'
+import React, { useEffect, useReducer} from 'react'
+import { useParams, useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import api from '../../../API'
@@ -23,7 +23,9 @@ import {
     setCheckSheetMachineName,
     setCheckSheetValues,
     setCheckSheet,
-    fetchCsCharacteristicStartAsync
+    fetchCsCharacteristicStartAsync,
+
+    setCheckSheetReadOnly
 } from '../../../redux/quality-check-sheet/quality-check-sheet.actions'
 
 import CheckSheetDataEntry from '../../../components/quality/check-sheet/check-sheet-data-entry.component'
@@ -100,6 +102,10 @@ const reducer = (state = initialState, action) => {
 }
 
 const CheckSheetDataEntryPage = ({
+
+    isReadOnly = false,
+
+    setCheckSheetReadOnly,
     setCheckSheetPart,
     setCheckSheetSubMachine,
     setCheckSheetMachineName,
@@ -149,6 +155,10 @@ const CheckSheetDataEntryPage = ({
 
     }
 
+    useEffect(() => {
+        setCheckSheetReadOnly(isReadOnly);
+    }, [isReadOnly, setCheckSheetReadOnly])
+
     //* Load check-sheet and machine on mount
     useEffect(() => {
 
@@ -177,8 +187,12 @@ const CheckSheetDataEntryPage = ({
             //* set items to local state
             dispatch({type: 'SET_TAGS', payload: part});
             dispatch({type: 'SET_PARTS', payload: parts});
-            dispatch({type: 'SET_TITLE', payload: `Line ${line.value} ${method}`});
-            dispatch({type: 'SET_SUB_TITLE', payload: `Shift Date: ${moment(shiftDate).format('MM/DD/YYYY')} | Shift: ${shift}`});
+
+            const headerTitle = `Line ${line.value} ${method}`;
+            const subTitle = `Shift Date: ${moment(shiftDate).format('MM/DD/YYYY')} | Shift: ${shift}`
+
+            dispatch({type: 'SET_TITLE', payload: headerTitle});
+            dispatch({type: 'SET_SUB_TITLE', payload: subTitle});
 
             //* set machines state to local state
             dispatch({type: 'SET_MACHINES_COLLECTION', payload: machines })
@@ -196,6 +210,9 @@ const CheckSheetDataEntryPage = ({
 
             //* fetch data entries
             getEntries(checkSheetId, checkSheetSubMachine, checkSheetPart);
+
+            //* update document title
+            document.title = headerTitle + ' ' + subTitle;
 
         }))
         .catch(error => dispatch({type: 'SET_INIT_ERROR_MSG', payload: error.message}))
@@ -272,6 +289,10 @@ const CheckSheetDataEntryPage = ({
                             : null
                     }
 
+                    {
+                        isReadOnly ? <Col span={24}><Alert type="info" message={`${controlName} is read-only.`} showIcon /></Col> : null
+                    }
+
                     <Col span={24}>
 
                         <Radio.Group id="machineRadio"
@@ -336,13 +357,13 @@ const mapStateToProps = ({qualityCheckSheet}) => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+    setCheckSheetReadOnly: readOnly => dispatch(setCheckSheetReadOnly(readOnly)),
     setCheckSheetPart: value => dispatch(setCheckSheetPart(value)),
     setCheckSheetSubMachine: value => dispatch(setCheckSheetSubMachine(value)),
     setCheckSheetMachineName: value => dispatch(setCheckSheetMachineName(value)),
     setCheckSheetValues: collection => dispatch(setCheckSheetValues(collection)),
     setCheckSheet: collection => dispatch(setCheckSheet(collection)),
-
-    fetchCsCharacteristicStartAsync: (partId, machineName) => dispatch(fetchCsCharacteristicStartAsync(partId, machineName))
+    fetchCsCharacteristicStartAsync: (partId, machineName) => dispatch(fetchCsCharacteristicStartAsync(partId, machineName)),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CheckSheetDataEntryPage)
