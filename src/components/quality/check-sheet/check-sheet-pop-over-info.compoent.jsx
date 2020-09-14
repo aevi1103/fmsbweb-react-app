@@ -25,7 +25,8 @@ const CheckSheetPopOverInfo = ({
     onOpenCommentModal,
     onOpenReCheckModal = () => {},
 
-    checkSheet
+    checkSheet,
+    isCheckSheetReadOnly
 }) => {
 
     const alertMsg = 'Input has been disabled because your in re-check mode, please enter data in re-check form.';
@@ -98,15 +99,19 @@ const CheckSheetPopOverInfo = ({
             <Col span={24}>
 
                 {
-                    value !== null
-                        ? <Button onClick={onOpenCommentModal} type="primary" className="mr2">{ dot ? 'Edit Comment' : 'Add Comment' }</Button>
-                        : null
+                    isCheckSheetReadOnly 
+                        ? <Button onClick={onOpenCommentModal} type="primary" className="mr2">View Comment</Button>
+                        : value !== null
+                            ? <Button onClick={onOpenCommentModal} type="primary" className="mr2">{ dot ? 'Edit Comment' : 'Add Comment' }</Button>
+                            : null
                 }
                 
                 {
-                    (validateStatus === 'error' || rechecks.length > 0) && controlMethodId === 1
-                        ?  <Button type="danger" onClick={onOpenReCheckModal}>Add Re-Check</Button>
-                        :   null
+                    isCheckSheetReadOnly
+                        ? null
+                        : (validateStatus === 'error' || rechecks.length > 0) && controlMethodId === 1
+                            ?  <Button type="danger" onClick={onOpenReCheckModal}>Add Re-Check</Button>
+                            :   null
                 }
 
             </Col>
@@ -116,7 +121,8 @@ const CheckSheetPopOverInfo = ({
 
 
 const mapStateToProps = ({qualityCheckSheet}) => ({
-    checkSheet: qualityCheckSheet.checkSheet
+    checkSheet: qualityCheckSheet.checkSheet,
+    isCheckSheetReadOnly: qualityCheckSheet.isCheckSheetReadOnly
 })
 
 export default connect(mapStateToProps)(CheckSheetPopOverInfo);

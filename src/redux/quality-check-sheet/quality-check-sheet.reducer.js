@@ -36,7 +36,9 @@ const INITIAL_STATE = {
 
     isCsCharacteristicsLoading: false,
     csCharacteristicsCollection: [],
-    csCharacteristicsErrorMsg: null
+    csCharacteristicsErrorMsg: null,
+
+    isCheckSheetReadOnly: false
 
 }
 
@@ -263,6 +265,13 @@ const qualityCheckSheetsReducer = (state = INITIAL_STATE, action) => {
                 isCsCharacteristicsLoading: false,
                 // csCharacteristicsCollection: [],
                 csCharacteristicsErrorMsg: action.payload
+            }
+
+        case qualityCheckSheetTypes.SET_CHECK_SHEET_READ_ONLY:
+    
+            return {
+                ...state,
+                isCheckSheetReadOnly: action.payload
             }
 
         default:

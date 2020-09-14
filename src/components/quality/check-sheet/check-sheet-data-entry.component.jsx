@@ -19,7 +19,8 @@ const CheckSheetDataEntry = ({
     checkSheet,
     csCharacteristicsCollection,
     isCsCharacteristicsLoading,
-    csCharacteristicsErrorMsg
+    csCharacteristicsErrorMsg,
+    isCheckSheetReadOnly
 }) => {
 
     const [isDisabled, setIsDisabled] = useState(false);
@@ -61,7 +62,7 @@ const CheckSheetDataEntry = ({
             title: title,
             dataIndex: `hour_${i}`,
             width: '6.5rem',
-            key: `hour_${i}`,
+            key: `hour_${i}`, 
             render: (text, record, index) => {
 
                 const { frequency, displayAs: { display } } = record;
@@ -73,8 +74,9 @@ const CheckSheetDataEntry = ({
                 if (frequency === 1 || mod === 1) {
 
                     const value = getValue(checkSheetValues, record, i);
+
                     return <CheckSheetInput 
-                                isDisabled={isDisabled} 
+                                isDisabled={isDisabled || isCheckSheetReadOnly} 
                                 record={record} 
                                 frequency={i} 
                                 isPassFail={isPassFail}
@@ -87,12 +89,13 @@ const CheckSheetDataEntry = ({
 
                     //! always get hour 1 item only if the control method is inspection summary
                     const value = getValue(checkSheetValues, record, 1);
+
                     return <InspectionSummaryReCheckInput 
                                 isPassFail={isPassFail}
                                 frequency={i} 
                                 item={value}
                                 record={record} 
-                                isDisabled={isDisabled} 
+                                isDisabled={isDisabled || isCheckSheetReadOnly} 
                                 />
                 }
 
@@ -276,6 +279,8 @@ const CheckSheetDataEntry = ({
 }
 
 const mapStateToProps = ({qualityCheckSheet}) => ({
+    isCheckSheetReadOnly: qualityCheckSheet.isCheckSheetReadOnly,
+
     checkSheetSubMachine: qualityCheckSheet.checkSheetSubMachine,
     checkSheetPart: qualityCheckSheet.checkSheetPart,
     checkSheetValues: qualityCheckSheet.checkSheetValues,

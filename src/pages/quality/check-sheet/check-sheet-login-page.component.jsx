@@ -37,6 +37,7 @@ const CheckSheetLogInPage = ({
     const [error, setError] = useState(null);
     const [submitLoading, setSubmitLoading] = useState(false);
     const [checkSheetId, setCheckSheetId] = useState(null);
+    const [title, setTitle] = useState(null);
 
     useEffect(() => {
 
@@ -47,6 +48,14 @@ const CheckSheetLogInPage = ({
             .finally(() => setLoading(false))
 
     }, [])
+
+    useEffect(() => {
+
+        const ttl = `Line ${lineId}: ${controlName} Login`
+        document.title = ttl;
+        setTitle(ttl)
+
+    }, [controlName, lineId])
 
     const onFinish = values => {
         console.log(values)
@@ -103,11 +112,10 @@ const CheckSheetLogInPage = ({
     };
 
     return (
-        <React.Fragment>
-
+        <>
             <PageHeader
                 className="site-page-header"
-                title={`${controlName} Login`}
+                title={title}
                 onBack={() => history.push(`/quality/checksheets/controlmethod/${controlId}`)}
             />
 
@@ -150,7 +158,7 @@ const CheckSheetLogInPage = ({
                 </Form>
 
             </Content>
-        </React.Fragment>
+        </>
     )
 }
 

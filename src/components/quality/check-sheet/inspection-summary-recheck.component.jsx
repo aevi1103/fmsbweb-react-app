@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useReducer } from 'react'
+import React, { useCallback, useEffect, useReducer, useState } from 'react'
 import { connect } from 'react-redux'
 import api from '../../../API'
 import _ from 'lodash'
@@ -85,7 +85,8 @@ const InspectionSummaryReCheckInput = ({
 
     checkSheetSubMachine,
     checkSheetPart,
-    csCharacteristicsCollection
+    csCharacteristicsCollection,
+    isCheckSheetReadOnly
 }) => {
 
     const [form] = Form.useForm()
@@ -116,7 +117,9 @@ const InspectionSummaryReCheckInput = ({
         const { value, valueBool, comment } = reCheck || {};
         const val = isPassFail ? valueBool : value;
         dispatch({ type: 'SET_VALUE', payload: val });
-        dispatch({ type: 'SET_DOT', payload: (comment ?? '').length > 0 ? true : false });
+
+        const dot = (comment ?? '').length > 0 ? true : false;
+        dispatch({ type: 'SET_DOT', payload: dot});
 
         //* update status
         updateStatus(val);
@@ -162,7 +165,7 @@ const InspectionSummaryReCheckInput = ({
                     
                     dispatch({ type: 'SET_VALUE', payload: isPassFail ? valueBool : value });
                     setCheckSheetEntry(checkSheetEntry, values, 2);
-                    fnSuccess(data);
+                    fnSuccess(result);
 
                     message.success({
                         content: `Enterd '${val}' at ${record.value}, Recheck # ${frequency - 1} successfully saved!`,
@@ -251,7 +254,7 @@ const InspectionSummaryReCheckInput = ({
                 <Form.Item hasFeedback validateStatus={state.validateStatus} className="mb0">
                     <Popover 
                         title={`Recheck ${frequency - 1}: ${record.value}`} 
-                        trigger="focus" 
+                        trigger={isCheckSheetReadOnly ? 'hover' : 'focus'}
                         content={<Row gutter={[12,12]} style={{width: '300px'}}>
                                     <ToloranceBar isPassFail={isPassFail} targets={getTargets(record)} />
 
@@ -275,9 +278,11 @@ const InspectionSummaryReCheckInput = ({
 
                                     <Col span={24}>
                                         {
-                                            item?.checkSheetEntryId
-                                                ? <Button type="primary" onClick={onBtnCommentClick}>{ state.reCheck?.comment ? 'Edit' : 'Add' } Comment</Button> 
-                                                : null
+                                            isCheckSheetReadOnly 
+                                                ?   <Button type="primary" onClick={onBtnCommentClick}>View Comment</Button> 
+                                                :   item?.checkSheetEntryId
+                                                        ? <Button type="primary" onClick={onBtnCommentClick}>{ state.reCheck?.comment ? 'Edit' : 'Add' } Comment</Button> 
+                                                        : null
                                         }
                                     </Col>
 
@@ -318,7 +323,7 @@ const InspectionSummaryReCheckInput = ({
                     <Button key="back" onClick={onCommentModalClose}>
                         Cancel
                     </Button>,
-                    <Button key="submit" type="primary" onClick={onSubmitComment}>
+                    <Button key="submit" type="primary" onClick={onSubmitComment} disabled={isCheckSheetReadOnly}>
                         Submit
                     </Button>,
                 ]}>
@@ -333,7 +338,7 @@ const InspectionSummaryReCheckInput = ({
                                     message: 'Please enter your comments',
                                 },
                             ]}>
-                            <TextArea rows="6" allowClear placeholder="Enter comments..."/>
+                            <TextArea rows="6" allowClear placeholder="Enter comments..." disabled={isCheckSheetReadOnly} />
                         </Form.Item>
                     </Form>
 
@@ -354,7 +359,8 @@ const mapStateToProps = ({ qualityCheckSheet }) => ({
     checkSheetValues: qualityCheckSheet.checkSheetValues,
     checkSheetSubMachine: qualityCheckSheet.checkSheetSubMachine,
     checkSheetPart: qualityCheckSheet.checkSheetPart,
-    csCharacteristicsCollection: qualityCheckSheet.csCharacteristicsCollection
+    csCharacteristicsCollection: qualityCheckSheet.csCharacteristicsCollection,
+    isCheckSheetReadOnly: qualityCheckSheet.isCheckSheetReadOnly
 })
 
 

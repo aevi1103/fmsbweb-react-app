@@ -83,7 +83,8 @@ const CheckSheetInput = ({
     checkSheetSubMachine,
     checkSheetPart,
     checkSheetValues,
-    csCharacteristicsCollection
+    csCharacteristicsCollection,
+    isCheckSheetReadOnly
 }) => {
 
     const { checkSheetId } = useParams();
@@ -277,7 +278,7 @@ const CheckSheetInput = ({
                 <Form.Item hasFeedback validateStatus={state.validateStatus} className="mb0">
                     <Popover 
                         title={record.value} 
-                        trigger={state.popOverTrigger}
+                        trigger={isCheckSheetReadOnly ? 'hover' : state.popOverTrigger}
                         content={<CheckSheetPopOverInfo 
                                     isPassFail={isPassFail} 
                                     targets={getTargets(record)}
@@ -345,7 +346,8 @@ const mapStateToProps = ({qualityCheckSheet}) => ({
     checkSheetSubMachine: qualityCheckSheet.checkSheetSubMachine,
     checkSheetPart: qualityCheckSheet.checkSheetPart,
     checkSheetValues: qualityCheckSheet.checkSheetValues,
-    csCharacteristicsCollection: qualityCheckSheet.csCharacteristicsCollection
+    csCharacteristicsCollection: qualityCheckSheet.csCharacteristicsCollection,
+    isCheckSheetReadOnly: qualityCheckSheet.isCheckSheetReadOnly
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(CheckSheetInput);

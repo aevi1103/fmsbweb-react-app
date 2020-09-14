@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { 
     Layout,
-    Tabs
+    Tabs,
+    PageHeader
  } from "antd";
  import { useLocation, useHistory  } from 'react-router-dom'
 
@@ -38,9 +39,11 @@ const CheckSheetSettingsPage = () => {
 
     return (
         <React.Fragment>
-            <Header className="pa0 custom-header" >
-                <h2 className="ml3">{title}</h2>
-            </Header>
+
+            <PageHeader
+                className="site-page-header"
+                title={title}
+            />
 
             <Content className="ma3 mt0">
 

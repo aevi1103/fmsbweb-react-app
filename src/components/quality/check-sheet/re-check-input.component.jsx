@@ -39,7 +39,8 @@ const ReCheckInput = ({
     reChecksCollection,
     setReChecksCollection,
     checkSheetValues,
-    setCheckSheetEntry
+    setCheckSheetEntry,
+    isCheckSheetReadOnly
 }) => {
 
     const [validateStatus, setValidateStatus] = useState(null);
@@ -222,15 +223,19 @@ const ReCheckInput = ({
 
                 <Row gutter={[12,12]}>
 
-                    <Col span={1} className="v-mid">
-                        {
-                            deleteLoading 
-                                ? <Spin /> 
-                                : !item.isInitialValue
-                                    ? <CloseOutlined onClick={remove} />
-                                    : null
-                        }
-                    </Col>
+                    {
+                        isCheckSheetReadOnly 
+                        ?   null 
+                        :   <Col span={1} className="v-mid">
+                                {
+                                    deleteLoading 
+                                        ? <Spin /> 
+                                        : !item.isInitialValue
+                                            ? <CloseOutlined onClick={remove} />
+                                            : null
+                                }
+                            </Col>
+                    }
 
                     <Col span={7}>
                         <Form.Item hasFeedback validateStatus={validateStatus} className="mb0">
@@ -240,14 +245,14 @@ const ReCheckInput = ({
                                             placeholder="Enter Re-Check Value" 
                                             type="number" 
                                             onKeyUp={onNumberChange} 
-                                            disabled={item.isInitialValue}
+                                            disabled={item.isInitialValue || isCheckSheetReadOnly}
                                             value={value} />
 
                                     :   <Select style={{ width: '100%' }} 
                                             allowClear={true} 
                                             onChange={onPassFailChange} 
                                             placeholder="Select Re-Check Value" 
-                                            disabled={item.isInitialValue}
+                                            disabled={item.isInitialValue || isCheckSheetReadOnly}
                                             value={valueBool} >
                                             <Option value={true}>Pass</Option>
                                             <Option value={false}>Fail</Option>
@@ -261,7 +266,7 @@ const ReCheckInput = ({
                             autoSize={true} 
                             onChange={onCommentChange} 
                             value={comment} 
-                            disabled={item.isInitialValue} />
+                            disabled={item.isInitialValue || isCheckSheetReadOnly} />
                     </Col>
 
                     <Col span={9}>
@@ -299,7 +304,8 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = ({ qualityCheckSheet }) => ({
     reChecksCollection: qualityCheckSheet.reChecksCollection,
-    checkSheetValues: qualityCheckSheet.checkSheetValues
+    checkSheetValues: qualityCheckSheet.checkSheetValues,
+    isCheckSheetReadOnly: qualityCheckSheet.isCheckSheetReadOnly
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReCheckInput);

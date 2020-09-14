@@ -63,6 +63,7 @@ const ProductionPage = ({
         
     const dateStartQry = getUrlParameter('start');
     const dateEndQry = getUrlParameter('end');
+
     const defaultStartDate = dateStartQry ? dateStartQry : startDate;
     const defaultEndDate = dateEndQry ? dateEndQry : endDate;
 
@@ -76,7 +77,14 @@ const ProductionPage = ({
     const weeklyLaborHrsKpiTokenSrc = axios.CancelToken.source();
     const prodScrapLaborHrsKpiTokenSrc = axios.CancelToken.source();
 
-    const fetchData = (start = startFormat, end = endFormat) => {
+    const fetchData = (start, end) => {
+
+        setStartDate(start);
+        setEndDate(end);
+        setDetailsStartDate(start);
+        setDetailsEndDate(end);
+
+        updateUrl(start, end);
 
         setProductionData(start,end,area, prodTokenSrc);
 
@@ -102,14 +110,7 @@ const ProductionPage = ({
         updateUrlQryParameter(qry, title);
     }
 
-    const onClick = () => {
-        setStartDate(startFormat);
-        setEndDate(endFormat);
-        setDetailsStartDate(startFormat);
-        setDetailsEndDate(endFormat);
-        fetchData(startFormat, endFormat);
-        updateUrl(startFormat, endFormat);
-    };
+    const onClick = () => fetchData(startFormat, endFormat);;
 
     const onCalendarChange = (dates) => {
         const [start, end] = dates;
@@ -119,8 +120,8 @@ const ProductionPage = ({
 
     useEffect(() => {
         document.title = `Morning Meeting - ${headerTitle}`;
-        fetchData();
-        updateUrl(defaultStartDate, defaultEndDate);
+
+        fetchData(defaultStartDate, defaultEndDate);
 
         return function cleanup() {
             prodTokenSrc.cancel('Operation cancelled');
@@ -130,7 +131,7 @@ const ProductionPage = ({
             prodScrapLaborHrsKpiTokenSrc.cancel('Operation cancelled');
         };
 
-    }, []);
+    }, [area]);
 
     const onDetailsButtonClick = () => {
 

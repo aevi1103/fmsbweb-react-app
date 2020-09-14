@@ -30,7 +30,8 @@ const ReCheckModal = ({
     targets,
 
     setReChecksCollection,
-    reChecksCollection
+    reChecksCollection,
+    isCheckSheetReadOnly
 }) => {
 
     const [loading, setLoading] = useState(false);
@@ -114,6 +115,7 @@ const ReCheckModal = ({
 
             <Col span={24}>
                 <Button
+                    disabled={isCheckSheetReadOnly}
                     type="dashed"
                     onClick={add}
                     block
@@ -132,7 +134,8 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mapStateToProps = ({ qualityCheckSheet }) => ({
-    reChecksCollection: qualityCheckSheet.reChecksCollection
+    reChecksCollection: qualityCheckSheet.reChecksCollection,
+    isCheckSheetReadOnly: qualityCheckSheet.isCheckSheetReadOnly
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ReCheckModal);

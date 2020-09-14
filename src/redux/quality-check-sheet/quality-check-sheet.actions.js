@@ -136,6 +136,11 @@ export const setCheckSheet = collection => ({
     payload: collection
 })
 
+export const setCheckSheetReadOnly = readOnly => ({
+    type: qualityCheckSheetTypes.SET_CHECK_SHEET_READ_ONLY,
+    payload: readOnly
+})
+
 export const setCheckSheetEntry = (checkSheetEntry, checkSheetValues, status) => {
 
     const { checkSheetEntryId } = checkSheetEntry;
