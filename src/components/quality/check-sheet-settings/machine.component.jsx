@@ -16,8 +16,7 @@ import { PlusOutlined } from '@ant-design/icons';
 const LineComponent = ({ 
     fetchMachineStartAsync,
     isMachineLoading,
-    machineCollection,
-    machineErrorMsg
+    machineCollection
 }) => {
 
     useEffect(() => {
@@ -71,8 +70,7 @@ const LineComponent = ({
 
 const mapStateToProps = ({ qualityCheckSheet }) => ({
     isMachineLoading: qualityCheckSheet.isMachineLoading,
-    machineCollection: qualityCheckSheet.machineCollection,
-    machineErrorMsg: qualityCheckSheet.machineErrorMsg
+    machineCollection: qualityCheckSheet.machineCollection
 })
 
 const mapDispatchToProps = dispatch => ({

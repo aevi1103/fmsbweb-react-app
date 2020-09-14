@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useReducer } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import { useParams } from 'react-router-dom'
 import api from '../../../API'
 import axios from 'axios';
@@ -6,7 +6,6 @@ import moment from 'moment'
 import {
     Layout,
     Select,
-    Input,
     Form,
     Alert,
     PageHeader,

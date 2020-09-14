@@ -10,10 +10,6 @@ import {
     Tooltip
  } from "antd";
 
- import {
-    InfoCircleOutlined
-  } from '@ant-design/icons';
-
 import ScrapLink  from '../../scrap-link/scrap-link.component'
 import DefectSummaryTable from '../defect-summary-table/defect-summary-table.component'
 import SapNetTable from '../sap-net-table/sap-net-table.component'

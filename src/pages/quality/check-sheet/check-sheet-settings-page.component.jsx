@@ -12,7 +12,7 @@ import SubMachineComponent from '../../../components/quality/check-sheet-setting
 import PartComponent from '../../../components/quality/check-sheet-settings/part.component'
 import CharacteristicsComponent from '../../../components/quality/check-sheet-settings/characteristics.component'
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const { TabPane } = Tabs;
 
 const CheckSheetSettingsPage = () => {

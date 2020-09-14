@@ -35,9 +35,6 @@ import {
     setStartDate,
     setEndDate,
     fetchDowntimeStartAsync,
-
-    isDowntimeFetching,
-
     downtimeByOwnerCollection,
     downtimeByLineCollection
  }) => {

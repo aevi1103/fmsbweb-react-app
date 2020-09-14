@@ -1,6 +1,4 @@
-import React, { useEffect, useState, useReducer } from 'react'
-import { useParams, useHistory } from 'react-router-dom'
-import { connect } from 'react-redux'
+import React, { useEffect, useReducer } from 'react'
 import moment from 'moment';
 import api from '../../../API'
 import axios from 'axios'
@@ -12,11 +10,7 @@ import {
     Layout,
     PageHeader,
     Select,
-    Form,
     Button,
-    Alert,
-    message,
-    InputNumber,
     Row,
     Col
  } from "antd";

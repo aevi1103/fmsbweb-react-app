@@ -7,8 +7,7 @@ import {
     Layout,
     Select,
     Button,
-    Tooltip,
-    Alert
+    Tooltip
  } from "antd";
 
  import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
