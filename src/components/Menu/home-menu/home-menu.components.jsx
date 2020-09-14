@@ -211,6 +211,11 @@ const HomeMenu = ( { location } ) => {
           }
         </SubMenu>
 
+        <Menu.Item key="/quality/checksheets/history">
+          <span>Check Sheet History</span>
+          <Link to="/quality/checksheets/history" />
+        </Menu.Item>
+
         <Menu.Item key="/quality/checksheets/settings">
           <span>Check Sheet Settings</span>
           <Link to="/quality/checksheets/settings" />
