@@ -1,6 +1,6 @@
 {
   "name": "fmsbweb.react-app",
-  "version": "0.1.214",
+  "version": "0.1.215",
   "private": true,
   "dependencies": {
     "antd": "^4.4.3",
@@ -9,6 +9,7 @@
     "customize-cra": "^0.9.1",
     "fusioncharts": "^3.15.2",
     "husky": "^4.2.5",
+    "js-file-download": "^0.4.12",
     "lint-staged": "^10.2.11",
     "localforage": "^1.8.1",
     "lodash": "^4.17.19",
