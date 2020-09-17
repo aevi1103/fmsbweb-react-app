@@ -4,9 +4,15 @@ import { Link, withRouter } from "react-router-dom";
 import moment from 'moment';
 import axios from 'axios';
 import styled from 'styled-components';
+import api from '../../../../API'
+import fileDownload from 'js-file-download'
 
 import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component';
 import Production from '../../../../components/production/production.component';
+
+import { 
+    DownloadOutlined,
+ } from '@ant-design/icons';
 
 import { 
     fetchProductionStatusStartAsync,
@@ -32,8 +38,9 @@ import '../morning-meeting.styles.scss';
 import { 
     Layout,
     Button,
-Tooltip,
-    Spin
+    Tooltip,
+    Spin,
+    message
  } from "antd";
 
 const { Header, Content } = Layout;
@@ -69,6 +76,7 @@ const ProductionPage = ({
 
     const [startFormat, setStartFormat] = useState(defaultStartDate);
     const [endFormat, setSendFormat] = useState(defaultEndDate);
+    const [downloadLoading, setDownloadLoading] = useState(false);
 
     //cancel token
     const prodTokenSrc = axios.CancelToken.source();
@@ -76,6 +84,7 @@ const ProductionPage = ({
     const dailyKpiTokenSrc = axios.CancelToken.source();
     const weeklyLaborHrsKpiTokenSrc = axios.CancelToken.source();
     const prodScrapLaborHrsKpiTokenSrc = axios.CancelToken.source();
+    const [downloadError, setDownloadError] = useState(null);
 
     const fetchData = (start, end) => {
 
@@ -144,6 +153,31 @@ const ProductionPage = ({
         setArea(area);
     };
 
+    const onDownload = async () => {
+
+        try {    
+
+            setDownloadLoading(true);
+            const response = await api.get(`/exports/department?start=${startFormat}&end=${endFormat}&area=${area}`, {
+                responseType: 'blob',
+            });
+
+            const fileName = `${area.toUpperCase()}_DATAEXPORT_${startFormat}_to_${endFormat}.xlsx`
+            fileDownload(response.data, fileName);
+
+            message.success('Data successfully exported!', 10);
+
+        } catch (error) {
+            setDownloadError(error);
+            setDownloadLoading(false);
+            message.error(error);
+        } finally {
+            if (!downloadError) {
+                setDownloadLoading(false);
+            }
+        }
+    }
+
     const route = location.pathname.substr(location.pathname.lastIndexOf('/')+1);
 
     const Container = styled.span`
@@ -185,6 +219,11 @@ const ProductionPage = ({
                     <Link to={`${location.pathname}/hourly-production`}>Hourly Production</Link>
                 </Button>
             </Tooltip>
+
+            <Button type="primary" onClick={onDownload} loading={downloadLoading || isProdStatusFetching} className="ml2">
+                <DownloadOutlined />
+                Data Export
+            </Button>
             
             <div className="mt3">
                 {

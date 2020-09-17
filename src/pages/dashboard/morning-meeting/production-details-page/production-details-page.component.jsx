@@ -2,12 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment'
 import { useLocation } from "react-router-dom";
+import api from '../../../../API'
+import fileDownload from 'js-file-download'
+
+import { 
+    DownloadOutlined,
+ } from '@ant-design/icons';
 
 import { 
     Layout,
     Select,
     Button,
-    Tooltip
+    Tooltip, 
+    message,
+    Alert
  } from "antd";
 
  import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component'
@@ -19,7 +27,11 @@ import {
     setDetailsEndDate
  } from '../../../../redux/production-details/production-details.actions';
 
- import { getUrlParameter, updateUrlQryParameter } from '../../../../helpers/helpers'
+ import { 
+    getUrlParameter,
+    updateUrlQryParameter,
+    mapDeptToArea
+} from '../../../../helpers/helpers'
 
 const { Option } = Select;
 const { Header, Content } = Layout;
@@ -28,7 +40,8 @@ const previousDay = moment().add(-1, 'd');
 
 const ProductionDetailsPage = ({
         fetchProductionDetailsStartAsync,
-        isProductionDetailsLoading
+        isProductionDetailsLoading,
+        productionDetailsErrorMsg
     }) => {
 
     const location = useLocation();
@@ -41,15 +54,15 @@ const ProductionDetailsPage = ({
     const defaultStartDate = dateStartQry ? dateStartQry : previousDay.format(dateFormat);
     const defaultEndDate = dateEndQry ? dateEndQry : previousDay.format(dateFormat);
     const defaultShift = shiftQry ? shiftQry : '';
-
     const dept = department ? department : (new URL(window.location.href)).pathname.split('/')[3];
-
-        console.log(dept)
         
     const [startFormat, setStartFormat] = useState(defaultStartDate);
     const [endFormat, setSendFormat] = useState(defaultEndDate);
     const [shift, setShift] = useState(defaultShift);
     const [headerTitle, setHeaderTitle] = useState(`${dept} Details: ${defaultStartDate} - ${defaultEndDate} Shift: ${defaultShift || 'All'}`);
+    const [downloadLoading, setDownloadLoading] = useState(false);
+
+    const [downloadError, setDownloadError] = useState(null);
 
     const updateUrl = (start, end, shift = 'All') => {
         const qry = { start, end, shift }
@@ -82,6 +95,31 @@ const ProductionDetailsPage = ({
 
     const onShiftChange = (value) => setShift(value);
 
+    const onDownload = async () => {
+
+        try {    
+
+            setDownloadLoading(true);
+            const response = await api.get(`/exports/department/details?start=${startFormat}&end=${endFormat}&area=${mapDeptToArea(dept)}&shift=${shift}`, {
+                responseType: 'blob',
+            });
+
+            const fileName = `${dept.toUpperCase()}_DETAILS_DATAEXPORT_${startFormat}_to_${endFormat}_shift_${shift}.xlsx`
+            fileDownload(response.data, fileName);
+
+            message.success('Data successfully exported!', 10);
+
+        } catch (error) {
+            setDownloadError(error);
+            setDownloadLoading(false);
+            message.error(error);
+        } finally {
+            if (!downloadError) {
+                setDownloadLoading(false);
+            }
+        }
+    }
+
     return (
         <React.Fragment>
             <Header className="pa0 custom-header" >
@@ -89,6 +127,14 @@ const ProductionDetailsPage = ({
             </Header>
 
             <Content className="ma3 mt0">
+
+                {/* {
+                    productionDetailsErrorMsg ? <Alert showIcon>{productionDetailsErrorMsg}</Alert> : null
+                }
+
+                {
+                    downloadError ? <Alert showIcon>{downloadError}</Alert> : null
+                } */}
 
                 <DateRangePicker 
                     onCalendarChange={onCalendarChange}
@@ -104,7 +150,11 @@ const ProductionDetailsPage = ({
                     </Select>
                 </Tooltip>
 
-                <Button type="primary" onClick={onClick} loading={isProductionDetailsLoading}>Go</Button>
+                <Button type="primary" onClick={onClick} loading={isProductionDetailsLoading} className="mr2">Go</Button>
+                <Button type="primary" onClick={onDownload} loading={downloadLoading || isProductionDetailsLoading}>
+                    <DownloadOutlined />
+                    Data Export
+                </Button>
 
                 <div className="mt3">
                     <ProductionDetails/>
@@ -117,6 +167,7 @@ const ProductionDetailsPage = ({
 
 const mapStateToProps = ( { productionDetails, morningMeeting } ) => ({
     isProductionDetailsLoading: productionDetails.isProductionDetailsLoading,
+    productionDetailsErrorMsg: productionDetails.productionDetailsErrorMsg,
 })
 
 const mapDispatchToProps = dispatch => ({

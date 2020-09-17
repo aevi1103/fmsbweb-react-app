@@ -3,7 +3,8 @@ import api from '../../API'
 import {
     fetchStart,
     fetchSuccess,
-    fetchFailure
+    fetchFailure,
+    mapDeptToArea
 } from '../../helpers/helpers'; 
 
 export const setTitle = title => ({
@@ -28,27 +29,12 @@ export const setDetailsEndDate = date => ({
 
 export const fetchProductionDetailsStartAsync = (start, end, dept, shift = '') => {
 
-    let area = dept;
-    switch (dept) {
-        case 'machining':
-            area = 'machine line';
-            break;
-        case 'foundry':
-            area = 'foundry cell';
-            break;
-        case 'finishing':
-            area = 'skirt coat';
-            break;
-        default:
-            break;
-    }
-
     return dispatch => {
 
         dispatch(fetchStart(
             productionDetailsType.FETCH_PRODUCTION_DETAILS_START))
 
-        api.get(`sap/departmentdetails?start=${start}&end=${end}&area=${area}&shift=${shift}`)
+        api.get(`sap/departmentdetails?start=${start}&end=${end}&area=${mapDeptToArea(dept)}&shift=${shift}`)
         .then(response => {
 
             dispatch(fetchSuccess(

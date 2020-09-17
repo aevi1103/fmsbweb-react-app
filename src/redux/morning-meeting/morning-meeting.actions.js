@@ -509,8 +509,7 @@ export const fetchScrapVarianceStartAsync = (start, end, area, isPurchasedScrap 
 
     return dispatch => {
 
-        dispatch(fetchStart(
-            morningMeetingTypes.FETCH_SCRAP_VARIANCE_START));
+        dispatch(fetchStart(morningMeetingTypes.FETCH_SCRAP_VARIANCE_START));
 
         const url = 'sap/scrapvariance';
         api.get(url, {
