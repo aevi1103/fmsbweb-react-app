@@ -60,8 +60,8 @@ const ProductionDetailsPage = ({
     const [endFormat, setSendFormat] = useState(defaultEndDate);
     const [shift, setShift] = useState(defaultShift);
     const [headerTitle, setHeaderTitle] = useState(`${dept} Details: ${defaultStartDate} - ${defaultEndDate} Shift: ${defaultShift || 'All'}`);
-    const [downloadLoading, setDownloadLoading] = useState(false);
 
+    const [downloadLoading, setDownloadLoading] = useState(false);
     const [downloadError, setDownloadError] = useState(null);
 
     const updateUrl = (start, end, shift = 'All') => {
@@ -112,7 +112,7 @@ const ProductionDetailsPage = ({
         } catch (error) {
             setDownloadError(error);
             setDownloadLoading(false);
-            message.error(error);
+            // message.error(error);
         } finally {
             if (!downloadError) {
                 setDownloadLoading(false);
@@ -128,13 +128,13 @@ const ProductionDetailsPage = ({
 
             <Content className="ma3 mt0">
 
-                {/* {
-                    productionDetailsErrorMsg ? <Alert showIcon>{productionDetailsErrorMsg}</Alert> : null
+                {
+                    productionDetailsErrorMsg ? <Alert className="mb2" showIcon type="error" message={productionDetailsErrorMsg} /> : null
                 }
 
                 {
-                    downloadError ? <Alert showIcon>{downloadError}</Alert> : null
-                } */}
+                    downloadError ? <Alert className="mb2" showIcon type="error" message={downloadError} /> : null
+                }
 
                 <DateRangePicker 
                     onCalendarChange={onCalendarChange}

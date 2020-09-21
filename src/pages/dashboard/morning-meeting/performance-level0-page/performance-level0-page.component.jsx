@@ -3,6 +3,12 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 import 'tachyons';
 import { Link } from "react-router-dom";
+import api from '../../../../API'
+import fileDownload from 'js-file-download'
+
+import { 
+    DownloadOutlined,
+ } from '@ant-design/icons';
 
 import { 
     fetchScrapVarianceStartAsync,
@@ -40,7 +46,9 @@ import {
     Card,
     Button,
     Tooltip,
-    DatePicker
+    DatePicker,
+    message,
+    Alert
  } from "antd";
 
  const { Header, Content } = Layout;
@@ -83,6 +91,9 @@ const PerformanceLevel0Page = ({
     //scrap type
     const [scrapVarianceScrapType, setScrapVarianceScrapType] = useState(scrapTypeDefault);
     const [scrapVariancePerProgScrapType, setScrapVariancePerProgScrapType] = useState(scrapTypeDefault);
+
+    const [downloadLoading, setDownloadLoading] = useState(false);
+    const [downloadError, setDownloadError] = useState(null);
 
     const fetchQuarterly = (start = monthStartFormart, end = monthEndFormat, scrapType = scrapVarianceScrapType) => {
         fetchScrapVarianceStartAsync(start, end, performaceSelectedDepartment, scrapType); 
@@ -165,6 +176,39 @@ const PerformanceLevel0Page = ({
         xl: 8
     }
 
+    const onDownload = async () => {
+
+        try {    
+
+            setDownloadError(null);
+            setDownloadLoading(true);
+            const isPurchasedScrap = scrapVariancePerProgScrapType === 'SB' ? false : true;
+            const isPlantTotal = performaceSelectedDepartment === 'Plant' ? true : false;
+            const response = await api.get(`/exports/performance/level/0?start=${startDate}&end=${endDate}
+                                            &area=${performaceSelectedDepartment}
+                                            &isPurchasedScrap=${isPurchasedScrap}
+                                            &isPlantTotal=${isPlantTotal}
+                                            &monthStart=${monthStartFormart}&monthEnd=${monthEndFormat}`, {
+                responseType: 'blob',
+            });
+
+            const fileName = `${performaceSelectedDepartment.toUpperCase()}_PERFORMANCE_LVL0&1_DATA_EXPORT_${new Date().getTime()}.xlsx`
+            fileDownload(response.data, fileName);
+
+            message.success('Data successfully exported!', 10);
+            setDownloadLoading(false);
+
+        } catch (error) {
+            setDownloadError(`${error}: Unable to export something went wrong!`);
+            setDownloadLoading(false);
+            // message.error(error);
+        } finally {
+            if (!downloadError) {
+                setDownloadLoading(false);
+            }
+        }
+    }
+
     return (
         <>
             <Header className="pa0 custom-header" >
@@ -172,6 +216,10 @@ const PerformanceLevel0Page = ({
             </Header>
     
             <Content className="ma3 mt0">
+
+                {
+                    downloadError ? <Alert className="mb2" showIcon type="error" message={downloadError} /> : null
+                }
             
                 <Tooltip placement="top" title={
                     (<div>
@@ -203,6 +251,7 @@ const PerformanceLevel0Page = ({
 
                     <span className="mr2">Date Range:</span>
                 </Tooltip>
+
                 <DateRangePicker 
                     dateRangeValue={{startDate: startDate, endDate: endDate}}
                     onCalendarChange={onCalendarChange}
@@ -217,6 +266,11 @@ const PerformanceLevel0Page = ({
 
                 <Button type="primary" className="ml2">
                     <a href="http://134.238.150.15/FMSB/SWOT/Targets.aspx" target="_blank">Update KPI Targets</a>
+                </Button>
+
+                <Button type="primary" onClick={onDownload} loading={downloadLoading} className="ml2">
+                    <DownloadOutlined />
+                    Data Export
                 </Button>
 
                 <div className="mt3">

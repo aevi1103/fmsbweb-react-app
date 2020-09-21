@@ -2,6 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import 'tachyons';
+import api from '../../../../API'
+import fileDownload from 'js-file-download'
+
+import { 
+    DownloadOutlined,
+ } from '@ant-design/icons';
 
 import { 
     setStartDate,
@@ -38,7 +44,8 @@ import {
     Button,
     Tooltip,
     DatePicker,
-    Input
+    Input,
+    message
  } from "antd";
 
  const { Header, Content } = Layout;
@@ -86,6 +93,9 @@ const PerformanceLevel2Page = ({
     //downtime event
     const [minDowntimeEvt, setMinDowntimeEvt] = useState(10);
     const [maxDowntimeEvt, setMaxDowntimeEvt] = useState(null);
+
+    const [downloadLoading, setDownloadLoading] = useState(false);
+    const [downloadError, setDownloadError] = useState(null);
 
     const fetchQuarterly = (start = monthStartFormart, end = monthEndFormat) => {
         fetchOvertimePercentPerDeptStartAsync(start, end, performaceSelectedDepartment);
@@ -192,6 +202,37 @@ const PerformanceLevel2Page = ({
         xl: 8
     }
 
+    const onDownload = async () => {
+
+        try {    
+
+            setDownloadError(null);
+            setDownloadLoading(true);
+            const isPurchasedScrap = scrapByDeptScrapType === 'SB' ? false : true;
+            const response = await api.get(`/exports/performance/level/2?start=${startDate}&end=${endDate}
+                                            &area=${performaceSelectedDepartment}
+                                            &isPurchasedScrap=${isPurchasedScrap}
+                                            &monthStart=${monthStartFormart}&monthEnd=${monthEndFormat}`, {
+                responseType: 'blob',
+            });
+
+            const fileName = `${performaceSelectedDepartment.toUpperCase()}_PERFORMANCE_LVL1&2_DATA_EXPORT_${new Date().getTime()}.xlsx`
+            fileDownload(response.data, fileName);
+
+            message.success('Data successfully exported!', 10);
+            setDownloadLoading(false);
+
+        } catch (error) {
+            setDownloadError(`${error}: Unable to export something went wrong!`);
+            setDownloadLoading(false);
+            // message.error(error);
+        } finally {
+            if (!downloadError) {
+                setDownloadLoading(false);
+            }
+        }
+    }
+
     return (
         <>
             <Header className="pa0 custom-header" >
@@ -243,6 +284,11 @@ const PerformanceLevel2Page = ({
                 <Tooltip placement="top" title={<span>Click to reload dashboard</span>}>
                     <Button type="primary" onClick={onClick}>Go</Button>
                 </Tooltip>
+
+                <Button type="primary" onClick={onDownload} loading={downloadLoading} className="ml2">
+                    <DownloadOutlined />
+                    Data Export
+                </Button>
 
                 <div className="mt3">
                     <Row gutter={[12,12]}>  
