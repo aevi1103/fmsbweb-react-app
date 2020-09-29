@@ -1,6 +1,6 @@
 {
   "name": "fmsbweb.react-app",
-  "version": "0.1.224",
+  "version": "0.1.223",
   "private": true,
   "dependencies": {
     "antd": "^4.4.3",
@@ -48,6 +48,7 @@
     "copy-web-config": "cp /c/repos/fmsbweb3/fmsbweb.react-app/web.config /q/react.app/",
     "post-build": "npm run delete-post-build-dir && npm run copy-build-to-prod-dir && npm run copy-web-config",
     "build:staging": "react-scripts build && npm run post-build:staging",
+    
     "delete-post-build-dir:staging": "rm -r /q/react.app.staging/",
     "copy-build-to-prod-dir:staging": "cp -a /c/repos/fmsbweb3/fmsbweb.react-app/build/. /q/react.app.staging/",
     "copy-web-config:staging": "cp /c/repos/fmsbweb3/fmsbweb.react-app/web.config /q/react.app.staging/",

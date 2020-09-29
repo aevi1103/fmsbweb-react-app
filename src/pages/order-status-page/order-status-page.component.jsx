@@ -35,7 +35,7 @@ const OrderStatusPage = ({
             source.cancel('Operation cancelled');
         }
 
-    }, [])
+    }, [area])
 
     return (
         <>
@@ -45,7 +45,9 @@ const OrderStatusPage = ({
 
             <Content className="ma3 mt0">
                 {
-                    !isWorkCenterFetching ? <OrderStatus/> : <span>Loading...</span>
+                    !isWorkCenterFetching ?
+                         <OrderStatus/> 
+                         : <span>Loading...</span>
                 }            
             </Content>      
         </> 

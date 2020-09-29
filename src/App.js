@@ -146,7 +146,7 @@ const App = ( { collapsed, setSiderCollapse } ) => {
 
           {/* Order Status */}
           <Route exact path="/orderstatus/foundry" render={() => <OrderStatusPage area="foundry cell" headerTitle="Foundry Active Orders" />} />
-          <Route exact path="/orderstatus/machining" render={() => <OrderStatusPage area="machine line" headerTitle="Machining Active Orderss" />} />
+          <Route exact path="/orderstatus/machining" render={() => <OrderStatusPage area="machine line" headerTitle="Machining Active Orders" />} />
           <Route exact path="/orderstatus/finishing" render={() => <OrderStatusPage area="finishing" headerTitle="Finishing Active Orders" />} />
           <Route exact path="/orderstatus/assembly" render={() => <OrderStatusPage area="assembly" headerTitle="Assembly Active Orders" />} />
 
