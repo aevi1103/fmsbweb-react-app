@@ -71,6 +71,12 @@ const MorningMeetingMenu = ( { location } ) => {
         <DepartmentSubMenu dept="finishing" icon={<DotChartOutlined/>} /> 
         <DepartmentSubMenu dept="assembly" icon={<PieChartOutlined/>} /> 
 
+        <Menu.Item key="/dashboard/swot/settings">
+            <BarChartOutlined />
+            <span>SWOT</span>
+            <Link to="/dashboard/swot/settings" />
+        </Menu.Item>
+
         <Menu.Item key="/dashboard/morningmeeting/finance">
             <DollarOutlined />
             <span>Finance</span>

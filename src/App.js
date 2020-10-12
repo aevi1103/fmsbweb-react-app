@@ -19,7 +19,8 @@ import MorningMeetingMenu from './components/Menu/morning-meeting-menu/morning-m
 import AfMenu from './components/Menu/af-menu/af-menu.component';
 
 //page components
-import SwotPage from './pages/dashboard/swot/swot.component';
+import SwotSettingsPage from './pages/dashboard/swot/settings-page.component';
+import SwotPage from './pages/dashboard/swot/swot-page.component';
 
 //morning meeting pages
 import SafetyPage from './pages/dashboard/morning-meeting/safety-page/safety-page.component';
@@ -97,7 +98,7 @@ const App = ( { collapsed, setSiderCollapse } ) => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
 
-      <Sider {...siderProps}>
+      <Sider {...siderProps} >
 
         <LogoContainer>
           {
@@ -110,6 +111,7 @@ const App = ( { collapsed, setSiderCollapse } ) => {
         <Switch>
           <Route exact path="/" component={HomeMenu} />
           <Route path="/dashboard/morningmeeting" component={MorningMeetingMenu} />
+          <Route path="/dashboard/swot" component={MorningMeetingMenu} />
           <Route exact path="/dashboard/swot" component={HomeMenu} />
           <Route path="/orderstatus" component={MorningMeetingMenu} />
           <Route path="/af" component={AfMenu} />
@@ -126,7 +128,8 @@ const App = ( { collapsed, setSiderCollapse } ) => {
           <Route exact path="/" component={HomePage} />
 
           {/* SWOT */}
-          <Route exact path="/dashboard/swot" component={SwotPage} />
+          <Route exact path="/dashboard/swot/settings" component={SwotSettingsPage} />
+          <Route exact path="/dashboard/swot/:department" component={SwotPage} />
 
           {/* Monring Meeting */}
           <Route exact path="/dashboard/morningmeeting/safety" component={SafetyPage} />
