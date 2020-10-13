@@ -1,6 +1,6 @@
 {
   "name": "fmsbweb.react-app",
-  "version": "0.1.234",
+  "version": "0.1.235",
   "private": true,
   "dependencies": {
     "antd": "^4.4.3",
@@ -44,13 +44,13 @@
     "eject": "react-scripts eject",
     "release": "standard-version",
     "delete-post-build-dir": "rm -r /q/react.app/",
-    "copy-build-to-prod-dir": "cp -a /c/repos/fmsbweb3/fmsbweb.react-app/build/. /q/react.app/",
-    "copy-web-config": "cp /c/repos/fmsbweb3/fmsbweb.react-app/web.config /q/react.app/",
+    "copy-build-to-prod-dir": "cp -a /c/Users/rontoa20/source/repos/fmsbweb3/fmsbweb.react-app/build/. /q/react.app/",
+    "copy-web-config": "cp /c/Users/rontoa20/source/repos/fmsbweb3/fmsbweb.react-app/web.config /q/react.app/",
     "post-build": "npm run delete-post-build-dir && npm run copy-build-to-prod-dir && npm run copy-web-config",
     "build:staging": "react-scripts build && npm run post-build:staging",
     "delete-post-build-dir:staging": "rm -r /q/react.app.staging/",
-    "copy-build-to-prod-dir:staging": "cp -a /c/repos/fmsbweb3/fmsbweb.react-app/build/. /q/react.app.staging/",
-    "copy-web-config:staging": "cp /c/repos/fmsbweb3/fmsbweb.react-app/web.config /q/react.app.staging/",
+    "copy-build-to-prod-dir:staging": "cp -a /c/Users/rontoa20/source/repos/fmsbweb3/fmsbweb.react-app/build/. /q/react.app.staging/",
+    "copy-web-config:staging": "cp /c/Users/rontoa20/source/repos/fmsbweb3/fmsbweb.react-app/web.config /q/react.app.staging/",
     "post-build:staging": "npm run delete-post-build-dir:staging && npm run copy-build-to-prod-dir:staging && npm run copy-web-config:staging"
   },
   "eslintConfig": {
