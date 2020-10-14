@@ -63,9 +63,9 @@ const HomeMenu = ( { location } ) => {
           <Link to="/orderstatus/foundry" />
         </Menu.Item>
 
-        <Menu.Item key="/dashboard/swot">
+        <Menu.Item key="/dashboard/swot/settings">
           <span>SWOT</span>
-          <Link to="/dashboard/swot" />
+          <Link to="/dashboard/swot/settings" />
         </Menu.Item>
 
         <Menu.Item key="infoScreen">Info Screen</Menu.Item>
