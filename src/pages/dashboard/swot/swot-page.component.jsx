@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom';
 
 import { PrinterOutlined } from '@ant-design/icons';
-
+import {
+    setChartWidth,
+    setChartHeight
+  } from '../../../redux/swot/swot.actions'
 
 import SwotLine from '../../../components/swot/swot-line.component'
 
@@ -12,7 +15,6 @@ import {
     PageHeader,
     Row,
     Col,
-    Card,
     Button
  } from "antd";
 
@@ -35,11 +37,34 @@ const tabList =[
 
 
  const SwotPage = ({
-    swotCollection
+    swotCollection,
+    setChartWidth,
+    setChartHeight,
+    chartWidth,
+    chartHeight
  }) => {
   
     const history = useHistory();
     const { department } = useParams();
+
+    useEffect(() => {
+
+        if (swotCollection.length === 0 ) {
+          history.push(`/dashboard/swot/settings`)
+        }
+        
+      }, [swotCollection, history])
+
+    useEffect(() => {
+        document.title = `SWOT: ${department}`
+    },[])
+
+    useEffect(() => {
+        setChartWidth('100%');
+        setChartHeight('400');
+    }, [])
+
+    const onPrint = () => history.push(`/dashboard/swot/${department}/print`);
 
     return (
         <>
@@ -47,27 +72,19 @@ const tabList =[
                 className="site-page-header"
                 title={`${department} SWOT Charts`}
                 onBack={() => history.goBack() }
-                extra={<Button type="primary"><PrinterOutlined /> Print</Button>}
+                extra={<Button type="primary" onClick={onPrint}><PrinterOutlined /> Print</Button>}
             />
 
             <Content className="ma3 mt0">
             
                 {
-                    swotCollection.length > 0 
-                    
-                        ? swotCollection.map(data => (
-                            <Row gutter={[16,16]} key={data.line}>
-                                <Col span={24}>
-
-                                    <SwotLine 
-                                        data={data}
-                                        tabList={tabList} />
-                                    
-                                </Col>
-                            </Row>
-                        ))
-
-                    : history.push(`/dashboard/swot/settings`)
+                    swotCollection.map(data => (
+                        <Row gutter={[16,16]} key={data.line}>
+                            <Col span={24}>
+                                <SwotLine data={data} tabList={tabList} />           
+                            </Col>
+                        </Row>
+                    ))
                 }
 
             </Content>
@@ -77,7 +94,14 @@ const tabList =[
  }
 
  const mapStateToProps = ({ swot }) => ({
-     swotCollection: swot.swotCollection
+     swotCollection: swot.swotCollection,
+     chartWidth: swot.chartWidth,
+     chartHeight: swot.chartHeight
  })
 
- export default connect(mapStateToProps)(SwotPage);
+ const mapDispathToProps = dispatch => ({
+    setChartWidth: width => dispatch(setChartWidth(width)),
+    setChartHeight: height => dispatch(setChartHeight(height)),
+  })
+
+ export default connect(mapStateToProps, mapDispathToProps)(SwotPage);

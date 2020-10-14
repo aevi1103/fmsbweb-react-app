@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import numeral from 'numeral'
 import moment from 'moment'
 import FusionCharts from 'fusioncharts';
@@ -10,7 +11,6 @@ import { tooltipStyle } from '../../../helpers/chart-config'
 
 import {
     chartProps,
-    chartConfigProps,
     colorCodes
 } from '../helper'
 
@@ -22,7 +22,9 @@ const MonthWeekOaeChart = ({
     prodData,
     filters,
     targets,
-    line
+    line,
+    chartWidth,
+    chartHeight
 }) => {
 
     if (!prodData) return;
@@ -41,14 +43,14 @@ const MonthWeekOaeChart = ({
     const dateFormat = 'MM/DD/YY'
     const formatDate = date => moment(date).format(dateFormat);
     const subCaption = `Month: ${formatDate(monthStart)} - ${formatDate(monthEnd)} | Week: ${formatDate(weekStart)} - ${formatDate(weekEnd)}`
-    const { oaeTarget } = targets;
+    const { oaeTarget } = targets || {};
 
     const dataSource = {
         chart: {
             caption: `${line} Last ${lastMonths} Months and Last ${lastWeeks} Weeks OAE %`,
             subCaption: subCaption,
             xAxisName: 'Month | Week',
-            yAxisName: 'Scrap %',
+            yAxisName: 'OAE %',
             ...chartProps,
             ...tooltipStyle,
             numberSuffix: "%"
@@ -77,9 +79,11 @@ const MonthWeekOaeChart = ({
         ]
       };
 
-    const chartConfigs = {
+      const chartConfigs = {
         type: 'column2d',
-        ...chartConfigProps,
+        width: chartWidth,
+        height: chartHeight,
+        dataFormat: 'json',
         dataSource: dataSource
       };
 
@@ -88,4 +92,9 @@ const MonthWeekOaeChart = ({
     )
 }
 
-export default MonthWeekOaeChart;
+const mapStateToProps = ({ swot }) => ({
+    chartWidth: swot.chartWidth,
+    chartHeight: swot.chartHeight
+})
+
+export default connect(mapStateToProps)(MonthWeekOaeChart);

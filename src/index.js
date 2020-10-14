@@ -15,7 +15,6 @@ import * as serviceWorker from './serviceWorker';
 import 'tachyons'
 import './sass/main.scss'
 
-
 ReactDOM.render(
     
     <BrowserRouter>

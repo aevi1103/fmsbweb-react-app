@@ -96,6 +96,10 @@ const SwotSettingsPage = ({
     }
 
     useEffect(() => {
+        document.title = `SWOT Settings`
+    }, [])
+
+    useEffect(() => {
 
         const initialValues = {
             showMonthlyCharts: true,
@@ -132,7 +136,7 @@ const SwotSettingsPage = ({
         <>
             <PageHeader
                 className="site-page-header"
-                title="SWOT (WIP)"
+                title="SWOT Settings"
             />
 
             <Content className="ma3 mt0">

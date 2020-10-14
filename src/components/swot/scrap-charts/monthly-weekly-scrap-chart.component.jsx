@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import numeral from 'numeral'
 import moment from 'moment'
 import FusionCharts from 'fusioncharts';
@@ -9,19 +10,20 @@ import ReactFC from 'react-fusioncharts';
 import { tooltipStyle } from '../../../helpers/chart-config'
 
 import {
-    chartProps,
-    chartConfigProps
+    chartProps
 } from '../helper'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
 
-const MonthWeekChart = ({
+const MonthlyWeeklyScrapChart = ({
     scrapData,
     scrapAreaName,
     filters,
-    line
+    line,
+    chartWidth,
+    chartHeight
 }) => {
 
     if (!scrapData) return;
@@ -63,9 +65,11 @@ const MonthWeekChart = ({
             }))
       };
 
-    const chartConfigs = {
+      const chartConfigs = {
         type: 'column2d',
-        ...chartConfigProps,
+        width: chartWidth,
+        height: chartHeight,
+        dataFormat: 'json',
         dataSource: dataSource
       };
 
@@ -74,4 +78,9 @@ const MonthWeekChart = ({
     )
 }
 
-export default MonthWeekChart;
+const mapStateToProps = ({ swot }) => ({
+    chartWidth: swot.chartWidth,
+    chartHeight: swot.chartHeight
+})
+
+export default connect(mapStateToProps)(MonthlyWeeklyScrapChart);

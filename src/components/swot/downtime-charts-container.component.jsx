@@ -31,22 +31,30 @@ import {
         <>
             <Row gutter={[8,8]}>
 
-                <Col span={8}>
-                    <DowntimeParetoByReasonChart 
-                        downtimeData={lastDowntimeByReason} 
-                        line={line} 
-                        filters={filters}
-                        calculatedDateRange={true} /> 
-                </Col>
-
-                <Col span={8}>
-                    <DailyDowntimeByReasonChart 
-                        downtimeData={dailyDowntimeByReason} 
-                        line={line}
-                        filters={filters}
-                        calculatedDateRange={true} />
-                </Col>
-
+                {
+                    lastDowntimeByReason !== null
+                        ? (<Col span={8}>
+                                <DowntimeParetoByReasonChart 
+                                    downtimeData={lastDowntimeByReason} 
+                                    line={line} 
+                                    filters={filters}
+                                    calculatedDateRange={true} /> 
+                            </Col>)
+                        : null
+                }
+                
+                {
+                    dailyDowntimeByReason !== null 
+                        ? (<Col span={8}>
+                                <DailyDowntimeByReasonChart 
+                                    downtimeData={dailyDowntimeByReason} 
+                                    line={line}
+                                    filters={filters}
+                                    calculatedDateRange={true} />
+                            </Col>)
+                        : null
+                }
+                
                 <Col span={8}>
                     <DowntimeParetoByReasonChart 
                         downtimeData={downtimeByReason} 
@@ -56,24 +64,33 @@ import {
                 </Col>
 
             </Row>
+            
             <Row gutter={[8,8]}>
 
-                <Col span={8}>
-                    <DowntimeParetoByMachineChart
-                        downtimeData={lastDowntimeByMachine} 
-                        line={line} 
-                        filters={filters}
-                        calculatedDateRange={true} />
-                </Col>
-
-                <Col span={8}>
-                    <DailyDowntimeByMachineChart
-                        downtimeData={dailyDowntimeByMachine} 
-                        line={line}
-                        filters={filters}
-                        calculatedDateRange={true} /> 
-                </Col>
-
+                {
+                    lastDowntimeByMachine !== null 
+                        ? (<Col span={8}>
+                                <DowntimeParetoByMachineChart
+                                    downtimeData={lastDowntimeByMachine} 
+                                    line={line} 
+                                    filters={filters}
+                                    calculatedDateRange={true} />
+                            </Col>)
+                        : null
+                }
+                
+                {
+                    dailyDowntimeByMachine !== null 
+                        ? (<Col span={8}>
+                                <DailyDowntimeByMachineChart
+                                    downtimeData={dailyDowntimeByMachine} 
+                                    line={line}
+                                    filters={filters}
+                                    calculatedDateRange={true} /> 
+                            </Col>)
+                        : null
+                }
+                
                 <Col span={8}>
                     <DowntimeParetoByMachineChart
                             downtimeData={downtimeByMachine} 

@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import moment from 'moment'
 import numeral from 'numeral'
 import FusionCharts from 'fusioncharts';
@@ -19,7 +20,9 @@ ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
 const HourlyProductionChart = ({
     prodData,
-    line
+    line,
+    chartWidth,
+    chartHeight
 }) => {
 
     if (!prodData) return;
@@ -70,9 +73,11 @@ const HourlyProductionChart = ({
         ]
       };
 
-    const chartConfigs = {
+      const chartConfigs = {
         type: 'column2d',
-        ...chartConfigProps,
+        width: chartWidth,
+        height: chartHeight,
+        dataFormat: 'json',
         dataSource: dataSource
       };
 
@@ -81,4 +86,9 @@ const HourlyProductionChart = ({
     )
 }
 
-export default HourlyProductionChart;
+const mapStateToProps = ({ swot }) => ({
+    chartWidth: swot.chartWidth,
+    chartHeight: swot.chartHeight
+})
+
+export default connect(mapStateToProps)(HourlyProductionChart);

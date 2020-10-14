@@ -1,6 +1,7 @@
 import React from 'react'
 import numeral from 'numeral'
 import moment from 'moment'
+import { connect } from 'react-redux'
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
@@ -9,8 +10,7 @@ import ReactFC from 'react-fusioncharts';
 import { tooltipStyle } from '../../../helpers/chart-config'
 
 import {
-    chartProps,
-    chartConfigProps
+    chartProps
 } from '../helper'
 
 FusionCharts.options.creditLabel = false;
@@ -20,7 +20,9 @@ const DailyDowntimeByReasonChart = ({
     downtimeData,
     line,
     filters,
-    calculatedDateRange
+    calculatedDateRange,
+    chartWidth,
+    chartHeight
 }) => {
 
     if (!downtimeData) return;
@@ -87,9 +89,11 @@ const DailyDowntimeByReasonChart = ({
         }))
       };
 
-    const chartConfigs = {
+      const chartConfigs = {
         type: 'column2d',
-        ...chartConfigProps,
+        width: chartWidth,
+        height: chartHeight,
+        dataFormat: 'json',
         dataSource: dataSource
       };
 
@@ -98,4 +102,9 @@ const DailyDowntimeByReasonChart = ({
     )
 }
 
-export default DailyDowntimeByReasonChart;
+const mapStateToProps = ({ swot }) => ({
+    chartWidth: swot.chartWidth,
+    chartHeight: swot.chartHeight
+})
+
+export default connect(mapStateToProps)(DailyDowntimeByReasonChart);

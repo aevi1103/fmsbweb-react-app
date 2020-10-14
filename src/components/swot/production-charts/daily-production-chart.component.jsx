@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import moment from 'moment'
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
@@ -9,7 +10,6 @@ import { tooltipStyle } from '../../../helpers/chart-config'
 
 import {
     chartProps,
-    chartConfigProps,
     colorCodes
 } from '../helper'
 
@@ -19,7 +19,9 @@ ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 const DailyProductionChart = ({
     prodData,
     line,
-    filters
+    filters,
+    chartWidth,
+    chartHeight
 }) => {
 
     if (!prodData) return;
@@ -45,9 +47,11 @@ const DailyProductionChart = ({
             }))
       };
 
-    const chartConfigs = {
+      const chartConfigs = {
         type: 'column2d',
-        ...chartConfigProps,
+        width: chartWidth,
+        height: chartHeight,
+        dataFormat: 'json',
         dataSource: dataSource
       };
 
@@ -56,4 +60,9 @@ const DailyProductionChart = ({
     )
 }
 
-export default DailyProductionChart;
+const mapStateToProps = ({ swot }) => ({
+    chartWidth: swot.chartWidth,
+    chartHeight: swot.chartHeight
+})
+
+export default connect(mapStateToProps)(DailyProductionChart);

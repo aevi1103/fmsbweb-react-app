@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { connect } from 'react-redux'
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
@@ -8,8 +8,7 @@ import ReactFC from 'react-fusioncharts';
 import { tooltipStyle } from '../../../helpers/chart-config'
 
 import {
-    chartProps,
-    chartConfigProps
+    chartProps
 } from '../helper'
 
 FusionCharts.options.creditLabel = false;
@@ -18,7 +17,9 @@ ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 const ScrapByDefectChart = ({
     scrapData,
     line,
-    filters
+    filters,
+    chartWidth,
+    chartHeight
 }) => {
 
     if (!scrapData) return;
@@ -36,7 +37,10 @@ const ScrapByDefectChart = ({
             xAxisName: 'Defects',
             yAxisName: 'Qty',
             ...chartProps,
-            ...tooltipStyle
+            ...tooltipStyle,
+            // exportEnabled: '1',
+            // exportTargetWindow: '_blank',
+            // exportFormats: 'PNG=Export as High Quality Image|PDF=Export as Printable'
         },
         data: data.map(({scrapDesc, qty, colorCode}) => ({
                 label: scrapDesc,
@@ -47,7 +51,9 @@ const ScrapByDefectChart = ({
 
     const chartConfigs = {
         type: 'column2d',
-        ...chartConfigProps,
+        width: chartWidth,
+        height: chartHeight,
+        dataFormat: 'json',
         dataSource: dataSource
       };
 
@@ -56,4 +62,9 @@ const ScrapByDefectChart = ({
     )
 }
 
-export default ScrapByDefectChart;
+const mapStateToProps = ({ swot }) => ({
+    chartWidth: swot.chartWidth,
+    chartHeight: swot.chartHeight
+})
+
+export default connect(mapStateToProps)(ScrapByDefectChart);

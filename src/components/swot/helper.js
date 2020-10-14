@@ -29,17 +29,17 @@ export const chartProps = {
     showLegend: "1",
     drawcrossline: "1",
     showBorder: 1,
+    borderAlpha: 9,
     labelDisplay: "rotate",
     slantLabel: "1",
-    borderAlpha: 9,
     captionFontSize: 15,
     subCaptionFontSize: 13
 }
 
 export const chartConfigProps = {
-    width: '100%',
-    height: '400',
-    dataFormat: 'json'
+    // width: '100%',
+    // height: '400',
+    // dataFormat: 'json'
 }
 
 export const colorCodes = {

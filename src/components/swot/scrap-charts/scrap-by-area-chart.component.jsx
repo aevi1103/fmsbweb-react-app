@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { connect } from 'react-redux'
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
@@ -8,8 +8,7 @@ import ReactFC from 'react-fusioncharts';
 import { tooltipStyle } from '../../../helpers/chart-config'
 
 import {
-    chartProps,
-    chartConfigProps
+    chartProps
 } from '../helper'
 
 FusionCharts.options.creditLabel = false;
@@ -21,7 +20,9 @@ const ScrapByAreaChart = ({
     start,
     end,
     line,
-    filters
+    filters,
+    chartWidth,
+    chartHeight
 }) => {
 
     if (!scrapData) return;
@@ -51,7 +52,9 @@ const ScrapByAreaChart = ({
 
     const chartConfigs = {
         type: 'column2d',
-        ...chartConfigProps,
+        width: chartWidth,
+        height: chartHeight,
+        dataFormat: 'json',
         dataSource: dataSource
       };
 
@@ -60,4 +63,9 @@ const ScrapByAreaChart = ({
     )
 }
 
-export default ScrapByAreaChart;
+const mapStateToProps = ({ swot }) => ({
+    chartWidth: swot.chartWidth,
+    chartHeight: swot.chartHeight
+})
+
+export default connect(mapStateToProps)(ScrapByAreaChart);
