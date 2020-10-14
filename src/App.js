@@ -4,11 +4,14 @@ import { Route, Switch } from "react-router-dom";
 import { ReactComponent as Logo } from './assets/logo.svg';
 import { ReactComponent as LogoIcon } from './assets/logoIcon.svg';
 import { LogoContainer } from './App.styles';
-import { setSiderCollapse } from './redux/home/home.actions';
+import { 
+  setSiderCollapse
+ } from './redux/home/home.actions';
 import { Layout, BackTop } from "antd";
 import { useWindowSize } from 'react-use'
 
 import './App.css';
+import './App.scss'
 
 import HomePage from './pages/home/home.component';
 import NotFound from './pages/404/404.component';
@@ -18,9 +21,10 @@ import HomeMenu from './components/Menu/home-menu/home-menu.components';
 import MorningMeetingMenu from './components/Menu/morning-meeting-menu/morning-meeting-menu.component';
 import AfMenu from './components/Menu/af-menu/af-menu.component';
 
-//page components
+//swot components
 import SwotSettingsPage from './pages/dashboard/swot/settings-page.component';
 import SwotPage from './pages/dashboard/swot/swot-page.component';
+import PrintWotChartsPage from './pages/dashboard/swot/print-swot-charts-page.component'
 
 //morning meeting pages
 import SafetyPage from './pages/dashboard/morning-meeting/safety-page/safety-page.component';
@@ -60,7 +64,10 @@ const logoStylesWhite = {
   filter: "brightness(0) invert(1)"
 }
 
-const App = ( { collapsed, setSiderCollapse } ) => { 
+const App = ( { 
+  collapsed,
+  setSiderCollapse
+ } ) => { 
 
   const defaultSiderProps = {
     collapsible: true,
@@ -98,7 +105,7 @@ const App = ( { collapsed, setSiderCollapse } ) => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
 
-      <Sider {...siderProps} >
+      <Sider {...siderProps} id="sider">
 
         <LogoContainer>
           {
@@ -112,7 +119,6 @@ const App = ( { collapsed, setSiderCollapse } ) => {
           <Route exact path="/" component={HomeMenu} />
           <Route path="/dashboard/morningmeeting" component={MorningMeetingMenu} />
           <Route path="/dashboard/swot" component={MorningMeetingMenu} />
-          <Route exact path="/dashboard/swot" component={HomeMenu} />
           <Route path="/orderstatus" component={MorningMeetingMenu} />
           <Route path="/af" component={AfMenu} />
           <Route path="/quality" component={HomeMenu} />
@@ -130,6 +136,7 @@ const App = ( { collapsed, setSiderCollapse } ) => {
           {/* SWOT */}
           <Route exact path="/dashboard/swot/settings" component={SwotSettingsPage} />
           <Route exact path="/dashboard/swot/:department" component={SwotPage} />
+          <Route exact path="/dashboard/swot/:department/print" component={PrintWotChartsPage} />
 
           {/* Monring Meeting */}
           <Route exact path="/dashboard/morningmeeting/safety" component={SafetyPage} />
