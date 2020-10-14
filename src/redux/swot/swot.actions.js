@@ -57,3 +57,23 @@ export const setDept = dept => ({
     type: swotTypes.SET_DEPT,
     payload: dept
 });
+
+export const setChartWidth = width => ({
+    type: swotTypes.SET_CHART_WIDTH,
+    payload: width
+});
+
+export const setChartHeight = height => ({
+    type: swotTypes.SET_CHART_HEIGHT,
+    payload: height
+});
+
+export const setChartPrintWidth = width => ({
+    type: swotTypes.SET_CHART_PRINT_WIDTH,
+    payload: width
+});
+
+export const setChartPrintHeight = height => ({
+    type: swotTypes.SET_CHART_PRINT_HEIGHT,
+    payload: height
+});

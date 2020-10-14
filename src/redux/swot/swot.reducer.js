@@ -4,7 +4,11 @@ const INITIAL_STATE = {
     isSwotFetching: false,
     swotCollection: [],
     swotErrorMsg: null,
-    dept: null
+    dept: null,
+    chartWidth: '100%',
+    chartHeight: '400',
+    chartPrintWidth: 980,
+    chartPrintHt: 740
 }
 
 const swotReducer = (state = INITIAL_STATE, action) => {
@@ -41,6 +45,34 @@ const swotReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 dept: action.payload
             }
+
+        case swotTypes.SET_CHART_WIDTH:
+
+            return {
+                ...state,
+                chartWidth: action.payload
+            }
+
+        case swotTypes.SET_CHART_HEIGHT:
+
+            return {
+                ...state,
+                chartHeight: action.payload
+            }
+
+        case swotTypes.SET_CHART_PRINT_WIDTH:
+
+                return {
+                    ...state,
+                    chartPrintWidth: action.payload
+                }
+    
+        case swotTypes.SET_CHART_PRINT_HEIGHT:
+    
+                return {
+                    ...state,
+                    chartPrintHt: action.payload
+                }
     
         default:
             return state;
