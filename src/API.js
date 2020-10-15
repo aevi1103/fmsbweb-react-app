@@ -28,7 +28,7 @@ http.interceptors.request.use(req => {
 
     if (NODE_ENV !== 'production') {
         const { method } = req
-        console.log(method, req.url)
+        console.log('req',method, req.url)
     }
 
     store.dispatch(setTotalRequests(totalReq++));
@@ -41,7 +41,7 @@ http.interceptors.response.use(res => {
 
     if (NODE_ENV !== 'production') {
         const { config, data } = res;
-        console.log(config.method, config.url, data);
+        console.log('res',config.method, config.url, data);
     }
 
     progress++;
@@ -58,12 +58,22 @@ http.interceptors.response.use(res => {
 
     if (totalReq === progress) {
 
-        setTimeout(() => {
-            store.dispatch(setTotalRequests(0));
-            store.dispatch(setProgress(0));
-            totalReq = 0;
-            progress = 0;
-        }, 1000)
+        // console.log('---- reset ----', {
+        //     totalReq,
+        //     progress
+        // })
+
+        store.dispatch(setTotalRequests(0));
+        store.dispatch(setProgress(0));
+        totalReq = 0;
+        progress = 0;
+
+        // setTimeout(() => {
+        //     store.dispatch(setTotalRequests(0));
+        //     store.dispatch(setProgress(0));
+        //     totalReq = 0;
+        //     progress = 0;
+        // }, 1000)
 
     }
 

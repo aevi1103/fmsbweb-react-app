@@ -8,6 +8,7 @@
 
 #progressBar {
     height: 0;
+    z-index: 999;
 
     .ant-progress-inner {
         position: absolute;
