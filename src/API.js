@@ -1,4 +1,9 @@
 import axios from "axios";
+import { store } from './redux/store'
+import {
+    setTotalRequests,
+    setProgress
+ } from './redux/requests/requests.actions'
 
 const { 
     NODE_ENV,
@@ -21,30 +26,45 @@ let totalReq = 0, progress = 0;
 
 http.interceptors.request.use(req => {
 
-    if (url !== 'production') {
-        console.log(`Request:`, {
-            req
-        })
+    if (NODE_ENV !== 'production') {
+        const { method } = req
+        console.log(method, req.url)
     }
-    
-    totalReq++;
+
+    store.dispatch(setTotalRequests(totalReq++));
+
     // Important: request interceptors **must** return the request.
     return req;
 });
 
 http.interceptors.response.use(res => {
 
-    if (url !== 'production') {
-        console.log('Response:', res);
+    if (NODE_ENV !== 'production') {
+        const { config, data } = res;
+        console.log(config.method, config.url, data);
     }
-    
-    progress++
-    console.log(progress)
-    console.log(`${(progress / totalReq) * 100}%`)
+
+    progress++;
+    const progressPercent = totalReq === 0 ? 0 : progress / totalReq;
+    const percent = Math.round((progressPercent * 100), 0)
+
+    store.dispatch(setProgress(percent));
+
+    // console.log({
+    //     progress,
+    //     totalReq,
+    //     total: percent
+    // })
 
     if (totalReq === progress) {
-        totalReq = 0;
-        progress = 0;
+
+        setTimeout(() => {
+            store.dispatch(setTotalRequests(0));
+            store.dispatch(setProgress(0));
+            totalReq = 0;
+            progress = 0;
+        }, 1000)
+
     }
 
     // Important: response interceptors **must** return the response.

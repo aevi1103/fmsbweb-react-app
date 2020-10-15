@@ -7,7 +7,13 @@ import { LogoContainer } from './App.styles';
 import { 
   setSiderCollapse
  } from './redux/home/home.actions';
-import { Layout, BackTop } from "antd";
+
+import { 
+  Layout,
+  BackTop,
+  Progress
+ } from "antd";
+
 import { useWindowSize } from 'react-use'
 
 import './App.css';
@@ -66,7 +72,9 @@ const logoStylesWhite = {
 
 const App = ( { 
   collapsed,
-  setSiderCollapse
+  setSiderCollapse,
+  progress,
+  totalRequests
  } ) => { 
 
   const defaultSiderProps = {
@@ -129,6 +137,20 @@ const App = ( {
       </Sider>
       
       <Layout className="site-layout-bg">
+        
+       {
+          totalRequests > 0 
+            ?  <Progress 
+                percent={progress} 
+                status="active" 
+                size="small" 
+                showInfo={false} 
+                strokeLinecap="square" 
+                strokeWidth={4}
+                id="progressBar" />
+            : null
+        } 
+      
 
         <Switch>
 
@@ -194,8 +216,10 @@ const App = ( {
 }
 
 //state is the root reducer
-const mapStateToProps = state => ({
-  collapsed: state.home.collapsed
+const mapStateToProps = ({ home, requests }) => ({
+  collapsed: home.collapsed,
+  progress: requests.progress,
+  totalRequests: requests.totalRequests
 });
 
 const mapDispatchToProps = dispatch => ({
