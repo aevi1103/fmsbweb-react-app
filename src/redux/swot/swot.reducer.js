@@ -2,7 +2,7 @@ import swotTypes from './swot.types'
 
 const INITIAL_STATE = {
     isSwotFetching: false,
-    swotCollection: [],
+    swotResult: null,
     swotErrorMsg: null,
     dept: null,
     chartWidth: '100%',
@@ -28,7 +28,7 @@ const swotReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isSwotFetching: false,  
-                swotCollection: action.payload
+                swotResult: action.payload
             }
 
         case swotTypes.FETCH_SWOT_FAILURE:

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom';
 import styled from 'styled-components'
@@ -39,7 +39,7 @@ const Container = styled.div`
 `
 
 const PrintSwotChartPage = ({
-  swotCollection,
+  swotResult,
 
   setChartWidth,
   setChartHeight,
@@ -52,18 +52,27 @@ const PrintSwotChartPage = ({
 
   const history = useHistory();
   const { department } = useParams();
+  const [collection, setCollection] = useState([])
 
   useEffect(() => {
     document.title = `Print SWOT: ${department}`
   }, [])
 
+
   useEffect(() => {
+    const { lineData, filters } = swotResult || {};
 
-    if (swotCollection.length === 0 ) {
-      history.push(`/dashboard/swot/settings`)
+    if (lineData?.length === 0 || !lineData) {
+
+      history.push(`/dashboard/swot/settings`);
+
+    }  else {
+
+      setCollection(lineData.map(data => ({ ...data, filters })))
+
     }
-
-  }, [swotCollection, history])
+  
+  }, [swotResult, history])
 
   useEffect(() => {
   
@@ -93,7 +102,7 @@ const PrintSwotChartPage = ({
 
   return (
       <>
-          <Container className="w-20">
+          <Container className="w-50">
 
             <span>Width: </span>
             <InputNumber 
@@ -117,7 +126,7 @@ const PrintSwotChartPage = ({
           </Container>
 
           {
-              swotCollection.map(({filters, line, swotTarget, scrapCharts, productionCharts, downtimeCharts }) => (
+              collection.map(({line, filters, swotTarget, scrapCharts, productionCharts, downtimeCharts }) => (
                 <div key={line}>
 
                   {/* Scrap */}
@@ -272,7 +281,7 @@ const PrintSwotChartPage = ({
 }
 
 const mapStateToProps = ({ swot }) => ({
-  swotCollection: swot.swotCollection,
+  swotResult: swot.swotResult,
   chartPrintWidth: swot.chartPrintWidth,
   chartPrintHt: swot.chartPrintHt
 })

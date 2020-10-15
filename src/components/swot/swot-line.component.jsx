@@ -10,7 +10,8 @@ import {
 
  const SwotLine = ({
      tabList,
-     data
+     data,
+     filters
  }) => {
 
     const [activeKey, setActiveKey] = useState(tabList[0].key)
@@ -22,7 +23,7 @@ import {
             onTabChange={key => setActiveKey(key)}>
 
             {
-                getContentList(data)[activeKey]
+                getContentList(data, filters)[activeKey]
             }
 
         </Card>

@@ -3,11 +3,10 @@ import ScrapChartsContainer from './scrap-charts-container.component'
 import ProductionChartsContainer from './production-charts-container.component'
 import DowntimeChartsContainer from './downtime-charts-container.component'
 
-export const  getContentList = (data) => {
+export const  getContentList = (data, filters) => {
 
     const {
         line,
-        filters,
         swotTarget,
         scrapCharts,
         productionCharts,

@@ -37,11 +37,9 @@ const tabList =[
 
 
  const SwotPage = ({
-    swotCollection,
+    swotResult,
     setChartWidth,
-    setChartHeight,
-    chartWidth,
-    chartHeight
+    setChartHeight
  }) => {
   
     const history = useHistory();
@@ -49,11 +47,13 @@ const tabList =[
 
     useEffect(() => {
 
-        if (swotCollection.length === 0 ) {
+        const { lineData } = swotResult || {};
+
+        if (lineData?.length === 0 || !lineData) {
           history.push(`/dashboard/swot/settings`)
         }
         
-      }, [swotCollection, history])
+      }, [swotResult, history])
 
     useEffect(() => {
         document.title = `SWOT: ${department}`
@@ -78,10 +78,10 @@ const tabList =[
             <Content className="ma3 mt0">
             
                 {
-                    swotCollection.map(data => (
+                    swotResult?.lineData.map(data => (
                         <Row gutter={[16,16]} key={data.line}>
                             <Col span={24}>
-                                <SwotLine data={data} tabList={tabList} />           
+                                <SwotLine data={data} filters={swotResult?.filters} tabList={tabList} />           
                             </Col>
                         </Row>
                     ))
@@ -94,7 +94,7 @@ const tabList =[
  }
 
  const mapStateToProps = ({ swot }) => ({
-     swotCollection: swot.swotCollection,
+    swotResult: swot.swotResult,
      chartWidth: swot.chartWidth,
      chartHeight: swot.chartHeight
  })
