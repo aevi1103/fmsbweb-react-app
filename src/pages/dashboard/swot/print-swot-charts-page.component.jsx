@@ -4,7 +4,9 @@ import { useParams, useHistory } from 'react-router-dom';
 import styled from 'styled-components'
 
 import ScrapByDefectChart from '../../../components/swot/scrap-charts/scrap-by-defect-chart.component'
-import ScrapByAreaChartWrapper from '../../../components/swot/scrap-charts/scrap-by-area-chart-wrapper.component'
+import ScrapByShiftChart from '../../../components/swot/scrap-charts/scrap-by-shift-chart.component'
+import ScrapByAreaChart from '../../../components/swot/scrap-charts/scrap-by-area-chart.component'
+import ScrapByAreaDefectChartWrapper from '../../../components/swot/scrap-charts/scrap-by-area-defect-chart-wrapper.component'
 import MonthlyWeeklyChartWrapper from '../../../components/swot/scrap-charts/monthly-weekly-chart-wrapper.component'
 
 import HourlyProductionChart from '../../../components/swot/production-charts/hourly-production-chart.component'
@@ -45,9 +47,7 @@ const PrintSwotChartPage = ({
   setChartPrintHeight,
 
   chartPrintWidth,
-  chartPrintHt,
-
-  setHideSider
+  chartPrintHt
 }) => {
 
   const history = useHistory();
@@ -87,7 +87,7 @@ const PrintSwotChartPage = ({
   }
   const onPrint = () => window.print();
   const onBack = () => {
-    history.push(`/dashboard/swot/settings`)
+    history.push(`/dashboard/swot/settings`);
     // window.go(0);
   }
 
@@ -132,8 +132,28 @@ const PrintSwotChartPage = ({
 
                       : null
                   }
+
+                  {
+                    scrapCharts.scrapParetoByShift.data.length > 0 
+
+                      ? <ScrapByShiftChart 
+                          scrapData={scrapCharts.scrapParetoByShift} 
+                          line={line} 
+                          filters={filters} />  
+
+                      : null
+                  }
+
+                  {
+                    department !== 'Foundry' 
+                        ?  <ScrapByAreaChart 
+                              scrapData={scrapCharts.scrapParetoByArea} 
+                              line={line} 
+                              filters={filters} /> 
+                        : null
+                  }
                   
-                  <ScrapByAreaChartWrapper 
+                  <ScrapByAreaDefectChartWrapper 
                     scrapParetoByArea={scrapCharts.scrapParetoByArea}
                     filters={filters}
                     line={line}

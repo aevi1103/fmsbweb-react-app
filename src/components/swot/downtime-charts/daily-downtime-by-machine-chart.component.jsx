@@ -63,11 +63,11 @@ const DailyDowntimeByReasonChart = ({
                 data: machineDetails.map(({ machine, downtime }) => ({
                     label: machine,
                     value: downtime,
-                    link: `newchart-xml-${machine.replace(/\s/g, '_')}`
+                    link: `newchart-xml-${moment(shifDate).format('MMDDYY')}_{${machine.replace(/\s/g, '_')}`
                 })),
                 
                 linkeddata: machineDetails.map(({ machine, downtime, reasonDetails }) => ({
-                    id: machine.replace(/\s/g, '_'),
+                    id: `${moment(shifDate).format('MMDDYY')}_{${machine.replace(/\s/g, '_')}`,
                     linkedchart: {
                         chart: {
                             caption: `${moment(shifDate).format('MM/DD/YYYY')} / ${machine} Downtime Pareto by Reason`,

@@ -1,12 +1,12 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import ScrapByAreaChart from './scrap-by-area-chart.component'
+import ScrapByAreaDefectChart from './scrap-by-area-defect-chart.component'
 
 import { 
     Col,
  } from "antd";
 
-const ScrapByAreaChartWrapper = ({
+const ScrapByAreaDefectChartWrapper = ({
     scrapParetoByArea,
     line,
     filters,
@@ -28,7 +28,7 @@ const ScrapByAreaChartWrapper = ({
                 
                 return isPrint 
 
-                    ? (<ScrapByAreaChart key={scrapAreaName} 
+                    ? (<ScrapByAreaDefectChart key={scrapAreaName} 
                         scrapData={scrapData} 
                         start={startDate}
                         end={endDate}
@@ -36,7 +36,7 @@ const ScrapByAreaChartWrapper = ({
                         filters={filters}  />)
 
                     : (<Col span={6} key={scrapAreaName}>
-                            <ScrapByAreaChart
+                            <ScrapByAreaDefectChart
                                 scrapData={scrapData} 
                                 start={startDate}
                                 end={endDate}
@@ -50,4 +50,4 @@ const ScrapByAreaChartWrapper = ({
     )
 }
 
-export default ScrapByAreaChartWrapper;
+export default ScrapByAreaDefectChartWrapper;

@@ -14,11 +14,8 @@ import {
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-
 const ScrapByAreaChart = ({
     scrapData,
-    start,
-    end,
     line,
     filters,
     chartWidth,
@@ -27,27 +24,50 @@ const ScrapByAreaChart = ({
 
     if (!scrapData) return;
 
-    const { scrapAreaName, qty, details } = scrapData;
+    const { startDate, endDate, data } = scrapData;
     const { take } = filters;
 
-    const caption = take > 0 
-        ? `${line} ${scrapAreaName} Top ${take} Scrap Pareto`
-        : `${line} ${scrapAreaName} Scrap Pareto`;
+    const defectCaption = (scrapType) => {
+        return take > 0 
+            ? `${scrapType} Top ${take} Scrap Pareto by Defect`
+            : `${scrapType} Scrap Pareto by Defect`;
+    } 
 
     const dataSource = {
         chart: {
-            caption: caption,
-            subCaption: `${start} - ${end} | Scrap Total: ${qty}`,
-            xAxisName: 'Scrap Area',
+            caption: `${line} Scrap Pareto by Scrap Type`,
+            subCaption: `${startDate} - ${endDate}`,
+            xAxisName: 'Scrap Type',
             yAxisName: 'Qty',
             ...chartProps,
             ...tooltipStyle
         },
-        data: details.map(({scrapDesc, qty, colorCode}) => ({
-                label: scrapDesc,
+        data: data.map(({scrapAreaName, colorCode, qty }) => ({
+                label: scrapAreaName,
                 value: qty,
-                color: colorCode
-            }))
+                color: colorCode,
+                link: `newchart-xml-${scrapAreaName.replace(/\s/g, '_')}`
+            })),
+
+        linkeddata: data.map(({ scrapAreaName, qty, details }) => ({
+            id: scrapAreaName.replace(/\s/g, '_'),
+            linkedchart: {
+                chart: {
+                    caption: defectCaption(scrapAreaName),
+                    subCaption: `Total Scrap: ${qty}`,
+                    xAxisName: 'Defects',
+                    yAxisName: 'Qty',
+                    ...chartProps,
+                    ...tooltipStyle
+                },
+                
+                data: details.map(({ scrapDesc, colorCode, qty }) => ({
+                    label: scrapDesc,
+                    value: qty,
+                    color: colorCode
+                }))
+            }
+        }))
       };
 
     const chartConfigs = {
