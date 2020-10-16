@@ -1,24 +1,22 @@
 import React from 'react'
+import { useParams } from 'react-router-dom';
 import { 
     Row,
     Col,
  } from "antd";
 
- import HourlyProductionChart from '../../components/swot/production-charts/hourly-production-chart.component'
  import DailyProductionChart from '../../components/swot/production-charts/daily-production-chart.component'
  import ProductionByProgramChart from '../../components/swot/production-charts/production-by-program-chart.component'
  import ProductionByShiftChart from '../../components/swot/production-charts/production-by-shift-chart.component'
  import MonthlyWeeklyOaeChartWrapper from '../../components/swot/production-charts/monthly-weekly-oae-chart-wrapper.component'
 
- const ProductionChartsContainer = ({
+ const DeptProductionChartsContainer = ({
      data,
      filters,
-     targets,
-     line
+     targets
  }) => {
 
     const { 
-        hourlyProduction,
         dailyProduction,
         productionByShift,
         productionByProgram,
@@ -26,19 +24,17 @@ import {
         weeklyOae
     } = data || {}
 
+    const { department } = useParams();
+
     return (
         <Row gutter={[8,8]}>
-
-            <Col span={24}>
-                <HourlyProductionChart prodData={hourlyProduction} line={line} />
-            </Col>
 
             {
                 dailyProduction !== null 
                     ?  (<Col span={6}>
                             <DailyProductionChart 
                                 prodData={dailyProduction} 
-                                line={line} 
+                                line={department} 
                                 filters={filters}
                                 targets={targets} />
                         </Col>)
@@ -48,14 +44,14 @@ import {
             <Col span={6}>
                 <ProductionByShiftChart 
                     prodData={productionByShift} 
-                    line={line} 
+                    line={department} 
                     targets={targets} />
             </Col>
 
             <Col span={6}>
                 <ProductionByProgramChart 
                     prodData={productionByProgram} 
-                    line={line} />
+                    line={department} />
             </Col>
 
             {
@@ -66,7 +62,7 @@ import {
                                 weeklyOae={weeklyOae} 
                                 filters={filters} 
                                 targets={targets} 
-                                line={line} />
+                                line={department} />
                         </Col>)
                     : null
             }
@@ -75,4 +71,4 @@ import {
     )
  }
 
- export default ProductionChartsContainer;
+ export default DeptProductionChartsContainer;

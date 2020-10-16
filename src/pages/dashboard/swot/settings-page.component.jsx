@@ -77,6 +77,7 @@ const SwotSettingsPage = ({
     const [form] = Form.useForm();
     const [lines, setLines] = useState([]);
     const [linesLoading, setLinesLoading] = useState(false);
+    const [dates, setDates] = useState([])
 
     const getLines = async dept => {
         try {
@@ -113,6 +114,7 @@ const SwotSettingsPage = ({
         }
 
         form.setFieldsValue(initialValues);
+        setDates(initialValues.dateRange)
 
         if (dept) {
             getLines(dept)
@@ -127,10 +129,15 @@ const SwotSettingsPage = ({
     }
 
     const onFinish = values => {
-        const { dept } = values;
-        const fnSuccss = () => history.push(`/dashboard/swot/${dept}`);
+
+        const { dept, dateRange, lines } = values;
+        const [start, end] = dateRange;
+
+        const linesStr = lines?.join(',')
+        const fnSuccss = () => history.push(`/dashboard/swot/${dept}?start=${moment(start).format(dateFormat)}&end=${moment(end).format(dateFormat)}&lines=${linesStr ?? ''}`);
         fetchSwotStartAsync(values, fnSuccss);
     }
+
 
     return (
         <>

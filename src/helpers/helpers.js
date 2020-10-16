@@ -48,13 +48,13 @@ export const updateUrlQryParameter = (params, title = document.title) => {
     const queryString = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
     const url = new URL(window.location.href);
     const newUrl = `${url.origin + url.pathname}?${queryString}`;
-    window.history.pushState('updateUrl', title, newUrl);
+    window.history.replaceState('updateUrl', title, newUrl);
     document.title = title;
 }
 
 export const mapDeptToArea = dept => {
 
-    switch (dept) {
+    switch (dept.toLowerCase()) {
         case 'foundry':
             return 'foundry cell'
         case 'machining':

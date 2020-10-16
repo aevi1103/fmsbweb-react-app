@@ -68,7 +68,7 @@ import {
 
         {
             isRenderButton 
-            ? (<Tooltip placement="top" title={<span>Click to reload dashboard</span>}>
+            ? (<Tooltip placement="top">
                     <Button type="primary" onClick={onButtonClick} loading={isLoading}>Go</Button>
                 </Tooltip>)
             : null

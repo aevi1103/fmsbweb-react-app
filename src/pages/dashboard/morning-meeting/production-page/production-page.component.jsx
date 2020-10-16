@@ -40,7 +40,8 @@ import {
     Button,
     Tooltip,
     Spin,
-    message
+    message,
+    PageHeader
  } from "antd";
 
 const { Header, Content } = Layout;
@@ -190,9 +191,11 @@ const ProductionPage = ({
 
     return (
     <React.Fragment>
-        <Header className="pa0 custom-header" >
-            <h2 className="ml3">{headerTitle}: {startFormat} - {endFormat}</h2>
-        </Header>
+
+        <PageHeader
+            className="site-page-header"
+            title={`${headerTitle}: ${startFormat} - ${endFormat}`}
+        />
 
         <Content className="ma3 mt0">
 
@@ -202,29 +205,24 @@ const ProductionPage = ({
                 onCalendarChange={onCalendarChange}
                 isLoading={isProdStatusFetching}  />
             
-            <Tooltip placement="top" title={<span>Click to view Productivity Details by Work Center</span>}>
-                <Button type="primary" onClick={onDetailsButtonClick} className="ml2" loading={isProdStatusFetching}>
-                    <Link className="white" to={`${location.pathname}/details?start=${startFormat}&end=${endFormat}&shift=`}>Work Center Details</Link>
-                </Button>
-            </Tooltip>
-            
-            <Tooltip placement="top" title={<span>View active orders by Work Center</span>}>
-                <Button type="primary" className="ml2">
-                    <Link to={`/orderstatus/${route}`} target="_blank">View Active Orders</Link>
+            <Tooltip placement="top" title="Data Export">
+                <Button type="primary" onClick={onDownload} loading={downloadLoading || isProdStatusFetching} className="ml2">
+                    <DownloadOutlined />
                 </Button>
             </Tooltip>
 
-            <Tooltip placement="top" title={<span>View 24 hour Production</span>}>
-                <Button type="primary" className="ml2">
-                    <Link to={`${location.pathname}/hourly-production`}>Hourly Production</Link>
-                </Button>
-            </Tooltip>
-
-            <Button type="primary" onClick={onDownload} loading={downloadLoading || isProdStatusFetching} className="ml2">
-                <DownloadOutlined />
-                Data Export
+            <Button type="primary" onClick={onDetailsButtonClick} className="ml2" loading={isProdStatusFetching}>
+                <Link className="white" to={`${location.pathname}/details?start=${startFormat}&end=${endFormat}&shift=`}>Work Center Details</Link>
             </Button>
-            
+
+            <Button type="primary" className="ml2">
+                <Link to={`/orderstatus/${route}`} target="_blank">Active Orders</Link>
+            </Button>
+
+            <Button type="primary" className="ml2">
+                <Link to={`${location.pathname}/hourly-production`}>Hourly Production</Link>
+            </Button>
+
             <div className="mt3">
                 {
                     !isProdStatusFetching 

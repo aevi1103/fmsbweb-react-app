@@ -19,6 +19,7 @@ const DowntimeParetoByMachineChart = ({
     downtimeData,
     line,
     filters,
+    subCaption = '',
     calculatedDateRange,
     chartWidth,
     chartHeight
@@ -30,13 +31,13 @@ const DowntimeParetoByMachineChart = ({
 
     const lastDaysCaption = calculatedDateRange ? `Last ${lastDays} Days ` : ''
     const caption = take > 0 
-        ? `${line} ${lastDaysCaption}Top ${take} Downtime Pareto by Machine`
-        : `${line} ${lastDaysCaption}Downtime Pareto by Machine`
+        ? `${line} ${lastDaysCaption}Top ${take} Downtime Pareto by Machine (${startDate} - ${endDate})`
+        : `${line} ${lastDaysCaption}Downtime Pareto by Machine (${startDate} - ${endDate})`
 
     const dataSource = {
         chart: {
             caption: caption,
-            subCaption: `${startDate} - ${endDate}`,
+            subCaption: subCaption,
             xAxisName: 'Machine',
             yAxisName: 'Downtime (minutes)',
             rotateValues: '1',

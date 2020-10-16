@@ -11,6 +11,7 @@ import MonthlyWeeklyChartWrapper from '../../../components/swot/scrap-charts/mon
 
 import HourlyProductionChart from '../../../components/swot/production-charts/hourly-production-chart.component'
 import DailyProductionChart from '../../../components/swot/production-charts/daily-production-chart.component'
+import ProductionByShiftChart from '../../../components/swot/production-charts/production-by-shift-chart.component'
 import MonthlyWeeklyOaeChartWrapper from '../../../components/swot/production-charts/monthly-weekly-oae-chart-wrapper.component'
 
 import DowntimeParetoByReasonChart from '../../../components/swot/downtime-charts/downtime-pareto-by-reason-chart.component'
@@ -195,7 +196,17 @@ const PrintSwotChartPage = ({
                       ? <DailyProductionChart 
                           prodData={productionCharts.dailyProduction} 
                           line={line}
-                          filters={filters} />
+                          filters={filters}
+                          targets={swotTarget} />
+                      : null
+                  }
+
+                  {
+                    productionCharts.productionByShift?.data.length > 0 
+                      ? <ProductionByShiftChart 
+                          prodData={productionCharts.productionByShift} 
+                          line={line}
+                          targets={swotTarget} />
                       : null
                   }
 

@@ -1,7 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import numeral from 'numeral'
-import moment from 'moment'
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
@@ -17,10 +16,9 @@ import {
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const DailyProductionChart = ({
+const ProductionByShiftChart = ({
     prodData,
     line,
-    filters,
     targets,
     chartWidth,
     chartHeight
@@ -29,26 +27,23 @@ const DailyProductionChart = ({
     if (!prodData) return;
 
     const { startDate, endDate, data } = prodData;
-    const dateFormat = 'MM/DD/YY';
-    const { lastDays } = filters;
-
     const { oaeTarget } = targets;
 
     const dataSource = {
         chart: {
-            caption: `${line} Last ${lastDays} Days Daily SAP Production`,
+            caption: `${line} SAP Production by Shift`,
             subCaption: `${startDate} - ${endDate}`,
-            xAxisName: 'Shift Date',
+            xAxisName: 'Shift',
             yAxisName: 'OAE %',
             numberSuffix: "%",
             ...chartProps,
             ...tooltipStyle
         },
-        data: data.map(({shiftDate, qty, oae, target}) => ({
-                label: moment(shiftDate).format(dateFormat),
+        data: data.map(({shift, qty, oae, target}) => ({
+                label: `Shift ${shift}`,
                 value: Math.round((oae * 100), 0),
-                // color: oae < oaeTarget ? colorCodes.red : colorCodes.green,
-                toolText: `<b>Shift Date: ${moment(shiftDate).format(dateFormat)}</b><br>
+                color: oae < oaeTarget ? colorCodes.red : colorCodes.green,
+                toolText: `<b>Shift: ${shift}</b><br>
                             <b>Target: ${numeral(target).format('0,0')}</b><br>
                             <b>Net: ${numeral(qty).format('0,0')}</b><br>
                             <b>Net: ${numeral(oae).format('0%')}</b>
@@ -68,7 +63,7 @@ const DailyProductionChart = ({
       };
 
       const chartConfigs = {
-        type: 'line',
+        type: 'column2d',
         width: chartWidth,
         height: chartHeight,
         dataFormat: 'json',
@@ -85,4 +80,4 @@ const mapStateToProps = ({ swot }) => ({
     chartHeight: swot.chartHeight
 })
 
-export default connect(mapStateToProps)(DailyProductionChart);
+export default connect(mapStateToProps)(ProductionByShiftChart);

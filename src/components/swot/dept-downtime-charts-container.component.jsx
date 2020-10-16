@@ -1,5 +1,6 @@
 import React from 'react'
 import numeral from 'numeral'
+import { useParams } from 'react-router-dom';
 import _ from 'lodash'
 
 import { 
@@ -12,12 +13,13 @@ import {
  import DailyDowntimeByReasonChart from './downtime-charts/daily-downtime-by-reason-chart.component'
  import DailyDowntimeByMachineChart from './downtime-charts/daily-downtime-by-machine-chart.component'
 
- const DowntimeChartsContainer = ({
+ const DeptDowntimeChartsContainer = ({
      data,
      filters,
-     line,
      lineKpi
  }) => {
+
+    const { department } = useParams();
 
     const { 
         lastDowntimeByReason,
@@ -43,7 +45,7 @@ import {
                 <Col span={8}>
                     <DowntimeParetoByReasonChart 
                         downtimeData={downtimeByReason} 
-                        line={line} 
+                        line={department} 
                         filters={filters}
                         subCaption={subCaption}
                         calculatedDateRange={false}/> 
@@ -54,7 +56,7 @@ import {
                         ? (<Col span={8}>
                                 <DowntimeParetoByReasonChart 
                                     downtimeData={lastDowntimeByReason} 
-                                    line={line} 
+                                    line={department} 
                                     filters={filters}
                                     calculatedDateRange={true} /> 
                             </Col>)
@@ -66,7 +68,7 @@ import {
                         ? (<Col span={8}>
                                 <DailyDowntimeByReasonChart 
                                     downtimeData={dailyDowntimeByReason} 
-                                    line={line}
+                                    line={department}
                                     filters={filters}
                                     calculatedDateRange={true} />
                             </Col>)
@@ -80,7 +82,7 @@ import {
                 <Col span={8}>
                     <DowntimeParetoByMachineChart
                             downtimeData={downtimeByMachine} 
-                            line={line} 
+                            line={department} 
                             filters={filters}
                             subCaption={subCaption}
                             calculatedDateRange={false} />
@@ -91,7 +93,7 @@ import {
                         ? (<Col span={8}>
                                 <DowntimeParetoByMachineChart
                                     downtimeData={lastDowntimeByMachine} 
-                                    line={line} 
+                                    line={department} 
                                     filters={filters}
                                     calculatedDateRange={true} />
                             </Col>)
@@ -103,7 +105,7 @@ import {
                         ? (<Col span={8}>
                                 <DailyDowntimeByMachineChart
                                     downtimeData={dailyDowntimeByMachine} 
-                                    line={line}
+                                    line={department}
                                     filters={filters}
                                     calculatedDateRange={true} /> 
                             </Col>)
@@ -118,4 +120,4 @@ import {
     )
  }
 
- export default DowntimeChartsContainer;
+ export default DeptDowntimeChartsContainer;

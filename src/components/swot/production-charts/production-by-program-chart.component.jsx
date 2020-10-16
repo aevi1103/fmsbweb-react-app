@@ -8,45 +8,41 @@ import ReactFC from 'react-fusioncharts';
 import { tooltipStyle } from '../../../helpers/chart-config'
 
 import {
-    chartProps
+    chartProps,
+    colorCodes
 } from '../helper'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const ScrapByDefectChart = ({
-    scrapData,
+const ProductionByProgramChart = ({
+    prodData,
     line,
-    filters,
     chartWidth,
     chartHeight
 }) => {
 
-    if (!scrapData) return;
-    const { startDate, endDate, data } = scrapData;
-    const { take } = filters;
+    if (!prodData) return;
 
-    const caption = take > 0 
-        ? `${line} Top ${take} Scrap Pareto by Defect`
-        : `${line} Scrap Pareto by Defect`;
+    const { startDate, endDate, data } = prodData;
 
     const dataSource = {
         chart: {
-            caption: caption,
+            caption: `${line} SAP Production by Shift`,
             subCaption: `${startDate} - ${endDate}`,
-            xAxisName: 'Defects',
+            xAxisName: 'Program',
             yAxisName: 'Qty',
             ...chartProps,
             ...tooltipStyle
         },
-        data: data.map(({scrapDesc, qty, colorCode}) => ({
-                label: scrapDesc,
+        data: data.map(({program, qty}) => ({
+                label: program,
                 value: qty,
-                color: colorCode
+                color: colorCodes.green
             }))
       };
 
-    const chartConfigs = {
+      const chartConfigs = {
         type: 'column2d',
         width: chartWidth,
         height: chartHeight,
@@ -64,4 +60,4 @@ const mapStateToProps = ({ swot }) => ({
     chartHeight: swot.chartHeight
 })
 
-export default connect(mapStateToProps)(ScrapByDefectChart);
+export default connect(mapStateToProps)(ProductionByProgramChart);
