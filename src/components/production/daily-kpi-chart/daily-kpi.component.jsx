@@ -65,7 +65,7 @@ const DailyKpiChart = ({dailyKpiCollection, isDailyKpiFetching}) => {
         const dataSource = {
             chart: {
                 xAxisName: '%',
-                yAxisName: 'OAE and Downtime %',
+                yAxisName: 'OAE, Downtime and Scrap %',
                 showValues: '0',
                 theme: 'fusion',
                 paletteColors: `${green}, ${yellow}, ${red}`,

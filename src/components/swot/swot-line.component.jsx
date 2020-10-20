@@ -27,7 +27,8 @@ import {
  }) => {
 
     const [activeKey, setActiveKey] = useState(tabList[0].key)
-    const { oae, net, swotTarget: { oaeTarget } } = data;
+    const { oae, net, swotTarget } = data || {};
+    const { oaeTarget } = swotTarget || {};
     const { startDate, endDate } = filters;
 
     const style = {

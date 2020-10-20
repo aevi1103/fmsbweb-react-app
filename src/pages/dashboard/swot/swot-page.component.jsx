@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import moment from 'moment'
 import numeral from 'numeral'
+import _ from 'lodash'
 import { connect } from 'react-redux'
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory, Link } from 'react-router-dom';
 
 import { PrinterOutlined } from '@ant-design/icons';
 import {
@@ -30,7 +31,9 @@ import {
     Button,
     Card,
     Tooltip,
-    Typography
+    Typography,
+    Dropdown,
+    Menu
  } from "antd";
 
  const { Text } = Typography;
@@ -73,7 +76,7 @@ const tabList =[
       }, [swotResult, history])
 
     useEffect(() => {
-        document.title = `SWOT: ${department}`
+        document.title = `SWOT: ${_.capitalize(department)}`
     },[])
 
     useEffect(() => {
@@ -86,11 +89,6 @@ const tabList =[
     const endDate = moment(swotResult?.filters?.endDate).format(dateFormat);
     const dateRateHeader = `${startDate} - ${endDate}`
 
-    const onPrint = () => history.push(`/dashboard/swot/${department}/print`);
-    const onDepatment = () => history.push(`/dashboard/morningmeeting/${department}?start=${startDate}&end=${endDate}`);
-    const onWorkCenter = () => history.push(`/dashboard/morningmeeting/${department}/details?start=${startDate}&end=${endDate}`);
-    const onActiveOrders = () => history.push(`/orderstatus/${department}`);
-
     const dateFormatTooltip = 'MM/DD/YY'
     const { oae, net, targets } = swotResult?.departmentData || {};
     const { oaeTarget } = targets || {}
@@ -98,22 +96,43 @@ const tabList =[
         color: oae < oaeTarget ? colorCodes.red : colorCodes.green
     }
     const depHeader = (<Tooltip title={`Date Range: ${moment(startDate).format(dateFormatTooltip)} - ${moment(endDate).format(dateFormatTooltip)}`}>
-                            <Text style={style}>{department}: SAP OAE: <span className="mr1">{numeral(oae).format('0%')} ~ {numeral(net).format('0,0')}</span> 
+                            <Text style={style}>{_.capitalize(department)}: SAP OAE: <span className="mr1">{numeral(oae).format('0%')} ~ {numeral(net).format('0,0')}</span> 
                             {oae < oaeTarget ? <ArrowDownOutlined /> : <ArrowUpOutlined />}</Text>
                         </Tooltip>) 
     
+    const btnOverlay = (
+        <Menu>  
+            <Menu.Item key={`/dashboard/morningmeeting/${department}`}>
+                <Link to={`/dashboard/morningmeeting/${department}?start=${startDate}&end=${endDate}`} >Department Details</Link>
+            </Menu.Item>
+            <Menu.Item key={`/dashboard/morningmeeting/${department}/details`}>
+                <Link to={`/dashboard/morningmeeting/${department}/details?start=${startDate}&end=${endDate}`} >Work Center Details</Link>
+            </Menu.Item>
+            <Menu.Item key={`/dashboard/morningmeeting/${department}/hourly-production`} >
+                <Link to={`/dashboard/morningmeeting/${department}/hourly-production?date=${endDate}`} >Hourly Production</Link>
+            </Menu.Item>
+            <Menu.Item key={`/orderstatus/${department}`}>
+                <Link to={`/orderstatus/${department}`}>Active Orders</Link>
+            </Menu.Item>
+            <Menu.Item key="targets">
+                <a href="http://10.129.224.149/FMSB/SWOT/Targets.aspx" target="_blank" rel="noreferrer">Adjust Targets</a>
+            </Menu.Item>
+        </Menu>
+    )
+
+    const extraMenu = (
+        <Dropdown.Button type="primary" overlay={btnOverlay}>
+            <Link to={`/dashboard/swot/${department}/print`} >Print</Link>
+        </Dropdown.Button>
+    )
+
     return (
         <>
             <PageHeader
                 className="site-page-header"
-                title={`${department} SWOT Charts (${dateRateHeader})`}
-                onBack={() => history.goBack() }
-                extra={[
-                    <Button key="dept" className="ml0 mr0" type="link" onClick={onDepatment}>Department Details</Button>,
-                    <Button key="workCntr" className="ml0 mr0"  type="link" onClick={onWorkCenter}>Work Center Details</Button>,
-                    <Button key="orders" className="ml0 mr0"  type="link" onClick={onActiveOrders}>Active Orders</Button>,
-                    <Button key="print" type="primary" onClick={onPrint}><PrinterOutlined /> Print</Button>
-                ]}
+                title={`${_.capitalize(department)} SWOT Charts (${dateRateHeader})`}
+                onBack={() => history.push('/dashboard/swot/settings') }
+                extra={extraMenu}
             />
 
             <Content className="ma3 mt0">

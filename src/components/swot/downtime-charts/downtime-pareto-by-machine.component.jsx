@@ -40,7 +40,6 @@ const DowntimeParetoByMachineChart = ({
             subCaption: subCaption,
             xAxisName: 'Machine',
             yAxisName: 'Downtime (minutes)',
-            rotateValues: '1',
             ...chartProps,
             ...tooltipStyle
         },
@@ -57,7 +56,6 @@ const DowntimeParetoByMachineChart = ({
                     subCaption: `Total Downtime: ${numeral(downtime).format('0,0')}`,
                     xAxisName: 'Reason',
                     yAxisName: 'Downtime (minutes)',
-                    rotateValues: '1',
                     ...chartProps,
                     ...tooltipStyle
                 },

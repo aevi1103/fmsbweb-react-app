@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux'
 import moment from 'moment'
-import {useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import api from '../../../API'
+import {
+    useQuery
+} from '../../../helpers/custom-hook'
 
 import {
     fetchSwotStartAsync,
@@ -62,8 +65,19 @@ const tailLayout = {
 
 const dateFormat = 'MM/DD/YYYY';
 const depts = ['Foundry', 'Machining', 'Anodize', 'Skirt Coat', 'Assembly'];
-
 const disabledDate = current => current && current > moment().endOf('day');
+const previousDay = moment().add(-1, 'day');
+
+const initialValues = {
+    showMonthlyCharts: true,
+    lastMonths: 3,
+    lastWeeks: 3,
+    lastDays: 7,
+    showLastSevenDays: true,
+    take: 10,
+    dateRange: [previousDay, previousDay],
+    dept: null
+}
 
 const SwotSettingsPage = ({
     isSwotFetching,
@@ -73,11 +87,21 @@ const SwotSettingsPage = ({
     dept
 }) => {
     
+    const query = useQuery();
     const history = useHistory();
+    const { department } = useParams();
+
     const [form] = Form.useForm();
     const [lines, setLines] = useState([]);
     const [linesLoading, setLinesLoading] = useState(false);
-    const [dates, setDates] = useState([])
+    const [monthlyVisible, setMonthlyVisible] = useState(false);
+    const [lastVisible, setLastVisible] = useState(false);
+    const [lastDays, setLastDays] = useState(null);
+    const [disabled, setDisabled] = useState(false);
+
+    const qryStart = query.get('start');
+    const qryEnd = query.get('end');
+    const qryGetData = JSON.parse(query.get('getdata'));
 
     const getLines = async dept => {
         try {
@@ -97,47 +121,59 @@ const SwotSettingsPage = ({
     }
 
     useEffect(() => {
-        document.title = `SWOT Settings`
+        document.title = `SWOT Settings: ${department}`
+    }, [department])
+
+    useEffect(() => {
+
+        if (!qryGetData) {
+            form.setFieldsValue({ ...initialValues, dept });
+            return;
+        }
+
+        if  (qryStart && qryEnd && department && qryGetData) {
+
+            setDisabled(true);
+            form.setFieldsValue({ 
+                ...initialValues,
+                dept: department,
+                dateRange: [moment(qryStart, dateFormat), moment(qryEnd, dateFormat)]
+            });
+
+            form.submit();
+        } 
+
     }, [])
 
     useEffect(() => {
 
-        const initialValues = {
-            showMonthlyCharts: true,
-            lastMonths: 3,
-            lastWeeks: 3,
-            lastDays: 7,
-            showLastSevenDays: true,
-            take: 10,
-            dateRange: [moment().add(-1, 'day'), moment().add(-1, 'day')],
-            dept
+        if (department && !qryGetData) {        
+            setDept(department);  
+            form.setFieldsValue({ ...initialValues, dept: department }); 
+            getLines(department);
         }
 
-        form.setFieldsValue(initialValues);
-        setDates(initialValues.dateRange)
+    }, [department, form, qryGetData, setDept]) 
 
-        if (dept) {
-            getLines(dept)
-        }
-
+    useEffect(() => {
+        setLastDays(initialValues.lastDays);
     }, [])
 
     const onDeptChange = value => {
         form.resetFields(['lines']);
-        setDept(value);
-        getLines(value)
+        setDept(value);  
+        history.replace(`/dashboard/swot/settings/${value}`)
     }
 
     const onFinish = values => {
-
-        const { dept, dateRange, lines } = values;
-        const [start, end] = dateRange;
-
-        const linesStr = lines?.join(',')
-        const fnSuccss = () => history.push(`/dashboard/swot/${dept}?start=${moment(start).format(dateFormat)}&end=${moment(end).format(dateFormat)}&lines=${linesStr ?? ''}`);
+        const { dept} = values;
+        const fnSuccss = () => history.replace(`/dashboard/swot/${dept}`);
         fetchSwotStartAsync(values, fnSuccss);
     }
 
+    const onMonthlyWeeklyChange = e => setMonthlyVisible(!e.target.checked);
+    const onLastChange = e => setLastVisible(!e.target.checked);
+    const onLastInputChange = value => setLastDays(value)
 
     return (
         <>
@@ -165,6 +201,7 @@ const SwotSettingsPage = ({
                             className="w-100" 
                             format={dateFormat} 
                             disabledDate={disabledDate}
+                            disabled={disabled}
                             ranges={{
                                 'Today': [moment(), moment()],
                                 'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -181,7 +218,7 @@ const SwotSettingsPage = ({
                         name="dept"
                         rules={[{ required: true, message: 'Please select your department' }]}
                     >
-                        <Select onChange={onDeptChange}>
+                        <Select onChange={onDeptChange} disabled={disabled}>
                             {
                                 depts.map(dept => (<Option key={dept}>{dept}</Option>))
                             }
@@ -193,7 +230,7 @@ const SwotSettingsPage = ({
                         name="lines"
                         help="If blank, it will get all lines"
                     >
-                        <Select loading={linesLoading} mode="multiple" placeholder="Please select lines">
+                        <Select loading={linesLoading} mode="multiple" placeholder="Please select lines" disabled={disabled}>
                             {
                                 lines.map(({line}) => (<Option key={line}>{line}</Option>))
                             }
@@ -205,14 +242,25 @@ const SwotSettingsPage = ({
                         name="showMonthlyCharts"
                         valuePropName="checked"
                     >
-                        <Checkbox>Show monthly / weekly charts</Checkbox>
+                        <Checkbox onChange={onMonthlyWeeklyChange} disabled={disabled}>Show monthly / weekly charts</Checkbox>
                     </Form.Item>
 
                     <Form.Item
-                        label="Number of previous months"
+                        label="Months"
                         name="lastMonths"
+                        hidden={monthlyVisible}
+                        help="Number of previous months"
                     >
-                        <InputNumber className="w-100" min={1} type="number" />
+                        <InputNumber className="w-100" min={1} type="number" disabled={disabled}/>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Weeks"
+                        name="lastWeeks"
+                        hidden={monthlyVisible}
+                        help="Number of previous weeks"
+                    >
+                        <InputNumber className="w-100" min={1} type="number" disabled={disabled}/>
                     </Form.Item>
 
                     <Form.Item
@@ -220,33 +268,28 @@ const SwotSettingsPage = ({
                         valuePropName="checked"
                         name="showLastSevenDays"
                     >
-                        <Checkbox>Show last x days charts</Checkbox>
+                        <Checkbox onChange={onLastChange} disabled={disabled}>Show last {lastDays} days charts</Checkbox>
                     </Form.Item>
 
                     <Form.Item
-                        label="Number of previous weeks"
-                        name="lastWeeks"
-                    >
-                        <InputNumber className="w-100" min={1} type="number" />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Number of previous days"
+                        label="Days"
                         name="lastDays"
+                        hidden={lastVisible}
+                        help="Number of previous days"
                     >
-                        <InputNumber className="w-100" min={1} type="number" />
+                        <InputNumber className="w-100" min={1} type="number" onChange={onLastInputChange} disabled={disabled}/>
                     </Form.Item>
 
                     <Form.Item
                         label="Top"
                         name="take"
-                        help="Top items to show in scrap or downtime pareto, if blank it will get all items"
+                        help="Top number of defects"
                     >
-                        <InputNumber className="w-100" min={1} type="number" />
+                        <InputNumber className="w-100" min={1} type="number" disabled={disabled}/>
                     </Form.Item>
 
                     <Form.Item {...tailLayout}>
-                        <Button type="primary" htmlType="submit" className="mr2" loading={isSwotFetching}>
+                        <Button type="primary" htmlType="submit" className="mr2" loading={isSwotFetching} disabled={linesLoading}>
                             Submit
                         </Button>
                     </Form.Item>

@@ -1,10 +1,11 @@
 import React from 'react'
+import _ from 'lodash'
 import { Link } from "react-router-dom";
 import { mapDeptToArea } from '../../../helpers/helpers'
 import { Menu } from "antd";
 
 const DepartmentSubMenu = ({dept, icon, ...other}) => {
-    
+
     const area = mapDeptToArea(dept);
     const state = {
         department: area
@@ -41,6 +42,12 @@ const DepartmentSubMenu = ({dept, icon, ...other}) => {
                 <Link to={{
                     pathname: `/dashboard/morningmeeting/${dept}/hourly-production`,
                     state: { department: dept }
+                }}/>
+            </Menu.Item>
+            <Menu.Item key={`/dashboard/swot/settings/${dept}`}>
+                <span>SWOT</span>
+                <Link to={{
+                    pathname: `/dashboard/swot/settings/${dept === 'finishing' ? 'Skirt Coat' : _.capitalize(dept)}`
                 }}/>
             </Menu.Item>
             <Menu.Item key={`/orderstatus/${dept}`}>

@@ -40,7 +40,6 @@ const DowntimeParetoByReasonChart = ({
             subCaption: subCaption,
             xAxisName: 'Reason',
             yAxisName: 'Downtime (minutes)',
-            rotateValues: '1',
             ...chartProps,
             ...tooltipStyle
         },

@@ -10,8 +10,7 @@ import {
 
 import { 
   Layout,
-  BackTop,
-  Progress
+  BackTop
  } from "antd";
 
 import { useWindowSize } from 'react-use'
@@ -138,7 +137,7 @@ const App = ( {
       
       <Layout className="site-layout-bg">
         
-       {
+       {/* {
           totalRequests > 0 
             ?  <Progress 
                 percent={progress} 
@@ -149,7 +148,7 @@ const App = ( {
                 strokeWidth={4}
                 id="progressBar" />
             : null
-        } 
+        }  */}
       
 
         <Switch>
@@ -157,7 +156,7 @@ const App = ( {
           <Route exact path="/" component={HomePage} />
 
           {/* SWOT */}
-          <Route exact path="/dashboard/swot/settings" component={SwotSettingsPage} />
+          <Route exact path="/dashboard/swot/settings/:department?" component={SwotSettingsPage} />
           <Route exact path="/dashboard/swot/:department" component={SwotPage} />
           <Route exact path="/dashboard/swot/:department/print" component={PrintWotChartsPage} />
 
@@ -178,10 +177,7 @@ const App = ( {
           <Route exact path="/dashboard/morningmeeting/*/hourly-production" component={HourlyProdPage} />
 
           {/* Order Status */}
-          <Route exact path="/orderstatus/foundry" render={() => <OrderStatusPage area="foundry cell" headerTitle="Foundry Active Orders" />} />
-          <Route exact path="/orderstatus/machining" render={() => <OrderStatusPage area="machine line" headerTitle="Machining Active Orders" />} />
-          <Route exact path="/orderstatus/finishing" render={() => <OrderStatusPage area="finishing" headerTitle="Finishing Active Orders" />} />
-          <Route exact path="/orderstatus/assembly" render={() => <OrderStatusPage area="assembly" headerTitle="Assembly Active Orders" />} />
+          <Route exact path="/orderstatus/:department" component={OrderStatusPage} />
 
           {/* performance Page */}
           <Route exact path="/dashboard/morningmeeting/level0" component={PerformanceLevel0Page} />

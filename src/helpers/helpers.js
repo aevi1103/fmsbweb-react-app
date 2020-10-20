@@ -45,10 +45,20 @@ export const setColorCode = (value, target, type) => {
 export const getUrlParameter = (qry) => new URLSearchParams(new URL(window.location.href).search).get(qry);
 
 export const updateUrlQryParameter = (params, title = document.title) => {
-    const queryString = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
+
+    //base url
     const url = new URL(window.location.href);
+
+    //generate qry strings
+    const queryString = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
+
+    //new url
     const newUrl = `${url.origin + url.pathname}?${queryString}`;
+
+    //update url state
     window.history.replaceState('updateUrl', title, newUrl);
+
+    //update document title
     document.title = title;
 }
 
@@ -66,6 +76,22 @@ export const mapDeptToArea = dept => {
     }
 
 }
+
+export const mapAreaToDept = area => {
+
+    switch (area.toLowerCase()) {
+        case 'foundry cell':
+            return 'foundry'
+        case 'machine line':
+            return 'machining'
+        case 'finishing':
+            return 'skirt coat'
+        default:
+            return area;
+    }
+
+}
+
 
 export const oDataQryString = (odataQry) => {
     if (!!!odataQry) return '';

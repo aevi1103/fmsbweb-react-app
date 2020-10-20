@@ -18,6 +18,7 @@ const ScrapByDefectChart = ({
     scrapData,
     line,
     filters,
+    subCaption = '',
     chartWidth,
     chartHeight
 }) => {
@@ -26,14 +27,15 @@ const ScrapByDefectChart = ({
     const { startDate, endDate, data } = scrapData;
     const { take } = filters;
 
+    const dateRange = `(${startDate} - ${endDate})`;
     const caption = take > 0 
-        ? `${line} Top ${take} Scrap Pareto by Defect`
-        : `${line} Scrap Pareto by Defect`;
+        ? `${line} Top ${take} Scrap Pareto by Defect ${dateRange}`
+        : `${line} Scrap Pareto by Defect ${dateRange}`;
 
     const dataSource = {
         chart: {
             caption: caption,
-            subCaption: `${startDate} - ${endDate}`,
+            subCaption: subCaption,
             xAxisName: 'Defects',
             yAxisName: 'Qty',
             ...chartProps,

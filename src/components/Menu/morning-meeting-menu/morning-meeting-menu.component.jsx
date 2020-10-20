@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux'
 import { Link, withRouter } from "react-router-dom";
 
 import {
@@ -22,10 +23,21 @@ import { Menu } from "antd";
 
 const MorningMeetingMenu = ( { location } ) => { 
 
-    const menuProps = {
+    const { dept } = useSelector(state => state.swot);
+    const [menuProps, setMenuProps] = useState({
         theme:"dark",
         defaultSelectedKeys:[location.pathname]
-    }
+    })
+
+    useEffect(() => {
+
+        setMenuProps({
+            theme:"dark",
+            defaultSelectedKeys:[location.pathname],
+            selectedKeys: [location.pathname?.toLowerCase()]
+        })
+
+    }, [location])
 
   return (
       <Menu {...menuProps}>
@@ -71,10 +83,10 @@ const MorningMeetingMenu = ( { location } ) => {
         <DepartmentSubMenu dept="finishing" icon={<DotChartOutlined/>} /> 
         <DepartmentSubMenu dept="assembly" icon={<PieChartOutlined/>} /> 
 
-        <Menu.Item key="/dashboard/swot/settings">
+        <Menu.Item key={`/dashboard/swot/settings/${dept}`}>
             <BarChartOutlined />
             <span>SWOT</span>
-            <Link to="/dashboard/swot/settings" />
+            <Link to={`/dashboard/swot/settings/${dept}`} />
         </Menu.Item>
 
         <Menu.Item key="/dashboard/morningmeeting/finance">

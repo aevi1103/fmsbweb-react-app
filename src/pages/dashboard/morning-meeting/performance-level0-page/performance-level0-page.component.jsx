@@ -6,9 +6,16 @@ import { Link } from "react-router-dom";
 import api from '../../../../API'
 import fileDownload from 'js-file-download'
 
-import { 
-    DownloadOutlined,
- } from '@ant-design/icons';
+//level 0 charts
+import ScrapVarianceChart from '../../../../components/performance/level-0/scrap-variance-chart.component';
+import ScrapVarianceChartPerProgram from '../../../../components/performance/level-1/scrap-variance-per-program-chart.component';
+import PpmhVariancePerDeptChart from '../../../../components/performance/level-1/ppmh-variance-per-dept-chart.component';
+import DeptKpiChart from '../../../../components/performance/level-0/dept-kpi-chart.component';
+import DowntimeChart from '../../../../components/downtime/downtime-chart/downtime-chart.component';
+import PlantPpmhChart from '../../../../components/performance/level-0/plant-ppmh-chart.component';
+import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component';
+import SelectScrapType from '../../../../components/select-scrap-type/seclect-scrap-type.components';
+import DeptSelect from '../../../../components/performance/dept-select.component';
 
 import { 
     fetchScrapVarianceStartAsync,
@@ -17,25 +24,15 @@ import {
     fetchDeptKpiStartAsync,
     fetchDowntimeStartAsync,
     fetchPlantPpmhStartAsync,
-
     setPerformaceSelectedDepartment,
-
     setStartDate,
     setEndDate
 } from '../../../../redux/morning-meeting/morning-meeting.actions';
 
-//level 0 charts
-import ScrapVarianceChart from '../../../../components/performance/level-0/scrap-variance-chart.component';
-import ScrapVarianceChartPerProgram from '../../../../components/performance/level-1/scrap-variance-per-program-chart.component';
-import PpmhVariancePerDeptChart from '../../../../components/performance/level-1/ppmh-variance-per-dept-chart.component';
-import DeptKpiChart from '../../../../components/performance/level-0/dept-kpi-chart.component';
-import DowntimeChart from '../../../../components/downtime/downtime-chart/downtime-chart.component';
-import PlantPpmhChart from '../../../../components/performance/level-0/plant-ppmh-chart.component';
-
-import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component';
-import SelectScrapType from '../../../../components/select-scrap-type/seclect-scrap-type.components';
-
-import DeptSelect from '../../../../components/performance/dept-select.component';
+import { 
+    DownloadOutlined,
+    LoadingOutlined
+} from '@ant-design/icons';
 
 import '../morning-meeting.styles.scss';
 
@@ -44,20 +41,43 @@ import {
     Row,
     Col,
     Card,
-    Button,
     Tooltip,
     DatePicker,
     message,
-    Alert
+    Alert,
+    Dropdown,
+    Spin,
+    Menu,
+    PageHeader
  } from "antd";
 
- const { Header, Content } = Layout;
- const { RangePicker } = DatePicker;
- const dateFormat = 'MM/DD/YYYY';
+const { Content } = Layout;
+const { RangePicker } = DatePicker;
+const dateFormat = 'MM/DD/YYYY';
 
- const cardHeightStyle = {
+const cardHeightStyle = {
     height: "500px"
 }
+
+const responsiveProps = {
+    xs: 24,
+    xl: 8
+}
+
+const setTitleFn = (dept) => {
+    switch (dept) {
+        case 'Skirt Coat' :
+            return 'Finishing';
+        case 'Foundry Cell' :
+            return 'Foundry';
+        case 'Machine Line':
+            return 'Machining';
+        default:
+            return dept;
+    }
+}
+
+const disabledDate = (current) => current && current > moment().endOf('day');
 
 const PerformanceLevel0Page = ({
     fetchScrapVarianceStartAsync,
@@ -107,21 +127,6 @@ const PerformanceLevel0Page = ({
         fetchDowntimeStartAsync(start, end);
     }
 
-    const setTitleFn = (dept) => {
-        switch (dept) {
-            case 'Skirt Coat' :
-                return 'Finishing';
-            case 'Foundry Cell' :
-                return 'Foundry';
-            case 'Machine Line':
-                return 'Machining';
-            default:
-                return dept;
-        }
-    }
-
-    const disabledDate = (current) => current && current > moment().endOf('day');
-
     //events handlers
     const onClick = () => {
         setScrapAreaNameTitle(setTitleFn(performaceSelectedDepartment));
@@ -144,12 +149,12 @@ const PerformanceLevel0Page = ({
             end = end.endOf('month');
         }
 
-        setMonthStartFormat(start ? start.format(dateFormat) : null);
-        setMonthEndFormat(end ? end.format(dateFormat) : null);  
+        setMonthStartFormat(start?.format(dateFormat) ?? null);
+        setMonthEndFormat(end?.format(dateFormat) ?? null);  
     }
 
-    const onCalendarChange = (date, dateString) => {
-        const [start, end] = date;
+    const onCalendarChange = (dates) => {
+        const [start, end] = dates;
         setStartDate(start ? start.format(dateFormat) : null);
         setEndDate(end ? end.format(dateFormat) : null);  
     }
@@ -170,11 +175,6 @@ const PerformanceLevel0Page = ({
         fetch();
         setScrapAreaNameTitle(setTitleFn(performaceSelectedDepartment));
     }, [])
-
-    const responsiveProps = {
-        xs: 24,
-        xl: 8
-    }
 
     const onDownload = async () => {
 
@@ -209,11 +209,24 @@ const PerformanceLevel0Page = ({
         }
     }
 
+    const btnOverlay = (
+        <Menu>
+            <Menu.Item key="export" icon={<DownloadOutlined />} onClick={onDownload} >
+                Export
+            </Menu.Item>   
+            <Menu.Item key="targets">
+                <a href="http://10.129.224.149/FMSB/SWOT/Targets.aspx" target="_blank" rel="noreferrer">Adjust Targets</a>
+            </Menu.Item>
+        </Menu>
+    )
+    const loadingIcon = <LoadingOutlined style={{ fontSize: 15 }} spin />;
+
     return (
         <>
-            <Header className="pa0 custom-header" >
-                <h2 className="ml3">{scrapAreaNameTitle} Scrap Performace L0 - L1</h2>
-            </Header>
+            <PageHeader
+                className="site-page-header"
+                title={`${scrapAreaNameTitle} Scrap Performace L0 - L1`}
+            />
     
             <Content className="ma3 mt0">
 
@@ -260,18 +273,11 @@ const PerformanceLevel0Page = ({
                 <span className="mr2">Scrap:</span>
                 <DeptSelect defaultValue={performaceSelectedDepartment} onChange={onSelectChange} />
                                 
-                <Tooltip placement="top" title={<span>Click to reload dashboard</span>}>
-                    <Button type="primary" onClick={onClick}>Go</Button>
-                </Tooltip>
-
-                <Button type="primary" className="ml2">
-                    <a href="http://134.238.150.15/FMSB/SWOT/Targets.aspx" target="_blank">Update KPI Targets</a>
-                </Button>
-
-                <Button type="primary" onClick={onDownload} loading={downloadLoading} className="ml2">
-                    <DownloadOutlined />
-                    Data Export
-                </Button>
+                <Dropdown.Button type="primary" onClick={onClick} overlay={btnOverlay} disabled={downloadLoading}>
+                    {
+                        downloadLoading ? <Spin indicator={loadingIcon} /> : 'Go'
+                    }
+                </Dropdown.Button>
 
                 <div className="mt3">
                     <Row gutter={[12,12]}>  

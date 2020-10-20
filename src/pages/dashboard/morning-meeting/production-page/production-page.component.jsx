@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
+import _ from 'lodash'
 import { connect } from 'react-redux';
-import { Link, withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
 import moment from 'moment';
 import axios from 'axios';
 import styled from 'styled-components';
 import api from '../../../../API'
 import fileDownload from 'js-file-download'
 
-import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component';
-import Production from '../../../../components/production/production.component';
-
 import { 
     DownloadOutlined,
+    LoadingOutlined
  } from '@ant-design/icons';
 
 import { 
@@ -29,25 +28,47 @@ import {
     setTitle,
     setArea,
     setDetailsStartDate,
-    setDetailsEndDate
+    setDetailsEndDate,
 } from '../../../../redux/production-details/production-details.actions';
 
-import { getUrlParameter, updateUrlQryParameter } from '../../../../helpers/helpers'
+import DateRangePicker from '../../../../components/date-range-picker/date-range-picker.component';
+import Production from '../../../../components/production/production.component';
+
+import { 
+    updateUrlQryParameter,
+    mapAreaToDept
+} from '../../../../helpers/helpers'
+
+import {
+    useQuery
+} from '../../../../helpers/custom-hook'
+
 import '../morning-meeting.styles.scss';
 
 import { 
     Layout,
-    Button,
-    Tooltip,
     Spin,
     message,
-    PageHeader
+    PageHeader,
+    Dropdown,
+    Menu
  } from "antd";
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
+
 const dateFormat = 'MM/DD/YYYY';
+const Container = styled.span`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 140px;
+    font-size: 2.5rem;
+`;
 
 const ProductionPage = ({
+        area,
+        headerTitle,
+
         setProductionData,
         fetchDailyScrapRateStartAsync,
         fetchDailyKpiStartAsync,
@@ -55,9 +76,7 @@ const ProductionPage = ({
         fetchPpmhPerShiftStartAsync,
         fetchProdScrapStartAsync,
         isProdStatusFetching,
-        area,
-        headerTitle,
-        location,
+
         setTitle,
         setArea,
         setStartDate,
@@ -69,15 +88,33 @@ const ProductionPage = ({
         ppmhChartType
     }) => {
         
-    const dateStartQry = getUrlParameter('start');
-    const dateEndQry = getUrlParameter('end');
+    const query = useQuery();
+    const previousDay = moment().add(-1, 'day').format(dateFormat);
 
-    const defaultStartDate = dateStartQry ? dateStartQry : startDate;
-    const defaultEndDate = dateEndQry ? dateEndQry : endDate;
+    const defaultStartDate = query.get('start') ?? previousDay;
+    const defaultEndDate = query.get('end') ?? previousDay;
 
     const [startFormat, setStartFormat] = useState(defaultStartDate);
     const [endFormat, setSendFormat] = useState(defaultEndDate);
+
     const [downloadLoading, setDownloadLoading] = useState(false);
+    const [downloadError, setDownloadError] = useState(null);
+
+    const [dept, setDept] = useState(area);
+    const [pageHeader, setPageHeader] = useState();
+
+
+    const getPageHeaderTitle = (area, start, end) => `${area}: ${start} - ${end}`;
+
+    useEffect(() => {
+        setDept(mapAreaToDept(area))
+    }, [area]);
+
+    useEffect(() => {
+        const ttl = getPageHeaderTitle(headerTitle, startFormat, endFormat)
+        setPageHeader(ttl)
+        document.title = `Morning Meeting - ${ttl}`;
+    }, [area]);
 
     //cancel token
     const prodTokenSrc = axios.CancelToken.source();
@@ -85,17 +122,22 @@ const ProductionPage = ({
     const dailyKpiTokenSrc = axios.CancelToken.source();
     const weeklyLaborHrsKpiTokenSrc = axios.CancelToken.source();
     const prodScrapLaborHrsKpiTokenSrc = axios.CancelToken.source();
-    const [downloadError, setDownloadError] = useState(null);
+
+    const updateUrl = (start, end) => {
+        const ttl = getPageHeaderTitle(headerTitle, startFormat, endFormat);
+        const docTitle =  `Morning Meeting - ${ttl}`;
+        setPageHeader(ttl)
+        updateUrlQryParameter({ start, end }, docTitle);
+    }
 
     const fetchData = (start, end) => {
 
         setStartDate(start);
         setEndDate(end);
+
         setDetailsStartDate(start);
         setDetailsEndDate(end);
-
         updateUrl(start, end);
-
         setProductionData(start,end,area, prodTokenSrc);
 
         const chartTrendStart = moment(start, dateFormat).add(-30, 'd').format(dateFormat);    
@@ -114,24 +156,9 @@ const ProductionPage = ({
         fetchProdScrapStartAsync(mtdStart, mtdEnd, area, prodScrapLaborHrsKpiTokenSrc);
     };
 
-    const updateUrl = (start, end) => {
-        const qry = { start, end }
-        const title =  `Morning Meeting - ${headerTitle} : ${startFormat} - ${endFormat}`;
-        updateUrlQryParameter(qry, title);
-    }
-
-    const onClick = () => fetchData(startFormat, endFormat);;
-
-    const onCalendarChange = (dates) => {
-        const [start, end] = dates;
-        setStartFormat(start ? start.format(dateFormat) : null);
-        setSendFormat(end ? end.format(dateFormat) : null);
-    };
-
     useEffect(() => {
-        document.title = `Morning Meeting - ${headerTitle}`;
-
-        fetchData(defaultStartDate, defaultEndDate);
+        
+        fetchData(startFormat, endFormat);
 
         return function cleanup() {
             prodTokenSrc.cancel('Operation cancelled');
@@ -142,6 +169,14 @@ const ProductionPage = ({
         };
 
     }, [area]);
+
+    const onClick = () => fetchData(startFormat, endFormat);
+
+    const onCalendarChange = (dates) => {
+        const [start, end] = dates;
+        setStartFormat( start?.format(dateFormat));
+        setSendFormat(end?.format(dateFormat));
+    };
 
     const onDetailsButtonClick = () => {
 
@@ -178,63 +213,65 @@ const ProductionPage = ({
             }
         }
     }
+    
+    const btnOverlay = (
+        <Menu>
+            <Menu.Item key="export" icon={<DownloadOutlined />} onClick={onDownload} >
+                Export
+            </Menu.Item>
+            <Menu.Item key={`/dashboard/morningmeeting/${dept}/details`} onClick={onDetailsButtonClick}>
+                <Link to={`/dashboard/morningmeeting/${dept}/details?start=${startFormat}&end=${endFormat}&shift=`}>Work Center Details</Link>
+            </Menu.Item>
+            <Menu.Item key={`/dashboard/swot/settings/${_.capitalize(dept)}`}>
+                <Link to={`/dashboard/swot/settings/${_.capitalize(dept)}?start=${startFormat}&end=${endFormat}&getdata=true`} >SWOT</Link>
+            </Menu.Item>
+            <Menu.Item key={`/dashboard/morningmeeting/${dept}/hourly-production`} >
+                <Link to={`/dashboard/morningmeeting/${dept}/hourly-production?date=${endFormat}`} >Hourly Production</Link>
+            </Menu.Item>
+            <Menu.Item key={`/orderstatus/${dept}`} >
+                <Link to={`/orderstatus/${dept}`}>Active Orders</Link>
+            </Menu.Item>     
+            <Menu.Item key="targets">
+                <a href="http://10.129.224.149/FMSB/SWOT/Targets.aspx" target="_blank" rel="noreferrer">Adjust Targets</a>
+            </Menu.Item>
+        </Menu>
+    )
 
-    const route = location.pathname.substr(location.pathname.lastIndexOf('/')+1);
-
-    const Container = styled.span`
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 140px;
-        font-size: 2.5rem;
-    `;
+    const loadingIcon = <LoadingOutlined style={{ fontSize: 15 }} spin />;
 
     return (
-    <React.Fragment>
+        <React.Fragment>
 
-        <PageHeader
-            className="site-page-header"
-            title={`${headerTitle}: ${startFormat} - ${endFormat}`}
-        />
+            <PageHeader
+                className="site-page-header"
+                title={pageHeader}
+            />
 
-        <Content className="ma3 mt0">
+            <Content className="ma3 mt0">
 
-            <DateRangePicker 
-                dateRangeValue={{startDate: startFormat, endDate: endFormat}}
-                onButtonClick={onClick}
-                onCalendarChange={onCalendarChange}
-                isLoading={isProdStatusFetching}  />
-            
-            <Tooltip placement="top" title="Data Export">
-                <Button type="primary" onClick={onDownload} loading={downloadLoading || isProdStatusFetching} className="ml2">
-                    <DownloadOutlined />
-                </Button>
-            </Tooltip>
-
-            <Button type="primary" onClick={onDetailsButtonClick} className="ml2" loading={isProdStatusFetching}>
-                <Link className="white" to={`${location.pathname}/details?start=${startFormat}&end=${endFormat}&shift=`}>Work Center Details</Link>
-            </Button>
-
-            <Button type="primary" className="ml2">
-                <Link to={`/orderstatus/${route}`} target="_blank">Active Orders</Link>
-            </Button>
-
-            <Button type="primary" className="ml2">
-                <Link to={`${location.pathname}/hourly-production`}>Hourly Production</Link>
-            </Button>
-
-            <div className="mt3">
-                {
-                    !isProdStatusFetching 
-                        ? <Production area={area}/> 
-                        : <Container><Spin tip="Loading..."/></Container>
-                }
+                <DateRangePicker 
+                    dateRangeValue={{startDate: startFormat, endDate: endFormat}}
+                    onCalendarChange={onCalendarChange}
+                    isRenderButton={false}  />
                 
-            </div>
+                <Dropdown.Button type="primary" onClick={onClick} overlay={btnOverlay} disabled={downloadLoading || isProdStatusFetching}>
+                    {
+                        downloadLoading || isProdStatusFetching ? <Spin indicator={loadingIcon} /> : 'Go'
+                    }
+                </Dropdown.Button>
 
-        </Content>
-    </React.Fragment>
-)}
+                <div className="mt3">
+                    {
+                        !isProdStatusFetching 
+                            ? <Production area={area}/> 
+                            : <Container><Spin tip="Loading..."/></Container>
+                    }
+                    
+                </div>
+
+            </Content>
+        </React.Fragment>)
+}
 
 const mapStateToProps = ({morningMeeting}) => ({
     startDate: morningMeeting.startDate,
@@ -261,4 +298,4 @@ const mapDispatchToProps = dispatch => ({
 })
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ProductionPage));
+export default connect(mapStateToProps, mapDispatchToProps)(ProductionPage);

@@ -29,7 +29,8 @@ export const  getContentList = (data, filters) => {
         scrap: <ScrapChartsContainer 
                     data={scrapCharts} 
                     filters={filters} 
-                    line={line} />,
+                    line={line}
+                    lineKpi={lineKpi} />,
         prod: <ProductionChartsContainer 
                 data={productionCharts} 
                 filters={filters} 

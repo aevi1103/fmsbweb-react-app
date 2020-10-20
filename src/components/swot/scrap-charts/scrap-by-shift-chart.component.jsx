@@ -43,7 +43,7 @@ const ScrapByShiftChart = ({
             ...tooltipStyle
         },
         data: data.map(({shift, qty }) => ({
-                label: shift,
+                label: `Shift ${shift}`,
                 value: qty,
                 link: `newchart-xml-${shift}`
             })),

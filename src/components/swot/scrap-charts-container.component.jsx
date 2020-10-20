@@ -1,4 +1,5 @@
 import React from 'react'
+import numeral from 'numeral'
 import { useParams } from 'react-router-dom';
 
 import { 
@@ -17,7 +18,8 @@ import {
  const ScrapChartsContainer = ({
      data,
      filters,
-     line
+     line,
+     lineKpi
  }) => {
 
     const { department } = useParams();
@@ -31,6 +33,14 @@ import {
         monthlyScrapRates
     } = data || {}
 
+    const {
+        oae,
+        scrapRateByArea
+    } = lineKpi;
+
+    const scrapRatesStr = scrapRateByArea.map(({ scrapAreaName, scrapRate }) => (`${scrapAreaName}: ${numeral(scrapRate).format('0.00%')}`)).join(' | ');
+    const subCaption = `OAE: ${numeral(oae).format('0%')} | ${scrapRatesStr}`
+
     return (
         <Row gutter={[8,8]}>
 
@@ -38,7 +48,8 @@ import {
                 <ScrapByDefectChart 
                     scrapData={scrapPareto} 
                     line={line} 
-                    filters={filters} /> 
+                    filters={filters}
+                    subCaption={subCaption} /> 
             </Col>
 
             <Col span={6}>

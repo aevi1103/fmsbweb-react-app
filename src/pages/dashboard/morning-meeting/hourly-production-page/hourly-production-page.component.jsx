@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import _ from 'lodash'
 import { connect } from 'react-redux';
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import moment from 'moment';
 
 import {
     Layout,
     DatePicker,
-    Button
+    Button,
+    PageHeader
 } from 'antd'
 
 import {
@@ -17,7 +19,7 @@ import HourlyProductionChart from '../../../../components/hourly-production/hour
 
 import { getUrlParameter, updateUrlQryParameter } from '../../../../helpers/helpers'
 
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const dateFormat = 'MM/DD/YYYY';
 
 const HourlyProductionPage = ({
@@ -26,6 +28,7 @@ const HourlyProductionPage = ({
     hourlyProdCollection
 }) => {
 
+    const history = useHistory();
     const location = useLocation();
     const { state } = location;
     const { department } = state || {}
@@ -33,7 +36,7 @@ const HourlyProductionPage = ({
     const dateQry = getUrlParameter('date');
     const defaultShiftDate = dateQry ? moment(dateQry) : moment();
     const dept = department ? department : location.pathname.split('/')[3];
-    const getTitle = date => `${dept} Hourly Production: ${date.format(dateFormat)}`
+    const getTitle = date => `${_.capitalize(dept)} Hourly Production: ${date.format(dateFormat)}`
 
     const [title, setTitle] = useState(getTitle(defaultShiftDate));
     const [date, setDate] = useState(defaultShiftDate);
@@ -62,9 +65,12 @@ const HourlyProductionPage = ({
 
     return (
         <React.Fragment>
-            <Header className="pa0 custom-header" >
-                <h2 className="ml3 ttc">{title}</h2>
-            </Header>
+
+            <PageHeader
+                className="site-page-header"
+                title={title}
+                onBack={() => history.goBack() }
+            />
     
             <Content className="ma3 mt0">
 

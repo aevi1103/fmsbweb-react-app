@@ -1,34 +1,41 @@
 import React, { useEffect, useState } from 'react';
+import _ from 'lodash'
 import { connect } from 'react-redux'
+import { useParams, useHistory } from 'react-router-dom'
 import axios from 'axios'
 import api from '../../API'
+
+import OrderStatusChart from '../../components/order-status/order-status-chart.component'
+
+import {
+    mapDeptToArea
+ } from '../../helpers/helpers'
 
 import { 
     Layout,
     Row,
     Col,
     Card,
-    Progress,
     PageHeader
 } from "antd";
 
-import OrderStatusChart from '../../components/order-status/order-status-chart.component'
-
-const { Header, Content } = Layout;
-
+const { Content } = Layout;
 
 const OrderStatusPage = ({ 
-        headerTitle,
-        area,
         progress
     }) => {
 
+    const { department } = useParams();
+    const history = useHistory();
     const [loading, setLoading] = useState(false);
-    const [orders, setOrders] = useState([])
+    const [orders, setOrders] = useState([]);
+    const [header, setHeader] = useState('')
 
     useEffect(() => {
-        document.title = headerTitle;
-    }, [headerTitle])
+        const ttl = `${_.capitalize(department)} Active Orders`;
+        document.title = ttl;
+        setHeader(ttl)
+    }, [department])
 
     useEffect(() => {
 
@@ -42,7 +49,7 @@ const OrderStatusPage = ({
                 
                 setLoading(true);
 
-                const response = await api.get(`sap/workcenters?area=${area}`, { cancelToken: token });
+                const response = await api.get(`sap/workcenters?area=${mapDeptToArea(department) === 'skirt coat' ? 'finishing' : mapDeptToArea(department)}`, { cancelToken: token });
                 const workCenters = response.data;
                 const requests = workCenters.map(({ workCenter, line, side }) => api.get(`sap/odata?line=${line}&side=${side}`, { cancelToken: token }));
 
@@ -63,7 +70,6 @@ const OrderStatusPage = ({
                     console.error('Something went wrong')
                 }
 
-
             } catch (error) {
                 console.error('Something went wrong!')
             } finally {
@@ -76,11 +82,15 @@ const OrderStatusPage = ({
 
         return () => source.cancel('Operation cancelled');
 
-    }, [area])
+    }, [department])
+
 
     return (
         <>
-            <PageHeader className="site-page-header" title={headerTitle} />
+            <PageHeader 
+                className="site-page-header" 
+                title={header}
+                onBack={() => history.goBack()} />
 
             <Content className="ma3 mt0">
                 {

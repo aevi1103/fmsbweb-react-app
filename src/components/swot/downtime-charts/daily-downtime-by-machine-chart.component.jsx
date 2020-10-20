@@ -36,7 +36,6 @@ const DailyDowntimeByReasonChart = ({
             subCaption: `${startDate} - ${endDate}`,
             xAxisName: 'Shift Date',
             yAxisName: 'Downtime (minutes)',
-            rotateValues: '1',
             ...chartProps,
             ...tooltipStyle
         },
@@ -74,7 +73,6 @@ const DailyDowntimeByReasonChart = ({
                             subCaption: `Total Downtime: ${numeral(downtime).format('0,0')}`,
                             xAxisName: 'Reason',
                             yAxisName: 'Downtime (minutes)',
-                            rotateValues: '1',
                             ...chartProps,
                             ...tooltipStyle
                         },

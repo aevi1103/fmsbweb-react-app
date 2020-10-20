@@ -11,7 +11,6 @@ import { tooltipStyle } from '../../../helpers/chart-config'
 
 import {
     chartProps,
-    chartConfigProps,
     colorCodes
 } from '../helper'
 
@@ -41,7 +40,7 @@ const HourlyProductionChart = ({
             ...chartProps,
             ...tooltipStyle
         },
-        data: data.map(({net, shiftDate, shift, hour, netRateTarget, oae, oaeTarget, totalScrap, line, hxHUrl}) => ({
+        data: data.map(({net, shiftDate, shift, hour, netRateTarget, oae, oaeTarget, totalScrap, hxHUrl}) => ({
                 label: `${line} - ${moment(shiftDate).format(dateFormat)} - ${shift} - H${hour}`,
                 value: net < 0 ? 0 : net,
                 color: net < netRateTarget ? red : green,
