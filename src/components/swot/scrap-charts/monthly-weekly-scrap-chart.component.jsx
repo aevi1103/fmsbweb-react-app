@@ -16,7 +16,6 @@ import {
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-
 const MonthlyWeeklyScrapChart = ({
     scrapData,
     scrapAreaName,
@@ -43,7 +42,7 @@ const MonthlyWeeklyScrapChart = ({
 
     const dataSource = {
         chart: {
-            caption: `${line} Last ${lastMonths} Months & Last ${lastWeeks} Weeks ${scrapAreaName} Scrap %`,
+            caption: `${line} Last ${lastMonths} Months & Last ${lastWeeks} Weeks ${scrapAreaName} SB Scrap %`,
             subCaption: subCaption,
             xAxisName: 'Month | Week',
             yAxisName: 'Scrap %',

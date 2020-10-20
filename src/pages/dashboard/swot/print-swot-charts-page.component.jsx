@@ -65,7 +65,7 @@ const PrintSwotChartPage = ({
 
     if (lineData?.length === 0 || !lineData) {
 
-      history.push(`/dashboard/swot/settings`);
+      history.push(`/dashboard/swot/settings/${department}`);
 
     }  else {
 
@@ -73,7 +73,7 @@ const PrintSwotChartPage = ({
 
     }
   
-  }, [swotResult, history])
+  }, [swotResult, history, department])
 
   useEffect(() => {
   
@@ -96,10 +96,7 @@ const PrintSwotChartPage = ({
     setChartPrintHeight(value);
   }
   const onPrint = () => window.print();
-  const onBack = () => {
-    history.push(`/dashboard/swot/settings`);
-    // window.go(0);
-  }
+  const onBack = () => history.push(`/dashboard/swot/settings/${department}`);
 
   return (
       <>

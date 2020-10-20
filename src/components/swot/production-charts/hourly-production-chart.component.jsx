@@ -40,13 +40,13 @@ const HourlyProductionChart = ({
             ...chartProps,
             ...tooltipStyle
         },
-        data: data.map(({net, shiftDate, shift, hour, netRateTarget, oae, oaeTarget, totalScrap, hxHUrl}) => ({
-                label: `${line} - ${moment(shiftDate).format(dateFormat)} - ${shift} - H${hour}`,
+        data: data.map(({net, shiftDate, shift, hour, netRateTarget, oae, oaeTarget, totalScrap, hxHUrl, machineName, cellSide}) => ({
+                label: `${machineName}${cellSide !== 'n/a' ? cellSide : ''} - ${moment(shiftDate).format(dateFormat)} - ${shift} - H${hour}`,
                 value: net < 0 ? 0 : net,
                 color: net < netRateTarget ? red : green,
                 link: `n-${hxHUrl}`,
                 toolText: `
-                            <b>Line:</b> ${line}<br>
+                            <b>Line:</b> ${machineName}${cellSide !== 'n/a' ? cellSide : ''}<br>
                             <b>Shift Date:</b> ${moment(shiftDate).format(dateFormat)}<br>
                             <b>Shift:</b> ${shift}<br>
                             <b>Hour:</b> ${hour}<br>
@@ -61,13 +61,15 @@ const HourlyProductionChart = ({
             })),
         trendlines: [
             {
-                line: [{
-                    startvalue: `${prodData.netRateTarget}`,
-                    color: green,
-                    valueOnRight: '1',
-                    displayvalue: `${numeral(prodData.netRateTarget).format('0,0')}`,
-                    dashed: '1'
-                }]
+                line: [
+                    {
+                        startvalue: `${prodData.netRateTarget}`,
+                        color: green,
+                        valueOnRight: '1',
+                        displayvalue: `${numeral(prodData.netRateTarget).format('0,0')}`,
+                        dashed: '1'
+                    }
+                ]
             }
         ]
       };

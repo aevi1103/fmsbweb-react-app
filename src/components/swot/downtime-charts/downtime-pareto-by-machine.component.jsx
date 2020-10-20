@@ -43,11 +43,13 @@ const DowntimeParetoByMachineChart = ({
             ...chartProps,
             ...tooltipStyle
         },
+        
         data: data.map(({ machine, downtime }) => ({
                 label: machine,
                 value: downtime,
                 link: `newchart-xml-${machine.replace(/\s/g, '_')}`
             })),
+
         linkeddata: data.map(({ machine, downtime, reasonDetails }) => ({
             id: machine.replace(/\s/g, '_'),
             linkedchart: {

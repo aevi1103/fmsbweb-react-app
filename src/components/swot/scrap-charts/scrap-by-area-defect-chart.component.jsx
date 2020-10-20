@@ -1,5 +1,5 @@
 import React from 'react'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
@@ -19,10 +19,10 @@ const ScrapByAreaDefectChart = ({
     start,
     end,
     line,
-    filters,
-    chartWidth,
-    chartHeight
+    filters
 }) => {
+
+    const { chartWidth, chartHeight } = useSelector(({ swot }) => swot);
 
     if (!scrapData) return;
 
@@ -62,9 +62,4 @@ const ScrapByAreaDefectChart = ({
     )
 }
 
-const mapStateToProps = ({ swot }) => ({
-    chartWidth: swot.chartWidth,
-    chartHeight: swot.chartHeight
-})
-
-export default connect(mapStateToProps)(ScrapByAreaDefectChart);
+export default ScrapByAreaDefectChart;

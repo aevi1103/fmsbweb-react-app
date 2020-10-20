@@ -7,19 +7,20 @@ import {
     Col,
  } from "antd";
 
- import ScrapByDefectChart from './scrap-charts/scrap-by-defect-chart.component'
- import ScrapByShiftChart from './scrap-charts/scrap-by-shift-chart.component'
- import ScrapByProgramChart from './scrap-charts/scrap-by-program-chart.component'
- import ScrapByAreaChart from './scrap-charts/scrap-by-area-chart.component'
- import ScrapByAreaDefectChartWrapper from './scrap-charts/scrap-by-area-defect-chart-wrapper.component'
- import MonthlyWeeklyChartWrapper from './scrap-charts/monthly-weekly-chart-wrapper.component'
-
+import ScrapByDefectChart from './scrap-charts/scrap-by-defect-chart.component'
+import ScrapByShiftChart from './scrap-charts/scrap-by-shift-chart.component'
+import ScrapByProgramChart from './scrap-charts/scrap-by-program-chart.component'
+import ScrapByAreaChart from './scrap-charts/scrap-by-area-chart.component'
+import ScrapByAreaDefectChartWrapper from './scrap-charts/scrap-by-area-defect-chart-wrapper.component'
+import MonthlyWeeklyChartWrapper from './scrap-charts/monthly-weekly-chart-wrapper.component'
+import DailyScrapRateChart from './scrap-charts/daily-scrap-rate-chart.component'
 
  const ScrapChartsContainer = ({
      data,
      filters,
      line,
-     lineKpi
+     lineKpi,
+     targets
  }) => {
 
     const { department } = useParams();
@@ -30,7 +31,8 @@ import {
         scrapParetoByProgram,
         scrapParetoByArea,
         weeklyScrapRates,
-        monthlyScrapRates
+        monthlyScrapRates,
+        dailyScrapRateByShift
     } = data || {}
 
     const {
@@ -52,6 +54,10 @@ import {
                     subCaption={subCaption} /> 
             </Col>
 
+            <Col span={12}>
+                <DailyScrapRateChart scrapData={dailyScrapRateByShift} targets={targets} /> 
+            </Col>
+            
             <Col span={6}>
                 <ScrapByShiftChart 
                     scrapData={scrapParetoByShift} 
