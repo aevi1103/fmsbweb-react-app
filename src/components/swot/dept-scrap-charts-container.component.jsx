@@ -11,10 +11,12 @@ import {
  import ScrapByProgramChart from './scrap-charts/scrap-by-program-chart.component'
  import ScrapByAreaChart from './scrap-charts/scrap-by-area-chart.component'
  import MonthlyWeeklyChartWrapper from './scrap-charts/monthly-weekly-chart-wrapper.component'
+ import DailyScrapRateChart from './scrap-charts/daily-scrap-rate-chart.component'
 
  const DeptScrapChartsContainer = ({
      data,
-     filters
+     filters,
+     targets
  }) => {
 
     const { department } = useParams();
@@ -25,7 +27,8 @@ import {
         scrapParetoByProgram,
         scrapParetoByArea,
         weeklyScrapRates,
-        monthlyScrapRates
+        monthlyScrapRates,
+        dailySbScrapRateByShift
     } = data || {}
 
     return (
@@ -38,6 +41,17 @@ import {
                     filters={filters} /> 
             </Col>
 
+            {
+                dailySbScrapRateByShift?.data?.length > 0 
+                    ? <Col span={12}>
+                        <DailyScrapRateChart 
+                                scrapData={dailySbScrapRateByShift} 
+                                targets={targets} 
+                                filters={filters} /> 
+                        </Col>
+                    : null
+            }
+            
             <Col span={6}>
                 <ScrapByShiftChart 
                     scrapData={scrapParetoByShift} 

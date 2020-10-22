@@ -153,27 +153,33 @@ const PrintSwotChartPage = ({
 
                   {
                     department !== 'Foundry' 
-                        ?  <ScrapByAreaChart 
-                              scrapData={scrapCharts.scrapParetoByArea} 
-                              line={line} 
-                              filters={filters} /> 
+                        ?  scrapCharts.scrapParetoByArea?.data?.length > 0 
+                              ? <ScrapByAreaChart 
+                                  scrapData={scrapCharts.scrapParetoByArea} 
+                                  line={line} 
+                                  filters={filters} /> 
+                              : null
                         : null
                   }
                   
-                  <ScrapByAreaDefectChartWrapper 
-                    scrapParetoByArea={scrapCharts.scrapParetoByArea}
-                    filters={filters}
-                    line={line}
-                    isPrint={true} />
-
                   {
-                    scrapCharts.monthlyScrapRates?.data.length > 0 && 
-                    scrapCharts.weeklyScrapRates?.data.length > 0 
+                    scrapCharts.scrapParetoByArea?.data?.length > 0 
+                      ? <ScrapByAreaDefectChartWrapper 
+                          scrapParetoByArea={scrapCharts.scrapParetoByArea}
+                          filters={filters}
+                          line={line}
+                          isPrint={true} />
+                      : null
+                  }
+                  
+                  {
+                    scrapCharts.monthlyScrapRates?.data?.length > 0 && 
+                    scrapCharts.weeklyScrapRates?.data?.length > 0 
                       ? <MonthlyWeeklyChartWrapper 
-                        monthlyScrapRates={scrapCharts.monthlyScrapRates}
-                        weeklyScrapRates={scrapCharts.weeklyScrapRates}
-                        filters={filters}
-                        line={line} />
+                          monthlyScrapRates={scrapCharts.monthlyScrapRates}
+                          weeklyScrapRates={scrapCharts.weeklyScrapRates}
+                          filters={filters}
+                          line={line} />
                       : null
                     
                   }
@@ -189,7 +195,7 @@ const PrintSwotChartPage = ({
                   }
 
                   {
-                    productionCharts.dailyProduction?.data.length > 0 
+                    productionCharts.dailyProduction?.data?.length > 0 
                       ? <DailyProductionChart 
                           prodData={productionCharts.dailyProduction} 
                           line={line}

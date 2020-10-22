@@ -52,11 +52,15 @@ import {
                     targets={targets} />
             </Col>
 
-            <Col span={6}>
-                <ProductionByProgramChart 
-                    prodData={productionByProgram} 
-                    line={line} />
-            </Col>
+            {
+                productionByProgram?.data?.length > 0 
+                    ?  <Col span={6}>
+                            <ProductionByProgramChart 
+                                prodData={productionByProgram} 
+                                line={line} />
+                        </Col>
+                    : null
+            }
 
             {
                 monthlyOae !== null || weeklyOae !== null 

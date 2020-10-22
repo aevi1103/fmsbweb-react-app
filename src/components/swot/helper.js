@@ -18,7 +18,7 @@ export const  getContentList = (data, filters) => {
         downtimeCharts,
         oae,
         scrapRateByArea
-     } = data;
+     } = data || {};
 
      const lineKpi = {
         oae,
@@ -64,7 +64,8 @@ export const  getContentListDepartment = (data, filters) => {
     return {
         scrap: <DeptScrapChartsContainer 
                     data={scrapCharts} 
-                    filters={filters} />,
+                    filters={filters}
+                    targets={targets} />,
         prod: <DeptProductionChartsContainer 
                     data={productionCharts} 
                     filters={filters} 

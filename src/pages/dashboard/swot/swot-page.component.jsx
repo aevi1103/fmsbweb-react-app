@@ -70,10 +70,10 @@ const tabList =[
         const { lineData } = swotResult || {};
 
         if (lineData?.length === 0 || !lineData) {
-          history.push(`/dashboard/swot/settings`)
+          history.push(`/dashboard/swot/settings/${department}`)
         }
         
-      }, [swotResult, history])
+      }, [swotResult, history, department])
 
     useEffect(() => {
         document.title = `SWOT: ${_.capitalize(department)}`
@@ -92,11 +92,12 @@ const tabList =[
     const dateFormatTooltip = 'MM/DD/YY'
     const { oae, net, targets } = swotResult?.departmentData || {};
     const { oaeTarget } = targets || {}
+    const { dept } = swotResult?.filters || {};
     const style = {
         color: oae < oaeTarget ? colorCodes.red : colorCodes.green
     }
     const depHeader = (<Tooltip title={`Date Range: ${moment(startDate).format(dateFormatTooltip)} - ${moment(endDate).format(dateFormatTooltip)}`}>
-                            <Text style={style}>{_.capitalize(department)}: SAP OAE: <span className="mr1">{numeral(oae).format('0%')} ~ {numeral(net).format('0,0')}</span> 
+                            <Text style={style}>{dept}: SAP OAE: <span className="mr1">{numeral(oae).format('0%')} ~ {numeral(net).format('0,0')}</span> 
                             {oae < oaeTarget ? <ArrowDownOutlined /> : <ArrowUpOutlined />}</Text>
                         </Tooltip>) 
     
@@ -130,8 +131,8 @@ const tabList =[
         <>
             <PageHeader
                 className="site-page-header"
-                title={`${_.capitalize(department)} SWOT Charts (${dateRateHeader})`}
-                onBack={() => history.push('/dashboard/swot/settings') }
+                title={`${dept} SWOT Charts (${dateRateHeader})`}
+                onBack={() => history.push(`/dashboard/swot/settings/${department}`) }
                 extra={extraMenu}
             />
 

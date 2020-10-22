@@ -147,13 +147,13 @@ const SwotSettingsPage = ({
 
     useEffect(() => {
 
-        if (department && !qryGetData) {        
+        if (department) {        
             setDept(department);  
             form.setFieldsValue({ ...initialValues, dept: department }); 
             getLines(department);
         }
 
-    }, [department, form, qryGetData, setDept]) 
+    }, [department, form, setDept]) 
 
     useEffect(() => {
         setLastDays(initialValues.lastDays);

@@ -24,8 +24,8 @@ const ScrapByDefectChart = ({
 }) => {
 
     if (!scrapData) return;
-    const { startDate, endDate, data } = scrapData;
-    const { take } = filters;
+    const { startDate, endDate, data } = scrapData || {};
+    const { take } = filters || {};
 
     const dateRange = `(${startDate} - ${endDate})`;
     const caption = take > 0 
@@ -41,7 +41,7 @@ const ScrapByDefectChart = ({
             ...chartProps,
             ...tooltipStyle
         },
-        data: data.map(({scrapDesc, qty, colorCode}) => ({
+        data: data?.map(({scrapDesc, qty, colorCode}) => ({
                 label: scrapDesc,
                 value: qty,
                 color: colorCode

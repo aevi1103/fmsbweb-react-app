@@ -28,11 +28,10 @@ const DailyProductionChart = ({
 
     if (!prodData) return;
 
-    const { startDate, endDate, data } = prodData;
+    const { startDate, endDate, data } = prodData || {};
     const dateFormat = 'MM/DD/YY';
-    const { lastDays } = filters;
-
-    const { oaeTarget } = targets;
+    const { lastDays } = filters || {};
+    const { oaeTarget } = targets || {};
 
     const dataSource = {
         chart: {

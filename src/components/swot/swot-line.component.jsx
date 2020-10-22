@@ -27,7 +27,7 @@ import {
  }) => {
 
     const [activeKey, setActiveKey] = useState(tabList[0].key)
-    const { oae, net, swotTarget } = data || {};
+    const { oae, net, swotTarget, line } = data || {};
     const { oaeTarget } = swotTarget || {};
     const { startDate, endDate } = filters;
 
@@ -36,7 +36,7 @@ import {
     }
 
 const title = (<Tooltip title={`Date Range: ${moment(startDate).format(dateFormat)} - ${moment(endDate).format(dateFormat)}`}>
-                    <Text style={style}>{data.line}: SAP OAE: <span className="mr1">{numeral(oae).format('0%')} ~ {numeral(net).format('0,0')}</span> 
+                    <Text style={style}>{line}: OAE: <span className="mr1">{numeral(oae).format('0%')} ~ {numeral(net).format('0,0')}</span> 
                     {oae < oaeTarget ? <ArrowDownOutlined /> : <ArrowUpOutlined />}</Text>
                 </Tooltip>)
 

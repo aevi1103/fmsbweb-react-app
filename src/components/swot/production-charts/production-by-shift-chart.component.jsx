@@ -26,8 +26,8 @@ const ProductionByShiftChart = ({
 
     if (!prodData) return;
 
-    const { startDate, endDate, data } = prodData;
-    const { oaeTarget } = targets;
+    const { startDate, endDate, data } = prodData || {};
+    const { oaeTarget } = targets || {};
 
     const dataSource = {
         chart: {

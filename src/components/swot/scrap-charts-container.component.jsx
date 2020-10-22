@@ -54,9 +54,16 @@ import DailyScrapRateChart from './scrap-charts/daily-scrap-rate-chart.component
                     subCaption={subCaption} /> 
             </Col>
 
-            <Col span={12}>
-                <DailyScrapRateChart scrapData={dailyScrapRateByShift} targets={targets} /> 
-            </Col>
+            {
+                dailyScrapRateByShift?.data?.length > 0 
+                    ? <Col span={12}>
+                        <DailyScrapRateChart 
+                            scrapData={dailyScrapRateByShift} 
+                            targets={targets} 
+                            filters={filters} /> 
+                        </Col>
+                    : null
+            }
             
             <Col span={6}>
                 <ScrapByShiftChart 

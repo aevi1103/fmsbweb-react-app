@@ -19,16 +19,17 @@ ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
 const DailyScrapRateChart = ({
     scrapData,
-    targets
+    targets,
+    filters
 }) => {
 
     const { chartWidth, chartHeight } = useSelector(({ swot }) => swot);
 
-    if (!scrapData) return;
+    if (!scrapData) return null;
 
-    const { startDate, endDate, line, shiftDates, data } = scrapData;
-    const { foundryScrapTarget, machineScrapTarget, afScrapTarget } = targets;
-    const overallTarget = foundryScrapTarget + machineScrapTarget + afScrapTarget;
+    const { startDate, endDate, line, shiftDates, data } = scrapData || {};
+    const { overallScrapTarget } = targets || {};
+    const { lastDays } = filters || {};
 
     const categories = shiftDates?.map(date => ({ label: moment(date).format('MM/DD/YY') }));
     const dataset = data?.map(({ shift, details }) => ({
@@ -40,12 +41,12 @@ const DailyScrapRateChart = ({
     }));
 
     const linkedData = data.flatMap(({ details }) => details)
-                        .map(({ shiftDate, shift, scrapRate, scrapAreaDetails }) => ({
+                        .map(({ shiftDate, shift, scrapRate, scrapAreaDetails, scrap }) => ({
                             id: `shift_${shift}_${moment(shiftDate).format('MMDDYY')}`,
                             linkedchart: {
                                 chart: {
-                                    caption: `Shift ${shift} / ${moment(shiftDate).format('MM/DD/YY')} Scrap Pareto by Type`,
-                                    subCaption: `Scrap Rate: ${numeral(scrapRate).format('0.00%')}`,
+                                    caption: `Shift ${shift} > ${moment(shiftDate).format('MM/DD/YY')} Scrap Pareto by Type`,
+                                    subCaption: `Total Scrap %: ${numeral(scrapRate).format('0.00%')} | Total Qty: ${numeral(scrap).format('0,0')}`,
                                     xAxisName: 'Scrap Type',
                                     yAxisName: 'Scrap %',
                                     numberSuffix: '%',
@@ -56,9 +57,39 @@ const DailyScrapRateChart = ({
                                     label: scrapAreaName,
                                     value: scrapRate * 100,
                                     color: colorCode,
-                                    tooltext: `<b>Scrap Type: </b> ${scrapAreaName} <br>
+                                    link: `newchart-xml-shift_${shift}_${moment(shiftDate).format('MMDDYY')}_${scrapAreaName.replace(/\s/g, '_')}`,
+                                    tooltext: `<b>Shift Date: </b> ${moment(shiftDate).format('MM/DD/YY')} <br>
+                                                <b>Shift: </b> ${shift} <br>
+                                                <b>Scrap Type: </b> ${scrapAreaName} <br>
                                                 <b>Qty: </b> ${numeral(qty).format('0,0')} <br>
                                                 <b>Scrap Rate: </b> ${numeral(scrapRate).format('0.00%')}`
+                                })),
+                                linkeddata: scrapAreaDetails.map(({ scrapAreaName, defectDetails, scrapRate, qty, colorCode }) => ({
+                                    id: `shift_${shift}_${moment(shiftDate).format('MMDDYY')}_${scrapAreaName.replace(/\s/g, '_')}`,
+                                    linkedchart: {
+                                        chart: {
+                                            caption: `Shift ${shift} > ${moment(shiftDate).format('MM/DD/YY')} > ${scrapAreaName} Scrap Pareto by Defect`,
+                                            subCaption: `Total Scrap %: ${numeral(scrapRate).format('0.00%')} | Total Qty: ${numeral(qty).format('0,0')}`,
+                                            xAxisName: 'Defect',
+                                            yAxisName: 'Scrap %',
+                                            numberSuffix: '%',
+                                            decimals: '3',
+                                            rotateValues: '1',
+                                            ...chartProps,
+                                            ...tooltipStyle
+                                        },
+                                        data: defectDetails.map(({ scrapDesc, qty, scrapRate }) => ({
+                                            label: scrapDesc,
+                                            value: scrapRate,
+                                            color: colorCode,
+                                            tooltext: `<b>Shift Date: </b> ${moment(shiftDate).format('MM/DD/YY')} <br>
+                                                        <b>Shift: </b> ${shift} <br>
+                                                        <b>Scrap Type: </b> ${scrapAreaName} <br>
+                                                        <b>Defect: </b> ${scrapDesc} <br>
+                                                        <b>Qty: </b> ${numeral(qty).format('0,0')} <br>
+                                                        <b>Scrap Rate: </b> ${numeral(scrapRate).format('0.00%')}`
+                                        }))
+                                    }
                                 }))
                             }
                         }))
@@ -67,7 +98,7 @@ const DailyScrapRateChart = ({
 
     const dataSource = {
         chart: {
-            caption: `${line} Daily Total SB Scrap %`,
+            caption: `${line} Last ${lastDays} Days Total SB Scrap %`,
             subCaption: `${startDate} - ${endDate}`,
             xAxisName: 'Shift Dates',
             yAxisName: 'Scrap %',
@@ -87,10 +118,10 @@ const DailyScrapRateChart = ({
             {
                 line: [
                     {
-                        startvalue: overallTarget * 100,
+                        startvalue: overallScrapTarget * 100,
                         color: colorCodes.red,
                         valueOnRight: '1',
-                        displayvalue: `Target (${numeral(overallTarget).format('0.00%')})`,
+                        displayvalue: `Target (${numeral(overallScrapTarget).format('0.00%')})`,
                         dashed: '1'
                     }
                 ]
