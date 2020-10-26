@@ -29,7 +29,10 @@ import AfMenu from './components/Menu/af-menu/af-menu.component';
 //swot components
 import SwotSettingsPage from './pages/dashboard/swot/settings-page.component';
 import SwotPage from './pages/dashboard/swot/swot-page.component';
-import PrintWotChartsPage from './pages/dashboard/swot/print-swot-charts-page.component'
+import PrintWotChartsPage from './pages/dashboard/swot/print-swot-charts-page.component';
+
+//department dashboard
+import DepartmentDashboardPage from './pages/dashboard/department/dashboard-page.component'
 
 //morning meeting pages
 import SafetyPage from './pages/dashboard/morning-meeting/safety-page/safety-page.component';
@@ -125,8 +128,7 @@ const App = ( {
 
         <Switch>
           <Route exact path="/" component={HomeMenu} />
-          <Route path="/dashboard/morningmeeting" component={MorningMeetingMenu} />
-          <Route path="/dashboard/swot" component={MorningMeetingMenu} />
+          <Route path="/dashboard/*" component={MorningMeetingMenu} />
           <Route path="/orderstatus" component={MorningMeetingMenu} />
           <Route path="/af" component={AfMenu} />
           <Route path="/quality" component={HomeMenu} />
@@ -159,6 +161,9 @@ const App = ( {
           <Route exact path="/dashboard/swot/settings/:department?" component={SwotSettingsPage} />
           <Route exact path="/dashboard/swot/:department" component={SwotPage} />
           <Route exact path="/dashboard/swot/:department/print" component={PrintWotChartsPage} />
+
+          {/* Department Dashboard */}
+          <Route exact path="/dashboard/status/:department" component={DepartmentDashboardPage} />
 
           {/* Monring Meeting */}
           <Route exact path="/dashboard/morningmeeting/safety" component={SafetyPage} />

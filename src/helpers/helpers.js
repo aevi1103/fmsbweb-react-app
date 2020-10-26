@@ -1,5 +1,6 @@
 
 import numeral from 'numeral';
+import moment from 'moment'
 
 export const numberSorter = (a, b) => (numeral(a).format('0') - numeral(b).format('0'));
 
@@ -92,8 +93,21 @@ export const mapAreaToDept = area => {
 
 }
 
-
 export const oDataQryString = (odataQry) => {
     if (!!!odataQry) return '';
     return odataQry.startsWith('?') ? odataQry : `?${odataQry}`;
+}
+
+export const depts = ['Foundry', 'Machining', 'Anodize', 'Skirt Coat', 'Assembly'];
+export const shifts = ['3', '1', '2', 'All'];
+export const dateFormat = 'MM/DD/YYYY';
+export const disabledDate = current => current && current > moment().endOf('day');
+export const dateRange = {
+    'Today': [moment(), moment()],
+    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+    'Last Week': [moment().subtract(6, 'days').startOf('week'), moment().subtract(6, 'days').endOf('week')],
+    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+    'Last 30 days': [moment().subtract(30, 'days').startOf('month'), moment()],
+    'MTD': [moment().startOf('month'), moment().add(-1, 'days')],
+    'YTD': [moment().startOf('year'), moment().add(-1, 'days')]
 }

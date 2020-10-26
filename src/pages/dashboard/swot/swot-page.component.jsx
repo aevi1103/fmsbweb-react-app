@@ -5,7 +5,6 @@ import _ from 'lodash'
 import { connect } from 'react-redux'
 import { useParams, useHistory, Link } from 'react-router-dom';
 
-import { PrinterOutlined } from '@ant-design/icons';
 import {
     setChartWidth,
     setChartHeight
@@ -28,7 +27,6 @@ import {
     PageHeader,
     Row,
     Col,
-    Button,
     Card,
     Tooltip,
     Typography,

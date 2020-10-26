@@ -7,6 +7,7 @@ import afEosReducer from './af-eos/af-eos.reducer'
 import qualityCheckSheetReducer from './quality-check-sheet/quality-check-sheet.reducer'
 import swotReducer from './swot/swot.reducer'
 import requetsReducer from './requests/requests.reducer'
+import productionStatusReducer from './production-status/production-status.reducer'
 
 const rootReducer = combineReducers({
     home: homeReducer,
@@ -15,7 +16,8 @@ const rootReducer = combineReducers({
     afEos: afEosReducer,
     qualityCheckSheet: qualityCheckSheetReducer,
     swot: swotReducer,
-    requests: requetsReducer
+    requests: requetsReducer,
+    productionStatus: productionStatusReducer
 })
 
 export default rootReducer;

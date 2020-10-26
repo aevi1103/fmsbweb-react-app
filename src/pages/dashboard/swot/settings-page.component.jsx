@@ -6,6 +6,12 @@ import api from '../../../API'
 import {
     useQuery
 } from '../../../helpers/custom-hook'
+import {
+    depts,
+    dateFormat,
+    disabledDate,
+    dateRange
+} from '../../../helpers/helpers'
 
 import {
     fetchSwotStartAsync,
@@ -63,9 +69,7 @@ const tailLayout = {
     },
 };
 
-const dateFormat = 'MM/DD/YYYY';
-const depts = ['Foundry', 'Machining', 'Anodize', 'Skirt Coat', 'Assembly'];
-const disabledDate = current => current && current > moment().endOf('day');
+
 const previousDay = moment().add(-1, 'day');
 
 const initialValues = {
@@ -202,15 +206,7 @@ const SwotSettingsPage = ({
                             format={dateFormat} 
                             disabledDate={disabledDate}
                             disabled={disabled}
-                            ranges={{
-                                'Today': [moment(), moment()],
-                                'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                                'Last Week': [moment().subtract(6, 'days').startOf('week'), moment().subtract(6, 'days').endOf('week')],
-                                'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                                'Last 30 days': [moment().subtract(30, 'days').startOf('month'), moment()],
-                                'MTD': [moment().startOf('month'), moment().add(-1, 'days')],
-                                'YTD': [moment().startOf('year'), moment().add(-1, 'days')]
-                              }} />
+                            ranges={dateRange} />
                     </Form.Item>
 
                     <Form.Item
