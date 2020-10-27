@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import _ from 'lodash'
 import moment from 'moment'
 import { useHistory, useParams } from 'react-router'
@@ -12,11 +12,11 @@ import {
     setProductionStatus
 } from '../../../redux/production-status/production-status.action'
 
-import ProductionStatusContainer from '../../../components/production-status/production-status-container.component'
-
 import {
-    useQuery
-} from '../../../helpers/custom-hook'
+    setSiderCollapse
+} from '../../../redux/home/home.actions'
+
+import ProductionStatusContainer from '../../../components/production-status/production-status-container.component'
 
 import {
     depts,
@@ -33,7 +33,10 @@ import {
     Select,
     Button,
     DatePicker,
-    message
+    message,
+    Checkbox,
+    Alert,
+    Tooltip
  } from "antd";
 
 const { Content } = Layout;
@@ -45,52 +48,77 @@ const DepartmentDashboardPage = () => {
     //redux state
     const dispatch = useDispatch()
     const prodStatus = useSelector(({ productionStatus }) => productionStatus);
-    const { dept, shift, productionStatus } = prodStatus;
+    const { productionStatus, dept } = prodStatus;
 
     const [form] = Form.useForm();
     const history = useHistory();
-    const qry = useQuery();
-
     const { department } = useParams();
-    const qryShift = qry.get('shift') ?? shift;
-    const qryStart = qry.get('start') ?? prodStatus?.dateRange[0];
-    const qryEnd = qry.get('end') ?? prodStatus?.dateRange[1];
 
     const [headerTitle, setHeaderTitle] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null)
+    const [error, setError] = useState(null);
+    const [currentShift, setCurrentShift] = useState(null);
+    const [checked, setChecked] = useState(true);
+    const [lastUpdate, setLastUpdate] = useState(moment());
+    const [intervalValue, setIntervalValue] = useState(null);
 
-    //* update initial value
+    //* 5 minutes
+    const ms = 300000; //300000
+
+    const getInitialData = useCallback(() => {
+        api.get(`/dateshift/${department}`)
+        .then(response => {
+
+            setCurrentShift(response.data);
+
+            const { shiftDate, shift } = response.data;
+            dispatch(setDateRange([shiftDate, shiftDate]));
+            dispatch(setShift(shift));
+
+            form.setFieldsValue({
+                dateRange: [moment(shiftDate), moment(shiftDate)],
+                shift: shift,
+                dept: _.startCase(department ?? dept),
+                autoUpdate: true
+            });
+
+            form.submit();
+            dispatch(setSiderCollapse(true));
+        })
+    }, [department, dept, dispatch, form])
+
+    //* update doc title
+    useEffect(() => {
+        document.title = `${_.startCase(department ?? dept)} Production Dashboard`
+    }, [department, dept])
+
+    //* load data for current shift
     useEffect(() => {
 
-        form.setFieldsValue({
-            dateRange: [moment(qryStart), moment(qryEnd)],
-            shift: qryShift,
-            dept: _.startCase(department ?? dept),
-        });
+        //* load initial data
+        getInitialData();
 
-        //* data on load
-        form.submit();
+        //* run every 5 minutes
+        const interval = setInterval(getInitialData, ms); //300000
+        setIntervalValue(interval);
+        
+        return () => clearInterval(interval)
 
-    }, [qryStart, qryEnd, qryShift, department, dept, form])
-
-    //* update URL
-    useEffect(() => {
-        const d = _.startCase(department ?? dept)
-        history.push(`/dashboard/status/${d}?shift=${qryShift}&start=${moment(qryStart).format(dateFormat)}&end=${moment(qryEnd).format(dateFormat)}`);
-        dispatch(setDepartment(d));
-    }, [department, qryStart, qryEnd, qryShift, form, history, dept, dispatch])
+    }, [department, getInitialData])
 
     //* update header title
     useEffect(() => {
 
-        const dr = qryStart === qryEnd 
-                    ? moment(qryStart).format(dateFormat)
-                    : `${moment(qryStart).format(dateFormat)} - ${moment(qryEnd).format(dateFormat)}`;
+        const { dept, shift, dateRange } = prodStatus;
+        const [start, end] = dateRange;
 
-        setHeaderTitle(`${dept} Dashboard: ${dr} - Shift ${qryShift === '' ? 'All' : qryShift}`);
+        const dr = start === end 
+                    ? moment(start).format(dateFormat)
+                    : `${moment(start).format(dateFormat)} - ${moment(end).format(dateFormat)}`;
 
-    }, [qryStart, qryEnd, qryShift, dept])
+        setHeaderTitle(`${dept} Dashboard: ${dr} - Shift ${shift === '' ? 'All' : shift}`);
+
+    }, [prodStatus])
 
     //* submit
     const onFinish = async values => {
@@ -115,16 +143,34 @@ const DepartmentDashboardPage = () => {
             message.success({ content: `${dept} production data successfully loaded`, key: dept, duration: 2 });
 
             dispatch(setProductionStatus(response.data));
+
             dispatch(setDepartment(_.startCase(dept)));
             dispatch(setShift(shift));
-            dispatch(setDateRange([startStr, endStr]))
+            dispatch(setDateRange([startStr, endStr]));
+
+            setLastUpdate(moment());
      
-            history.push(`/dashboard/status/${dept}?shift=${shift}&start=${moment(start).format(dateFormat)}&end=${moment(end).format(dateFormat)}`);
-            
         } catch (error) {
             setError(error)
         } finally {
             setLoading(false);
+        }
+
+    }
+
+    const onChecked = e => {
+
+        clearInterval(intervalValue);
+        const isChecked = e.target.checked;
+        setChecked(isChecked);
+
+        let interval = null;
+
+        if (isChecked) {
+            interval = setInterval(getInitialData, ms);
+            setIntervalValue(interval);
+        } else {
+            clearInterval(intervalValue)
         }
 
     }
@@ -134,9 +180,15 @@ const DepartmentDashboardPage = () => {
             <PageHeader
                 className="site-page-header"
                 title={headerTitle}
-                onBack={() => history.goBack() }
+                subTitle={<div>
+                    <span>Last Update: {moment(lastUpdate).format('lll')}</span>
+                    <Tooltip title="Updates every 5 minutes">
+                        <Checkbox className="ml2" checked={checked} onClick={onChecked} loading={loading} >Enable Auto Update</Checkbox>
+                    </Tooltip>    
+                </div>}
+                onBack={() => history.goBack()}
                 extra={
-                    <Form
+                    <Form key="prodForm"
                         name="form"
                         layout="inline"
                         onFinish={onFinish}
@@ -185,15 +237,20 @@ const DepartmentDashboardPage = () => {
                         </Form.Item>
             
                     </Form>
-                }
+                  }
             />
 
             <Content className="ma3 mt0">
                 
                 {
-                    productionStatus ? <ProductionStatusContainer /> : <span>No Data</span>
+                    error ? <Alert message={error} type="error" showIcon /> : null
                 }
-                
+
+                {
+                    productionStatus 
+                        ? <ProductionStatusContainer productionStatus={productionStatus} /> 
+                        : <span>No Data</span>
+                }
 
             </Content>
 

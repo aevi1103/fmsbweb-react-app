@@ -148,7 +148,7 @@ const EosPage = ({
             }
         }
 
-        console.log({line, dept, shiftDateStr, shift})
+        // console.log({line, dept, shiftDateStr, shift})
 
     }, [shiftDateStr, shift, line, dept, machine, form, fetchDeptEosStartAsync]);
 

@@ -12,11 +12,13 @@ ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
 
 const DowntimeChart = ({
-    data
+    data,
+    dept
 }) => {
 
     const dataSource = {
         chart: {
+            caption: `Top 5 Downtime Pareto by ${dept === 'Machining' ? 'Machine' : 'Reason'}`,
             ...chartConfig,
             ...tooltipStyle
         },

@@ -40,6 +40,8 @@ const HourlyProductionChart = ({
 
     const dataSource = {
         chart: {
+            caption: 'Hourly Production',
+            legendItemFontSize: '12',
             ...chartConfig,
             ...tooltipStyle
         },

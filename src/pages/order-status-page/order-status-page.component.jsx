@@ -64,7 +64,7 @@ const OrderStatusPage = ({
                                     }))
                             
                     setOrders(orders)
-                    console.log({orders})
+                    // console.log({orders})
 
                 } catch (error) {
                     console.error('Something went wrong')

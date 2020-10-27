@@ -10,13 +10,15 @@ import { chartConfig } from './chart-config'
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-
 const ScrapChart = ({
-    data
+    data,
+    caption,
+    height = '150'
 }) => {
 
     const dataSource = {
         chart: {
+            caption: caption,
             ...chartConfig,
             ...tooltipStyle
         },
@@ -30,9 +32,9 @@ const ScrapChart = ({
       const chartConfigs = {
         type: 'column2d',
         width: '100%',
-        height: '150',
+        height: height,
         dataFormat: 'json',
-        dataSource: dataSource
+        dataSource: data.length > 0 ? dataSource : null
       };
 
     return (

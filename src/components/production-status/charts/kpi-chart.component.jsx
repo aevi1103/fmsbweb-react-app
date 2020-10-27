@@ -33,10 +33,10 @@ const KpiChart = ({
                                 color: colorCode
                             }))
 
-    console.log(mapScrapRates)
 
     const dataSource = {
         chart: {
+            caption: 'Production Status',
             plottooltext: "<b>$label</b>: $percentValue",
             ...chartConfig,
             ...tooltipStyle
@@ -64,7 +64,7 @@ const KpiChart = ({
       const chartConfigs = {
         type: 'pie2d',
         width: '100%',
-        height: '306',
+        height: '280',
         dataFormat: 'json',
         dataSource: dataSource
       };
