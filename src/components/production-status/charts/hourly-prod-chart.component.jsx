@@ -7,7 +7,7 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
 import { tooltipStyle } from '../../../helpers/chart-config'
-import { chartConfig } from './chart-config'
+import { chartConfigDashboard, chartConfigModal } from './chart-config'
 
 import {
     colorCodes
@@ -17,12 +17,17 @@ FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
 
-const HourlyProductionChart = ({
+const HourlyProductionChart = React.memo(({
     data,
-    target
+    target,
+    caption = 'Hourly Production',
+    height = 150,
+    isModal = false
 }) => {
 
     if (!data) return;
+
+    const chartConfig = !isModal ? chartConfigDashboard : chartConfigModal;
 
     const { netRate } = target;
     const { green, red } = colorCodes;
@@ -40,10 +45,14 @@ const HourlyProductionChart = ({
 
     const dataSource = {
         chart: {
-            caption: 'Hourly Production',
-            legendItemFontSize: '12',
             ...chartConfig,
-            ...tooltipStyle
+            ...tooltipStyle,
+            caption: caption,
+            legendItemFontSize: '12',
+            rotateValues: data.length > 8 ? '1' : '0',
+            showValues: (data.length < 24 || isModal) ? '1' : '0',
+            labelDisplay: data.length > 8 ? "rotate" : '',
+            slantLabel: data.length > 8 ? '1' : '0'
         },
         data: data.map(({net, shiftDate, shift, hour, swotTarget, oae, totalScrap, line, cellSide}) => ({
                 label: getLabel(shiftDate, shift, line, cellSide, hour),
@@ -77,7 +86,7 @@ const HourlyProductionChart = ({
       const chartConfigs = {
         type: 'column2d',
         width: '100%',
-        height: '150',
+        height: height,
         dataFormat: 'json',
         dataSource: dataSource
       };
@@ -85,6 +94,6 @@ const HourlyProductionChart = ({
     return (
         <ReactFC {...chartConfigs} />
     )
-}
+})
 
 export default HourlyProductionChart;

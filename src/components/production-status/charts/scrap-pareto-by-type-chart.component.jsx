@@ -5,7 +5,7 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
 import { tooltipStyle } from '../../../helpers/chart-config'
-import { chartConfig } from './chart-config'
+import { chartConfigDashboard } from './chart-config'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -18,8 +18,8 @@ const ScrapByTypeChart = ({
 
     const dataSource = {
         chart: {
-            caption: `${dept} Dept Scrap Pareto by Type`,
-            ...chartConfig,
+            caption: `${dept} Dept Scrap by Type`,
+            ...chartConfigDashboard,
             ...tooltipStyle
         },
         data: data?.map(({scrapAreaName, colorCode, qty }) => ({
@@ -29,19 +29,37 @@ const ScrapByTypeChart = ({
                 link: `newchart-xml-${scrapAreaName.replace(/\s/g, '_')}`
             })),
 
-        linkeddata: data?.map(({ scrapAreaName, qty, defects }) => ({
+        linkeddata: data?.map(({ scrapAreaName, defects }) => ({
             id: scrapAreaName.replace(/\s/g, '_'),
             linkedchart: {
                 chart: {
-                    caption: `${scrapAreaName} Top 5 Scrap Pareto by Defect`,
-                    ...chartConfig,
+                    caption: `${scrapAreaName} Top 5 Scrap by Defect `,
+                    ...chartConfigDashboard,
                     ...tooltipStyle
                 },
                 
                 data: defects.map(({ scrapDesc, colorCode, qty }) => ({
                     label: scrapDesc,
                     value: qty,
-                    color: colorCode
+                    color: colorCode,
+                    link: `newchart-xml-${scrapAreaName.replace(/\s/g, '_')}_${scrapDesc.replace(/\s/g, '_')}`
+                })),
+
+                linkeddata: defects?.map(({ scrapDesc, lineDetails, colorCode }) => ({
+                    id: `${scrapAreaName.replace(/\s/g, '_')}_${scrapDesc.replace(/\s/g, '_')}`,
+                    linkedchart: {
+                        chart: {
+                            caption: `${scrapAreaName} / ${scrapDesc} Scrap by Line`,
+                            ...chartConfigDashboard,
+                            ...tooltipStyle
+                        },
+                        
+                        data: lineDetails.map(({ line, qty }) => ({
+                            label: line,
+                            value: qty,
+                            color: colorCode
+                        }))
+                    }
                 }))
             }
         }))

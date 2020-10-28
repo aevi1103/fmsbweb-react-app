@@ -1,4 +1,4 @@
-export const chartConfig = {
+export const chartConfigDashboard = {
     // labelDisplay: "rotate",
     // slantLabel: "1",
     showvalues: "1",
@@ -13,4 +13,19 @@ export const chartConfig = {
     // borderAlpha: 9,
     bgColor: '#F9FAFC',
     captionFontSize: '14'
+}
+
+export const chartConfigModal = {
+    showvalues: "1",
+    enablemultislicing: "1",
+    theme: "fusion",
+    useDataPlotColorForLabels: "1",
+    showLegend: "1",
+    drawcrossline: "1",
+    showBorder: 1,
+    borderAlpha: 9,
+    labelDisplay: "rotate",
+    slantLabel: "1",
+    captionFontSize: 15,
+    subCaptionFontSize: 13
 }

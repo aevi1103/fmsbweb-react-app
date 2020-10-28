@@ -5,7 +5,7 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
 import { tooltipStyle } from '../../../helpers/chart-config'
-import { chartConfig } from './chart-config'
+import { chartConfigDashboard } from './chart-config'
 
 import {
     colorCodes
@@ -38,7 +38,7 @@ const KpiChart = ({
         chart: {
             caption: 'Production Status',
             plottooltext: "<b>$label</b>: $percentValue",
-            ...chartConfig,
+            ...chartConfigDashboard,
             ...tooltipStyle
         },
         data: [

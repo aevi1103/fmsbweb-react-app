@@ -1,5 +1,6 @@
 import React from 'react'
 import numeral from 'numeral'
+import { useDispatch } from 'react-redux'
 import {
     Col,
     Row,
@@ -12,9 +13,17 @@ import {
 import HourlyProductionChart from './charts/hourly-prod-chart.component'
 import KpiChart from './charts/kpi-chart.component'
 import ScrapChart from './charts/scrap-chart.component'
-import DowntimeChart from './charts/downtime-chart.component'
+import DowntimeByMachineChart from './charts/downtime-by-machine-chart.component'
+import DowntimeByReasonChart from './charts/downtime-by-reason-chart.component'
 
-const LineStatus = ({ 
+import {
+    setScrapModalVisible,
+    setDowntimeModalVisible,
+    setHxHModalVisible,
+    setLine
+} from '../../redux/production-status/production-status.action'
+
+const LineStatus = React.memo(({ 
     data,
     gutter
 }) => {
@@ -31,18 +40,17 @@ const LineStatus = ({
         hxHUrls
     } = data;
 
-    const { oaeTarget } = swotTarget;
+    const dispatch = useDispatch();
 
+    const { oaeTarget } = swotTarget;
     const title = `${machineName} OAE: ${numeral(oae).format('0%')}`;
-    
+
     const topFiveScrap = [...scrapDefectDetails].slice(0,5);
     const { detailsByMachine, detailsByReason } = downtimeDetails;
-    const topFiveDowntime = department === 'Machining'
-            ? [...detailsByMachine].splice(0,5)
-            : [...detailsByReason].splice(0,5)
+    const deptTopFiveDowntimeByMachine = [...detailsByMachine].splice(0,5);
+    const deptTopFiveDowntimeByReason = [...detailsByReason].splice(0,5);
 
-
-    const actionMenu = (
+    const hxhMenu = (
         <Menu>
             {
                 hxHUrls.map(({ shiftDate, shift, line, hxHUrl }) => (
@@ -50,8 +58,45 @@ const LineStatus = ({
                         <a href={hxHUrl} target="_blank" rel="noreferrer" >{`${shiftDate} - Shift ${shift} - ${line} HxH`}</a>
                     </Menu.Item>
                 ))
-            }
-            
+            }  
+        </Menu>
+    )
+
+    const onModalClick = (type) => {
+
+        dispatch(setLine(machineName));
+
+        switch (type) {
+
+            case 'scrap':
+                dispatch(setScrapModalVisible(true));
+                break;
+
+            case 'downtime':
+                dispatch(setDowntimeModalVisible(true))
+                break;
+
+            case 'hxh':
+                dispatch(setHxHModalVisible(true))
+                break;
+        
+            default:
+                break;
+        }
+
+    }
+
+    const moreMenu = (
+        <Menu>
+            <Menu.Item onClick={() => onModalClick('hxh')} disabled={hourlyDetails.length === 0}>
+                Hourly Production
+            </Menu.Item>  
+            <Menu.Item onClick={() => onModalClick('scrap')} disabled={topFiveScrap.length === 0}>
+                Scrap Pareto
+            </Menu.Item>  
+            <Menu.Item onClick={() => onModalClick('downtime')} disabled={deptTopFiveDowntimeByMachine.length === 0}>
+                Downtime Pareto
+            </Menu.Item>    
         </Menu>
     )
 
@@ -61,8 +106,11 @@ const LineStatus = ({
             <Card size="small" title={title} extra={ 
                 [
                     <span key="target">Target: {numeral(oaeTarget).format('0%')}</span>,
-                    <Dropdown key="action" overlay={actionMenu} placement="bottomLeft" arrow>
+                    <Dropdown key="hxhs" overlay={hxhMenu} placement="bottomLeft" arrow>
                         <Button type="link" className="pr0 pl2">Open HxH</Button>
+                    </Dropdown>,
+                    <Dropdown key="more" overlay={moreMenu} placement="bottomLeft" arrow>
+                        <Button type="link" className="pr0 pl2">More</Button>
                     </Dropdown>
                 ]
             }>
@@ -82,7 +130,11 @@ const LineStatus = ({
                     </Col>
 
                     <Col lg={{ span: 24 }} xl={{ span: 12 }}>
-                        <DowntimeChart data={topFiveDowntime} dept={department} />
+                            {
+                                department === 'Machining'
+                                    ? <DowntimeByMachineChart data={deptTopFiveDowntimeByMachine} />
+                                    : <DowntimeByReasonChart data={deptTopFiveDowntimeByReason} />
+                            }
                     </Col>
 
                 </Row>
@@ -100,6 +152,6 @@ const LineStatus = ({
 
         </Col>
     )
-}
+})
 
 export default LineStatus;

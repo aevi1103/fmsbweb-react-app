@@ -10,7 +10,12 @@ const INITIAL_STATE = {
     shift: '',
     dateRange: [moment().format(dateFormat), moment().format(dateFormat)],
 
-    productionStatus: null
+    productionStatus: null,
+    scrapModalVisible: false,
+    downtimeModalVisible: false,
+    hxhModalVisible: false,
+
+    line: ''
 }
 
 const productionStatusReducer = (state = INITIAL_STATE, action) => {
@@ -43,6 +48,34 @@ const productionStatusReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 productionStatus: action.payload
+            }
+
+        case productionStatusTypes.SET_SCRAP_MODAL_VISIBLE:
+            
+            return {
+                ...state,
+                scrapModalVisible: action.payload
+            }
+
+        case productionStatusTypes.SET_DOWNTIME_MODAL_VISIBLE:
+            
+            return {
+                ...state,
+                downtimeModalVisible: action.payload
+            }
+
+        case productionStatusTypes.SET_HXH_MODAL_VISIBLE:
+            
+            return {
+                ...state,
+                hxhModalVisible: action.payload
+            }
+
+        case productionStatusTypes.SET_LINE:
+            
+            return {
+                ...state,
+                line: action.payload
             }
 
         default:

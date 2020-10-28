@@ -52,7 +52,8 @@ const DepartmentDashboardPage = () => {
 
     const [form] = Form.useForm();
     const history = useHistory();
-    const { department } = useParams();
+    let { department } = useParams();
+    department = department ?? dept;
 
     const [headerTitle, setHeaderTitle] = useState('');
     const [loading, setLoading] = useState(false);
@@ -66,6 +67,7 @@ const DepartmentDashboardPage = () => {
     const ms = 300000; //300000
 
     const getInitialData = useCallback(() => {
+
         api.get(`/dateshift/${department}`)
         .then(response => {
 
@@ -78,19 +80,20 @@ const DepartmentDashboardPage = () => {
             form.setFieldsValue({
                 dateRange: [moment(shiftDate), moment(shiftDate)],
                 shift: shift,
-                dept: _.startCase(department ?? dept),
+                dept: _.startCase(department),
                 autoUpdate: true
             });
 
             form.submit();
             dispatch(setSiderCollapse(true));
         })
-    }, [department, dept, dispatch, form])
+
+    }, [department, dispatch, form])
 
     //* update doc title
     useEffect(() => {
-        document.title = `${_.startCase(department ?? dept)} Production Dashboard`
-    }, [department, dept])
+        document.title = `${_.startCase(department)} Production Dashboard`
+    }, [department])
 
     //* load data for current shift
     useEffect(() => {
@@ -102,7 +105,7 @@ const DepartmentDashboardPage = () => {
         const interval = setInterval(getInitialData, ms); //300000
         setIntervalValue(interval);
         
-        return () => clearInterval(interval)
+        return () => clearInterval(interval);
 
     }, [department, getInitialData])
 
@@ -143,13 +146,12 @@ const DepartmentDashboardPage = () => {
             message.success({ content: `${dept} production data successfully loaded`, key: dept, duration: 2 });
 
             dispatch(setProductionStatus(response.data));
-
             dispatch(setDepartment(_.startCase(dept)));
             dispatch(setShift(shift));
             dispatch(setDateRange([startStr, endStr]));
 
             setLastUpdate(moment());
-     
+
         } catch (error) {
             setError(error)
         } finally {
@@ -169,10 +171,17 @@ const DepartmentDashboardPage = () => {
         if (isChecked) {
             interval = setInterval(getInitialData, ms);
             setIntervalValue(interval);
+            message.success("Auto-Update Enabled");
         } else {
-            clearInterval(intervalValue)
+            clearInterval(intervalValue);
+            message.info("Auto-Update Disabled");
         }
 
+    }
+
+    const onDeptChange = dept => {
+        dispatch(setDepartment(_.startCase(dept)));
+        history.push(`/dashboard/status/${dept.toLowerCase()}`);
     }
 
     return (
@@ -182,8 +191,8 @@ const DepartmentDashboardPage = () => {
                 title={headerTitle}
                 subTitle={<div>
                     <span>Last Update: {moment(lastUpdate).format('lll')}</span>
-                    <Tooltip title="Updates every 5 minutes">
-                        <Checkbox className="ml2" checked={checked} onClick={onChecked} loading={loading} >Enable Auto Update</Checkbox>
+                    <Tooltip title="Updates every 5 minutes, checking this will always update to current shift.">
+                        <Checkbox className="ml2" checked={checked} onClick={onChecked} loading={loading} >Enable Auto-Update</Checkbox>
                     </Tooltip>    
                 </div>}
                 onBack={() => history.goBack()}
@@ -212,7 +221,7 @@ const DepartmentDashboardPage = () => {
                             label="Department"
                             rules={[{ required: true, message: 'Required' }]}
                         >
-                            <Select style={{ width: '7rem' }}>
+                            <Select style={{ width: '7rem' }} onChange={onDeptChange}>
                                 {
                                     depts.map(dept => (<Option key={dept}>{dept}</Option>))
                                 }

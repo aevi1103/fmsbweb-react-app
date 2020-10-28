@@ -1,13 +1,25 @@
 import React from 'react'
 import numeral from 'numeral'
+import { useDispatch } from 'react-redux'
+
 import LineStatus from './line-status.component'
 import LineStatusMicro from './line-status-micro.component'
 
 import KpiChart from '../../components/production-status/charts/kpi-chart.component'
 import ScrapChart from '../../components/production-status/charts/scrap-chart.component'
-import DowntimeChart from '../../components/production-status/charts/downtime-chart.component'
-
+import DowntimeByMachineChart from './charts/downtime-by-machine-chart.component'
+import DowntimeByReasonChart from './charts/downtime-by-reason-chart.component'
 import ScrapByTypeChart from '../../components/production-status/charts/scrap-pareto-by-type-chart.component'
+
+import ScrapParetoModal from '../../components/production-status/scrapParetoModal.component'
+import DowntimeParetoModal from '../../components/production-status/downtimeParetoModal.component'
+import HxHParetoModal from '../../components/production-status/hxhParetoModal.component'
+
+import {
+    setScrapModalVisible,
+    setDowntimeModalVisible,
+    setHxHModalVisible,
+} from '../../redux/production-status/production-status.action'
 
 import {
     Row,
@@ -18,9 +30,11 @@ import {
     Button
 } from 'antd'
 
-const ProductionStatusContainer = ({
+const ProductionStatusContainer = React.memo(({
     productionStatus
 }) => {
+
+    const dispatch = useDispatch();
 
     const { lines, department, scrapDetails, scrapDetailsByDepartment } = productionStatus || {};
     const { oae, scrapDefectDetails, downtimeDetails, swotTarget, kpi, hxHUrls } = department || {};
@@ -28,11 +42,10 @@ const ProductionStatusContainer = ({
 
     const title = `${department.department} OAE: ${numeral(oae).format('0%')}`;
     const deptTopFiveScrap = [...scrapDefectDetails].slice(0,5);
-    const deptTopFiveDowntime = department === 'Machining'
-            ? [...downtimeDetails.detailsByMachine].splice(0,5)
-            : [...downtimeDetails.detailsByReason].splice(0,5)
+    const deptTopFiveDowntimeByMachine = [...downtimeDetails.detailsByMachine].splice(0,5);
+    const deptTopFiveDowntimeByReason = [...downtimeDetails.detailsByReason].splice(0,5);
 
-    const actionMenu = (
+    const hxhMenu = (
         <Menu>
             {
                 hxHUrls.map(({ shiftDate, shift, line, hxHUrl }) => (
@@ -52,13 +65,22 @@ const ProductionStatusContainer = ({
 
         <>
 
+            {/* Micro Line OAE */}
             <Row gutter={gutter}>
 
                 {
+                    oae > 0
+                     ?  <Col sm={{ span: 24 }}  md={{ span: 12 }} lg={{ span: 6 }} xl={{ span: 2 }}>
+                            <LineStatusMicro oae={oae} oaeTarget={oaeTarget} line={department.department} />
+                        </Col>
+                    : null
+                }
+                
+                {
                     lines.length > 0 
-                        ?  lines.map(line => (
-                            <Col key={line.machineName} sm={{ span: 24 }}  md={{ span: 12 }} lg={{ span: 6 }} xl={{ span: 2 }}>
-                                <LineStatusMicro data={line} />
+                        ?  lines.map(({ oae, machineName, swotTarget: { oaeTarget } }) => (
+                            <Col key={machineName} sm={{ span: 24 }}  md={{ span: 12 }} lg={{ span: 6 }} xl={{ span: 2 }}>
+                                <LineStatusMicro oae={oae} oaeTarget={oaeTarget} line={machineName} />
                             </Col>
                         ))
                         : null
@@ -66,6 +88,7 @@ const ProductionStatusContainer = ({
 
             </Row>
 
+            {/* Scrap Summary */}
             <Row gutter={gutter}>
 
                 <Col sm={{ span: 24 }} md={{ span: 12 }} lg={{ span: 6 }} xl={{ span: 4 }}>
@@ -80,9 +103,8 @@ const ProductionStatusContainer = ({
 
                 {
                     scrapDetails.map(scrap => <Col key={scrap.area} sm={{ span: 24 }} md={{ span: 12 }} lg={{ span: 6 }} xl={{ span: 4 }}>
-                                                    <Card 
-                                                        size="small" 
-                                                        headStyle={{ display: 'none' }}>
+                                                    <Card size="small" 
+                                                            headStyle={{ display: 'none' }}>
                                                             <ScrapChart 
                                                                 data={scrap.defects} 
                                                                 caption={`Top 5 Scrap Defects Pareto at ${scrap.area}`}
@@ -93,8 +115,7 @@ const ProductionStatusContainer = ({
 
             </Row>
 
-            {/* <Divider>Lines</Divider> */}
-
+            {/* Department Status */}
             <Row gutter={gutter}>
 
                 <Col md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }}>
@@ -102,7 +123,7 @@ const ProductionStatusContainer = ({
                     <Card size="small" title={title} extra={ 
                         [
                             <span key="target">Target: {numeral(oaeTarget).format('0%')}</span>,
-                            <Dropdown key="action" overlay={actionMenu} placement="bottomLeft" arrow>
+                            <Dropdown key="action" overlay={hxhMenu} placement="bottomLeft" arrow>
                                 <Button type="link" className="pr0 pl2">Open HxH</Button>
                             </Dropdown>
                         ]
@@ -119,7 +140,11 @@ const ProductionStatusContainer = ({
                             </Col>
 
                             <Col span={24}>
-                                <DowntimeChart data={deptTopFiveDowntime} dept={department.department} /> 
+                                {
+                                    department.department === 'Machining'
+                                        ? <DowntimeByMachineChart data={deptTopFiveDowntimeByMachine} />
+                                        : <DowntimeByReasonChart data={deptTopFiveDowntimeByReason} />
+                                }
                             </Col>
 
                         </Row>
@@ -128,6 +153,7 @@ const ProductionStatusContainer = ({
 
                 </Col>
 
+                {/* Line Status */}
                 {
                     lines.length > 0 
                         ?   lines.map(line => <LineStatus key={line.machineName} data={line} gutter={gutter} />)
@@ -136,9 +162,13 @@ const ProductionStatusContainer = ({
 
             </Row>
 
+            <ScrapParetoModal />
+            <DowntimeParetoModal />
+            <HxHParetoModal />
+
         </>
         
     )
-}
+})
 
 export default ProductionStatusContainer;

@@ -5,16 +5,22 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
 import { tooltipStyle } from '../../../helpers/chart-config'
-import { chartConfig } from './chart-config'
+import { 
+    chartConfigDashboard,
+    chartConfigModal
+ } from './chart-config'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const ScrapChart = ({
+const ScrapChart =  React.memo(({
     data,
     caption,
-    height = '150'
+    height = 150,
+    isModal = false
 }) => {
+
+    const chartConfig = !isModal ? chartConfigDashboard : chartConfigModal;
 
     const dataSource = {
         chart: {
@@ -34,12 +40,12 @@ const ScrapChart = ({
         width: '100%',
         height: height,
         dataFormat: 'json',
-        dataSource: data.length > 0 ? dataSource : null
+        dataSource: dataSource
       };
 
     return (
         <ReactFC {...chartConfigs} />
     )
-}
+})
 
 export default ScrapChart;

@@ -16,11 +16,11 @@ const Oae = styled.span`
 `;
 
 const LineStatusMicro = ({
-    data
+    oae,
+    oaeTarget,
+    line
 }) => {
 
-    const { oae, swotTarget, machineName } = data;
-    const { oaeTarget } = swotTarget;
     const { green, red } = colorCodes;
 
     const headStyle ={
@@ -38,7 +38,7 @@ const LineStatusMicro = ({
     return (
         <Card 
             size="small" 
-            title={machineName} 
+            title={line} 
             headStyle={headStyle}
             bodyStyle={bodyStyle}>
 
