@@ -35,11 +35,21 @@ const HourlyProductionChart = React.memo(({
 
     const getLabel = (shiftDate, shift, line, cellSide, hour) => {
 
-        if (cellSide.toLowerCase() !== 'n/a') {
-            return `${line} - ${moment(shiftDate).format('M/D')} - ${shift} - H${hour}`
-        } else {
-            return `${moment(shiftDate).format('M/D')} - ${shift} - H${hour}`
+        const date = moment(shiftDate).format('M/D');
+
+        if (data.length <= 8 && cellSide.toLowerCase() === 'n/a') {
+            return `Hour ${hour}`;
         }
+
+        if (data.length <= 16 && cellSide.toLowerCase() !== 'n/a') {
+            return `${line} - H${hour}`;
+        }
+
+        if (cellSide.toLowerCase() !== 'n/a') {
+            return `${line} - ${date} - ${shift} - H${hour}`
+        } 
+
+        return `${date} - ${shift} - H${hour}`
 
     }
 
@@ -52,7 +62,7 @@ const HourlyProductionChart = React.memo(({
             rotateValues: data.length > 8 ? '1' : '0',
             showValues: (data.length < 24 || isModal) ? '1' : '0',
             labelDisplay: data.length > 8 ? "rotate" : '',
-            slantLabel: data.length > 8 ? '1' : '0'
+            // slantLabel: data.length > 8 ? '1' : '0'
         },
         data: data.map(({net, shiftDate, shift, hour, swotTarget, oae, totalScrap, line, cellSide}) => ({
                 label: getLabel(shiftDate, shift, line, cellSide, hour),

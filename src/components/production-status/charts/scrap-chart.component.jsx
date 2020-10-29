@@ -1,4 +1,5 @@
 import React from 'react'
+import _ from 'lodash'
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
@@ -38,7 +39,7 @@ const ScrapChart =  React.memo(({
                 }
 
                 if (isDrillDown) {
-                    result.link = `newchart-xml-${scrapDesc.replace(/\s/g, '_')}`;
+                    result.link = `newchart-xml-${_.snakeCase(scrapDesc)}`;
                 }
 
                 return result
@@ -48,7 +49,7 @@ const ScrapChart =  React.memo(({
 
       if (isDrillDown) {
         dataSource.linkeddata = data.map(({scrapDesc, colorCode, lineDetails}) => ({
-            id: `${scrapDesc.replace(/\s/g, '_')}`,
+            id: `${_.snakeCase(scrapDesc)}`,
             linkedchart: {
                 chart: {
                     caption: `${scrapDesc} Scrap by Line`,
@@ -60,14 +61,14 @@ const ScrapChart =  React.memo(({
                     label: line,
                     value: qty,
                     color: colorCode,
-                    link: `newchart-xml-${scrapDesc.replace(/\s/g, '_')}_${line.replace(/\s/g, '_')}`
+                    link: `newchart-xml-${_.snakeCase(scrapDesc)}_${_.snakeCase(line)}`
                 })),
 
                 linkeddata: lineDetails?.map(({ line, userDetails }) => ({
-                    id: `${scrapDesc.replace(/\s/g, '_')}_${line.replace(/\s/g, '_')}`,
+                    id: `${_.snakeCase(scrapDesc)}_${_.snakeCase(line)}`,
                     linkedchart: {
                         chart: {
-                            caption: `${scrapDesc} / ${line} Scrap by User`,
+                            caption: `${scrapDesc} Scrap by User at ${line}`,
                             ...chartConfig,
                             ...tooltipStyle
                         },

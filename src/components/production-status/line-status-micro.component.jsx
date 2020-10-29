@@ -1,5 +1,6 @@
 import React from 'react'
 import numeral from 'numeral'
+import _ from 'lodash'
 import styled from 'styled-components'
 import {
     Card,
@@ -9,6 +10,8 @@ import {
 import {
     colorCodes
 } from '../swot/helper'
+
+import { scrollToObject } from '../../helpers/helpers'
 
 const Oae = styled.span`
     font-size: 2.5rem;
@@ -35,15 +38,22 @@ const LineStatusMicro = ({
         color: 'white'
     }
 
+    const onClick = () => {
+        const el = document.querySelector(`#${_.snakeCase(line)}`);
+        scrollToObject(el);
+    }
+
     return (
         <Card 
             size="small" 
             title={line} 
+            style={{ cursor: 'pointer' }}
             headStyle={headStyle}
-            bodyStyle={bodyStyle}>
+            bodyStyle={bodyStyle}
+            onClick={onClick}>
 
                 <Tooltip title={`Target: ${numeral(oaeTarget).format('0%')}`}>
-                    <Oae>{numeral(oae).format('0%')}</Oae>
+                    <Oae >{numeral(oae).format('0%')}</Oae>
                 </Tooltip>
                 
         </Card>

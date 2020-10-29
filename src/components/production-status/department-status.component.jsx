@@ -1,10 +1,12 @@
 import React from 'react'
 import numeral from 'numeral'
+import _ from 'lodash'
 import { useDispatch } from 'react-redux'
 import ScrapChart from '../../components/production-status/charts/scrap-chart.component'
 import KpiChart from '../../components/production-status/charts/kpi-chart.component'
 import DowntimeByMachineChart from './charts/downtime-by-machine-chart.component'
 import DowntimeByReasonChart from './charts/downtime-by-reason-chart.component'
+import AutoGageScrapChart from './charts/autogage-scrap-chart.component'
 
 import {
     setScrapModalVisible,
@@ -24,6 +26,10 @@ import {
     Menu
 } from 'antd'
 
+import {  getTopItems } from '../../helpers/helpers'
+import { colorCodes } from '../swot/helper'
+
+const { red } = colorCodes;
 const gutter = [8,8]
 
 const DepartmentStatus = React.memo(({
@@ -31,14 +37,20 @@ const DepartmentStatus = React.memo(({
 }) => {
 
     const dispatch = useDispatch();
-    const { oae, scrapDefectDetails, downtimeDetails, swotTarget, kpi, hxHUrls, department } = data;
+    const { 
+        oae,
+        scrapDefectDetails,
+        downtimeDetails,
+        swotTarget,
+        kpi,
+        hxHUrls,
+        department,
+        autoGageScrap
+    } = data;
+
     const { oaeTarget } = swotTarget;
     const { detailsByMachine, detailsByReason } = downtimeDetails;
-
     const title = `${department} OAE: ${numeral(oae).format('0%')}`;
-    const deptTopFiveScrap = [...scrapDefectDetails].slice(0,5);
-    const deptTopFiveDowntimeByMachine = [...detailsByMachine].splice(0,5);
-    const deptTopFiveDowntimeByReason = [...detailsByReason].splice(0,5);
 
     const hxhMenu = (
         <Menu>
@@ -87,9 +99,13 @@ const DepartmentStatus = React.memo(({
     )
 
     return (
-        <Col md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }}>
+        <Col md={{ span: 24 }} lg={{ span: 12 }} xl={{ span: 8 }} id={_.snakeCase(department)}>
 
-                    <Card size="small" title={title} extra={ 
+                    <Card 
+                        size="small" 
+                        title={title} 
+                        style={{ borderColor: oae < oaeTarget ? red : '' }}
+                        extra={ 
                         [
                             <span key="target">Target: {numeral(oaeTarget).format('0%')}</span>,
                             <Dropdown key="action" overlay={hxhMenu} placement="bottomLeft" arrow>
@@ -104,7 +120,7 @@ const DepartmentStatus = React.memo(({
                         <Row gutter={gutter}>
 
                             <Col span={24}>
-                                <ScrapChart data={deptTopFiveScrap} caption="Top 5 Scrap Pareto" isDrillDown={true} />  
+                                <ScrapChart data={getTopItems(scrapDefectDetails)} caption="Top 5 Scrap Pareto" isDrillDown={true} />  
                             </Col>
 
                             <Col span={24}>
@@ -114,10 +130,18 @@ const DepartmentStatus = React.memo(({
                             <Col span={24}>
                                 {
                                     department === 'Machining'
-                                        ? <DowntimeByMachineChart data={deptTopFiveDowntimeByMachine} />
-                                        : <DowntimeByReasonChart data={deptTopFiveDowntimeByReason} />
+                                        ? <DowntimeByMachineChart data={getTopItems(detailsByMachine)} />
+                                        : <DowntimeByReasonChart data={getTopItems(detailsByReason)} />
                                 }
                             </Col>
+
+                            {
+                                department === 'Machining'
+                                    ?  <Col span={24}>
+                                            <AutoGageScrapChart data={getTopItems(autoGageScrap)} caption="Top 5 AutoGage Scrap" />  
+                                        </Col>
+                                    : null
+                            }
 
                         </Row>
 

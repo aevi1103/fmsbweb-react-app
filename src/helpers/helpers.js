@@ -111,3 +111,7 @@ export const dateRange = {
     'MTD': [moment().startOf('month'), moment().add(-1, 'days')],
     'YTD': [moment().startOf('year'), moment().add(-1, 'days')]
 }
+
+export const getTopItems = (data, top = 5) => [...data].splice(0,top);
+
+export const scrollToObject = el => window.scrollTo(0, el?.offsetTop);

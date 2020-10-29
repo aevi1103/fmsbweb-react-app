@@ -1,4 +1,5 @@
 import React from 'react'
+import _ from 'lodash'
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
@@ -26,11 +27,11 @@ const ScrapByTypeChart = ({
                 label: scrapAreaName,
                 value: qty,
                 color: colorCode,
-                link: `newchart-xml-${scrapAreaName.replace(/\s/g, '_')}`
+                link: `newchart-xml-${_.snakeCase(scrapAreaName)}`
             })),
 
         linkeddata: data?.map(({ scrapAreaName, defects }) => ({
-            id: scrapAreaName.replace(/\s/g, '_'),
+            id: _.snakeCase(scrapAreaName),
             linkedchart: {
                 chart: {
                     caption: `${scrapAreaName} Top 5 Scrap by Defect `,
@@ -42,11 +43,11 @@ const ScrapByTypeChart = ({
                     label: scrapDesc,
                     value: qty,
                     color: colorCode,
-                    link: `newchart-xml-${scrapAreaName.replace(/\s/g, '_')}_${scrapDesc.replace(/\s/g, '_')}`
+                    link: `newchart-xml-${_.snakeCase(scrapAreaName)}_${_.snakeCase(scrapDesc)}`
                 })),
 
                 linkeddata: defects?.map(({ scrapDesc, lineDetails, colorCode }) => ({
-                    id: `${scrapAreaName.replace(/\s/g, '_')}_${scrapDesc.replace(/\s/g, '_')}`,
+                    id: `${_.snakeCase(scrapAreaName)}_${_.snakeCase(scrapDesc)}`,
                     linkedchart: {
                         chart: {
                             caption: `${scrapAreaName} / ${scrapDesc} Scrap by Line`,
@@ -58,11 +59,11 @@ const ScrapByTypeChart = ({
                             label: line,
                             value: qty,
                             color: colorCode,
-                            link: `newchart-xml-${scrapAreaName.replace(/\s/g, '_')}_${scrapDesc.replace(/\s/g, '_')}_${line.replace(/\s/g, '_')}`
+                            link: `newchart-xml-${_.snakeCase(scrapAreaName)}_${_.snakeCase(scrapDesc)}_${_.snakeCase(line)}`
                         })),
 
                         linkeddata: lineDetails?.map(({ line, userDetails }) => ({
-                            id: `${scrapAreaName.replace(/\s/g, '_')}_${scrapDesc.replace(/\s/g, '_')}_${line.replace(/\s/g, '_')}`,
+                            id: `${_.snakeCase(scrapAreaName)}_${_.snakeCase(scrapDesc)}_${_.snakeCase(line)}`,
                             linkedchart: {
                                 chart: {
                                     caption: `${scrapDesc} / ${line} Scrap by User`,
