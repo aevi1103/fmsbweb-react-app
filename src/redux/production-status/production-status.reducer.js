@@ -15,7 +15,12 @@ const INITIAL_STATE = {
     downtimeModalVisible: false,
     hxhModalVisible: false,
 
-    line: ''
+    line: '',
+    scrapCollection: [],
+    downtimeByMachine: [],
+    downtimeByReason: [],
+    hxhCollection: [],
+    target: null
 }
 
 const productionStatusReducer = (state = INITIAL_STATE, action) => {
@@ -76,6 +81,41 @@ const productionStatusReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 line: action.payload
+            }
+
+        case productionStatusTypes.SET_SCRAP_COLLECTION:
+            
+            return {
+                ...state,
+                scrapCollection: action.payload
+            }
+
+        case productionStatusTypes.SET_DOWNTIME_BY_MACHINE_COLLECTION:
+            
+            return {
+                ...state,
+                downtimeByMachine: action.payload
+            }
+
+        case productionStatusTypes.SET_DOWNTIME_BY_REASON_COLLECTION:
+            
+            return {
+                ...state,
+                downtimeByReason: action.payload
+            }
+
+        case productionStatusTypes.SET_HXH_COLLECTION:
+            
+            return {
+                ...state,
+                hxhCollection: action.payload
+            }
+
+        case productionStatusTypes.SET_TARGET:
+            
+            return {
+                ...state,
+                target: action.payload
             }
 
         default:

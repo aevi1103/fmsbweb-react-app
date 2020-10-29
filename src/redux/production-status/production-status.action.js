@@ -39,3 +39,28 @@ export const setLine = line => ({
     type: productionStatusTypes.SET_LINE,
     payload: line
 });
+
+export const setScrapCollection = collection => ({
+    type: productionStatusTypes.SET_SCRAP_COLLECTION,
+    payload: collection
+});
+
+export const setDowntimeByMachineCollection = collection => ({
+    type: productionStatusTypes.SET_DOWNTIME_BY_MACHINE_COLLECTION,
+    payload: collection
+})
+
+export const setDowntimeByReasonCollection = collection => ({
+    type: productionStatusTypes.SET_DOWNTIME_BY_REASON_COLLECTION,
+    payload: collection
+});
+
+export const setHxHCollection = collection => ({
+    type: productionStatusTypes.SET_HXH_COLLECTION,
+    payload: collection
+});
+
+export const setTarget = target => ({
+    type: productionStatusTypes.SET_TARGET,
+    payload: target
+});

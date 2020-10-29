@@ -20,7 +20,12 @@ import {
     setScrapModalVisible,
     setDowntimeModalVisible,
     setHxHModalVisible,
-    setLine
+    setLine,
+    setScrapCollection,
+    setDowntimeByMachineCollection,
+    setDowntimeByReasonCollection,
+    setHxHCollection,
+    setTarget
 } from '../../redux/production-status/production-status.action'
 
 const LineStatus = React.memo(({ 
@@ -69,15 +74,20 @@ const LineStatus = React.memo(({
         switch (type) {
 
             case 'scrap':
+                dispatch(setScrapCollection(scrapDefectDetails))
                 dispatch(setScrapModalVisible(true));
                 break;
 
             case 'downtime':
-                dispatch(setDowntimeModalVisible(true))
+                dispatch(setDowntimeByMachineCollection(detailsByMachine))
+                dispatch(setDowntimeByReasonCollection(detailsByReason))
+                dispatch(setDowntimeModalVisible(true));
                 break;
 
             case 'hxh':
-                dispatch(setHxHModalVisible(true))
+                dispatch(setHxHCollection(hourlyDetails))
+                dispatch(setTarget(swotTarget))
+                dispatch(setHxHModalVisible(true));
                 break;
         
             default:

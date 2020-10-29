@@ -57,7 +57,25 @@ const ScrapByTypeChart = ({
                         data: lineDetails.map(({ line, qty }) => ({
                             label: line,
                             value: qty,
-                            color: colorCode
+                            color: colorCode,
+                            link: `newchart-xml-${scrapAreaName.replace(/\s/g, '_')}_${scrapDesc.replace(/\s/g, '_')}_${line.replace(/\s/g, '_')}`
+                        })),
+
+                        linkeddata: lineDetails?.map(({ line, userDetails }) => ({
+                            id: `${scrapAreaName.replace(/\s/g, '_')}_${scrapDesc.replace(/\s/g, '_')}_${line.replace(/\s/g, '_')}`,
+                            linkedchart: {
+                                chart: {
+                                    caption: `${scrapDesc} / ${line} Scrap by User`,
+                                    ...chartConfigDashboard,
+                                    ...tooltipStyle
+                                },
+                                
+                                data: userDetails?.map(({ user, qty }) => ({
+                                    label: user,
+                                    value: qty,
+                                    color: colorCode
+                                }))
+                            }
                         }))
                     }
                 }))

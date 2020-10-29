@@ -3,7 +3,7 @@ import _ from 'lodash'
 import moment from 'moment'
 import { useHistory, useParams } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import api from '../../../API'
+import api from '../../../API';
 
 import {
     setDepartment,
@@ -80,8 +80,7 @@ const DepartmentDashboardPage = () => {
             form.setFieldsValue({
                 dateRange: [moment(shiftDate), moment(shiftDate)],
                 shift: shift,
-                dept: _.startCase(department),
-                autoUpdate: true
+                dept: _.startCase(department)
             });
 
             form.submit();
@@ -98,11 +97,10 @@ const DepartmentDashboardPage = () => {
     //* load data for current shift
     useEffect(() => {
 
-        //* load initial data
         getInitialData();
 
         //* run every 5 minutes
-        const interval = setInterval(getInitialData, ms); //300000
+        const interval = checked ? setInterval(getInitialData, ms) : null; 
         setIntervalValue(interval);
         
         return () => clearInterval(interval);
@@ -163,6 +161,7 @@ const DepartmentDashboardPage = () => {
     const onChecked = e => {
 
         clearInterval(intervalValue);
+
         const isChecked = e.target.checked;
         setChecked(isChecked);
 
@@ -191,7 +190,7 @@ const DepartmentDashboardPage = () => {
                 title={headerTitle}
                 subTitle={<div>
                     <span>Last Update: {moment(lastUpdate).format('lll')}</span>
-                    <Tooltip title="Updates every 5 minutes, checking this will always update to current shift.">
+                    <Tooltip title="Updates every 5 minutes, checking this will always update to the current shift.">
                         <Checkbox className="ml2" checked={checked} onClick={onChecked} loading={loading} >Enable Auto-Update</Checkbox>
                     </Tooltip>    
                 </div>}

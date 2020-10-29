@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import {
@@ -16,18 +16,8 @@ const HxHParetoModal = () => {
     const dispatch = useDispatch();
     const visible = useSelector(({ productionStatus: { hxhModalVisible } }) => hxhModalVisible);
     const line = useSelector(({ productionStatus: { line } }) => line);
-    const lines = useSelector(({ productionStatus: { productionStatus } }) => productionStatus.lines);
-
-    const [data, setData] = useState([]);
-    const [target, settarget] = useState({});
-
-    useEffect(() => {
-
-        const { hourlyDetails, swotTarget } = lines?.find(({ machineName }) => machineName === line) || {};
-        setData(hourlyDetails ?? []);
-        settarget(swotTarget ?? {});
-        
-      }, [line, lines])
+    const hxhCollection = useSelector(({ productionStatus: { hxhCollection } }) => hxhCollection);
+    const target = useSelector(({ productionStatus: { target } }) => target);
 
     const onCancel = () => dispatch(setHxHModalVisible(false));
 
@@ -40,7 +30,7 @@ const HxHParetoModal = () => {
           width="90vw"
         >
           <HourlyProductionChart 
-            data={data} 
+            data={hxhCollection} 
             target={target} 
             caption={`${line} Hourly Production`}
             height={500}

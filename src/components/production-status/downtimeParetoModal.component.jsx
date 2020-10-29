@@ -19,20 +19,8 @@ const HxHParetoModal = () => {
     const dispatch = useDispatch();
     const visible = useSelector(({ productionStatus: { downtimeModalVisible } }) => downtimeModalVisible);
     const line = useSelector(({ productionStatus: { line } }) => line);
-    const lines = useSelector(({ productionStatus: { productionStatus } }) => productionStatus.lines);
-
-    const [machineData, setMachineData] = useState([]);
-    const [reasonData, setReasonData] = useState([])
-
-    useEffect(() => {
-
-        const { downtimeDetails } = lines?.find(({ machineName }) => machineName === line) || {};
-        const { detailsByMachine, detailsByReason } = downtimeDetails || {};
-
-        setMachineData(detailsByMachine ?? []);
-        setReasonData(detailsByReason ?? []);
-        
-      }, [line, lines])
+    const downtimeByMachine = useSelector(({ productionStatus: { downtimeByMachine } }) => downtimeByMachine);
+    const downtimeByReason = useSelector(({ productionStatus: { downtimeByReason } }) => downtimeByReason);
 
     const onCancel = () => dispatch(setDowntimeModalVisible(false));
 
@@ -50,10 +38,10 @@ const HxHParetoModal = () => {
 
             <Row gutter={[10,10]}>
                 <Col span={24}>
-                    <DowntimeByMachineChart data={machineData} height={350} isModal={true} modalCaption={machineCaption} />
+                    <DowntimeByMachineChart data={downtimeByMachine} height={350} isModal={true} modalCaption={machineCaption} />
                 </Col>
                 <Col span={24}>
-                    <DowntimeByReasonChart data={reasonData} height={350} isModal={true} modalCaption={reasonCaption} />
+                    <DowntimeByReasonChart data={downtimeByReason} height={350} isModal={true} modalCaption={reasonCaption} />
                 </Col>
             </Row>
             

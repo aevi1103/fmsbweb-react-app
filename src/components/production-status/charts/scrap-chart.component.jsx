@@ -17,7 +17,8 @@ const ScrapChart =  React.memo(({
     data,
     caption,
     height = 150,
-    isModal = false
+    isModal = false,
+    isDrillDown = false
 }) => {
 
     const chartConfig = !isModal ? chartConfigDashboard : chartConfigModal;
@@ -28,12 +29,59 @@ const ScrapChart =  React.memo(({
             ...chartConfig,
             ...tooltipStyle
         },
-        data: data.map(({scrapDesc, colorCode, qty}) => ({
-                label: scrapDesc,
-                value: qty,
-                color: colorCode
-            }))
+        data: data.map(({scrapDesc, colorCode, qty}) => {
+
+                const result = {
+                    label: scrapDesc,
+                    value: qty,
+                    color: colorCode
+                }
+
+                if (isDrillDown) {
+                    result.link = `newchart-xml-${scrapDesc.replace(/\s/g, '_')}`;
+                }
+
+                return result
+                
+            })
       };
+
+      if (isDrillDown) {
+        dataSource.linkeddata = data.map(({scrapDesc, colorCode, lineDetails}) => ({
+            id: `${scrapDesc.replace(/\s/g, '_')}`,
+            linkedchart: {
+                chart: {
+                    caption: `${scrapDesc} Scrap by Line`,
+                    ...chartConfig,
+                    ...tooltipStyle
+                },
+                
+                data: lineDetails?.map(({ line, qty }) => ({
+                    label: line,
+                    value: qty,
+                    color: colorCode,
+                    link: `newchart-xml-${scrapDesc.replace(/\s/g, '_')}_${line.replace(/\s/g, '_')}`
+                })),
+
+                linkeddata: lineDetails?.map(({ line, userDetails }) => ({
+                    id: `${scrapDesc.replace(/\s/g, '_')}_${line.replace(/\s/g, '_')}`,
+                    linkedchart: {
+                        chart: {
+                            caption: `${scrapDesc} / ${line} Scrap by User`,
+                            ...chartConfig,
+                            ...tooltipStyle
+                        },
+                        
+                        data: userDetails?.map(({ user, qty }) => ({
+                            label: user,
+                            value: qty,
+                            color: colorCode
+                        }))
+                    }
+                }))
+            }
+        }))
+      }
 
       const chartConfigs = {
         type: 'column2d',

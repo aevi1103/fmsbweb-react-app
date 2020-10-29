@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import {
@@ -15,17 +15,9 @@ const ScrapParetoModal = () => {
 
     const dispatch = useDispatch();
     const visible = useSelector(({ productionStatus: { scrapModalVisible } }) => scrapModalVisible);
+
     const line = useSelector(({ productionStatus: { line } }) => line);
-    const lines = useSelector(({ productionStatus: { productionStatus } }) => productionStatus.lines);
-
-    const [data, setData] = useState([]);
-
-    useEffect(() => {
-
-      const { scrapDefectDetails } = lines?.find(({ machineName }) => machineName === line) || {};
-      setData(scrapDefectDetails ?? [])
-      
-    }, [line, lines])
+    const scrapCollection = useSelector(({ productionStatus: { scrapCollection } }) => scrapCollection);
 
     const caption = `${line} Scrap Pareto by Defect`
     const onCancel = () => dispatch(setScrapModalVisible(false));
@@ -38,7 +30,7 @@ const ScrapParetoModal = () => {
           width="60vw"
           footer={null}
         >
-          <ScrapChart data={data} caption={caption} height={500} isModal={true} />
+          <ScrapChart data={scrapCollection} caption={caption} height={500} isModal={true} />
         </Modal>
     )
 }
