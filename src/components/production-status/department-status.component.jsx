@@ -1,7 +1,8 @@
 import React from 'react'
 import numeral from 'numeral'
 import _ from 'lodash'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
 import ScrapChart from '../../components/production-status/charts/scrap-chart.component'
 import KpiChart from '../../components/production-status/charts/kpi-chart.component'
 import DowntimeByMachineChart from './charts/downtime-by-machine-chart.component'
@@ -36,7 +37,10 @@ const DepartmentStatus = React.memo(({
     data
 }) => {
 
+    const [, end] = useSelector(({ productionStatus }) => productionStatus.dateRange);
+
     const dispatch = useDispatch();
+
     const { 
         oae,
         scrapDefectDetails,
@@ -89,12 +93,18 @@ const DepartmentStatus = React.memo(({
 
     const moreMenu = (
         <Menu>
+            <Menu.Item key={`/dashboard/morningmeeting/${department}/hourly-production`} >
+                <Link to={`/dashboard/morningmeeting/${department}/hourly-production?date=${end}`} >Hourly Production</Link>
+            </Menu.Item>
             <Menu.Item onClick={() => onModalClick('scrap')} disabled={scrapDefectDetails.length === 0}>
                 Scrap Pareto
             </Menu.Item>  
             <Menu.Item onClick={() => onModalClick('downtime')} disabled={detailsByMachine.length === 0}>
                 Downtime Pareto
             </Menu.Item>    
+            <Menu.Item key={`/orderstatus/${department}`} disabled={department.toLowerCase() === 'anodize'} >
+                <Link to={`/orderstatus/${department.toLowerCase()}`}>Active Orders</Link>
+            </Menu.Item>
         </Menu>
     )
 

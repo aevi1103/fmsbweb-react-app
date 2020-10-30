@@ -80,7 +80,7 @@ const DailyScrapRateChart = ({
                                         },
                                         data: defectDetails.map(({ scrapDesc, qty, scrapRate }) => ({
                                             label: scrapDesc,
-                                            value: scrapRate,
+                                            value: scrapRate * 100,
                                             color: colorCode,
                                             tooltext: `<b>Shift Date: </b> ${moment(shiftDate).format('MM/DD/YY')} <br>
                                                         <b>Shift: </b> ${shift} <br>
