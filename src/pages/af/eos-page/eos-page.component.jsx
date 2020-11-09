@@ -235,9 +235,13 @@ const EosPage = ({
 
         setSubmitLoading(true);
 
-        const { id} = deptEosResult;
+         const { id } = deptEosResult;
 
-        api.post('kpi/eos', {...values, endOfShiftReportId: id})
+        api.post('kpi/eos', {
+            ...values,
+             shiftDate: values.shiftDate.format(dateFormat),
+            endOfShiftReportId: id
+        })
         .then(response => {
             resetAfterFetch();
         })

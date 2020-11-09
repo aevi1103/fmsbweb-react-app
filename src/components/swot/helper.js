@@ -89,7 +89,8 @@ export const chartProps = {
     labelDisplay: "rotate",
     slantLabel: "1",
     captionFontSize: 15,
-    subCaptionFontSize: 13
+    subCaptionFontSize: 13,
+    // exportEnabled: '1'
 }
 
 export const colorCodes = {

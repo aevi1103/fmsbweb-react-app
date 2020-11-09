@@ -59,6 +59,8 @@ import CheckSheetHistoryPage from './pages/quality/check-sheet/check-sheet-histo
 //machining
 import MachiningManningPage from './pages/machining/manning/manning-page.component'
 
+import ChatPage from './pages/chat/chat-page.component'
+
 const { Footer, Sider } = Layout;
 
 const logoStyles = {
@@ -201,6 +203,8 @@ const App = ( {
           
           {/* Machining Page */}
           <Route exact path="/machining/manning/:eosId" component={MachiningManningPage} />
+
+          <Route exact path="/chat" component={ChatPage} />
 
           <Route component={NotFound} />
         </Switch>
