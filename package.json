@@ -1,8 +1,9 @@
 {
   "name": "fmsbweb.react-app",
-  "version": "0.1.279",
+  "version": "0.1.280",
   "private": true,
   "dependencies": {
+    "@microsoft/signalr": "^3.1.9",
     "antd": "^4.4.3",
     "axios": "^0.19.2",
     "babel-plugin-import": "^1.13.0",
@@ -32,6 +33,7 @@
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
+    "short-uuid": "^4.1.0",
     "shortid": "^2.2.15",
     "styled-components": "^4.4.1",
     "tachyons": "^4.11.1",
@@ -39,6 +41,7 @@
   },
   "scripts": {
     "start": "react-scripts start --no-cache",
+    "start:server": "dotnet run --project /c/Users/rontoa20/source/repos/fmsbweb3/FmsbwebCoreApi/FmsbwebCoreApi/FmsbwebCoreApi.csproj",
     "build": "npm run release && react-scripts build && npm run post-build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
