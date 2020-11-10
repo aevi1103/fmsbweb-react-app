@@ -4,6 +4,7 @@ import numeral from 'numeral'
 import _ from 'lodash'
 import { connect } from 'react-redux'
 import { useParams, useHistory, Link } from 'react-router-dom';
+import { exportData } from '../../../components/swot/export'
 
 import {
     setChartWidth,
@@ -19,7 +20,8 @@ import {
 
 import { 
     ArrowDownOutlined,
-    ArrowUpOutlined 
+    ArrowUpOutlined,
+    DownloadOutlined
 } from '@ant-design/icons';
 
 import { 
@@ -31,7 +33,8 @@ import {
     Tooltip,
     Typography,
     Dropdown,
-    Menu
+    Menu,
+    Button
  } from "antd";
 
  const { Text } = Typography;
@@ -62,6 +65,7 @@ const tabList =[
     const history = useHistory();
     const { department } = useParams();
     const [activeKey, setActiveKey] = useState(tabList[0].key)
+    const [download, setDownload] = useState(false)
 
     useEffect(() => {
 
@@ -82,33 +86,44 @@ const tabList =[
         setChartHeight('400');
     }, [])
 
+    const { filters } = swotResult || {};
+    const { startDate, endDate } = filters || {};
+
     const dateFormat = 'MM/DD/YYYY'
-    const startDate = moment(swotResult?.filters?.startDate).format(dateFormat);
-    const endDate = moment(swotResult?.filters?.endDate).format(dateFormat);
-    const dateRateHeader = `${startDate} - ${endDate}`
+    const startDateStr = moment(startDate).format(dateFormat);
+    const endDateStr = moment(endDate).format(dateFormat);
+    const dateRateHeader = `${startDateStr} - ${endDateStr}`
 
     const dateFormatTooltip = 'MM/DD/YY'
     const { oae, net, targets } = swotResult?.departmentData || {};
     const { oaeTarget } = targets || {}
-    const { dept } = swotResult?.filters || {};
+    const { dept } = filters || {};
     const style = {
         color: oae < oaeTarget ? colorCodes.red : colorCodes.green
     }
-    const depHeader = (<Tooltip title={`Date Range: ${moment(startDate).format(dateFormatTooltip)} - ${moment(endDate).format(dateFormatTooltip)}`}>
+
+    const onDownload = () => exportData(filters, setDownload, '', true);
+
+    const depHeader = (<>
+                        <Tooltip title={`Date Range: ${moment(startDateStr).format(dateFormatTooltip)} - ${moment(endDateStr).format(dateFormatTooltip)}`}>
                             <Text style={style}>{dept}: SAP OAE: <span className="mr1">{numeral(oae).format('0%')} ~ {numeral(net).format('0,0')}</span> 
                             {oae < oaeTarget ? <ArrowDownOutlined /> : <ArrowUpOutlined />}</Text>
-                        </Tooltip>) 
+                        </Tooltip>
+                        <Button className="ml2" type="primary" onClick={onDownload} loading={download}>
+                            <DownloadOutlined /> Download
+                        </Button>
+                    </>) 
     
     const btnOverlay = (
         <Menu>  
             <Menu.Item key={`/dashboard/morningmeeting/${department}`}>
-                <Link to={`/dashboard/morningmeeting/${department}?start=${startDate}&end=${endDate}`} >Department Details</Link>
+                <Link to={`/dashboard/morningmeeting/${department}?start=${startDateStr}&end=${endDateStr}`} >Department Details</Link>
             </Menu.Item>
             <Menu.Item key={`/dashboard/morningmeeting/${department}/details`}>
-                <Link to={`/dashboard/morningmeeting/${department}/details?start=${startDate}&end=${endDate}`} >Work Center Details</Link>
+                <Link to={`/dashboard/morningmeeting/${department}/details?start=${startDateStr}&end=${endDateStr}`} >Work Center Details</Link>
             </Menu.Item>
             <Menu.Item key={`/dashboard/morningmeeting/${department}/hourly-production`} >
-                <Link to={`/dashboard/morningmeeting/${department}/hourly-production?date=${endDate}`} >Hourly Production</Link>
+                <Link to={`/dashboard/morningmeeting/${department}/hourly-production?date=${endDateStr}`} >Hourly Production</Link>
             </Menu.Item>
             <Menu.Item key={`/orderstatus/${department}`}>
                 <Link to={`/orderstatus/${department}`}>Active Orders</Link>
