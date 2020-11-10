@@ -362,9 +362,9 @@ const EosPage = ({
                 <Text>{title}</Text>
             </Tooltip>
             <Tooltip title="Click to view scrap defects">
-                <a className="ml2" onClick={() => onScrapModalClick(collection, `${title.replace('%','')} Details`)}>
+                <Button type="link" className="ml2 pa0" onClick={() => onScrapModalClick(collection, `${title.replace('%','')} Details`)}>
                     <InfoCircleOutlined />
-                </a>
+                </Button>
             </Tooltip>
         </Fragment>
     )
@@ -375,9 +375,9 @@ const EosPage = ({
                 <Text>SAP OAE</Text>
             </Tooltip>
             <Tooltip title="View production details">
-                <a className="ml2" onClick={onSapNetClick}>
+                <Button type="link" className="ml2 pa0" onClick={onSapNetClick}>
                     <InfoCircleOutlined />
-                </a>
+                </Button>
             </Tooltip>
         </Fragment>
     )

@@ -2,12 +2,10 @@ import React from 'react'
 import _ from 'lodash'
 import { Link } from "react-router-dom";
 import { mapDeptToArea } from '../../../helpers/helpers'
-import { useQuery } from '../../../helpers/custom-hook'
 import { Menu } from "antd";
 
 const DepartmentSubMenu = ({dept, icon, ...other}) => {
 
-    const qry = useQuery();
     const area = mapDeptToArea(dept);
     const state = {
         department: area

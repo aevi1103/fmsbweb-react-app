@@ -206,7 +206,7 @@ const Characteristics = ({
 
         }
 
-        req.then(response => {
+        req.then(() => {
 
             message.success(msg, 10);
             form.resetFields();

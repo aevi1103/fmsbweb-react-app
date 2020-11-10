@@ -1,7 +1,6 @@
 import React from 'react'
 import numeral from 'numeral'
 import { useParams } from 'react-router-dom';
-import _ from 'lodash'
 
 import { 
     Row,

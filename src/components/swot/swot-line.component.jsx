@@ -1,10 +1,7 @@
 import React, { useState } from 'react'
 import numeral from 'numeral'
 import moment from 'moment'
-
-import {
-    exportData
-} from './export'
+import { exportData } from './export'
 
 import {
     getContentList,
