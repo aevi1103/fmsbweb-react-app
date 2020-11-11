@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.284](https://github.com/aevi1103/fmsbweb-react-app/compare/v0.1.283...v0.1.284) (2020-11-11)
+
 ### [0.1.283](https://github.com/aevi1103/fmsbweb-react-app/compare/v0.1.282...v0.1.283) (2020-11-10)
 
 ### [0.1.282](https://github.com/aevi1103/fmsbweb-react-app/compare/v0.1.281...v0.1.282) (2020-11-10)
