@@ -1,6 +1,6 @@
 {
   "name": "fmsbweb.react-app",
-  "version": "0.1.284",
+  "version": "0.1.285",
   "private": true,
   "dependencies": {
     "@microsoft/signalr": "^3.1.9",
@@ -41,7 +41,6 @@
   },
   "scripts": {
     "start": "react-scripts start --no-cache",
-    "start:server": "dotnet run --project /c/Users/rontoa20/source/repos/fmsbweb3/FmsbwebCoreApi/FmsbwebCoreApi/FmsbwebCoreApi.csproj",
     "build": "npm run release && react-scripts build && npm run post-build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
