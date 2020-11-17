@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom'
 import moment from 'moment'
 import 'tachyons'
 
@@ -14,11 +15,12 @@ import {
 
 import { 
     Layout,
-    Button
+    Button,
+    PageHeader
  } from "antd";
 
 import '../morning-meeting.styles.scss'
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const dateFormat = 'MM/DD/YYYY';
 
 const LogisticsPage = ({
@@ -52,16 +54,18 @@ const LogisticsPage = ({
 
     return (
     <>
-        <Header className="pa0 custom-header" >
-            <h2 className="ml3">Logistics: {date}</h2>
-        </Header>
+        <PageHeader
+            className="site-page-header"
+            title={`Logistics: ${date}`}
+        />
 
         <Content className="ma3 mt0">
             <DatePicker onButtonClick={onClick} onChange={onChange} 
                     defaultValue={moment(endDatePlusOneDay, 'MM/DD/YYYY')} />
 
             <Button type="primary" className="ml2">
-                <a href="http://10.129.224.149/FMSB/Logistics/MorningMeeting.aspx" target="_blank" rel="noopener noreferrer">Enter Data</a>
+                {/* <a href="http://10.129.224.149/FMSB/Logistics/MorningMeeting.aspx" target="_blank" rel="noopener noreferrer">Enter Data</a> */}
+                <Link to="/dashboard/morningmeeting/logistics/settings/inventory" >Enter Data</Link>
             </Button>
 
             <div className="mt3">

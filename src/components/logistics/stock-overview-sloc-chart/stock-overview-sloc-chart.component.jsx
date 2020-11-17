@@ -48,7 +48,9 @@ const StockOverViewSlocChart = ({stockOVerviewSlocCollection, isStockOverviewSlo
             },
             categories: [
                 {
-                    category: _.orderBy(categories, o => o.slocOrder).map(c => ({label: c.category}))
+                    category: _.orderBy(categories, o => o.slocOrder).map(c => ({ 
+                        label: c.category === 'WH (0300)' ? 'WH (0400)' : c.category
+                    }))
                 }
             ],
             dataset: dataSet

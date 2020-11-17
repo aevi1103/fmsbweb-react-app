@@ -171,7 +171,7 @@ import {
             }
         },
         {
-            title: 'QH (0300)',
+            title: 'WH (0400)',
             dataIndex: 'wh',
             sorter: (a, b) => numberSorter(a.wh, b.wh),
             sortDirections: ['descend', 'ascend'],
