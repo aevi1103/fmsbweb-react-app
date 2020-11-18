@@ -261,11 +261,12 @@ import {
 
       return (
         <Table 
-                loading={isStockOverviewFetching}
-                columns={columns}
-                dataSource={dataSource}
-                onChange={onChange}
-                pagination={false} />     
+            size="small"
+            loading={isStockOverviewFetching}
+            columns={columns}
+            dataSource={dataSource}
+            onChange={onChange}
+            pagination={false} />     
     )
  }
 
