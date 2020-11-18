@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom'
 import moment from 'moment'
@@ -33,24 +33,26 @@ const LogisticsPage = ({
     const endDatePlusOneDay = moment(endDate, dateFormat).add(1, 'd').format(dateFormat)
     const [ date, setDate ] = useState(endDatePlusOneDay);
 
-    const fetchData = () => {
-        setStockOverview(date);
+    const fetchData = useCallback(() => {
         setStockOverviewSloc(date);
-        setStatus(date, date);
-    }
+        setStockOverview(date);
+
+        //todo: modify or add new store for this action
+        setStatus(date, date); 
+    }, [date, setStatus, setStockOverview, setStockOverviewSloc])
 
     const onClick = () => {
         fetchData();
     }
 
-    const onChange = (date, dateStr) => {
-        setDate(dateStr);
-    }
+    const onChange = (date, dateStr) => setDate(dateStr);
 
     useEffect(() => {
+        
         document.title = `Morning Meeting - Logistics`;
         fetchData();
-    }, [])
+
+    }, [fetchData])
 
     return (
     <>
