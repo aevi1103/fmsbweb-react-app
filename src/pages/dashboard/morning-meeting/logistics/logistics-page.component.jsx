@@ -38,7 +38,8 @@ const LogisticsPage = ({
         setStockOverview(date);
 
         //todo: modify or add new store for this action
-        setStatus(date, date); 
+        setStatus(date); 
+
     }, [date, setStatus, setStockOverview, setStockOverviewSloc])
 
     const onClick = () => {
@@ -66,8 +67,8 @@ const LogisticsPage = ({
                     defaultValue={moment(endDatePlusOneDay, 'MM/DD/YYYY')} />
 
             <Button type="primary" className="ml2">
-                {/* <a href="http://10.129.224.149/FMSB/Logistics/MorningMeeting.aspx" target="_blank" rel="noopener noreferrer">Enter Data</a> */}
-                <Link to="/dashboard/morningmeeting/logistics/settings/inventory" >Enter Data</Link>
+                <a href="http://10.129.224.149/FMSB/Logistics/MorningMeeting.aspx" target="_blank" rel="noopener noreferrer">Enter Data</a>
+                {/* <Link to="/dashboard/morningmeeting/logistics/settings/inventory" >Enter Data</Link> */}
             </Button>
 
             <div className="mt3">
@@ -81,7 +82,7 @@ const LogisticsPage = ({
 const mapDispatchToProps = dispatch => ({
     setStockOverview: (day) => dispatch(fetchLogisticsStockOverviewStartAsync(day)),
     setStockOverviewSloc: (day) => dispatch(fetchLogisticsStockOverviewSlocStartAsync(day)),
-    setStatus: (start, end) => dispatch(fetchLogisticsStatusStartAsync(start, end)),
+    setStatus: (date) => dispatch(fetchLogisticsStatusStartAsync(date)),
 })
 
 const mapStateToProps = ({morningMeeting}) => ({

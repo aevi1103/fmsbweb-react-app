@@ -2,7 +2,11 @@
 import numeral from 'numeral';
 import moment from 'moment'
 
-export const numberSorter = (a, b) => (numeral(a).format('0') - numeral(b).format('0'));
+export const numberSorter = (a, b) => {
+    const aInt = parseFloat(numeral(a).format('0'));
+    const bInt = parseFloat(numeral(b).format('0'))
+    return aInt - bInt;
+}
 
 export const percentSorter = (a, b) => (parseFloat(a) - parseFloat(b));
 

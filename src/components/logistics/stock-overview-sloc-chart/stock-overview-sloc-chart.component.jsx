@@ -59,7 +59,7 @@ const StockOverViewSlocChart = ({stockOVerviewSlocCollection, isStockOverviewSlo
           chartConfigs = {
             type: 'stackedcolumn2dline',
             width: '100%',
-            height: '89%',
+            height: '450',
             dataFormat: 'json',
             dataSource: dataSource
           };

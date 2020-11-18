@@ -1,14 +1,15 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { 
     Table
  } from "antd";
 
 
- const CustomerCommentsTable = ({isStockStatusFetching, stockStatusCollection}) => {
+ const CustomerCommentsTable = () => {
 
-    const { customerComments } = stockStatusCollection;
+    const loading = useSelector(({ morningMeeting: { isStockStatusFetching } }) => isStockStatusFetching) || false;
+    const customerComments = useSelector(({ morningMeeting: { stockStatusCollection } }) => stockStatusCollection.customerComments) || [];
     
     const columns = [
         {
@@ -25,39 +26,29 @@ import {
         }
       ];
       
-      const dataSource = !customerComments ? [] : customerComments.map((rowData, i) => {
+      const dataSource = customerComments.map((rowData, i) => {
 
         const {
             date,
             customer,
-            comments
+            comment
         } = rowData;
 
         return {
             key: i,
             date: moment(date).format('MM/DD/YYYY'),
             customer: customer,
-            com: comments
+            com: comment
         }
         
       })
 
-      const onChange = (pagination, filters, sorter, extra) => {
-        // console.log('params', pagination, filters, sorter, extra);
-      }
-
       return <Table 
-                loading={isStockStatusFetching}
+                size="small"
+                loading={loading}
                 columns={columns}
                 dataSource={dataSource}
-                onChange={onChange}
-                scroll={{y: 380}}
                 pagination={false} />
  }
 
-const mapStateToProps = ({ morningMeeting }) => ({
-    isStockStatusFetching: morningMeeting.isStockStatusFetching,
-    stockStatusCollection: morningMeeting.stockStatusCollection,
-})
-
-export default connect(mapStateToProps)(CustomerCommentsTable);
+export default CustomerCommentsTable;

@@ -1,0 +1,38 @@
+$red-color: #e33545;
+$yellow-color: #ffc107;
+$green-color: #28a745;
+$blue-color: #2196F3;
+
+
+.red-row {
+    background-color: $red-color;
+    color: white;
+
+    &:hover {
+        color: black;
+    }
+}
+
+.yellow-row {
+    background-color: $yellow-color;
+    color: black;
+
+}
+
+.green-row {
+    background-color: $green-color;
+    color: white;
+
+    &:hover {
+        color: black;
+    }
+}
+
+.blue-row {
+    background-color: $blue-color;
+    color: white;
+
+    &:hover {
+        color: black;
+    }
+}

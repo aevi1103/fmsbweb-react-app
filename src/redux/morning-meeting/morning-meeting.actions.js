@@ -167,26 +167,14 @@ export const fetchLogisticsStockOverviewSlocStartAsync = (date) => {
 };
     
 //LOGISTICS_STATUS
-export const fetchLogisticsStatusStartAsync = (start, end) => {
+export const fetchLogisticsStatusStartAsync = (date) => {
 
     return dispatch => {
 
-        dispatch(fetchStart(
-            morningMeetingTypes.FETCH_LOGISTICS_STATUS_START));
-
-        const url = `logistics/status`;
-        api.get(url, {
-            params: {
-                start,
-                end
-            }
-        })
+        dispatch(fetchStart(morningMeetingTypes.FETCH_LOGISTICS_STATUS_START));
+        api.get(`logistics/stat?datetime=${date}`)
         .then(response => {
-
-            dispatch(fetchSuccess(
-                morningMeetingTypes.FETCH_LOGISTICS_STATUS_SUCCESS,
-                response.data));
-
+            dispatch(fetchSuccess(morningMeetingTypes.FETCH_LOGISTICS_STATUS_SUCCESS,response.data));
         })
         .catch(error => dispatch(fetchFailure(
             morningMeetingTypes.FETCH_LOGISTICS_STATUS_FAILURE,
@@ -211,11 +199,7 @@ export const fetchProductionStatusStartAsync = (start, end, area, cancelTokenSrc
                 end,
                 area
             },
-            cancelToken: cancelTokenSrc.token,
-            onDownloadProgress: (progressEvt) => {
-                // let percentCompleted = Math.floor((progressEvt.loaded * 100) / progressEvt.total);
-                // console.log(url, 'percentCompleted', progressEvt, percentCompleted)
-            }
+            cancelToken: cancelTokenSrc.token
          })
         .then(response => {
 

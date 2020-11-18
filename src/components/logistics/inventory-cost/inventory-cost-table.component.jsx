@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
 import numeral from 'numeral';
 import { 
@@ -7,9 +7,11 @@ import {
  } from "antd";
 
 
- const InventoryCostTable = ({isStockStatusFetching, stockStatusCollection}) => {
+ const InventoryCostTable = () => {
 
-    const { inventoryCost } = stockStatusCollection;
+    const loading = useSelector(({ morningMeeting: { isStockStatusFetching } }) => isStockStatusFetching) || false;
+    const inventoryCost = useSelector(({ morningMeeting: { stockStatusCollection } }) => stockStatusCollection.inventoryCost) || [];
+
     
     const columns = [
         {
@@ -33,16 +35,16 @@ import {
       const dataSource = !inventoryCost ? [] : inventoryCost.map((rowData, i) => {
 
         const {
-            category,
-            cost,
             date,
+            costType,
+            cost,
             target
         } = rowData;
 
         return {
             key: i,
             date: moment(date).format('MM/DD/YYYY'),
-            type: category,
+            type: costType,
             actual: numeral(cost).format('0,0'),
             target: numeral(target).format('0,0')
         }
@@ -55,18 +57,13 @@ import {
 
       return (
         <Table 
-                loading={isStockStatusFetching}
-                columns={columns}
-                dataSource={dataSource}
-                onChange={onChange}
-                scroll={{y: 380}}
-                pagination={false} />     
+            size="small"
+            loading={loading}
+            columns={columns}
+            dataSource={dataSource}
+            onChange={onChange}
+            pagination={false} />     
     )
  }
 
-const mapStateToProps = ({ morningMeeting }) => ({
-    isStockStatusFetching: morningMeeting.isStockStatusFetching,
-    stockStatusCollection: morningMeeting.stockStatusCollection,
-})
-
-export default connect(mapStateToProps)(InventoryCostTable);
+export default InventoryCostTable;

@@ -1,61 +1,38 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { Link } from 'react-router-dom'
 
 import StockOverviewTable from './stock-overview-table/stock-overview-table.component'
 import StockOverviewChart from './stock-overview-chart/stock-overview-chart.component'
 import StockOverViewSlocChart from './stock-overview-sloc-chart/stock-overview-sloc-chart.component'
 
-import InventoryStatusTable from './inventory-status-table/inventory-status-table.component'
-import InventoryCost from './inventory-cost-table/inventory-cost-table.component'
+import InventoryStatusTable from './inventory-status/inventory-status-table.component'
+import InventoryStatusChart from './inventory-status/inventory-status-chart.component'
+
+import InventoryCost from './inventory-cost/inventory-cost-table.component'
+import InventoryCostChart from './inventory-cost/inventory-cost-chart.component'
+
+import DaysOnHandTable from './days-on-hand/days-on-hand-table.component'
+import DaysOnHandTableChart from './days-on-hand/days-on-hand-chart.component' 
+
 import CustomerComments from './customer-comments-table/customer-comments'
-import DaysOnHandTable from './days-on-hand-table/days-on-hand-table.component'
+
 
 import { 
     Row,
     Col,
     Card,
-    Tag
+    Tag,
+    Collapse 
  } from "antd";
 
+const { Panel } = Collapse;
 const cardHeightStyle = {
-    height: "500px"
+    height: "100%"
 }
 
- const Logistics = ({ isStockOverviewFetching }) => (
+ const Logistics = () => (
+
      <Row gutter={[12,12]}>
-
-        <Col span={24} >
-            <Card 
-                title="Stock Overview By Storage Location"
-                size="small"
-                style={cardHeightStyle}
-                className="ba b--black-10"
-            >
-                <StockOverViewSlocChart/>
-            </Card>
-        </Col>
-
-        <Col span={24}>
-            <Card 
-                title="Stock Overview"
-                size="small"
-                className="ba b--black-10"
-            >
-                <StockOverviewTable/>
-            </Card>
-        </Col>
-
-        <Col span={24}>
-            <Card 
-                title="Stock Overview By Program"
-                size="small"
-                className="ba b--black-10"
-                style={cardHeightStyle}
-                loading={isStockOverviewFetching}
-            >
-                <StockOverviewChart/>
-            </Card>
-        </Col>
 
         <Col span={8} lg={8} md={24} xs={24}>
             <Card 
@@ -64,6 +41,7 @@ const cardHeightStyle = {
                 className="ba b--black-10"
                 style={cardHeightStyle}
             >
+                <InventoryStatusChart/>
                 <InventoryStatusTable/>
             </Card>
         </Col>
@@ -74,7 +52,11 @@ const cardHeightStyle = {
                 size="small"
                 className="ba b--black-10"
                 style={cardHeightStyle}
+                extra={
+                    <Link to="/dashboard/morningmeeting/logistics/settings/cost/targets" >Adjust Targets</Link>
+                }
             >
+                <InventoryCostChart />
                 <InventoryCost/>
             </Card>
         </Col>
@@ -91,25 +73,49 @@ const cardHeightStyle = {
         </Col>
 
         <Col span={24}>
-            <Card 
-                title="Days on Hand"
-                size="small"
-                className="ba b--black-10"
-                >
-                <div className="mb2">
-                    <Tag color="#e33545">DOH is between 0 and 2</Tag>
-                    <Tag color="#ffc107">DOH is between 2 and 3</Tag>
-                    <Tag color="#28a745">DOH is between 3 and 5</Tag>
-                    <Tag color="#2196F3">DOH is greater than 5</Tag>
-                </div>
-                <DaysOnHandTable/>
-            </Card>
+
+            <Collapse defaultActiveKey={['1']}>
+
+                <Panel header="Days On Hand" key="1">
+
+                    <div className="mb2">
+                        <Tag className="pa1" color="#e33545">DOH is between 0 and 2</Tag>
+                        <Tag className="pa1" color="#ffc107">DOH is between 2 and 3</Tag>
+                        <Tag className="pa1" color="#28a745">DOH is between 3 and 5</Tag>
+                        <Tag className="pa1" color="#2196F3">DOH is greater than 5</Tag>
+                    </div>
+
+                    <DaysOnHandTableChart/>
+                    <DaysOnHandTable/>
+
+                </Panel>
+
+                <Panel header="Stock Overview By Location" key="2" >
+                
+                    <div className="ma2">
+                        <StockOverViewSlocChart/>
+                    </div>
+                    
+                </Panel>
+
+                <Panel header="Stock Overview" key="3" >
+                
+                    <StockOverviewTable/>
+
+                </Panel>
+
+                <Panel header="Stock Overview by Program" key="4">
+                
+                    <StockOverviewChart/>
+
+                </Panel>
+
+            </Collapse>
+            
         </Col>
+
      </Row>
  )
 
- const mapStateToProps = ({ morningMeeting }) => ({
-    isStockOverviewFetching: morningMeeting.isStockOverviewFetching,
-})
 
-export default connect(mapStateToProps)(Logistics); 
+export default Logistics; 
