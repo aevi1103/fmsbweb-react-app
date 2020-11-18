@@ -23,7 +23,27 @@ const CostTargetsPage = () => {
     const [types, setTypes] = useState([]);
     const [targets, setTargets] = useState([])
     const [typesLoading, setTypesLoading] = useState(false);
-    const [targetsLoading, setTargetsLoading] = useState(false)
+    const [targetsLoading, setTargetsLoading] = useState(false);
+    const [targetId, setTargetId] = useState(0);
+    const [saveLoading, setSaveLoading] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState(false);
+
+    const getTargets = async () => {
+
+        try {
+
+            setTargetsLoading(true)
+            const response = await api.get(`logistics/cost/targets`);
+            const targets = response.data;
+            setTargets(targets);
+
+        } catch (error) {
+            console.error(error)
+        } finally {
+            setTargetsLoading(false)
+        }
+
+    }
 
     useEffect(() => {
 
@@ -44,23 +64,6 @@ const CostTargetsPage = () => {
 
         }
 
-        const getTargets = async () => {
-
-            try {
-
-                setTargetsLoading(true)
-                const response = await api.get(`logistics/cost/targets`);
-                const targets = response.data;
-                setTargets(targets);
-
-            } catch (error) {
-                console.error(error)
-            } finally {
-                setTargetsLoading(false)
-            }
-
-        }
-
         getTypes();
         getTargets();
 
@@ -68,17 +71,51 @@ const CostTargetsPage = () => {
 
     const onFinish = async values => {
         
-        const response = await api.post(`logistics/cost/targets`, values);
+        try {
+            
+            setSaveLoading(true);
+            const response = await api.post(`logistics/cost/targets`, {
+                ...values,
+                logisticsInventoryCostTargetId: targetId
+            });
+    
+            const { logisticsInventoryCostTargetId } = response.data;
+            setTargetId(logisticsInventoryCostTargetId);
 
-        console.log(response)
+            getTargets();
+
+        } catch (error) {
+            alert('Something went wrong')
+        } finally {
+            setSaveLoading(false);
+        }
 
     }
 
     const onSelectChange = value => {
-        const { target } = targets.find(({ logisticsInventoryCostType }) => logisticsInventoryCostType?.logisticsInventoryCostTypeId === value) || 0
+        const { target, logisticsInventoryCostTargetId } = targets.find(({ logisticsInventoryCostType }) => logisticsInventoryCostType?.logisticsInventoryCostTypeId === value) || {}
+        setTargetId(logisticsInventoryCostTargetId ?? 0)
         form.setFieldsValue({
             target
         })
+    }
+
+    const onDelete = async () => {
+
+        try {
+
+            setDeleteLoading(true);
+            await api.delete(`logistics/cost/targets/${targetId}`);
+
+            form.resetFields();
+            setTargetId(0);
+            getTargets();
+
+        } catch (error) {
+            console.error('Something went wrong')
+        } finally {
+            setDeleteLoading(false)
+        }
     }
 
     const columns = [
@@ -158,9 +195,21 @@ const CostTargetsPage = () => {
                         </Form.Item>
 
                         <Form.Item >
-                            <Button type="primary" htmlType="submit" >Save</Button>
+                            <Button type="primary" htmlType="submit" loading={saveLoading}>
+                                {
+                                    targetId ? 'Update' : 'Add'
+                                }
+                            </Button>
                         </Form.Item>
 
+                        {
+                            targetId
+                            ?   <Form.Item >
+                                    <Button type="danger" onClick={onDelete} loading={deleteLoading} >Delete</Button>
+                                </Form.Item>
+                            : null
+                        }
+                        
                     </Form>
 
                 </Col>
