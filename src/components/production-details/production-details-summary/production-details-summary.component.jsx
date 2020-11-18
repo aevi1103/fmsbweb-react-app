@@ -5,7 +5,6 @@ import {
     Col,
     Statistic,
  } from "antd";
-import 'tachyons';
 
 import {
     ArrowUpOutlined,

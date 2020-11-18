@@ -25,6 +25,7 @@ import NotFound from './pages/404/404.component';
 import HomeMenu from './components/Menu/home-menu/home-menu.components';
 import MorningMeetingMenu from './components/Menu/morning-meeting-menu/morning-meeting-menu.component';
 import AfMenu from './components/Menu/af-menu/af-menu.component';
+import LogisticsMenu from './components/Menu/logistics/logistics-menu.component'
 
 //swot components
 import SwotSettingsPage from './pages/dashboard/swot/settings-page.component';
@@ -37,7 +38,7 @@ import DepartmentDashboardPage from './pages/dashboard/department/dashboard-page
 //morning meeting pages
 import SafetyPage from './pages/dashboard/morning-meeting/safety-page/safety-page.component';
 import QualityPage from './pages/dashboard/morning-meeting/quality-page/quality-page.component';
-import LogisticsPage from './pages/dashboard/morning-meeting/logistics-page/logistics-page.component';
+import LogisticsPage from './pages/dashboard/morning-meeting/logistics/logistics-page.component';
 import PerformanceLevel0Page from './pages/dashboard/morning-meeting/performance-level0-page/performance-level0-page.component';
 import PerformanceLevel2Page from './pages/dashboard/morning-meeting/performance-level2-page/performance-level2-page.component';
 import ProductionPage from './pages/dashboard/morning-meeting/production-page/production-page.component';
@@ -59,6 +60,12 @@ import CheckSheetHistoryPage from './pages/quality/check-sheet/check-sheet-histo
 //machining
 import MachiningManningPage from './pages/machining/manning/manning-page.component'
 
+//logistics settings page
+import InvetoryPage from './pages/logistics-settings/inventory-page.component'
+import CostTaregtsPage from './pages/logistics-settings/cost-targets-page.component'
+import MinMaxPage from './pages/logistics-settings/min-max-page.component'
+import ProdOrderPage from './pages/logistics-settings/prod-order-page.componen'
+
 import ChatPage from './pages/chat/chat-page.component'
 
 const { Footer, Sider } = Layout;
@@ -76,9 +83,7 @@ const logoStylesWhite = {
 
 const App = ( { 
   collapsed,
-  setSiderCollapse,
-  progress,
-  totalRequests
+  setSiderCollapse
  } ) => { 
 
   const defaultSiderProps = {
@@ -130,30 +135,18 @@ const App = ( {
 
         <Switch>
           <Route exact path="/" component={HomeMenu} />
+          <Route path="/dashboard/morningmeeting/logistics/settings/*" component={LogisticsMenu} />
           <Route path="/dashboard/*" component={MorningMeetingMenu} />
           <Route path="/orderstatus" component={MorningMeetingMenu} />
           <Route path="/af" component={AfMenu} />
           <Route path="/quality" component={HomeMenu} />
           <Route path="/machining/manning" component={HomeMenu} />
+          
         </Switch>
 
       </Sider>
       
       <Layout className="site-layout-bg">
-        
-       {/* {
-          totalRequests > 0 
-            ?  <Progress 
-                percent={progress} 
-                status="active" 
-                size="small" 
-                showInfo={false} 
-                strokeLinecap="square" 
-                strokeWidth={4}
-                id="progressBar" />
-            : null
-        }  */}
-      
 
         <Switch>
 
@@ -170,6 +163,10 @@ const App = ( {
           {/* Monring Meeting */}
           <Route exact path="/dashboard/morningmeeting/safety" component={SafetyPage} />
           <Route exact path="/dashboard/morningmeeting/logistics" component={LogisticsPage} />
+          <Route exact path="/dashboard/morningmeeting/logistics/settings/inventory" component={InvetoryPage} />
+          <Route exact path="/dashboard/morningmeeting/logistics/settings/cost/targets" component={CostTaregtsPage} />
+          <Route exact path="/dashboard/morningmeeting/logistics/settings/inventory/minmax" component={MinMaxPage} />
+          <Route exact path="/dashboard/morningmeeting/logistics/settings/order" component={ProdOrderPage} />
 
           <Route exact path="/dashboard/morningmeeting/foundry" render={() => <ProductionPage area="foundry cell" headerTitle="Foundry" />} />
           <Route exact path="/dashboard/morningmeeting/machining" render={() => <ProductionPage area="machine line" headerTitle="Machining" />} />
@@ -203,6 +200,10 @@ const App = ( {
           
           {/* Machining Page */}
           <Route exact path="/machining/manning/:eosId" component={MachiningManningPage} />
+
+
+
+
 
           <Route exact path="/chat" component={ChatPage} />
 

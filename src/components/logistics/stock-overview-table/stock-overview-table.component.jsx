@@ -171,7 +171,7 @@ import {
             }
         },
         {
-            title: 'QH (0300)',
+            title: 'WH (0400)',
             dataIndex: 'wh',
             sorter: (a, b) => numberSorter(a.wh, b.wh),
             sortDirections: ['descend', 'ascend'],
@@ -261,11 +261,12 @@ import {
 
       return (
         <Table 
-                loading={isStockOverviewFetching}
-                columns={columns}
-                dataSource={dataSource}
-                onChange={onChange}
-                pagination={false} />     
+            size="small"
+            loading={isStockOverviewFetching}
+            columns={columns}
+            dataSource={dataSource}
+            onChange={onChange}
+            pagination={false} />     
     )
  }
 

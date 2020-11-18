@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom'
 import moment from 'moment'
 import 'tachyons'
 
@@ -14,11 +15,12 @@ import {
 
 import { 
     Layout,
-    Button
+    Button,
+    PageHeader
  } from "antd";
 
 import '../morning-meeting.styles.scss'
-const { Header, Content } = Layout;
+const { Content } = Layout;
 const dateFormat = 'MM/DD/YYYY';
 
 const LogisticsPage = ({
@@ -31,30 +33,34 @@ const LogisticsPage = ({
     const endDatePlusOneDay = moment(endDate, dateFormat).add(1, 'd').format(dateFormat)
     const [ date, setDate ] = useState(endDatePlusOneDay);
 
-    const fetchData = () => {
-        setStockOverview(date);
+    const fetchData = useCallback(() => {
         setStockOverviewSloc(date);
-        setStatus(date, date);
-    }
+        setStockOverview(date);
+
+        //todo: modify or add new store for this action
+        setStatus(date); 
+
+    }, [date, setStatus, setStockOverview, setStockOverviewSloc])
 
     const onClick = () => {
         fetchData();
     }
 
-    const onChange = (date, dateStr) => {
-        setDate(dateStr);
-    }
+    const onChange = (date, dateStr) => setDate(dateStr);
 
     useEffect(() => {
+        
         document.title = `Morning Meeting - Logistics`;
         fetchData();
-    }, [])
+
+    }, [fetchData])
 
     return (
     <>
-        <Header className="pa0 custom-header" >
-            <h2 className="ml3">Logistics: {date}</h2>
-        </Header>
+        <PageHeader
+            className="site-page-header"
+            title={`Logistics: ${date}`}
+        />
 
         <Content className="ma3 mt0">
             <DatePicker onButtonClick={onClick} onChange={onChange} 
@@ -62,6 +68,7 @@ const LogisticsPage = ({
 
             <Button type="primary" className="ml2">
                 <a href="http://10.129.224.149/FMSB/Logistics/MorningMeeting.aspx" target="_blank" rel="noopener noreferrer">Enter Data</a>
+                {/* <Link to="/dashboard/morningmeeting/logistics/settings/inventory" >Enter Data</Link> */}
             </Button>
 
             <div className="mt3">
@@ -75,7 +82,7 @@ const LogisticsPage = ({
 const mapDispatchToProps = dispatch => ({
     setStockOverview: (day) => dispatch(fetchLogisticsStockOverviewStartAsync(day)),
     setStockOverviewSloc: (day) => dispatch(fetchLogisticsStockOverviewSlocStartAsync(day)),
-    setStatus: (start, end) => dispatch(fetchLogisticsStatusStartAsync(start, end)),
+    setStatus: (date) => dispatch(fetchLogisticsStatusStartAsync(date)),
 })
 
 const mapStateToProps = ({morningMeeting}) => ({

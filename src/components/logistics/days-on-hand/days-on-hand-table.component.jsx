@@ -1,24 +1,26 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import moment from 'moment';
 import numeral from 'numeral';
 import Highlighter from 'react-highlight-words';
 
 import { numberSorter } from '../../../helpers/helpers';
-
 import { SearchOutlined } from '@ant-design/icons';
-
 import { Table, Input, Button, Tag } from "antd";
 
-const DaysOnHandTable = ({isStockStatusFetching, stockStatusCollection}) => {
+import { getColorCode, getColorRowClass } from './helper'
+import './styles.scss'
 
-   const [searchText, setSearchText] = useState('');
-   const [searchedColumn, setSearchedColumn] = useState('');
+const DaysOnHandTable = () => {
 
-   const { daysOnHand } = stockStatusCollection;   
+  const loading = useSelector(({ morningMeeting: { isStockStatusFetching } }) => isStockStatusFetching) || false;
+  const daysOnHand = useSelector(({ morningMeeting: { stockStatusCollection } }) => stockStatusCollection.daysOnHand) || [];
 
-   const handleSearch = (selectedKeys, confirm, dataIndex) => {
-       confirm();
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
+
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+      confirm();
        setSearchText(selectedKeys[0]);
        setSearchedColumn(dataIndex);
    };
@@ -90,21 +92,19 @@ const DaysOnHandTable = ({isStockStatusFetching, stockStatusCollection}) => {
            title: 'Date',
            dataIndex: 'date',
            sorter: (a, b) => new Date(a.date) - new Date(b.date),
-           sortDirections: ['descend', 'ascend'],
-           // filters: getFilter('date'),
-           // onFilter: (value, record) => record.date.includes(value)
+           sortDirections: ['descend', 'ascend']
        },
        {
            title: 'Program',
            dataIndex: 'prog',
-           sorter: (a, b) => a.prog.length - b.prog.length,
+           sorter: (a, b) => a.prog.localeCompare(b.prog),
            sortDirections: ['descend', 'ascend'],
            ...getColumnSearchProps('prog')
        },
        {
            title: 'Material',
            dataIndex: 'mat',
-           sorter: (a, b) => a.mat.length - b.mat.length,
+           sorter: (a, b) =>  a.mat.localeCompare(b.mat),
            sortDirections: ['descend', 'ascend'],
            ...getColumnSearchProps('mat')
        },
@@ -113,78 +113,73 @@ const DaysOnHandTable = ({isStockStatusFetching, stockStatusCollection}) => {
            dataIndex: 'stock',
            sorter: (a, b) => numberSorter(a.stock, b.stock),
            sortDirections: ['descend', 'ascend'],
-           render: (text, record, index) => {
-             const { bgColor } = record;
-             return <Tag color={bgColor}>{text}</Tag>          
-         }
+        //    render: (text, record, index) => {
+        //      const { bgColor } = record;
+        //      return <Tag color={bgColor}>{text}</Tag>          
+        //  }
        },
        {
-         title: 'Req. Stock',
+         title: 'Safety Stock',
          dataIndex: 'safetyStock',
-         sorter: (a, b) => numberSorter(a.stock, b.stock),
-         sortDirections: ['descend', 'ascend'],
-         // ...getColumnSearchProps('stock')
+         sorter: (a, b) => numberSorter(a.safetyStock, b.safetyStock),
+         sortDirections: ['descend', 'ascend']
      },
        {
            title: 'Days On Hand',
            dataIndex: 'doh',
            sorter: (a, b) => numberSorter(a.doh, b.doh),
            sortDirections: ['descend', 'ascend'],
-           render: (text, record, index) => {
-               const { bgColor } = record;             
-               return <span className="b" style={{color: bgColor}}>{text}</span>
-           },
-           // ...getColumnSearchProps('doh')
+          //  render: (text, record, index) => {       
+          //      const { bgColor } = record;
+          //    return <Tag color={bgColor}>{text}</Tag>      
+          //  }
        }
      ];
      
-     const dataSource = !daysOnHand 
-       ? [] 
-       : daysOnHand.map((rowData, i) => {
 
-       const {
-           date,
-           program,
-           material,
-           finGoodIn0300,
-           daysOnHand,
-           colorCode,
-           safetyStock
-       } = rowData;
 
-       const { bgColor, fontColor } = colorCode;
+     const dataSource = daysOnHand
+        // .filter(({ qty, safetyStock }) => qty > 0 && safetyStock > 0)
+        .map((rowData, i) => {
 
-       return {
-           key: i,
-           date: moment(date).format('MM/DD/YYYY'),
-           prog: program,
-           mat: material,
-           stock: numeral(finGoodIn0300).format('0,0'),
-           safetyStock: numeral(safetyStock).format('0,0'),
-           doh: daysOnHand,
-           bgColor,
-           fontColor
-       }
+          const {
+              date,
+              program,
+              material,
+              qty,
+              daysOnHand,
+              safetyStock
+          } = rowData;
+
+          return {
+              key: i,
+              date: moment(date).format('MM/DD/YYYY'),
+              prog: program,
+              mat: material,
+              stock: numeral(qty).format('0,0'),
+              safetyStock: numeral(safetyStock).format('0,0'),
+              doh: numeral(daysOnHand).format('0.00'),
+              bgColor: getColorCode(daysOnHand, safetyStock)
+          }
        
      })
 
-     const onChange = (pagination, filters, sorter, extra) => {
-       // console.log('params', pagination, filters, sorter, extra);
-     }
-
      return (
        <Table 
-               loading={isStockStatusFetching}
-               columns={columns}
-               dataSource={dataSource}
-               onChange={onChange}
-               pagination={false} />     
+          size="small"
+          loading={loading}
+          columns={columns}
+          dataSource={dataSource}
+          pagination={false}
+          rowClassName={(record, index) => {
+
+            const { doh, safetyStock } = record;
+            const rowClass = getColorRowClass(parseFloat(doh), parseFloat(safetyStock));
+
+            return `${rowClass}`;
+
+          }} />     
    )
 }
 
-const mapStateToProps = ({ morningMeeting }) => ({
-    isStockStatusFetching: morningMeeting.isStockStatusFetching,
-    stockStatusCollection: morningMeeting.stockStatusCollection,
-})
-
-export default connect(mapStateToProps)(DaysOnHandTable);
+export default DaysOnHandTable;
