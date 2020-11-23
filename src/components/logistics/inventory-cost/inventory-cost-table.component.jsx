@@ -45,8 +45,8 @@ import {
             key: i,
             date: moment(date).format('MM/DD/YYYY'),
             type: costType,
-            actual: numeral(cost).format('0,0'),
-            target: numeral(target).format('0,0')
+            actual: numeral(cost).format('$0,0'),
+            target: numeral(target).format('$0,0')
         }
         
       })

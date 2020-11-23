@@ -22,6 +22,7 @@ const InventoryCostChart = () => {
                 showValues: '1',
                 theme: 'fusion',
                 legendPosition: 'top',
+                numberPrefix: "$",
                 drawcrossline: "1",
                 ...tooltipStyle
             },
@@ -32,7 +33,7 @@ const InventoryCostChart = () => {
             ],
             dataset: [
                 {
-                    seriesName: 'Cost',
+                    seriesName: 'Actual',
                     data: inventoryCost.map(({ cost }) => ({ value: cost }))
                 },
                 {

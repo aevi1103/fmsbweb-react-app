@@ -97,7 +97,7 @@ const ChatPage = () => {
     return (
 
         <>
-            <PageHeader title="Chat via SignalR" />
+            <PageHeader title="Chat via SignalR" className="site-page-header" />
 
             <Content>
 

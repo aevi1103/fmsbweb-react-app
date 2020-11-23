@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import moment from 'moment'
+import api from '../../API'
 import { InboxOutlined } from '@ant-design/icons';
 import { 
     Tabs,
@@ -13,6 +14,9 @@ import {
     message,
     Alert
  } from 'antd';
+
+ import InventoryDetailsTable from '../../components/logistics/inventory-details-table.component'
+ import CustomerComments from '../../components/logistics/customer-comments.components'
  
 const { Dragger } = Upload;
 const { Content } = Layout;
@@ -31,16 +35,46 @@ const InventoryPage = () => {
 
     const today = moment();
     const [date, setDate] = useState(today);
-    const [error, setError] = useState(null)
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [settings, setSettings] = useState([]);
+    const [settingsError, setSettingsError] = useState(null);
+    const [header, setHeader] = useState(null)
 
-    const props = {
+    const getData = async () => {
+        try {
+                
+            setLoading(true);
+            const dateStr = date.format(dateFormat);
+            const response = await api.get(`logistics/settings?date=${dateStr}`);
+            setSettings(response.data);
+            setHeader(`Logistics Settings: ${dateStr}`)
+
+        } catch (error) {
+            setSettingsError(error.message)
+            console.error('error', error.message)
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    useEffect(() => {
+
+        getData();
+
+    }, [])
+
+    const onDateChange = date => setDate(date)
+    const onClick = () => getData();
+
+    const uploadProps = {
         name: 'file',
         accept: '.xlsx',
         method:'POST',
         data: {
             date: date.format(dateFormat)
         },
-        action: `${url}logistics/upload`,
+        action: `${url}logistics/upload/inventory`,
         onChange(info) {
 
             const { status } = info.file;
@@ -51,6 +85,7 @@ const InventoryPage = () => {
             if (status === 'done') {
                 message.success(`${name} file uploaded successfully for date ${date.format(dateFormat)}`);
                 setError(null);
+                getData();
             } 
             
             if (status === 'error') {
@@ -62,15 +97,11 @@ const InventoryPage = () => {
         },
     };
 
-    const onDateChange = date => {
-        setDate(date)
-    }
-
     return (<>
     
             <PageHeader
                 className="site-page-header"
-                title={`Logistics Setting: ${date.format(dateFormat)}`}
+                title={header}
             />
 
             <Content className="ma3 mt0">
@@ -81,7 +112,7 @@ const InventoryPage = () => {
 
                         <span className="mr2">Date Range:</span>
                         <DatePicker className="mr2" format={dateFormat} defaultValue={today} onChange={onDateChange} />
-                        <Button type="primary">Go</Button>
+                        <Button type="primary" onClick={onClick} loading={loading} >Go</Button>
 
                     </Col>
 
@@ -91,40 +122,46 @@ const InventoryPage = () => {
 
                             <TabPane tab="Upload" key="upload">
 
-                                {
-                                    error ? <Alert className="mb2" message={error} type="error" showIcon /> : null
-                                }
+                                <Row gutter={[12,12]}>
 
-                                <div >
-                                    <Dragger {...props}>
-                                        <p className="ant-upload-drag-icon">
-                                            <InboxOutlined />
-                                        </p>
-                                        <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                                        <p className="ant-upload-hint">
-                                            Support for a single .xlsx file upload.
-                                        </p>
-                                    </Dragger>
-                                </div>
+                                    <Col span={24}>
 
-                                
+                                        {
+                                            error ? <Alert className="mb2" message={error} type="error" showIcon /> : null
+                                        }
 
-                            </TabPane>
+                                        <div>
+                                            <Dragger {...uploadProps}>
+                                                <p className="ant-upload-drag-icon">
+                                                    <InboxOutlined />
+                                                </p>
+                                                <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                                                <p className="ant-upload-hint">
+                                                    Support for a single .xlsx file upload.
+                                                </p>
+                                            </Dragger>
+                                        </div>
+                                        
+                                    </Col>
 
-                            <TabPane tab="Inventory Details" key="details">
-                                details
-                            </TabPane>
+                                    <Col span={24}>
 
-                            <TabPane tab="SLOC Comments" key="sloComments">
-                                sloc comments
-                            </TabPane>
+                                        { settingsError ?  <Alert message={settingsError} type="error" showIcon /> : null }
+                                        <InventoryDetailsTable details={settings?.stockOverviewDetails ?? []} loading={loading}  />
 
-                            <TabPane tab="Costs Comments" key="costsComments">
-                                costs comments
+                                    </Col>
+
+                                </Row>
+
                             </TabPane>
 
                             <TabPane tab="Customer Comments" key="customerComments">
-                                customer comemnt
+                                
+                                <CustomerComments 
+                                    comments={settings?.customerComments ?? []}
+                                    loading={loading} 
+                                    date={date.format(dateFormat)} />
+
                             </TabPane>
 
                         </Tabs>

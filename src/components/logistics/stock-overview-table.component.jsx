@@ -1,9 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-// import moment from 'moment';
 import numeral from 'numeral';
-
-import { numberSorter } from '../../../helpers/helpers';
+import { numberSorter } from '../../helpers/helpers';
 
 import { 
     Table,

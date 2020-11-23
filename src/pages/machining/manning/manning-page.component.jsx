@@ -194,7 +194,7 @@ const ManningPage = () => {
     return (
         <React.Fragment>
 
-            <PageHeader title={state.loading ? <span><Spin/> Loading...</span> : state.headerTitle}  />
+            <PageHeader className="site-page-header" title={state.loading ? <span><Spin/> Loading...</span> : state.headerTitle}  />
             
                 <Content className="ma3 mt0">
                 

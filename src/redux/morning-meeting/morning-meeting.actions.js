@@ -995,7 +995,7 @@ export const fetchHourlyProdStartAsync = (dept, shiftDate) => {
             dispatch(fetchSuccess(morningMeetingTypes.FETCH_HOURLY_PROD_SUCCESS, response.data));
         })
         .catch(error => {        
-            dispatch(fetchFailure(morningMeetingTypes.FETCH_HOURLY_PROD_FAILURE,error.message)); 
+            dispatch(fetchFailure(morningMeetingTypes.FETCH_HOURLY_PROD_FAILURE, error.message)); 
         });
     };
 };

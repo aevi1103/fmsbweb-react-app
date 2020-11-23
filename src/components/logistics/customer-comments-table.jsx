@@ -1,16 +1,12 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { 
     Table
  } from "antd";
 
 
- const CustomerCommentsTable = () => {
+ const CustomerCommentsTable = ({ customerComments = [], loading = false }) => {
 
-    const loading = useSelector(({ morningMeeting: { isStockStatusFetching } }) => isStockStatusFetching) || false;
-    const customerComments = useSelector(({ morningMeeting: { stockStatusCollection } }) => stockStatusCollection.customerComments) || [];
-    
     const columns = [
         {
             title: 'Date',

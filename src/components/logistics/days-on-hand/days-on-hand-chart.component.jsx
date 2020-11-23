@@ -23,8 +23,6 @@ const DaysOnHandTableChart = () => {
                 showValues: '1',
                 theme: 'fusion',
                 legendPosition: 'top',
-                // slantLabel: "1",
-                // labelDisplay: "rotate",
                 rotateValues: '1',
                 drawcrossline: "1",
                 ...tooltipStyle

@@ -10,6 +10,7 @@ const CostTargetsPage = () => {
 
     return (<>
         <PageHeader
+            className="site-page-header"
             title="Inventory Min / Max Targets"
         />
 

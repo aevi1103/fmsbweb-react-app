@@ -123,6 +123,7 @@ const INITIAL_STATE = {
 
     performaceSelectedDepartment: 'Foundry Cell',
     ppmhChartType: 'ppmhByShift',
+
     
 };
 
@@ -851,6 +852,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 hourlyProdCollection: null,
                 hourlyProdErrorMsg: action.payload
             };
+
     
         default:
             return state;

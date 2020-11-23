@@ -147,6 +147,7 @@ const CostTargetsPage = () => {
 
     return (<>
         <PageHeader
+            className="site-page-header"
             title="Costs Targets"
         />
 

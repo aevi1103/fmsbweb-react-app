@@ -67,8 +67,8 @@ const LogisticsPage = ({
                     defaultValue={moment(endDatePlusOneDay, 'MM/DD/YYYY')} />
 
             <Button type="primary" className="ml2">
-                <a href="http://10.129.224.149/FMSB/Logistics/MorningMeeting.aspx" target="_blank" rel="noopener noreferrer">Enter Data</a>
-                {/* <Link to="/dashboard/morningmeeting/logistics/settings/inventory" >Enter Data</Link> */}
+                {/* <a href="http://10.129.224.149/FMSB/Logistics/MorningMeeting.aspx" target="_blank" rel="noopener noreferrer">Enter Data</a> */}
+                <Link to="/dashboard/morningmeeting/logistics/settings/inventory" >Enter Data</Link>
             </Button>
 
             <div className="mt3">
