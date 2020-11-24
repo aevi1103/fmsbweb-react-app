@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import moment from 'moment'
 import { InboxOutlined } from '@ant-design/icons';
 import ProductionOrder from '../../components/logistics/production-order.component'
@@ -13,6 +13,7 @@ import {
     message,
     Alert
  } from "antd";
+import { useTitle } from 'react-use';
 
  const { Content } = Layout;
  const { Dragger } = Upload;
@@ -28,10 +29,11 @@ const url = NODE_ENV === 'production' ? REACT_APP_API_URL : REACT_APP_DEV_API_UR
 
 const CostTargetsPage = () => {
 
+    useTitle('Production Order');
     const today = moment();
     const [date, setDate] = useState(today);
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
+    // const [loading, setLoading] = useState(false);
 
     const uploadProps = {
         name: 'file',
@@ -79,7 +81,7 @@ const CostTargetsPage = () => {
 
                     <span className="mr2">Date Range:</span>
                     <DatePicker className="mr2" format={dateFormat} defaultValue={today} onChange={onDateChange} />
-                    <Button type="primary" onClick={onClick} loading={loading} >Go</Button>
+                    <Button type="primary" onClick={onClick} >Go</Button>
 
                 </Col>
 

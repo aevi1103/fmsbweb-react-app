@@ -13,11 +13,14 @@ import {
     Col,
     Table
  } from "antd";
+import { useTitle } from 'react-use';
 
 const { Content } = Layout;
 const { Option } = Select
 
 const CostTargetsPage = () => {
+
+    useTitle('Costs Targets');
 
     const [form] = Form.useForm();
     const [types, setTypes] = useState([]);

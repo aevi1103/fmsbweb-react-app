@@ -17,6 +17,7 @@ import {
 
  import InventoryDetailsTable from '../../components/logistics/inventory-details-table.component'
  import CustomerComments from '../../components/logistics/customer-comments.components'
+import { useTitle } from 'react-use';
  
 const { Dragger } = Upload;
 const { Content } = Layout;
@@ -32,6 +33,8 @@ const {
 const url = NODE_ENV === 'production' ? REACT_APP_API_URL : REACT_APP_DEV_API_URL;
 
 const InventoryPage = () => {
+
+    useTitle('Logistics Settings')
 
     const today = moment();
     const [date, setDate] = useState(today);
