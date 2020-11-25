@@ -19,18 +19,14 @@ const { SubMenu } = Menu;
 const HomeMenu = ( { location } ) => { 
 
   const [controlMethods, setControlMethods] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null)
 
   useEffect(() => {
 
-      setLoading(true);
       api.get('quality/checksheets/controlmethod')
       .then(response => {
           setControlMethods(response.data)
       })
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false))
+      .catch(err => console.error(err.message))
 
   }, [])
 
