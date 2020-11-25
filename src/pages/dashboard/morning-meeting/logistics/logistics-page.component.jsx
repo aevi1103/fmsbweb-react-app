@@ -50,7 +50,7 @@ const LogisticsPage = ({
 
     useEffect(() => {
         
-        document.title = `Morning Meeting - Logistics`;
+        document.title = `Logistics`;
         fetchData();
 
     }, [fetchData])

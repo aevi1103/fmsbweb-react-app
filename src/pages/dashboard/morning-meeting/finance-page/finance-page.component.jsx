@@ -41,7 +41,7 @@ const FinancePage = ({
     }
 
     useEffect(() => {
-        document.title = `Morning Meeting - Finance`;
+        document.title = `Finance`;
         fetchData();
     }, [])
 

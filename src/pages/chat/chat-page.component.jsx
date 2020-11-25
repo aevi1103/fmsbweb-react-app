@@ -37,17 +37,17 @@ const ChatPage = () => {
 
     useEffect(() => {
 
-        const conn = new HubConnectionBuilder()
-            .withUrl(`https://localhost:44384/chathub`)
-            .withAutomaticReconnect()
-            .build();
-
         // const conn = new HubConnectionBuilder()
-        //     .withUrl(`https://localhost:44384/counterhub`)
+        //     .withUrl(`https://localhost:44384/chathub`)
         //     .withAutomaticReconnect()
         //     .build();
 
-        // console.log(conn)
+        const conn = new HubConnectionBuilder()
+            .withUrl(`https://localhost:44384/counterhub`)
+            .withAutomaticReconnect()
+            .build();
+
+        console.log(conn)
 
         setConnection(conn);
 
@@ -57,25 +57,25 @@ const ChatPage = () => {
 
         if (connection) {
 
-            connection.start()
-                .then(result => {
-                    console.log('Connected')
-                    connection.on('ReceiveMessage', ( user, message ) => {
-                        const msg = { user, message }
-                        setChat(msg)
-                    })
-                })
-                .catch(error => console.error(error))
-
             // connection.start()
-            //     .then(() => {
-            //         console.log('Connected');
-
-            //         connection.on('BroadCastChange', data => {
-            //             console.log(data)
+            //     .then(result => {
+            //         console.log('Connected')
+            //         connection.on('ReceiveMessage', ( user, message ) => {
+            //             const msg = { user, message }
+            //             setChat(msg)
             //         })
             //     })
             //     .catch(error => console.error(error))
+
+            connection.start()
+                .then(() => {
+                    console.log('Connected');
+
+                    connection.on('BroadCastChange', data => {
+                        console.log(data)
+                    })
+                })
+                .catch(error => console.error(error))
 
         }
 

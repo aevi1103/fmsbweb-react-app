@@ -113,7 +113,7 @@ const ProductionPage = ({
     useEffect(() => {
         const ttl = getPageHeaderTitle(headerTitle, startFormat, endFormat)
         setPageHeader(ttl)
-        document.title = `Morning Meeting - ${ttl}`;
+        document.title = `${ttl}`;
     }, [area]);
 
     //cancel token
@@ -125,7 +125,7 @@ const ProductionPage = ({
 
     const updateUrl = (start, end) => {
         const ttl = getPageHeaderTitle(headerTitle, startFormat, endFormat);
-        const docTitle =  `Morning Meeting - ${ttl}`;
+        const docTitle =  `${ttl}`;
         setPageHeader(ttl)
         updateUrlQryParameter({ start, end }, docTitle);
     }
@@ -220,7 +220,7 @@ const ProductionPage = ({
                 Export
             </Menu.Item>
             <Menu.Item key={`/dashboard/morningmeeting/${dept}/details`} onClick={onDetailsButtonClick}>
-                <Link to={`/dashboard/morningmeeting/${dept}/details?start=${startFormat}&end=${endFormat}&shift=`}>Work Center Details</Link>
+                <Link to={`/dashboard/morningmeeting/${dept}/details?start=${startFormat}&end=${endFormat}&shift=`}>Work Center</Link>
             </Menu.Item>
             <Menu.Item key={`/dashboard/swot/settings/${_.capitalize(dept)}`}>
                 <Link to={`/dashboard/swot/settings/${_.capitalize(dept)}?start=${startFormat}&end=${endFormat}&getdata=true`} >SWOT</Link>
@@ -229,10 +229,10 @@ const ProductionPage = ({
                 <Link to={`/dashboard/morningmeeting/${dept}/hourly-production?date=${endFormat}`} >Hourly Production</Link>
             </Menu.Item>
             <Menu.Item key={`/orderstatus/${dept}`} >
-                <Link to={`/orderstatus/${dept}`}>Active Orders</Link>
+                <Link to={`/orderstatus/${dept}`}>Production Orders</Link>
             </Menu.Item>     
             <Menu.Item key="targets">
-                <a href="http://10.129.224.149/FMSB/SWOT/Targets.aspx" target="_blank" rel="noreferrer">Adjust Targets</a>
+                <a href="http://10.129.224.149/FMSB/SWOT/Targets.aspx" target="_blank" rel="noreferrer">Targets</a>
             </Menu.Item>
         </Menu>
     )

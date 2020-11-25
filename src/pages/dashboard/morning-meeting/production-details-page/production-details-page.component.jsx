@@ -133,7 +133,7 @@ const ProductionDetailsPage = ({
                 Export
             </Menu.Item>
             <Menu.Item key={`/dashboard/morningmeeting/${department}/details`} >
-                <Link to={`/dashboard/morningmeeting/${department}?start=${startFormat}&end=${endFormat}`} >Department Details</Link>
+                <Link to={`/dashboard/morningmeeting/${department}?start=${startFormat}&end=${endFormat}`} >Department</Link>
             </Menu.Item>
             <Menu.Item key={`/dashboard/swot/settings/${_.capitalize(department)}`} >
                 <Link to={`/dashboard/swot/settings/${_.capitalize(department)}?start=${startFormat}&end=${endFormat}&getdata=true`}>SWOT</Link>
@@ -142,7 +142,7 @@ const ProductionDetailsPage = ({
                 <Link to={`/dashboard/morningmeeting/${department}/hourly-production?date=${endFormat}`} >Hourly Production</Link>
             </Menu.Item>
             <Menu.Item key={`/orderstatus/${department}`} >
-                <Link to={`/orderstatus/${department}`}>Active Orders</Link>
+                <Link to={`/orderstatus/${department}`}>Production Orders</Link>
             </Menu.Item>  
         </Menu>
     )

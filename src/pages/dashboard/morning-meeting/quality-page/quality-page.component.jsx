@@ -42,7 +42,7 @@ const QualityPage = ({
     }
 
     useEffect(() => {
-        document.title = `Morning Meeting - Quality`;
+        document.title = `Quality`;
         fetchData();
     }, [])
 

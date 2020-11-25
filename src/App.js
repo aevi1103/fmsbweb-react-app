@@ -201,10 +201,6 @@ const App = ( {
           {/* Machining Page */}
           <Route exact path="/machining/manning/:eosId" component={MachiningManningPage} />
 
-
-
-
-
           <Route exact path="/chat" component={ChatPage} />
 
           <Route component={NotFound} />

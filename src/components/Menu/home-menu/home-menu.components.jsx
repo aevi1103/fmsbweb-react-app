@@ -43,33 +43,11 @@ const HomeMenu = ( { location } ) => {
         <Link to="/" />
       </Menu.Item>
 
-      <SubMenu
-        key="dashboard"
-        title={
-          <span>
-            <DashboardOutlined />
-            <span>Dashboard</span>
-          </span>
-        }
-      >
-
-        <Menu.Item key="/dashboard/morningmeeting/safety">
-          <span>Morning Meeting</span>
-          <Link to="/dashboard/morningmeeting/safety" />
-        </Menu.Item>
-
-        <Menu.Item key="/orderstatus">
-          <span>Order Status</span>
-          <Link to="/orderstatus/foundry" />
-        </Menu.Item>
-
-        <Menu.Item key="/dashboard/swot/settings">
-          <span>SWOT</span>
-          <Link to="/dashboard/swot/settings" />
-        </Menu.Item>
-
-        <Menu.Item key="infoScreen">Info Screen</Menu.Item>
-      </SubMenu>
+      <Menu.Item key="/dashboard/morningmeeting/safety">
+        <DashboardOutlined />
+        <span>KPI Dashboard</span>
+        <Link to="/dashboard/morningmeeting/safety" />
+      </Menu.Item>
 
       <SubMenu
         key="safety"
@@ -80,9 +58,15 @@ const HomeMenu = ( { location } ) => {
           </span>
         }
       >
-        <Menu.Item key="incident">Incident Report</Menu.Item>
-        <Menu.Item key="history">History</Menu.Item>
-        <Menu.Item key="report">Reports</Menu.Item>
+        <Menu.Item key="incident">
+          <a href="http://10.129.224.149/FMSB/Safety/IncidentReport.aspx" rel="noopener noreferrer">Incident Report</a>
+        </Menu.Item>
+        <Menu.Item key="history">
+          <a href="http://10.129.224.149/FMSB/Safety2/History.aspx" rel="noopener noreferrer">History</a>
+        </Menu.Item>
+        <Menu.Item key="report">
+          <a href="http://10.129.224.149/FMSB/Safety2/Charts.aspx" rel="noopener noreferrer">Dashboard</a>
+        </Menu.Item>
       </SubMenu>
 
       <SubMenu

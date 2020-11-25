@@ -39,14 +39,6 @@ const DepartmentSubMenu = ({dept, icon, ...other}) => {
                 }}/>
             </Menu.Item>
 
-            <Menu.Item key={`/dashboard/morningmeeting/${dept}/hourly-production`}>
-                <span>Hourly Production</span>
-                <Link to={{
-                    pathname: `/dashboard/morningmeeting/${dept}/hourly-production`,
-                    state: { department: dept }
-                }}/>
-            </Menu.Item>
-
             <Menu.Item key={`/dashboard/swot/settings/${dept}`}>
                 <span>SWOT</span>
                 <Link to={{
@@ -55,14 +47,22 @@ const DepartmentSubMenu = ({dept, icon, ...other}) => {
             </Menu.Item>
 
             <Menu.Item key={`/dashboard/status/${dept === 'finishing' ? 'skirt coat' : dept}`}>
-                <span>Production Dashboard</span>
+                <span>Dashboard</span>
                 <Link to={{
                     pathname: `/dashboard/status/${dept === 'finishing' ? 'skirt coat' : dept}`
                 }}/>
             </Menu.Item>
 
+            <Menu.Item key={`/dashboard/morningmeeting/${dept}/hourly-production`}>
+                <span>Hourly Production</span>
+                <Link to={{
+                    pathname: `/dashboard/morningmeeting/${dept}/hourly-production`,
+                    state: { department: dept }
+                }}/>
+            </Menu.Item>
+
             <Menu.Item key={`/orderstatus/${dept}`}>
-                <span>Active Orders</span>
+                <span>Production Orders</span>
                 <Link to={{
                     pathname: `/orderstatus/${dept}`,
                     state: state

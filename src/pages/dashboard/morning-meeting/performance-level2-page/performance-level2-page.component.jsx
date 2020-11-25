@@ -34,6 +34,7 @@ import DateRangePicker from '../../../../components/date-range-picker/date-range
 import SelectScrapType from '../../../../components/select-scrap-type/seclect-scrap-type.components';
 import DeptSelect from '../../../../components/performance/dept-select.component';
 import '../morning-meeting.styles.scss';
+import { useTitle } from 'react-use'
 
 import { 
     Layout,
@@ -72,6 +73,8 @@ const PerformanceLevel2Page = ({
     fetchOvertimePercentPerDeptStartAsync,
     fetchOvertimePercentPerShiftStartAsync
 }) => {
+
+    useTitle('Performance: L2 - L3')
 
     const previousDay = moment().add(-1, 'days').format(dateFormat);
     const scrapTypeDefault = 'SB';
@@ -235,7 +238,7 @@ const PerformanceLevel2Page = ({
     return (
         <>
             <Header className="pa0 custom-header" >
-                <h2 className="ml3">{deptTitle} Department Performace L2 - L3</h2>
+                <h2 className="ml3">{deptTitle} Department Performace Level 2 - 3</h2>
             </Header>
     
             <Content className="ma3 mt0">
@@ -286,7 +289,7 @@ const PerformanceLevel2Page = ({
 
                 <Button type="primary" onClick={onDownload} loading={downloadLoading} className="ml2">
                     <DownloadOutlined />
-                    Data Export
+                    Export
                 </Button>
 
                 <div className="mt3">

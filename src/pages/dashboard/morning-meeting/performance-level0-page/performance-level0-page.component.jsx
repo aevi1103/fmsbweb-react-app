@@ -4,6 +4,7 @@ import moment from 'moment';
 import { Link } from "react-router-dom";
 import api from '../../../../API'
 import fileDownload from 'js-file-download'
+import { useTitle } from 'react-use'
 
 //level 0 charts
 import ScrapVarianceChart from '../../../../components/performance/level-0/scrap-variance-chart.component';
@@ -95,6 +96,8 @@ const PerformanceLevel0Page = ({
     endDate
 }) => {
 
+    useTitle('Performance: L0 - L1')
+
     const previousDay = moment().add(-1, 'days').format(dateFormat);
     const scrapTypeDefault = 'SB';
     /** Hooks */
@@ -169,7 +172,6 @@ const PerformanceLevel0Page = ({
     }
 
     useEffect(() => {
-        document.title = `Performance: L0 - L1`;
         fetchQuarterly();
         fetch();
         setScrapAreaNameTitle(setTitleFn(performaceSelectedDepartment));
@@ -214,7 +216,7 @@ const PerformanceLevel0Page = ({
                 Export
             </Menu.Item>   
             <Menu.Item key="targets">
-                <a href="http://10.129.224.149/FMSB/SWOT/Targets.aspx" target="_blank" rel="noreferrer">Adjust Targets</a>
+                <a href="http://10.129.224.149/FMSB/SWOT/Targets.aspx" target="_blank" rel="noreferrer">Targets</a>
             </Menu.Item>
         </Menu>
     )
@@ -224,7 +226,7 @@ const PerformanceLevel0Page = ({
         <>
             <PageHeader
                 className="site-page-header"
-                title={`${scrapAreaNameTitle} Scrap Performace L0 - L1`}
+                title={`${scrapAreaNameTitle} Scrap Performace Level 0 - 1`}
             />
     
             <Content className="ma3 mt0">
