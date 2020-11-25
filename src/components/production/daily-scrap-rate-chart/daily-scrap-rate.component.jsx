@@ -9,7 +9,7 @@ import ReactFC from 'react-fusioncharts';
 import moment from 'moment';
 
 import CustomSpinner from '../../custom-spinner/custom-spinner.component';
-import { tooltipStyle } from '../../../helpers/chart-config'
+import { tooltipStyle } from '../../../core/utilities/chart-config'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);

@@ -8,7 +8,7 @@ import {
 
 import SummaryByLineTable from './summary-by-line-table/summary-by-line-table.component'
 import SummaryByProgramTable from './summary-by-program/summary-by-program.component'
-import DefectSummaryTable from './defect-summary-table/defect-summary-table.component';
+import DefectSummaryTable from '../../containers/af-eos/components/defect-summary-table/defect-summary-table.component';
 import ProductionDetailsSummary from './production-details-summary/production-details-summary.component'
 
 const ProductionDetails = ({productionDetailsCollection, isProductionDetailsLoading}) => (

@@ -9,7 +9,7 @@ import {
     Alert
 } from 'antd'
 
-import api from '../../API'
+import api from '../../core/utilities/api'
 
 const { Option } = Select;
 

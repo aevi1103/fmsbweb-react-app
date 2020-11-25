@@ -18,7 +18,7 @@ import {
     setPpmhChartType,
     fetchPpmhPerShiftStartAsync,
     fetchWeeklyLaborHrsStartAsync
-} from '../../redux/morning-meeting/morning-meeting.actions';
+} from '../../core/redux/morning-meeting/morning-meeting.actions';
 
 import { 
     Row,

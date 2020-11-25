@@ -6,7 +6,7 @@ import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
-import { tooltipStyle } from '../../../helpers/chart-config'
+import { tooltipStyle } from '../../../core/utilities/chart-config'
 import CustomSpinner from '../../custom-spinner/custom-spinner.component'
 
 import { Empty } from 'antd';

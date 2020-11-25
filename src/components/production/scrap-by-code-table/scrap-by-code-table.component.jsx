@@ -8,7 +8,7 @@ import {
     Card
  } from "antd";
 
-import { numberSorter, percentSorter } from '../../../helpers/helpers'
+import { numberSorter, percentSorter } from '../../../core/utilities/helpers'
 import ScrapByCodeChart from '../scrap-by-code-chart/scrap-by-code-chart.component'
 
 const ScrapByCodeTable = ({

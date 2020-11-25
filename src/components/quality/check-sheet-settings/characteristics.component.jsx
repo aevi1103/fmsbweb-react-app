@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
 import numeral from 'numeral'
-import api from '../../../API'
+import api from '../../../core/utilities/api'
 import axios from 'axios';
 import _ from 'lodash'
 
@@ -26,7 +26,7 @@ import {
     setControlMethod,
     setPart,
     setMachine
- } from '../../../redux/quality-check-sheet/quality-check-sheet.actions'
+ } from '../../../core/redux/quality-check-sheet/quality-check-sheet.actions'
 
 import { 
     PlusOutlined,

@@ -6,7 +6,7 @@ import { ReactComponent as LogoIcon } from './assets/logoIcon.svg';
 import { LogoContainer } from './App.styles';
 import { 
   setSiderCollapse
- } from './redux/home/home.actions';
+ } from './core/redux/home/home.actions';
 
 import { 
   Layout,
@@ -18,8 +18,8 @@ import { useWindowSize } from 'react-use'
 import './App.css';
 import './App.scss'
 
-import HomePage from './pages/home/home.component';
-import NotFound from './pages/404/404.component';
+import HomePage from './containers/home/home.component';
+import NotFound from './containers/404/404.component';
 
 //nenu components
 import HomeMenu from './components/Menu/home-menu/home-menu.components';
@@ -28,45 +28,48 @@ import AfMenu from './components/Menu/af-menu/af-menu.component';
 import LogisticsMenu from './components/Menu/logistics/logistics-menu.component'
 
 //swot components
-import SwotSettingsPage from './pages/dashboard/swot/settings-page.component';
-import SwotPage from './pages/dashboard/swot/swot-page.component';
-import PrintWotChartsPage from './pages/dashboard/swot/print-swot-charts-page.component';
+import SwotSettings from './containers/swot-settings/swot-settings.component';
+import Swot from './containers/swot/swot.component';
+import PrintWotChartsPage from './containers/swot/swot-print.component';
 
 //department dashboard
-import DepartmentDashboardPage from './pages/dashboard/department/dashboard-page.component'
+import ProductionDashboard from './containers/production-dashboard/production-dashboard.component'
 
 //morning meeting pages
-import SafetyPage from './pages/dashboard/morning-meeting/safety-page/safety-page.component';
-import QualityPage from './pages/dashboard/morning-meeting/quality-page/quality-page.component';
-import LogisticsPage from './pages/dashboard/morning-meeting/logistics/logistics-page.component';
-import PerformanceLevel0Page from './pages/dashboard/morning-meeting/performance-level0-page/performance-level0-page.component';
-import PerformanceLevel2Page from './pages/dashboard/morning-meeting/performance-level2-page/performance-level2-page.component';
-import ProductionPage from './pages/dashboard/morning-meeting/production-page/production-page.component';
-import ProductionDetailsPage from './pages/dashboard/morning-meeting/production-details-page/production-details-page.component'; 
-import HourlyProdPage from './pages/dashboard/morning-meeting/hourly-production-page/hourly-production-page.component'
-import FinancePage from './pages/dashboard/morning-meeting/finance-page/finance-page.component';
-import DowntimePage from './pages/dashboard/morning-meeting/downtime-page/downtime-page.component';
+import SafetyPage from './containers/dashboard/kpi/safety-page.component';
+import QualityPage from './containers/dashboard/kpi/quality-page.component';
+import LogisticsPage from './containers/dashboard/kpi/logistics-page.component';
+import PerformanceLevel0Page from './containers/dashboard/kpi/performance-level0-page.component';
+import PerformanceLevel2Page from './containers/dashboard/kpi/performance-level2-page.component';
+import DepartmentPage from './containers/dashboard/kpi/department-page.component';
+import ProductionDetailsPage from './containers/dashboard/kpi/production-details-page.component'; 
+import HourlyProdPage from './containers/dashboard/kpi/hourly-production-page.component'
+import FinancePage from './containers/dashboard/kpi/finance-page.component';
+import DowntimePage from './containers/dashboard/kpi/downtime-page.component';
 
-import OrderStatusPage from './pages/order-status-page/order-status-page.component';
-import AfEosPage from './pages/af/eos-page/eos-page.component';
+import ProductionOrderPage from './containers/dashboard/kpi/production-order-page.component';
+import AfEosPage from './containers/af-eos/af-eos.component';
 
 //quality pages
-import CheckSheetSettingsPage from './pages/quality/check-sheet/check-sheet-settings-page.component'
-import ControlMethodPage from './pages/quality/check-sheet/control-method-page.component'
-import CheckSheetLogInPage from './pages/quality/check-sheet/check-sheet-login-page.component'
-import CheckSheetDataEntryPage from './pages/quality/check-sheet/check-sheet-data-entry-page.component'
-import CheckSheetHistoryPage from './pages/quality/check-sheet/check-sheet-history-page.component'
+import CheckSheetSettingsPage from './containers/quality/check-sheet/check-sheet-settings-page.component'
+import ControlMethodPage from './containers/quality/check-sheet/control-method-page.component'
+import CheckSheetLogInPage from './containers/quality/check-sheet/check-sheet-login-page.component'
+import CheckSheetDataEntryPage from './containers/quality/check-sheet/check-sheet-data-entry-page.component'
+import CheckSheetHistoryPage from './containers/quality/check-sheet/check-sheet-history-page.component'
 
 //machining
-import MachiningManningPage from './pages/machining/manning/manning-page.component'
+import MachiningManningPage from './containers/machining-manning/machining-manning.component'
 
 //logistics settings page
-import InvetoryPage from './pages/logistics-settings/inventory-page.component'
-import CostTaregtsPage from './pages/logistics-settings/cost-targets-page.component'
-import MinMaxPage from './pages/logistics-settings/min-max-page.component'
-import ProdOrderPage from './pages/logistics-settings/prod-order-page.componen'
+import InvetoryPage from './containers/logistics-inventory-file-upload/inventory-page.component'
+import CostTaregtsPage from './containers/logitics-costs-targets/logistics-costs-targets.component'
+import InventoryMinMaxTargets from './containers/inventory-min-max-targets/inventory-min-max-targets.component'
+import ProductionOrderFileUpload from './containers/production-order-file-upload/production-order-file-upload.componen'
 
-import ChatPage from './pages/chat/chat-page.component'
+// OEE
+import OeeLines from './containers/dashboard/oee/lines-page.component'
+
+import ChatPage from './containers/chat/chat-page.component'
 
 const { Footer, Sider } = Layout;
 
@@ -153,25 +156,25 @@ const App = ( {
           <Route exact path="/" component={HomePage} />
 
           {/* SWOT */}
-          <Route exact path="/dashboard/swot/settings/:department?" component={SwotSettingsPage} />
-          <Route exact path="/dashboard/swot/:department" component={SwotPage} />
+          <Route exact path="/dashboard/swot/settings/:department?" component={SwotSettings} />
+          <Route exact path="/dashboard/swot/:department" component={Swot} />
           <Route exact path="/dashboard/swot/:department/print" component={PrintWotChartsPage} />
 
           {/* Department Dashboard */}
-          <Route exact path="/dashboard/status/:department" component={DepartmentDashboardPage} />
+          <Route exact path="/dashboard/status/:department" component={ProductionDashboard} />
 
           {/* Monring Meeting */}
           <Route exact path="/dashboard/morningmeeting/safety" component={SafetyPage} />
           <Route exact path="/dashboard/morningmeeting/logistics" component={LogisticsPage} />
           <Route exact path="/dashboard/morningmeeting/logistics/settings/inventory" component={InvetoryPage} />
           <Route exact path="/dashboard/morningmeeting/logistics/settings/cost/targets" component={CostTaregtsPage} />
-          <Route exact path="/dashboard/morningmeeting/logistics/settings/inventory/minmax" component={MinMaxPage} />
-          <Route exact path="/dashboard/morningmeeting/logistics/settings/order" component={ProdOrderPage} />
+          <Route exact path="/dashboard/morningmeeting/logistics/settings/inventory/minmax" component={InventoryMinMaxTargets} />
+          <Route exact path="/dashboard/morningmeeting/logistics/settings/order" component={ProductionOrderFileUpload} />
 
-          <Route exact path="/dashboard/morningmeeting/foundry" render={() => <ProductionPage area="foundry cell" headerTitle="Foundry" />} />
-          <Route exact path="/dashboard/morningmeeting/machining" render={() => <ProductionPage area="machine line" headerTitle="Machining" />} />
-          <Route exact path="/dashboard/morningmeeting/finishing" render={() => <ProductionPage area="skirt coat" headerTitle="Finishing / Skirt Coat" />}/>
-          <Route exact path="/dashboard/morningmeeting/assembly" render={() => <ProductionPage area="assembly" headerTitle="Assembly" />} />
+          <Route exact path="/dashboard/morningmeeting/foundry" render={() => <DepartmentPage area="foundry cell" headerTitle="Foundry" />} />
+          <Route exact path="/dashboard/morningmeeting/machining" render={() => <DepartmentPage area="machine line" headerTitle="Machining" />} />
+          <Route exact path="/dashboard/morningmeeting/finishing" render={() => <DepartmentPage area="skirt coat" headerTitle="Finishing / Skirt Coat" />}/>
+          <Route exact path="/dashboard/morningmeeting/assembly" render={() => <DepartmentPage area="assembly" headerTitle="Assembly" />} />
 
           <Route exact path="/dashboard/morningmeeting/finance" component={FinancePage} />
           <Route exact path="/dashboard/morningmeeting/quality" component={QualityPage} />
@@ -180,8 +183,12 @@ const App = ( {
           <Route exact path="/dashboard/morningmeeting/:department/details" component={ProductionDetailsPage} />
           <Route exact path="/dashboard/morningmeeting/*/hourly-production" component={HourlyProdPage} />
 
+          {/* OEE Page */}
+          <Route exact path="/oee/:department" component={OeeLines} />
+          <Route exact path="/oee/:department/:id" component={OeeLines} />
+
           {/* Order Status */}
-          <Route exact path="/orderstatus/:department" component={OrderStatusPage} />
+          <Route exact path="/orderstatus/:department" component={ProductionOrderPage} />
 
           {/* performance Page */}
           <Route exact path="/dashboard/morningmeeting/level0" component={PerformanceLevel0Page} />
@@ -204,6 +211,7 @@ const App = ( {
           <Route exact path="/chat" component={ChatPage} />
 
           <Route component={NotFound} />
+          
         </Switch>
         
         <Footer style={{ textAlign: "center" }} className="site-layout-bg">

@@ -4,7 +4,7 @@ import moment from 'moment';
 import numeral from 'numeral';
 import Highlighter from 'react-highlight-words';
 
-import { numberSorter } from '../../../helpers/helpers';
+import { numberSorter } from '../../../core/utilities/helpers';
 import { SearchOutlined } from '@ant-design/icons';
 import { Table, Input, Button, Tag } from "antd";
 

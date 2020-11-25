@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { useParams  } from 'react-router-dom'
-import api from '../../../API'
+import api from '../../../core/utilities/api'
 import _ from 'lodash'
 
 import ReCheckModal from './re-check-modal.component'
@@ -12,7 +12,7 @@ import {
     setReChecksCollection,
     setCheckSheetValues,
     setCheckSheetEntry
-} from '../../../redux/quality-check-sheet/quality-check-sheet.actions.js'
+} from '../../../core/redux/quality-check-sheet/quality-check-sheet.actions.js'
 
 import {
     getTargets,
@@ -20,7 +20,7 @@ import {
     focusOnNextRow,
     getInputId,
     isKeyboardNavKeys
-} from '../../../helpers/check-sheet-helpers'
+} from '../../../core/utilities/check-sheet-helpers'
 
 import {
     InputNumber,

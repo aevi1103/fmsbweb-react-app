@@ -4,7 +4,7 @@ import {
     Table,
  } from "antd";
 
-import { numberSorter, percentSorter } from '../../../helpers/helpers'
+import { numberSorter, percentSorter } from '../../../core/utilities/helpers'
 
 const ScrapByDeptTable = ({scrapData, isLoading, otherProps}) => {
 

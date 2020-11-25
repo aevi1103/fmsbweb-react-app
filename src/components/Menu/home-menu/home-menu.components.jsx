@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from "react-router-dom";
-import api from '../../../API'
+import api from '../../../core/utilities/api'
 
 import {
   DashboardOutlined,

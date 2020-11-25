@@ -9,11 +9,11 @@ import ReactFC from 'react-fusioncharts';
 import {
     setDowntimeByOwner,
     resetDowntimeByLine
-} from '../../../redux/morning-meeting/morning-meeting.actions'
+} from '../../../core/redux/morning-meeting/morning-meeting.actions'
 
 import {
     tooltipStyle
-} from '../../../helpers/chart-config'
+} from '../../../core/utilities/chart-config'
 
 import CustomSpinner from '../../custom-spinner/custom-spinner.component'
 import { Empty } from 'antd';

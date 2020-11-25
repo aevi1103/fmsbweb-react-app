@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux'
 import { Link, withRouter } from "react-router-dom";
-
 
 import {
     AreaChartOutlined,
@@ -12,11 +10,9 @@ import {
     ExperimentOutlined,
     HomeOutlined,
     PieChartOutlined,
-    HeatMapOutlined,
     SafetyOutlined,
     SettingOutlined,
-    DashboardOutlined,
-    RadarChartOutlined
+    DashboardOutlined
 } from '@ant-design/icons';
 
 import DepartmentSubMenu from './department-sub-menu.component'
@@ -52,17 +48,20 @@ const MorningMeetingMenu = ( { location } ) => {
 
         <Menu.Item key="/dashboard/morningmeeting/safety">
             <SafetyOutlined />
-            <Link to="/dashboard/morningmeeting/safety">Safety</Link>
+            <span>Safety</span>
+            <Link to="/dashboard/morningmeeting/safety"/>
         </Menu.Item>
 
         <Menu.Item key="/dashboard/morningmeeting/quality">
             <ExperimentOutlined />
-            <Link to="/dashboard/morningmeeting/quality">Quality</Link>
+            <span>Quality</span>
+            <Link to="/dashboard/morningmeeting/quality"/>
         </Menu.Item>
 
         <Menu.Item key="/dashboard/morningmeeting/logistics">
             <CarOutlined />
-            <Link to="/dashboard/morningmeeting/logistics">Logistics</Link>
+            <span>Logistics</span>
+            <Link to="/dashboard/morningmeeting/logistics"/>
         </Menu.Item>
 
         <SubMenu
@@ -104,12 +103,14 @@ const MorningMeetingMenu = ( { location } ) => {
 
         <Menu.Item key="/dashboard/morningmeeting/finance">
             <DollarOutlined />
-            <Link to="/dashboard/morningmeeting/finance">Finance</Link>
+            <span>Finance</span>
+            <Link to="/dashboard/morningmeeting/finance"/>
         </Menu.Item>
 
         <Menu.Item key="/dashboard/morningmeeting/downtime">
             <SettingOutlined />
-            <Link to="/dashboard/morningmeeting/downtime">Downtime</Link>
+            <span>Downtime</span>
+            <Link to="/dashboard/morningmeeting/downtime"/>
         </Menu.Item>
 
         

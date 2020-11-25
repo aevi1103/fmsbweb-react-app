@@ -3,7 +3,7 @@ import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
-import { tooltipStyle } from '../../../helpers/chart-config';
+import { tooltipStyle } from '../../../core/utilities/chart-config';
 import { Empty } from 'antd';
 
 FusionCharts.options.creditLabel = false;

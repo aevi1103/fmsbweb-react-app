@@ -4,7 +4,7 @@ import {
     Table,
  } from "antd";
 
-import { numberSorter } from '../../../helpers/helpers'
+import { numberSorter } from '../../../core/utilities/helpers'
 
 const ProductionByTypeTable = ({prodData, isLoading, otherProps}) => {
 

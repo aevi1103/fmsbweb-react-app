@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import api from '../../API'
+import api from '../../core/utilities/api'
 import { CloseOutlined, SaveOutlined, LoadingOutlined } from '@ant-design/icons';
 import { 
     Form,

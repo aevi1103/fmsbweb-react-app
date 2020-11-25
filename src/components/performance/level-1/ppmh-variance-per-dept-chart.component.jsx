@@ -12,7 +12,7 @@ import { Empty } from 'antd';
 import CustomSpinner from '../../custom-spinner/custom-spinner.component'
 import {
     tooltipStyle
-} from '../../../helpers/chart-config'
+} from '../../../core/utilities/chart-config'
 import moment from 'moment';
 
 FusionCharts.options.creditLabel = false;

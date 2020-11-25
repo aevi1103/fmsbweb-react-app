@@ -10,9 +10,9 @@ import ReactFC from 'react-fusioncharts';
 import {
     setDowntimeByLine,
     resetDowntimeByLine
-} from '../../../redux/morning-meeting/morning-meeting.actions'
+} from '../../../core/redux/morning-meeting/morning-meeting.actions'
 
-import { tooltipStyle } from '../../../helpers/chart-config'
+import { tooltipStyle } from '../../../core/utilities/chart-config'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);

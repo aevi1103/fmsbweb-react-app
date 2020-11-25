@@ -3,13 +3,13 @@ import { connect } from 'react-redux'
 import { PlusOutlined } from '@ant-design/icons';
 import ToloranceBar from './tolerance-bar.component'
 import ReCheckInput from './re-check-input.component'
-import api from '../../../API'
+import api from '../../../core/utilities/api'
 import shortid from 'shortid'
 
 
 import {
     setReChecksCollection
-} from '../../../redux/quality-check-sheet/quality-check-sheet.actions.js'
+} from '../../../core/redux/quality-check-sheet/quality-check-sheet.actions.js'
 
 import {
     Modal,

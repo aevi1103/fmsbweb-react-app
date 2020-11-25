@@ -10,8 +10,8 @@ import {
  } from "antd";
 
 import ScrapLink  from '../../scrap-link/scrap-link.component'
-import DefectSummaryTable from '../defect-summary-table/defect-summary-table.component'
-import SapNetTable from '../sap-net-table/sap-net-table.component'
+import DefectSummaryTable from '../../../containers/af-eos/components/defect-summary-table/defect-summary-table.component'
+import SapNetTable from '../../../containers/af-eos/components/sap-net-table/sap-net-table.component'
 import ProductionDetailsTableFooter from '../production-details-table-footer.component'
 
 const getScrapRate = (data, scrapArea, onClick, isAfScrap = false, afScrapRate = 0) => {

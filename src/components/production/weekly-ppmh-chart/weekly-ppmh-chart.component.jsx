@@ -11,7 +11,7 @@ import ReactFC from 'react-fusioncharts';
 import CustomSpinner from '../../custom-spinner/custom-spinner.component';
 import {
     tooltipStyle
-} from '../../../helpers/chart-config'
+} from '../../../core/utilities/chart-config'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);

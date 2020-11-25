@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import numeral from 'numeral';
-import { numberSorter } from '../../helpers/helpers';
+import { numberSorter } from '../../core/utilities/helpers';
 
 import { 
     Table,

@@ -7,7 +7,7 @@ import ReactFC from 'react-fusioncharts';
 
 import {
     tooltipStyle
-} from '../../helpers/chart-config'
+} from '../../core/utilities/chart-config'
 import { forOwn } from 'lodash';
 
 FusionCharts.options.creditLabel = false;
