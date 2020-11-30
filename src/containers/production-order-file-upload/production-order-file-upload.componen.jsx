@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import moment from 'moment'
 import { InboxOutlined } from '@ant-design/icons';
-import ProductionOrder from '../../components/logistics/production-order.component'
+import ProductionOrder from './components/production-order.component'
 import { 
     Layout,
     PageHeader,

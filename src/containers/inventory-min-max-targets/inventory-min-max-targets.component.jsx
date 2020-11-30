@@ -3,7 +3,7 @@ import axios from 'axios';
 import api from '../../core/utilities/api'
 import { PlusOutlined } from '@ant-design/icons';
 import { useTitle } from 'react-use'
-import MinMaxFieldRow from '../../components/logistics/min-max-field-row.component'
+import MinMaxFieldRow from './components/min-max-field-row.component'
 import { 
     Layout,
     PageHeader,
@@ -13,7 +13,7 @@ import {
     Col
  } from "antd";
 
- const { Content } = Layout;
+const { Content } = Layout;
 
 const InventoryMinMaxTargets = () => {
 
@@ -91,12 +91,6 @@ const InventoryMinMaxTargets = () => {
                             )}
 
                         </Form.List>
-
-                        {/* <Form.Item>
-                            <Button type="primary" htmlType="submit" loading={loading}>
-                                Submit
-                            </Button>
-                        </Form.Item> */}
 
                     </Form>
                 

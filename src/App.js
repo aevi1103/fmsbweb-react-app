@@ -36,26 +36,26 @@ import PrintWotChartsPage from './containers/swot/swot-print.component';
 import ProductionDashboard from './containers/production-dashboard/production-dashboard.component'
 
 //morning meeting pages
-import SafetyPage from './containers/dashboard/kpi/safety-page.component';
-import QualityPage from './containers/dashboard/kpi/quality-page.component';
-import LogisticsPage from './containers/dashboard/kpi/logistics-page.component';
+import SafetyPage from './containers/safety/safety-page.component';
+import QualityPage from './containers/quality/quality-page.component';
+import LogisticsDashboard from './containers/logistics-dashboard/logistics-dashboard.component';
 import PerformanceLevel0Page from './containers/dashboard/kpi/performance-level0-page.component';
 import PerformanceLevel2Page from './containers/dashboard/kpi/performance-level2-page.component';
 import DepartmentPage from './containers/dashboard/kpi/department-page.component';
 import ProductionDetailsPage from './containers/dashboard/kpi/production-details-page.component'; 
-import HourlyProdPage from './containers/dashboard/kpi/hourly-production-page.component'
-import FinancePage from './containers/dashboard/kpi/finance-page.component';
-import DowntimePage from './containers/dashboard/kpi/downtime-page.component';
+import HourlyProdPage from './containers/hourly-production/hourly-production-page.component'
+import FinancePage from './containers/finance/finance-page.component';
+import DowntimePage from './containers/downtime/downtime-page.component';
 
-import ProductionOrderPage from './containers/dashboard/kpi/production-order-page.component';
+import ProductionOrderPage from './containers/production-order/production-order-page.component';
 import AfEosPage from './containers/af-eos/af-eos.component';
 
 //quality pages
-import CheckSheetSettingsPage from './containers/quality/check-sheet/check-sheet-settings-page.component'
-import ControlMethodPage from './containers/quality/check-sheet/control-method-page.component'
-import CheckSheetLogInPage from './containers/quality/check-sheet/check-sheet-login-page.component'
-import CheckSheetDataEntryPage from './containers/quality/check-sheet/check-sheet-data-entry-page.component'
-import CheckSheetHistoryPage from './containers/quality/check-sheet/check-sheet-history-page.component'
+import CheckSheetSettingsPage from './containers/quality-check-sheet/check-sheet-settings-page.component'
+import ControlMethodPage from './containers/quality-check-sheet/control-method-page.component'
+import CheckSheetLogInPage from './containers/quality-check-sheet/check-sheet-login-page.component'
+import CheckSheetDataEntryPage from './containers/quality-check-sheet/check-sheet-data-entry-page.component'
+import CheckSheetHistoryPage from './containers/quality-check-sheet/check-sheet-history-page.component'
 
 //machining
 import MachiningManningPage from './containers/machining-manning/machining-manning.component'
@@ -165,7 +165,7 @@ const App = ( {
 
           {/* Monring Meeting */}
           <Route exact path="/dashboard/morningmeeting/safety" component={SafetyPage} />
-          <Route exact path="/dashboard/morningmeeting/logistics" component={LogisticsPage} />
+          <Route exact path="/dashboard/morningmeeting/logistics" component={LogisticsDashboard} />
           <Route exact path="/dashboard/morningmeeting/logistics/settings/inventory" component={InvetoryPage} />
           <Route exact path="/dashboard/morningmeeting/logistics/settings/cost/targets" component={CostTaregtsPage} />
           <Route exact path="/dashboard/morningmeeting/logistics/settings/inventory/minmax" component={InventoryMinMaxTargets} />

@@ -11,16 +11,3 @@ export const getDowntimeByOwner = (downtimeCollection, dept, shift) => {
     };
 
 }
-
-export const getDowntimeByLine = (ownerDetails, dept, shift, owner) => {
-
-    const { lineDetails } = ownerDetails.find(({ type }) => type === owner);
-    return {
-        dept,
-        shift,
-        owner,
-        lineTitle: `${dept} - Shift ${shift} - ${owner} - Dowtime By Machine (Drilldown Chart)`,
-        lineDetails
-    };
-
-}

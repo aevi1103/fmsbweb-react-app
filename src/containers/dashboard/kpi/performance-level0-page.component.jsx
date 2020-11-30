@@ -11,7 +11,7 @@ import ScrapVarianceChart from '../../../components/performance/level-0/scrap-va
 import ScrapVarianceChartPerProgram from '../../../components/performance/level-1/scrap-variance-per-program-chart.component';
 import PpmhVariancePerDeptChart from '../../../components/performance/level-1/ppmh-variance-per-dept-chart.component';
 import DeptKpiChart from '../../../components/performance/level-0/dept-kpi-chart.component';
-import DowntimeChart from '../../../components/downtime/downtime-chart/downtime-chart.component';
+import DowntimeChart from '../../downtime/components/downtime-chart.component';
 import PlantPpmhChart from '../../../components/performance/level-0/plant-ppmh-chart.component';
 import DateRangePicker from '../../../components/date-range-picker/date-range-picker.component';
 import SelectScrapType from '../../../components/select-scrap-type/seclect-scrap-type.components';

@@ -3,8 +3,7 @@ import morningMeetingTypes from './morning-meeting.types';
 import api from '../../utilities/api';
 
 import {
-    getDowntimeByOwner,
-    getDowntimeByLine
+    getDowntimeByOwner
 } from '../../utilities/downtime-helper';
 
 import {
@@ -954,9 +953,15 @@ export const resetDowntimeByOwner = () => ({
     }
 });
 
-export const setDowntimeByLine = (ownerDetails, dept, shift, owner) => ({
+export const setDowntimeByLine = (lineDetails, dept, shift, owner) => ({
     type: morningMeetingTypes.SET_DOWNTIME_BY_LINE,
-    payload: getDowntimeByLine(ownerDetails, dept, shift, owner)
+    payload: {
+        dept,
+        shift,
+        owner,
+        lineTitle: `${dept} - Shift ${shift} - ${owner} - Dowtime By Machine (Drilldown Chart)`,
+        lineDetails
+    }
 });
 
 export const resetDowntimeByLine = () => ({

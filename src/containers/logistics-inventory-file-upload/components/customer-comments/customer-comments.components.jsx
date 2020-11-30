@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import api from '../../../../core/utilities/api'
 
-import CustomerCommentsTable from '../../../../components/logistics/customer-comments-table'
+import CustomerCommentsTable from '../../../logistics-dashboard/components/customer-comments-table'
 
 import {
     Form,

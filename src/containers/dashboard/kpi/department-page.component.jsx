@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import _ from 'lodash'
-import { connect } from 'react-redux';
+import { connect, useSelector, useDispatch } from 'react-redux';
 import { Link } from "react-router-dom";
 import moment from 'moment';
 import axios from 'axios';
@@ -53,7 +53,6 @@ import {
  } from "antd";
 
 const { Content } = Layout;
-
 const dateFormat = 'MM/DD/YYYY';
 const Container = styled.span`
     display: flex;
