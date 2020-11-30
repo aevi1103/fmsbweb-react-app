@@ -41,7 +41,7 @@ import QualityPage from './containers/quality/quality-page.component';
 import LogisticsDashboard from './containers/logistics-dashboard/logistics-dashboard.component';
 import PerformanceLevel0Page from './containers/dashboard/kpi/performance-level0-page.component';
 import PerformanceLevel2Page from './containers/dashboard/kpi/performance-level2-page.component';
-import DepartmentPage from './containers/dashboard/kpi/department-page.component';
+import DepartmentDashboard from './containers/department-dashboard/department-dashboard.component';
 import ProductionDetailsPage from './containers/dashboard/kpi/production-details-page.component'; 
 import HourlyProdPage from './containers/hourly-production/hourly-production-page.component'
 import FinancePage from './containers/finance/finance-page.component';
@@ -171,10 +171,10 @@ const App = ( {
           <Route exact path="/dashboard/morningmeeting/logistics/settings/inventory/minmax" component={InventoryMinMaxTargets} />
           <Route exact path="/dashboard/morningmeeting/logistics/settings/order" component={ProductionOrderFileUpload} />
 
-          <Route exact path="/dashboard/morningmeeting/foundry" render={() => <DepartmentPage area="foundry cell" headerTitle="Foundry" />} />
-          <Route exact path="/dashboard/morningmeeting/machining" render={() => <DepartmentPage area="machine line" headerTitle="Machining" />} />
-          <Route exact path="/dashboard/morningmeeting/finishing" render={() => <DepartmentPage area="skirt coat" headerTitle="Finishing / Skirt Coat" />}/>
-          <Route exact path="/dashboard/morningmeeting/assembly" render={() => <DepartmentPage area="assembly" headerTitle="Assembly" />} />
+          <Route exact path="/dashboard/morningmeeting/foundry" render={() => <DepartmentDashboard area="foundry cell" />} />
+          <Route exact path="/dashboard/morningmeeting/machining" render={() => <DepartmentDashboard area="machine line" />} />
+          <Route exact path="/dashboard/morningmeeting/finishing" render={() => <DepartmentDashboard area="skirt coat" />}/>
+          <Route exact path="/dashboard/morningmeeting/assembly" render={() => <DepartmentDashboard area="assembly" />} />
 
           <Route exact path="/dashboard/morningmeeting/finance" component={FinancePage} />
           <Route exact path="/dashboard/morningmeeting/quality" component={QualityPage} />

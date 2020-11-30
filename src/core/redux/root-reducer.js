@@ -9,6 +9,8 @@ import swotReducer from './swot/swot.reducer'
 import requetsReducer from './requests/requests.reducer'
 import productionStatusReducer from './production-status/production-status.reducer'
 
+import departmentDashboardReducer from './department-dashboard/department-dashboard.reducer'
+
 const rootReducer = combineReducers({
     home: homeReducer,
     morningMeeting: morningMeetingReducer,
@@ -17,7 +19,8 @@ const rootReducer = combineReducers({
     qualityCheckSheet: qualityCheckSheetReducer,
     swot: swotReducer,
     requests: requetsReducer,
-    productionStatus: productionStatusReducer
+    productionStatus: productionStatusReducer,
+    departmentDashboard: departmentDashboardReducer
 })
 
 export default rootReducer;
