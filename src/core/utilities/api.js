@@ -32,8 +32,6 @@ http.interceptors.request.use(req => {
     }
 
     store.dispatch(setTotalRequests(totalReq++));
-
-    // Important: request interceptors **must** return the request.
     return req;
 });
 
@@ -47,38 +45,22 @@ http.interceptors.response.use(res => {
     progress++;
     const progressPercent = totalReq === 0 ? 0 : progress / totalReq;
     const percent = Math.round((progressPercent * 100), 0)
-
     store.dispatch(setProgress(percent));
 
-    // console.log({
-    //     progress,
-    //     totalReq,
-    //     total: percent
-    // })
-
     if (totalReq === progress) {
-
-        // console.log('---- reset ----', {
-        //     totalReq,
-        //     progress
-        // })
-
         store.dispatch(setTotalRequests(0));
         store.dispatch(setProgress(0));
         totalReq = 0;
         progress = 0;
-
-        // setTimeout(() => {
-        //     store.dispatch(setTotalRequests(0));
-        //     store.dispatch(setProgress(0));
-        //     totalReq = 0;
-        //     progress = 0;
-        // }, 1000)
-
     }
 
-    // Important: response interceptors **must** return the response.
     return res;
+},
+error => {
+
+    const msg = error?.response?.data?.message ?? error?.message;
+    console.error('axios interceptors', msg)
+
 });
 
 export default http;

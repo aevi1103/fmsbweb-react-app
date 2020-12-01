@@ -9,9 +9,9 @@ import {
  } from "antd";
 
 import { numberSorter, percentSorter } from '../../../core/utilities/helpers'
-import ScrapByCodeChart from '../scrap-by-code-chart/scrap-by-code-chart.component'
+import ScrapByCodeChart from '../../../components/production/scrap-by-code-chart/scrap-by-code-chart.component'
 
-const ScrapByCodeTable = ({
+const ScrapByCodeTable = React.memo(({
     scrapData,
     isLoading,
     otherProps
@@ -72,18 +72,11 @@ const ScrapByCodeTable = ({
         details: details.map(({ scrapCode, scrapDesc, qty }) => ({ scrapCode, scrapDesc, qty }))
       }))
 
-      const onChange = (pagination, filters, sorter, extra) => {
-        // console.log('params', pagination, filters, sorter, extra);
-      }
-
-      
-
     return (
         <>
           <Table loading={isLoading}
             columns={columns}
             dataSource={data}
-            onChange={onChange}
             pagination={false}
             {...otherProps} /> 
 
@@ -107,6 +100,6 @@ const ScrapByCodeTable = ({
         </>
             
     )
-}
+})
 
  export default ScrapByCodeTable;

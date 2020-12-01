@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import numeral from 'numeral';
 
 import FusionCharts from 'fusioncharts';
@@ -8,31 +8,15 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
 import { tooltipStyle } from '../../../core/utilities/chart-config';
-import CustomSpinner from '../../custom-spinner/custom-spinner.component';
-
-import { Empty } from 'antd';
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const PpmhPerShiftChart = ({
-    isPpmhPerShiftFetching,
-    ppmhPerShiftCollection
-}) => {
+const numberFormat = '0,0.00';
 
-    const [collection, setCollection] = useState([]);
-    useEffect(() => {
+const PpmhPerShiftChart = () => {
 
-        try {
-            setCollection(ppmhPerShiftCollection || ppmhPerShiftCollection.length > 0 ? ppmhPerShiftCollection : []); 
-        } catch (error) {
-            setCollection([]);
-        }
-        
-    },[ppmhPerShiftCollection]);
-
-    const numberFormat = '0,0.00';
-
+    const ppmhCollection = useSelector(({ departmentDashboard }) => departmentDashboard?.ppmhCollection) ?? [];
     const chartProps = {
         showvalues: "1",
         showpercentintooltip: "0",
@@ -50,7 +34,7 @@ const PpmhPerShiftChart = ({
             ...chartProps,
             ...tooltipStyle
         },
-        data: collection.map(({shift, sapNet, laborHours: { ppmh, regular, overtime, doubleTime, orientation, overAll }}) => ({
+        data: ppmhCollection.map(({shift, sapNet, laborHours: { ppmh, regular, overtime, doubleTime, orientation, overAll }}) => ({
                 label: shift,
                 value: Math.round(ppmh),
                 toolText: `<b>Shift: </b> ${shift} <br>
@@ -74,18 +58,7 @@ const PpmhPerShiftChart = ({
         dataSource: dataSource
       };
 
-    //   console.log('ScrapVariancePerProgramChart end', chartConfigs)
-
-    return isPpmhPerShiftFetching 
-            ? <CustomSpinner/> 
-            : collection.length === 0 
-                ? <Empty/>
-                : <ReactFC {...chartConfigs} />
+    return <ReactFC {...chartConfigs} />
 }
 
-const mapStateToProps = ({ morningMeeting }) => ({
-    isPpmhPerShiftFetching: morningMeeting.isPpmhPerShiftFetching,
-    ppmhPerShiftCollection: morningMeeting.ppmhPerShiftCollection
-})
-
-export default connect(mapStateToProps)(PpmhPerShiftChart);
+export default PpmhPerShiftChart;

@@ -43,16 +43,11 @@ const ScrapByDeptTable = ({scrapData, isLoading, otherProps}) => {
         rate: numeral(scrapRate).format('0.00%')
       }))
 
-      const onChange = (pagination, filters, sorter, extra) => {
-        // console.log('params', pagination, filters, sorter, extra);
-      }
-
     return (
         <Table 
                 loading={isLoading}
                 columns={columns}
                 dataSource={data}
-                onChange={onChange}
                 pagination={false}
                 {...otherProps} />     
     )

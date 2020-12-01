@@ -36,16 +36,11 @@ const ProductionByTypeTable = ({prodData, isLoading, otherProps}) => {
         net: numeral(sapNet).format('0,0')
       }))
 
-      const onChange = (pagination, filters, sorter, extra) => {
-        // console.log('params', pagination, filters, sorter, extra);
-      }
-
     return (
         <Table 
                 loading={isLoading}
                 columns={columns}
                 dataSource={data}
-                onChange={onChange}
                 pagination={false}
                 {...otherProps} />     
     )

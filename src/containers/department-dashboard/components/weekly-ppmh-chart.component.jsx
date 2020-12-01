@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import numeral from 'numeral';
 import moment from 'moment';
 
@@ -8,7 +8,6 @@ import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
-import CustomSpinner from '../../custom-spinner/custom-spinner.component';
 import {
     tooltipStyle
 } from '../../../core/utilities/chart-config'
@@ -18,9 +17,11 @@ ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
 const numberFormat = '0';
 
-const MonthlyIncidentRateChart = ({weeklyLaborHrsCollection, isWeeklyLaborHrsFetching}) => {
+const WeeklyPpmhChart = () => {
 
-    const chartData = !weeklyLaborHrsCollection ? [] : weeklyLaborHrsCollection.map(({weekStart, weekEnd, yearWeekNumber, details: { ppmh, 
+    const weeklyLaborHrsCollection = useSelector(({ departmentDashboard }) => departmentDashboard?.weeklyLaborHrsCollection) ?? [];
+
+    const chartData = weeklyLaborHrsCollection.map(({weekStart, weekEnd, yearWeekNumber, details: { ppmh, 
                 regular, overtime, doubleTime, orientation, overAll, sapNet } }) => 
         (
             {
@@ -50,7 +51,6 @@ const MonthlyIncidentRateChart = ({weeklyLaborHrsCollection, isWeeklyLaborHrsFet
             theme: 'fusion',
             labelDisplay: 'rotate',
             slantLabel: '1',
-            // rotateValues: "1",
             ...tooltipStyle
         },
         data: chartData
@@ -64,20 +64,7 @@ const MonthlyIncidentRateChart = ({weeklyLaborHrsCollection, isWeeklyLaborHrsFet
         dataSource: dataSource
       };
 
-    return (
-        <>
-            {
-                isWeeklyLaborHrsFetching 
-                    ? (<CustomSpinner/>)
-                    : (<ReactFC {...chartConfigs} />)
-            }   
-        </> 
-    )
+    return <ReactFC {...chartConfigs} />
 }
 
-const mapStateToProps = ({ morningMeeting }) => ({
-    weeklyLaborHrsCollection: morningMeeting.weeklyLaborHrsCollection,
-    isWeeklyLaborHrsFetching: morningMeeting.isWeeklyLaborHrsFetching,
-})
-
-export default connect(mapStateToProps)(MonthlyIncidentRateChart);
+export default WeeklyPpmhChart;

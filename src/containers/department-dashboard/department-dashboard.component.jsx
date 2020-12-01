@@ -90,7 +90,7 @@ const DepartmentDashboard = ({
         setStartFormat(start);
         setSendFormat(end);
 
-        history.push(`/dashboard/morningmeeting/${dept}?start=${start}&end=${end}`);
+        history.push(`/dashboard/morningmeeting/${area === 'skirt coat' ? 'finishing' : dept}?start=${start}&end=${end}`);
 
         //* update title
         const ttl = `${_.startCase(dept)}: ${start} - ${end}`;
@@ -203,11 +203,7 @@ const DepartmentDashboard = ({
 
                     <Col span={24}>
                     
-                        {
-                            !isProductionDataLoading 
-                                ? <Production area={area} startDate={startFormat} endDate={endFormat} /> 
-                                : <Container><Spin tip="Loading..."/></Container>
-                        }
+                        <Production area={area} startDate={startFormat} endDate={endFormat} /> 
 
                     </Col>
 

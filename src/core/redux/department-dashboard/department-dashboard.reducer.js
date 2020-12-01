@@ -19,7 +19,7 @@ const INITIAL_STATE = {
     dailyScrapRateErrorMsg: null, 
 
     isPpmhLoading: false,
-    isPpmhCollection: [],
+    ppmhCollection: [],
     ppmhErrorMsg: null,
 
     isWeeklyLaborHrsLoading: false,
@@ -128,7 +128,7 @@ const departmentDashboardReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isPpmhLoading: false,
-                isPpmhCollection: action.payload
+                ppmhCollection: action.payload
             }
         case types.FETCH_PPMH_FAILURE:
 

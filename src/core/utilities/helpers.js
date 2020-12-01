@@ -119,3 +119,4 @@ export const dateRange = {
 export const getTopItems = (data, top = 5) => [...data].splice(0,top);
 
 export const scrollToObject = el => window.scrollTo(0, el?.offsetTop);
+
