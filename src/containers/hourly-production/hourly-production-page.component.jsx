@@ -32,7 +32,7 @@ const HourlyProductionPage = () => {
     const { department } = state || {}
 
     const isHourlyProdFetching = useSelector(({ morningMeeting }) => morningMeeting?.isHourlyProdFetching) ?? false;
-    const hourlyProdCollection = useSelector(({ morningMeeting }) => morningMeeting?.hourlyProdCollection) ?? [];
+    const hourlyProdCollection = useSelector(({ morningMeeting }) => morningMeeting?.hourlyProdCollection) ?? null;
 
     const dateQry = getUrlParameter('date');
     const defaultShiftDate = dateQry ? moment(dateQry) : moment();

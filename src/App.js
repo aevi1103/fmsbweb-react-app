@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Route, Switch } from "react-router-dom";
 import { ReactComponent as Logo } from './assets/logo.svg';
 import { ReactComponent as LogoIcon } from './assets/logoIcon.svg';
 import { LogoContainer } from './App.styles';
-import { 
-  setSiderCollapse
- } from './core/redux/home/home.actions';
+import { useWindowSize } from 'react-use'
+ import { setErrors } from './core/redux/errors/errors.actions'
 
 import { 
   Layout,
-  BackTop
+  BackTop,
+  Modal,
+  notification
  } from "antd";
 
-import { useWindowSize } from 'react-use'
 
 import './App.css';
 import './App.scss'
@@ -84,21 +84,27 @@ const logoStylesWhite = {
   filter: "brightness(0) invert(1)"
 }
 
-const App = ( { 
-  collapsed,
-  setSiderCollapse
- } ) => { 
+const App = () => { 
+
+  const { width } = useWindowSize();
+
+  //* dispatcher
+  const dispatch = useDispatch();
+  const setSiderCollapse = useCallback(collapsed => dispatch(setSiderCollapse(collapsed)), [dispatch]) 
+
+  //* selectors
+  const collapsed = useSelector(({ home }) => home.collapsed)
 
   const defaultSiderProps = {
     collapsible: true,
     collapsed,
     onCollapse: setSiderCollapse
   }
-
-  const { width } = useWindowSize();
+  
+  //* global error handler
   const [siderProps, setSiderProps] = useState(defaultSiderProps);
 
-
+  //* coallapse effect
   useEffect(() => {
 
     if (width <= 1024) {
@@ -225,15 +231,5 @@ const App = ( {
     </Layout>) 
 }
 
-//state is the root reducer
-const mapStateToProps = ({ home, requests }) => ({
-  collapsed: home.collapsed,
-  progress: requests.progress,
-  totalRequests: requests.totalRequests
-});
 
-const mapDispatchToProps = dispatch => ({
-  setSiderCollapse: collapsed => dispatch(setSiderCollapse(collapsed))
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;
