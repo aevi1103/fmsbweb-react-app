@@ -123,7 +123,7 @@ const DepartmentDashboard = ({
         
         fetchData(startFormat, endFormat);
 
-        //cancel fetch on un mount
+        //* cancel fetch on un mount
         return function cleanup() {
             prodTokenSrc.cancel('Operation cancelled');
             scrapRateTokenSrc.cancel('Operation cancelled');

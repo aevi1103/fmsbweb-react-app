@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 
 import SbScrapRateKpi from './sb-scrap-rate-kpi.component'
@@ -17,8 +17,7 @@ import PpmhDetails from './ppmh-details.component'
 import MtdDetails from './mtd-details.component'
 
 import { 
-    Row,
-    Collapse,
+    Row
  } from "antd";
 
 const cardHeightStyle = { height: "400px" };

@@ -4,16 +4,13 @@ import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 import { tooltipStyle } from '../../../core/utilities/chart-config';
-import { Empty } from 'antd';
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const ScrapByCodeChart = ({
+const ScrapByCodeChart = React.memo(({
     chartData
 }) => {
-
-    console.log('ScrapByCodeChart', chartData)
 
     const chartProps = {
         showvalues: "1",
@@ -34,24 +31,21 @@ const ScrapByCodeChart = ({
             ...chartProps,
             ...tooltipStyle
         },
-        data: chartData.map(({scrapDesc, scrapCode, qty }) => ({
+        data: chartData?.map(({scrapDesc, scrapCode, qty }) => ({
                 label: `${scrapDesc} (${scrapCode})`,
                 value: qty
             }))
-            
       };
       
       const chartConfigs = {
         type: 'column2d',
         width: '100%',
-        height: '95%',
+        height: '500',
         dataFormat: 'json',
         dataSource: dataSource
       };
 
-    return chartData.length === 0 
-                ? <Empty/>
-                : <ReactFC {...chartConfigs} />
-}
+    return <ReactFC {...chartConfigs} />
+})
 
 export default ScrapByCodeChart;

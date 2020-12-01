@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
@@ -16,25 +16,68 @@ import DaysOnHandTable from './days-on-hand-table/days-on-hand-table.component'
 import DaysOnHandTableChart from './days-on-hand-chart.component' 
 
 import CustomerCommentsTable from './customer-comments-table'
-
+import ProductionOrder from '../../production-order-file-upload/components/production-order.component'
 
 import { 
     Row,
     Col,
     Card,
-    Tag,
-    Collapse 
+    Tag
  } from "antd";
 
-const { Panel } = Collapse;
 const cardHeightStyle = {
     height: "100%"
 }
 
- const Logistics = () => {
+const tabListNoTitle = [
+    {
+        tab: 'Days On Hand',
+        key: 'doh',
+    },
+    {
+        tab: 'Production Order',
+        key: 'order',
+    },
+    {
+        tab: 'Stock Overview By Location',
+        key: 'sloc',
+    },
+    {
+        tab: 'Stock Overview',
+        key: 'overview',
+    },
+    {
+        tab: 'Stock Overview by Program',
+        key: 'prog',
+    },
+  ];
+
+  const contentListNoTitle = {
+    doh: <>
+            <div className="mb2">
+                <Tag className="pa1" color="#e33545">DOH is between 0 and 2</Tag>
+                <Tag className="pa1" color="#ffc107">DOH is between 2 and 3</Tag>
+                <Tag className="pa1" color="#28a745">DOH is between 3 and 5</Tag>
+                <Tag className="pa1" color="#2196F3">DOH is greater than 5</Tag>
+            </div>
+
+            <DaysOnHandTableChart/>
+            <DaysOnHandTable/>
+         </>,
+    sloc: <div className="ma2">
+                <StockOverViewSlocChart/>
+            </div>,
+    overview: <StockOverviewTable/>,
+    prog: <StockOverviewChart/>,
+    order: <ProductionOrder />
+  };
+
+const Logistics = () => {
 
     const customerLoading = useSelector(({ morningMeeting: { isStockStatusFetching } }) => isStockStatusFetching) || false;
     const customerComments = useSelector(({ morningMeeting: { stockStatusCollection } }) => stockStatusCollection.customerComments) || [];
+
+    const [tabKey, setTabKey] = useState('doh')
 
     return (
         <Row gutter={[12,12]}>
@@ -79,43 +122,17 @@ const cardHeightStyle = {
 
             <Col span={24}>
 
-                <Collapse defaultActiveKey={['1']}>
-
-                    <Panel header="Days On Hand" key="1">
-
-                        <div className="mb2">
-                            <Tag className="pa1" color="#e33545">DOH is between 0 and 2</Tag>
-                            <Tag className="pa1" color="#ffc107">DOH is between 2 and 3</Tag>
-                            <Tag className="pa1" color="#28a745">DOH is between 3 and 5</Tag>
-                            <Tag className="pa1" color="#2196F3">DOH is greater than 5</Tag>
-                        </div>
-
-                        <DaysOnHandTableChart/>
-                        <DaysOnHandTable/>
-
-                    </Panel>
-
-                    <Panel header="Stock Overview By Location" key="2" >
-                    
-                        <div className="ma2">
-                            <StockOverViewSlocChart/>
-                        </div>
-                        
-                    </Panel>
-
-                    <Panel header="Stock Overview" key="3" >
-                    
-                        <StockOverviewTable/>
-
-                    </Panel>
-
-                    <Panel header="Stock Overview by Program" key="4">
-                    
-                        <StockOverviewChart/>
-
-                    </Panel>
-
-                </Collapse>
+                <Card
+                    size="small"
+                    tabList={tabListNoTitle}
+                    tabProps={{
+                        size: 'small'
+                    }}
+                    activeTabKey={tabKey}
+                    onTabChange={key => setTabKey(key)}
+                    >
+                        { contentListNoTitle[tabKey] }
+                </Card>
                 
             </Col>
 

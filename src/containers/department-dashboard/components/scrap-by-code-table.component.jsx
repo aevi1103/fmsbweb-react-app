@@ -85,16 +85,14 @@ const ScrapByCodeTable = React.memo(({
                 visible={modalVisible}
                 onCancel={onModalCancel}
                 width="80%"
-                height="100px"
+                // height="100px"
                 footer={[
                     <Button key="back" onClick={onModalCancel}>
                       Close
                     </Button>
                   ]}>
 
-                  <Card style={{height: '50vh'}} bordered={false}>
                     <ScrapByCodeChart chartData={scrapChartData} />
-                  </Card>
 
             </Modal>
         </>
