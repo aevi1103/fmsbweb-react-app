@@ -6,7 +6,7 @@ import Highlighter from 'react-highlight-words';
 
 import { numberSorter } from '../../../../core/utilities/helpers';
 import { SearchOutlined } from '@ant-design/icons';
-import { Table, Input, Button, Tag } from "antd";
+import { Table, Input, Button } from "antd";
 
 import { getColorCode, getColorRowClass } from '../../service/helper'
 import './styles.scss'

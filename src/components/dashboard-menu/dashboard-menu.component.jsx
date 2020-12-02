@@ -12,10 +12,11 @@ import {
     PieChartOutlined,
     SafetyOutlined,
     SettingOutlined,
-    DashboardOutlined
+    DashboardOutlined,
+    RadarChartOutlined
 } from '@ant-design/icons';
 
-import DepartmentSubMenu from './department-sub-menu.component'
+import DashboardSubMenu from './components/dashboard-sub-menu.component'
 
 import { Menu } from "antd";
 const { SubMenu } = Menu;
@@ -84,22 +85,22 @@ const MorningMeetingMenu = ( { location } ) => {
 
         </SubMenu>
 
-        <DepartmentSubMenu dept="foundry" icon={<AreaChartOutlined/>} /> 
-        <DepartmentSubMenu dept="machining" icon={<BarChartOutlined/>} /> 
-        <DepartmentSubMenu dept="finishing" icon={<DotChartOutlined/>} /> 
-        <DepartmentSubMenu dept="assembly" icon={<PieChartOutlined/>} /> 
+        <DashboardSubMenu dept="foundry" icon={<AreaChartOutlined/>} /> 
+        <DashboardSubMenu dept="machining" icon={<BarChartOutlined/>} /> 
+        <DashboardSubMenu dept="finishing" icon={<DotChartOutlined/>} /> 
+        <DashboardSubMenu dept="assembly" icon={<PieChartOutlined/>} /> 
 
-        {/* <Menu.Item key={`/dashboard/swot/settings/${swotDept}`}>
+        <Menu.Item key={`/dashboard/swot/settings/Foundry`}>
             <BarChartOutlined />
             <span>SWOT</span>
-            <Link to={`/dashboard/swot/settings/${swotDept}`} />
-        </Menu.Item> */}
+            <Link to={`/dashboard/swot/settings/Foundry`} />
+        </Menu.Item>
 
-        {/* <Menu.Item key={`/dashboard/status/${prodStatusDept}`}>
+        <Menu.Item key={`/dashboard/status/Foundry`}>
             <RadarChartOutlined />
-            <span>Production Dashboard</span>
-            <Link to={`/dashboard/status/${prodStatusDept}`} />
-        </Menu.Item> */}
+            <span>Prod. Dashboard</span>
+            <Link to={`/dashboard/status/Foundry`} />
+        </Menu.Item>
 
         <Menu.Item key="/dashboard/morningmeeting/finance">
             <DollarOutlined />

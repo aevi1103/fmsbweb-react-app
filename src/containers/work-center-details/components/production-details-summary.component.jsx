@@ -4,6 +4,7 @@ import {
     Row,
     Col,
     Statistic,
+    Empty
  } from "antd";
 
 import {
@@ -14,10 +15,12 @@ import {
 const formatScrapText = (rate, qty) => `${numeral(rate).format('0.00%')} (${numeral(qty).format('0,0')})`;
 
 const formatScrap = (data, scrap) => {
-    let rate = 0, qty = 0;
-    if (data) {
-        const filteredData = data.sbScrapAreaDetails.find(({scrapAreaName}) => scrapAreaName === scrap);
 
+    let rate = 0, qty = 0;
+
+    if (data) {
+
+        const filteredData = data.sbScrapAreaDetails.find(({scrapAreaName}) => scrapAreaName === scrap);
         if (filteredData) {
             rate = filteredData.scrapRate;
             qty = filteredData.qty;
@@ -32,9 +35,11 @@ const formatNetOae = (net, oae) => `${numeral(oae).format('0%')} (${numeral(net)
 const getStatusState = (value, target) => (value <= target) ? { color: '#FF4136' } : { color: '#19A974' } 
 const getPrefix = (value, target) => (value <= target) ? <ArrowDownOutlined /> : <ArrowUpOutlined />
 
-const ProductionDetailsSummary = ({ data }) => (
+const ProductionDetailsSummary = React.memo(({ data }) => {
 
-    <Row gutter={16}>
+    if (!data) return <Empty />
+    
+    return (<Row gutter={16}>
 
         <Col span={3}>
             <Statistic title={`SAP ~ Target: ${numeral(data.oaeTarget).format('0%')}`} value={formatNetOae(data.sapNet, data.sapOae)} 
@@ -71,8 +76,8 @@ const ProductionDetailsSummary = ({ data }) => (
             <Statistic title="Total Assembly" value={formatScrap(data, 'Assembly')} />
         </Col>
 
-    </Row>
-
-)
+    </Row>)
+    
+})
 
 export default ProductionDetailsSummary;

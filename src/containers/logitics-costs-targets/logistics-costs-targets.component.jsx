@@ -25,7 +25,6 @@ const LogisticsCostsTargets = () => {
     const [form] = Form.useForm();
     const [types, setTypes] = useState([]);
     const [targets, setTargets] = useState([])
-    const [typesLoading, setTypesLoading] = useState(false);
     const [targetsLoading, setTargetsLoading] = useState(false);
     const [targetId, setTargetId] = useState(0);
     const [saveLoading, setSaveLoading] = useState(false);
@@ -54,15 +53,14 @@ const LogisticsCostsTargets = () => {
 
             try {
                 
-                setTypesLoading(true)
                 const response = await api.get(`logistics/cost/types`);
                 const data = response.data;
                 setTypes(data);
 
             } catch (error) {
-                console.error(error)
+ 
             } finally { 
-                setTypesLoading(false)
+
             }
 
         }

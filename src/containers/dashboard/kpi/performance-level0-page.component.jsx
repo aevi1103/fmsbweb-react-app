@@ -140,7 +140,7 @@ const PerformanceLevel0Page = ({
     const onMonthChange = (date, dateString) => {
 
         let [start, end] = date;
-        const [startStr, endStr] = dateString;
+        const [, endStr] = dateString;
         const currentMonthYear = moment().format('YYYY-MM');
 
         if (endStr === currentMonthYear) {

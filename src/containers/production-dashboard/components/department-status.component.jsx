@@ -62,7 +62,7 @@ const DepartmentStatus = React.memo(({
             {
                 hxHUrls.map(({ shiftDate, shift, line, hxHUrl }) => (
                     <Menu.Item key={line}>
-                        <a href={hxHUrl} target="_blank" rel="noreferrer" >{`${shiftDate} - Shift ${shift} - ${line} HxH`}</a>
+                        <a href={hxHUrl} target="_blank" rel="noopener noreferrer" >{`${shiftDate} - Shift ${shift} - ${line} HxH`}</a>
                     </Menu.Item>
                 ))
             }

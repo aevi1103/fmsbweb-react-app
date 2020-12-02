@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import numeral from 'numeral';
 import moment from 'moment';
 import { 
@@ -7,7 +6,7 @@ import {
  } from "antd";
 
 
-const SapNetTable = ({isProductionDetailsLoading, sapNetData}) => {
+const SapNetTable = React.memo(({ sapNetData }) => {
 
     const columns = [
         {
@@ -77,24 +76,14 @@ const SapNetTable = ({isProductionDetailsLoading, sapNetData}) => {
       
       const data = sapNetData.map((data, i) => ({key: i, ...data}))
 
-      const onChange = (pagination, filters, sorter, extra) => {
-        // console.log('params', pagination, filters, sorter, extra);
-      }
-
     return (
         <Table 
-                loading={isProductionDetailsLoading}
-                columns={columns}
-                dataSource={data}
-                onChange={onChange}
-                size="middle"
-                bordered={true}
-                pagination={false} />    
+            columns={columns}
+            dataSource={data}
+            size="middle"
+            bordered={true}
+            pagination={false} />    
     )
-}
-
-const mapStateToProps = ({ productionDetails }) => ({
-    isProductionDetailsLoading: productionDetails.isProductionDetailsLoading
 })
 
-export default connect(mapStateToProps)(SapNetTable);
+export default SapNetTable;

@@ -4,8 +4,7 @@ import axios from 'axios'
 import {
     fetchStart,
     fetchSuccess,
-    fetchFailure,
-    mapDeptToArea
+    fetchFailure
 } from '../../utilities/helpers'; 
 
 export const fetchProductionDataStartAsync = (start, end, area, cancelTokenSrc) => {

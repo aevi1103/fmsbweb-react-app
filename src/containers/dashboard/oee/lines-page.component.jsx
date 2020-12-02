@@ -51,7 +51,6 @@ const Lines = () => {
     const { department } = useParams();
     const history = useHistory();
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null)
     const [lines, setLines] = useState([]);
 
     useEffect(() => {
@@ -65,7 +64,7 @@ const Lines = () => {
                 setLines(response.data);
 
             } catch (error) {
-                setError(error.response?.data ?? error.message)
+
             } finally {
                 setLoading(false);
             }

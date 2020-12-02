@@ -1,7 +1,5 @@
 import React from 'react'
 import numeral from 'numeral'
-import _ from 'lodash'
-
 import { 
     Row,
     Col,

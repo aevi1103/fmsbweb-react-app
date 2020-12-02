@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link, useHistory } from "react-router-dom";
 import moment from 'moment';
 import axios from 'axios';
-import styled from 'styled-components';
 
 import { 
     DownloadOutlined,
@@ -27,6 +26,8 @@ import { mapAreaToDept } from '../../core/utilities/helpers'
 import { useQuery } from '../../core/utilities/custom-hook'
 import download from './service/download'
 
+import { dateFormat } from '../../core/utilities/helpers'
+
 import { 
     Layout,
     Spin,
@@ -38,15 +39,6 @@ import {
  } from "antd";
 
 const { Content } = Layout;
-const dateFormat = 'MM/DD/YYYY';
-const Container = styled.span`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 140px;
-    font-size: 2.5rem;
-`;
-
 const previousDay = moment().add(-1, 'day').format(dateFormat);
 
 const DepartmentDashboard = ({
@@ -90,6 +82,7 @@ const DepartmentDashboard = ({
         setStartFormat(start);
         setSendFormat(end);
 
+        //* update url
         history.push(`/dashboard/morningmeeting/${area === 'skirt coat' ? 'finishing' : dept}?start=${start}&end=${end}`);
 
         //* update title

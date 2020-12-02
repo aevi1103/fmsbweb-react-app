@@ -8,12 +8,12 @@ import ReactFC from 'react-fusioncharts';
 
 import {
     tooltipStyle
-} from '../../../core/utilities/chart-config'
+} from '../../core/utilities/chart-config'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const DailyScrapByCodeChart = ({
+const DailyScrapByCodeChart = React.memo(({
     chartData
 }) => {
 
@@ -64,7 +64,6 @@ const DailyScrapByCodeChart = ({
 
     return <ReactFC {...chartConfigs} />
 
-}
-
+})
 
 export default DailyScrapByCodeChart

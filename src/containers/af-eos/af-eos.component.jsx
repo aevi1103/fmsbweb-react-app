@@ -5,9 +5,9 @@ import numeral from 'numeral';
 
 import api from '../../core/utilities/api'
 
-import SapNetTable from './components/sap-net-table/sap-net-table.component';
-import DefectSummaryTable from './components/defect-summary-table/defect-summary-table.component';
-import EosTable from './components/af-eos-table/af-eos-table.component'
+import SapNetTable from '../../components/sap-net-table/sap-net-table.component';
+import DefectSummaryTable from '../../components/defect-summary-table/defect-summary-table.component';
+import EosTable from './components/af-eos-table.component'
 
 import {
     fetchDeptLineStartAsync,

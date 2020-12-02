@@ -59,7 +59,6 @@ const ProductionDashboard = () => {
     const [headerTitle, setHeaderTitle] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [currentShift, setCurrentShift] = useState(null);
     const [checked, setChecked] = useState(true);
     const [lastUpdate, setLastUpdate] = useState(moment());
     const [intervalValue, setIntervalValue] = useState(null);
@@ -71,8 +70,6 @@ const ProductionDashboard = () => {
 
         api.get(`/dateshift/${department}`)
         .then(response => {
-
-            setCurrentShift(response.data);
 
             const { shiftDate, shift } = response.data;
             dispatch(setDateRange([shiftDate, shiftDate]));

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
 import numeral from 'numeral';
 import { useParams } from 'react-router-dom'
 import { 
@@ -9,10 +8,10 @@ import {
     Tooltip
  } from "antd";
 
-import ScrapLink  from '../../scrap-link/scrap-link.component'
-import DefectSummaryTable from '../../../containers/af-eos/components/defect-summary-table/defect-summary-table.component'
-import SapNetTable from '../../../containers/af-eos/components/sap-net-table/sap-net-table.component'
-import ProductionDetailsTableFooter from '../production-details-table-footer.component'
+import ScrapLink  from '../../../components/scrap-link/scrap-link.component'
+import DefectSummaryTable from '../../../components/defect-summary-table/defect-summary-table.component'
+import SapNetTable from '../../../components/sap-net-table/sap-net-table.component'
+import ProductionDetailsTableFooter from './production-details-table-footer.component'
 
 const getScrapRate = (data, scrapArea, onClick) => {
     const scrap = data.sbScrapAreaDetails.find(({scrapAreaName}) => scrapAreaName === scrapArea);
@@ -22,17 +21,53 @@ const getScrapRate = (data, scrapArea, onClick) => {
     return <ScrapLink qty={qty} value={scrapRateText} onClick={onClick}/>
 }
 
-const SummaryByProgramTable = ({isProductionDetailsLoading, productionDetailsCollection}) => {
+const addCellStyle = (className) => {
+    const parent = document.querySelectorAll(className);
+    parent.forEach(el => {
+        const th = el.closest('th');
+
+        if (className.includes('danger')) {        
+            th.classList.add('cell-danger');
+        } 
+        
+        if (className.includes('success')) {
+            th.classList.add('cell-success');
+        }
+
+        if (className.includes('warning')) {
+            th.classList.add('cell-warning');
+        }
+    })
+}
+
+const sortScrap = (a, b, type) => {
+
+    const filteredDataA = a.sbScrapDetails.filter(({scrapAreaName}) => scrapAreaName === type);
+    const filteredDataB = b.sbScrapDetails.filter(({scrapAreaName}) => scrapAreaName === type); 
+
+    const totalA = filteredDataA.reduce((acc, {qty}) => parseInt(acc) + parseInt(qty), 0);
+    const totalB = filteredDataB.reduce((acc, {qty}) => parseInt(acc) + parseInt(qty), 0);
+    
+    return totalA - totalB;
+}
+
+const SummaryByProgramTable = React.memo(({ data, loading }) => {
 
     const { department } = useParams();
+    const detailsByProgram = data?.detailsByProgram ?? [];
 
     const [modalVisible, setModalVisible] = useState(false);
     const [scrapDetails, setScrapDetails] = useState([]);
     const [modalTitle, setModalTitle] = useState("Scrap Details");
-
     const [sapNetModalVisible, setSapNetModalVisible] = useState(false);
     const [sapNetModalTitle, setSapNetModalTitle] = useState("SAP Production Details");
     const [sapNetData, setSapNetData] = useState([]);
+
+    useEffect(() => {
+        addCellStyle('.parent-success');
+        addCellStyle('.parent-danger');
+        addCellStyle('.parent-warning');
+      }, [])
 
     const onModalShow = (scrapDetailsData = [], { program, sapGross }, scrapType) => {
 
@@ -57,18 +92,7 @@ const SummaryByProgramTable = ({isProductionDetailsLoading, productionDetailsCol
 
     }
 
-    const sortScrap = (a, b, type) => {
-
-        const filteredDataA = a.sbScrapDetails.filter(({scrapAreaName}) => scrapAreaName === type);
-        const filteredDataB = b.sbScrapDetails.filter(({scrapAreaName}) => scrapAreaName === type); 
-
-        const totalA = filteredDataA.reduce((acc, {qty}) => parseInt(acc) + parseInt(qty), 0);
-        const totalB = filteredDataB.reduce((acc, {qty}) => parseInt(acc) + parseInt(qty), 0);
-        
-        return totalA - totalB;
-    }
-
-    const columns = !productionDetailsCollection ? [] : [
+    const columns = [
         {
             title: 'Area',
             dataIndex: 'area',
@@ -268,60 +292,23 @@ const SummaryByProgramTable = ({isProductionDetailsLoading, productionDetailsCol
                 },
             ]
         }   
-      ];
+    ];
       
-      const data = !productionDetailsCollection 
-                    ? [] 
-                    : productionDetailsCollection.detailsByProgram.map((data, i) => ({key: i, ...data}))
+    const dataSource = detailsByProgram.map((data, i) => ({key: i, ...data}))
 
-      const onChange = (pagination, filters, sorter, extra) => {
-        // console.log('params', pagination, filters, sorter, extra);
-      }
-
-      const onModalCancel = () => {
-        setModalVisible(false);
-      }
-
-      const onSapNetModalCancel = () => {
-        setSapNetModalVisible(false);
-      }
-
-      const addCellStyle = (className) => {
-        const parent = document.querySelectorAll(className);
-        parent.forEach(el => {
-            const th = el.closest('th');
-
-            if (className.includes('danger')) {        
-                th.classList.add('cell-danger');
-            } 
-            
-            if (className.includes('success')) {
-                th.classList.add('cell-success');
-            }
-
-            if (className.includes('warning')) {
-                th.classList.add('cell-warning');
-            }
-        })
-      }
-
-      useEffect(() => {
-        addCellStyle('.parent-success');
-        addCellStyle('.parent-danger');
-        addCellStyle('.parent-warning');
-      }, [])
+    const onModalCancel = () => setModalVisible(false);
+    const onSapNetModalCancel = () => setSapNetModalVisible(false);
 
     return (
         <>
             <Table 
-                loading={isProductionDetailsLoading}
+                loading={loading}
                 columns={columns}
-                dataSource={data}
-                onChange={onChange}
+                dataSource={dataSource}
                 size="middle"
                 bordered={true}
                 pagination={false}
-                summary={() => <ProductionDetailsTableFooter data={productionDetailsCollection} />} />     
+                summary={() => <ProductionDetailsTableFooter data={data} />} />     
 
             <Modal
                 title={modalTitle}
@@ -351,11 +338,6 @@ const SummaryByProgramTable = ({isProductionDetailsLoading, productionDetailsCol
         </>
         
     )
-}
-
-const mapStateToProps = ({ productionDetails }) => ({
-    isProductionDetailsLoading: productionDetails.isProductionDetailsLoading,
-    productionDetailsCollection: productionDetails.productionDetailsCollection,
 })
 
-export default connect(mapStateToProps)(SummaryByProgramTable);
+export default SummaryByProgramTable;

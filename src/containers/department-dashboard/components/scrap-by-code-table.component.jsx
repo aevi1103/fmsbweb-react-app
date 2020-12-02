@@ -4,12 +4,11 @@ import {
     Table,
     Button,
     Tooltip,
-    Modal,
-    Card
+    Modal
  } from "antd";
 
 import { numberSorter, percentSorter } from '../../../core/utilities/helpers'
-import ScrapByCodeChart from '../../../components/production/scrap-by-code-chart/scrap-by-code-chart.component'
+import ScrapByCodeChart from '../../../components/scrap-by-code-chart/scrap-by-code-chart.component'
 
 const ScrapByCodeTable = React.memo(({
     scrapData,

@@ -13,6 +13,8 @@ import {
     fetchLogisticsStatusStartAsync
 } from '../../core/redux/morning-meeting/morning-meeting.actions'
 
+import { dateFormat } from '../../core/utilities/helpers'
+
 import { 
     Layout,
     Button,
@@ -22,7 +24,7 @@ import {
  } from "antd";
 
 const { Content } = Layout;
-const dateFormat = 'MM/DD/YYYY';
+
 
 const LogisticsDashboard = () => {
     
@@ -45,7 +47,9 @@ const LogisticsDashboard = () => {
         document.title = `Logistics`;
         fetchData();
 
-    }, [fetchData])
+    }, [])
+
+    const disabledDate = current => current > moment().endOf('day');
 
     return (
     <>
@@ -59,8 +63,13 @@ const LogisticsDashboard = () => {
             <Row gutter={[12,12]}>
 
                 <Col span={24}>
-                    <DatePicker onButtonClick={onClick} onChange={onChange} 
-                        defaultValue={moment(endDatePlusOneDay, 'MM/DD/YYYY')} />
+                    
+                    <DatePicker 
+                        onButtonClick={onClick} 
+                        onChange={onChange} 
+                        disabledDate={disabledDate}
+                        format={dateFormat}
+                        defaultValue={moment(endDatePlusOneDay, dateFormat)} />
 
                     <Button type="primary" className="ml2">
                         <Link to="/dashboard/morningmeeting/logistics/settings/inventory" >Enter Data</Link>

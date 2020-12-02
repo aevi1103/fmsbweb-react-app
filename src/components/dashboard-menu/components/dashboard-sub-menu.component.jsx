@@ -47,7 +47,7 @@ const DepartmentSubMenu = ({dept, icon, ...other}) => {
             </Menu.Item>
 
             <Menu.Item key={`/dashboard/status/${dept === 'finishing' ? 'skirt coat' : dept}`}>
-                <span>Production</span>
+                <span>Prod. Dashboard</span>
                 <Link to={{
                     pathname: `/dashboard/status/${dept === 'finishing' ? 'skirt coat' : dept}`
                 }}/>
@@ -62,7 +62,7 @@ const DepartmentSubMenu = ({dept, icon, ...other}) => {
             </Menu.Item>
 
             <Menu.Item key={`/orderstatus/${dept}`}>
-                <span>Production Orders</span>
+                <span>Prod. Orders</span>
                 <Link to={{
                     pathname: `/orderstatus/${dept}`,
                     state: state
@@ -70,7 +70,7 @@ const DepartmentSubMenu = ({dept, icon, ...other}) => {
             </Menu.Item>
 
             <Menu.Item key={`/oee/${dept}`}>
-                <span>OEE</span>
+                <span>OEE (WIP)</span>
                 <Link to={{
                     pathname: `/oee/${dept}`,
                     state: state

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from "react-router-dom";
-import api from '../../../core/utilities/api'
+import api from '../../core/utilities/api'
 
 import {
   DashboardOutlined,
@@ -13,10 +13,9 @@ import {
 } from '@ant-design/icons';
 
 import { Menu } from "antd";
-
 const { SubMenu } = Menu;
 
-const HomeMenu = ( { location } ) => { 
+const HomeMenu = React.memo(({ location }) => { 
 
   const [controlMethods, setControlMethods] = useState([]);
 
@@ -218,6 +217,6 @@ const HomeMenu = ( { location } ) => {
       
     </Menu>
   ); 
-}
+})
 
 export default withRouter(HomeMenu);

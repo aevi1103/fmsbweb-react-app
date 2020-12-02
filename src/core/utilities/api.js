@@ -1,5 +1,4 @@
 import axios from "axios";
-import short from 'short-uuid'
 import { store } from '../../core/redux/store'
 import {
     setTotalRequests,

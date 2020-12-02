@@ -5,15 +5,12 @@ import { ReactComponent as Logo } from './assets/logo.svg';
 import { ReactComponent as LogoIcon } from './assets/logoIcon.svg';
 import { LogoContainer } from './App.styles';
 import { useWindowSize } from 'react-use'
- import { setErrors } from './core/redux/errors/errors.actions'
+import { setSiderCollapse } from './core/redux/home/home.actions'
 
 import { 
   Layout,
-  BackTop,
-  Modal,
-  notification
+  BackTop
  } from "antd";
-
 
 import './App.css';
 import './App.scss'
@@ -22,10 +19,10 @@ import HomePage from './containers/home/home.component';
 import NotFound from './containers/404/404.component';
 
 //nenu components
-import HomeMenu from './components/Menu/home-menu/home-menu.components';
-import MorningMeetingMenu from './components/Menu/morning-meeting-menu/morning-meeting-menu.component';
-import AfMenu from './components/Menu/af-menu/af-menu.component';
-import LogisticsMenu from './components/Menu/logistics/logistics-menu.component'
+import HomeMenu from './components/home-menu/home-menu.components';
+import DashboardMenu from './components/dashboard-menu/dashboard-menu.component';
+import AfMenu from './components/af-menu/af-menu.component';
+import LogisticsMenu from './components/logistics-menu/logistics-menu.component'
 
 //swot components
 import SwotSettings from './containers/swot-settings/swot-settings.component';
@@ -42,7 +39,7 @@ import LogisticsDashboard from './containers/logistics-dashboard/logistics-dashb
 import PerformanceLevel0Page from './containers/dashboard/kpi/performance-level0-page.component';
 import PerformanceLevel2Page from './containers/dashboard/kpi/performance-level2-page.component';
 import DepartmentDashboard from './containers/department-dashboard/department-dashboard.component';
-import ProductionDetailsPage from './containers/dashboard/kpi/production-details-page.component'; 
+import WorkCenterDetails from './containers/work-center-details/work-center-details.component'; 
 import HourlyProdPage from './containers/hourly-production/hourly-production-page.component'
 import FinancePage from './containers/finance/finance-page.component';
 import DowntimePage from './containers/downtime/downtime-page.component';
@@ -90,7 +87,7 @@ const App = () => {
 
   //* dispatcher
   const dispatch = useDispatch();
-  const setSiderCollapse = useCallback(collapsed => dispatch(setSiderCollapse(collapsed)), [dispatch]) 
+  const collapseSider = useCallback(collapsed => dispatch(setSiderCollapse(collapsed)), [dispatch]) 
 
   //* selectors
   const collapsed = useSelector(({ home }) => home.collapsed)
@@ -98,7 +95,7 @@ const App = () => {
   const defaultSiderProps = {
     collapsible: true,
     collapsed,
-    onCollapse: setSiderCollapse
+    onCollapse: collapseSider
   }
   
   //* global error handler
@@ -114,7 +111,7 @@ const App = () => {
         collapsedWidth: '0',
         collapsible: true,
         collapsed,
-        onCollapse: setSiderCollapse
+        onCollapse: collapseSider
       })
 
     } else {
@@ -122,12 +119,12 @@ const App = () => {
       setSiderProps({
         collapsible: true,
         collapsed,
-        onCollapse: setSiderCollapse
+        onCollapse: collapseSider
       })
 
     }
 
-  }, [width, collapsed, setSiderCollapse])
+  }, [width, collapseSider, collapsed])
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -145,12 +142,11 @@ const App = () => {
         <Switch>
           <Route exact path="/" component={HomeMenu} />
           <Route path="/dashboard/morningmeeting/logistics/settings/*" component={LogisticsMenu} />
-          <Route path="/dashboard/*" component={MorningMeetingMenu} />
-          <Route path="/orderstatus" component={MorningMeetingMenu} />
+          <Route path="/dashboard/*" component={DashboardMenu} />
+          <Route path="/orderstatus" component={DashboardMenu} />
           <Route path="/af" component={AfMenu} />
           <Route path="/quality" component={HomeMenu} />
           <Route path="/machining/manning" component={HomeMenu} />
-          
         </Switch>
 
       </Sider>
@@ -186,7 +182,7 @@ const App = () => {
           <Route exact path="/dashboard/morningmeeting/quality" component={QualityPage} />
           <Route exact path="/dashboard/morningmeeting/downtime" component={DowntimePage} />
 
-          <Route exact path="/dashboard/morningmeeting/:department/details" component={ProductionDetailsPage} />
+          <Route exact path="/dashboard/morningmeeting/:department/details" component={WorkCenterDetails} />
           <Route exact path="/dashboard/morningmeeting/*/hourly-production" component={HourlyProdPage} />
 
           {/* OEE Page */}

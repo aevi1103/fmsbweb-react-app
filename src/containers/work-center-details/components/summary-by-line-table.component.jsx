@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom'
 import numeral from 'numeral';
 import { 
@@ -9,16 +8,17 @@ import {
     Tooltip
  } from "antd";
 
-import ScrapLink  from '../../scrap-link/scrap-link.component'
-import DefectSummaryTable from '../../../containers/af-eos/components/defect-summary-table/defect-summary-table.component'
-import SapNetTable from '../../../containers/af-eos/components/sap-net-table/sap-net-table.component'
-import ProductionDetailsTableFooter from '../production-details-table-footer.component'
+import ScrapLink  from '../../../components/scrap-link/scrap-link.component'
+import DefectSummaryTable from '../../../components/defect-summary-table/defect-summary-table.component'
+import SapNetTable from '../../../components/sap-net-table/sap-net-table.component'
+import ProductionDetailsTableFooter from './production-details-table-footer.component'
 
 const getScrapRate = (data, scrapArea, onClick, isAfScrap = false, afScrapRate = 0) => {
 
     const { sbScrapAreaDetails, foundryScrapRateTarget, machiningScrapRateTarget, afScrapRateTarget } = data;
 
     let scrapTarget = 0;
+
     switch (scrapArea.toLowerCase()) {
         case 'foundry' :
             scrapTarget = foundryScrapRateTarget
@@ -37,15 +37,16 @@ const getScrapRate = (data, scrapArea, onClick, isAfScrap = false, afScrapRate =
     }
 
     const scrap = sbScrapAreaDetails.find(({scrapAreaName}) => scrapAreaName === scrapArea);
-    const qty = scrap ? scrap.qty : 0;
-    const rate = scrap ? scrap.scrapRate : 0;
+    const qty = scrap?.qty ?? 0;
+    const rate = scrap?.scrapRate ?? 0;
 
     const textState = getTextState(isAfScrap ? afScrapRate : rate, scrapTarget);
-
     const scrapRateText = `${numeral(rate).format('0.00%')} (${numeral(qty).format('0,0')})`;
     const toolTip = !isAfScrap 
                         ? `Click to see Scrap Details, Target: ${numeral(scrapTarget).format('0.00%')}`
-                        : `Click to see Scrap Details, AF Total Scrap: ${numeral(afScrapRate).format('0.00%')}, Target: ${numeral(scrapTarget).format('0.00%')}`;
+                        : `Click to see Scrap Details, 
+                            AF Total Scrap: ${numeral(afScrapRate).format('0.00%')}, 
+                            Target: ${numeral(scrapTarget).format('0.00%')}`;
 
     return <ScrapLink 
                 qty={qty}
@@ -65,8 +66,9 @@ const sortScrap = (a, b, type) => {
     return totalA - totalB;
 };
 
-const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollection}) => {
+const SummaryByLineTable = React.memo(({ data, loading }) => {
 
+    const detailsByLine = data?.detailsByLine ?? [];
     const { department } = useParams();
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -101,7 +103,7 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
 
     };
 
-    const columns = !productionDetailsCollection ? [] : [
+    const columns = [
         {
             title: 'Area',
             dataIndex: 'area',
@@ -327,95 +329,78 @@ const SummaryByLineTable = ({isProductionDetailsLoading, productionDetailsCollec
                 },
             ]
         },
-      ];
+    ];
       
-      const data = !productionDetailsCollection 
-                    ? [] 
-                    : productionDetailsCollection.detailsByLine.map((data, i) => ({key: i, ...data}))
+    const dataSource = detailsByLine.map((data, i) => ({key: i, ...data}))
 
-      const onChange = (pagination, filters, sorter, extra) => {
-        // console.log('params', pagination, filters, sorter, extra);
-      }
+    const onModalCancel = () => setModalVisible(false);
+    const onSapNetModalCancel = () => setSapNetModalVisible(false);
 
-      const onModalCancel = () => {
-        setModalVisible(false);
-      }
+    const addCellStyle = (className) => {
+    const parent = document.querySelectorAll(className);
+    parent.forEach(el => {
+        const th = el.closest('th');
 
-      const onSapNetModalCancel = () => {
-        setSapNetModalVisible(false);
-      }
+        if (className.includes('danger')) {        
+            th.classList.add('cell-danger');
+        } 
+        
+        if (className.includes('success')) {
+            th.classList.add('cell-success');
+        }
 
-      const addCellStyle = (className) => {
-        const parent = document.querySelectorAll(className);
-        parent.forEach(el => {
-            const th = el.closest('th');
+        if (className.includes('warning')) {
+            th.classList.add('cell-warning');
+        }
+    })
+    }
 
-            if (className.includes('danger')) {        
-                th.classList.add('cell-danger');
-            } 
-            
-            if (className.includes('success')) {
-                th.classList.add('cell-success');
-            }
+    useEffect(() => {
+    addCellStyle('.parent-success');
+    addCellStyle('.parent-danger');
+    addCellStyle('.parent-warning');
 
-            if (className.includes('warning')) {
-                th.classList.add('cell-warning');
-            }
-        })
-      }
+    }, [])
 
-      useEffect(() => {
-        addCellStyle('.parent-success');
-        addCellStyle('.parent-danger');
-        addCellStyle('.parent-warning');
+return (
+    <React.Fragment>
+        <Table 
+            loading={loading}
+            columns={columns}
+            dataSource={dataSource}
+            size="middle"
+            bordered={true}
+            pagination={false}
+            summary={() => <ProductionDetailsTableFooter data={data} type="line" />} />     
 
-      }, [])
+        <Modal
+            title={modalTitle}
+            visible={modalVisible}
+            onCancel={onModalCancel}
+            width="50%"
+            footer={[
+                <Button key="back" onClick={onModalCancel}>
+                    Close
+                </Button>
+                ]}>
+                <DefectSummaryTable scrapData={scrapDetails} />
+        </Modal>
 
-    return (
-        <React.Fragment>
-            <Table 
-                loading={isProductionDetailsLoading}
-                columns={columns}
-                dataSource={data}
-                onChange={onChange}
-                size="middle"
-                bordered={true}
-                pagination={false}
-                summary={() => <ProductionDetailsTableFooter data={productionDetailsCollection} type="line" />} />     
+        <Modal
+            title={sapNetModalTitle}
+            visible={sapNetModalVisible}
+            onCancel={onSapNetModalCancel}
+            width="50%"
+            footer={[
+                <Button key="back" onClick={onSapNetModalCancel}>
+                    Close
+                </Button>
+                ]}>
+                <SapNetTable sapNetData={sapNetData}/>
+        </Modal>
 
-            <Modal
-                title={modalTitle}
-                visible={modalVisible}
-                onCancel={onModalCancel}
-                width="50%"
-                footer={[
-                    <Button key="back" onClick={onModalCancel}>
-                      Close
-                    </Button>
-                  ]}>
-                    <DefectSummaryTable scrapData={scrapDetails} />
-            </Modal>
+    </React.Fragment>)
 
-            <Modal
-                title={sapNetModalTitle}
-                visible={sapNetModalVisible}
-                onCancel={onSapNetModalCancel}
-                width="50%"
-                footer={[
-                    <Button key="back" onClick={onSapNetModalCancel}>
-                      Close
-                    </Button>
-                  ]}>
-                  <SapNetTable sapNetData={sapNetData}/>
-            </Modal>
-
-        </React.Fragment>
-    )
-}
-
-const mapStateToProps = ({ productionDetails }) => ({
-    isProductionDetailsLoading: productionDetails.isProductionDetailsLoading,
-    productionDetailsCollection: productionDetails.productionDetailsCollection,
 })
 
-export default connect(mapStateToProps)(SummaryByLineTable);
+export default SummaryByLineTable;

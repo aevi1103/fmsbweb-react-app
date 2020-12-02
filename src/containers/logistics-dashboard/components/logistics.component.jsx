@@ -50,9 +50,9 @@ const tabListNoTitle = [
         tab: 'Stock Overview by Program',
         key: 'prog',
     },
-  ];
+];
 
-  const contentListNoTitle = {
+const contentListNoTitle = {
     doh: <>
             <div className="mb2">
                 <Tag className="pa1" color="#e33545">DOH is between 0 and 2</Tag>
@@ -70,7 +70,7 @@ const tabListNoTitle = [
     overview: <StockOverviewTable/>,
     prog: <StockOverviewChart/>,
     order: <ProductionOrder />
-  };
+};
 
 const Logistics = () => {
 

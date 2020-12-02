@@ -7,7 +7,7 @@ import {
 
 const { Text } = Typography;
 
-const ProductionDetailsTableFooter = ({data, type}) => {
+const ProductionDetailsTableFooter = React.memo(({ data, type }) => {
 
     if (data == null) return null;
 
@@ -103,6 +103,6 @@ const ProductionDetailsTableFooter = ({data, type}) => {
         </Table.Summary.Row>
     )
 
-}
+})
 
 export default ProductionDetailsTableFooter;

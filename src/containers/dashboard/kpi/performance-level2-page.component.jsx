@@ -35,6 +35,8 @@ import SelectScrapType from '../../../components/select-scrap-type/seclect-scrap
 import DeptSelect from '../../../components/performance/dept-select.component';
 import { useTitle } from 'react-use'
 
+import { dateFormat } from '../../../core/utilities/helpers'
+
 import { 
     Layout,
     Row,
@@ -48,11 +50,8 @@ import {
     PageHeader
  } from "antd";
 
- const { Header, Content } = Layout;
+ const { Content } = Layout;
  const { RangePicker } = DatePicker;
-
- const dateFormat = 'MM/DD/YYYY';
-
  const cardHeightStyle = {
     height: "500px"
 }
@@ -87,7 +86,6 @@ const PerformanceLevel2Page = ({
 
     //scrap type
     const [scrapByDeptScrapType, setScrapByDeptScrapType] = useState(scrapTypeDefault);
-    const [scrapByShiftScrapType, setScrapByShiftScrapType] = useState(scrapTypeDefault);
 
     //scrap area name title
     const [deptTitle, setDeptTitle] = useState(performaceSelectedDepartment);
@@ -138,7 +136,7 @@ const PerformanceLevel2Page = ({
     const onMonthChange = (date, dateString) => {
 
         let [start, end] = date;
-        const [startStr, endStr] = dateString;
+        const [, endStr] = dateString;
         const currentMonthYear = moment().format('YYYY-MM');
 
         if (endStr === currentMonthYear) {
@@ -151,7 +149,7 @@ const PerformanceLevel2Page = ({
         setMonthEndFormat(end ? end.format(dateFormat) : null);  
     };
 
-    const onCalendarChange = (date, dateString) => {
+    const onCalendarChange = (date) => {
         const [start, end] = date;
         setStartDate(start ? start.format(dateFormat) : null);
         setEndDate(end ? end.format(dateFormat) : null);  
@@ -163,7 +161,6 @@ const PerformanceLevel2Page = ({
     };
 
     const onScrapByShiftChange = (value) => {
-        setScrapByShiftScrapType(value);
         fetchScrapVariancePerShiftStartAsync(startDate, endDate, performaceSelectedDepartment, value);
     };
 
