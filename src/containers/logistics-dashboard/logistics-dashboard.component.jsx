@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useHistory } from 'react-router-dom'
 import moment from 'moment'
 import 'tachyons'
 
-import DatePicker from '../../components/single-date-range-picker/single-date-range-picker.component'
 import Logistics from './components/logistics.component' 
+
+import { useQuery } from '../../core/utilities/custom-hook'
 
 import { 
     fetchLogisticsStockOverviewStartAsync,
     fetchLogisticsStockOverviewSlocStartAsync,
     fetchLogisticsStatusStartAsync
-} from '../../core/redux/morning-meeting/morning-meeting.actions'
+} from '../../core/redux/logistics/logistics.actions'
 
 import { dateFormat } from '../../core/utilities/helpers'
 
@@ -20,33 +21,46 @@ import {
     Button,
     PageHeader,
     Row,
-    Col
+    Col,
+    DatePicker
  } from "antd";
 
 const { Content } = Layout;
-
+const today = moment().format(dateFormat)
 
 const LogisticsDashboard = () => {
     
+    const query = useQuery();
     const dispatch = useDispatch();
-    const endDate = useSelector(({ morningMeeting }) => morningMeeting.endDate);
-    const endDatePlusOneDay = moment(endDate, dateFormat).add(1, 'd').format(dateFormat)
-    const [ date, setDate ] = useState(endDatePlusOneDay);
+    const history = useHistory();
+
+    //* url query string
+    const dateQry = query.get('date') ?? today;
+    const [date, setDate] = useState(dateQry);
+
+    //* selectors
+    const { 
+        isStockOverviewFetching,
+        isStockOverviewSlocFetching,
+        isStockStatusFetching
+    } = useSelector(({ logistics }) => logistics)
 
     const fetchData = useCallback(() => {
+
+        history.push(`/dashboard/morningmeeting/logistics?date=${date}`);
+        document.title = `Logistics: ${date}`;
+
         dispatch(fetchLogisticsStockOverviewSlocStartAsync(date))
         dispatch(fetchLogisticsStockOverviewStartAsync(date))
         dispatch(fetchLogisticsStatusStartAsync(date))
-    }, [date, dispatch])
+
+    }, [date, dispatch, history])
 
     const onClick = () => fetchData();
     const onChange = (date, dateStr) => setDate(dateStr);
 
     useEffect(() => {
-        
-        document.title = `Logistics`;
         fetchData();
-
     }, [])
 
     const disabledDate = current => current > moment().endOf('day');
@@ -63,17 +77,23 @@ const LogisticsDashboard = () => {
             <Row gutter={[12,12]}>
 
                 <Col span={24}>
-                    
+
                     <DatePicker 
-                        onButtonClick={onClick} 
-                        onChange={onChange} 
-                        disabledDate={disabledDate}
+                        className="mr2"
+                        onChange={onChange}
                         format={dateFormat}
-                        defaultValue={moment(endDatePlusOneDay, dateFormat)} />
+                        disabledDate={disabledDate}
+                        defaultValue={moment(date, dateFormat)}/>
+
+                    <Button 
+                        type="primary" 
+                        onClick={onClick} 
+                        loading={isStockOverviewFetching || isStockOverviewSlocFetching || isStockStatusFetching}>Go</Button>
 
                     <Button type="primary" className="ml2">
                         <Link to="/dashboard/morningmeeting/logistics/settings/inventory" >Enter Data</Link>
                     </Button>
+
                 </Col>
 
                 <Col span={24}>

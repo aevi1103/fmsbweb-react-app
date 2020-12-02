@@ -1,10 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import { 
     Table,
  } from "antd";
 
-const CustomerComplaintTable = ({isQualityFetching, qualityCollection}) => {
+const CustomerComplaintTable = React.memo(({ loading, data }) => {
 
     const columns = [
         {
@@ -45,8 +44,7 @@ const CustomerComplaintTable = ({isQualityFetching, qualityCollection}) => {
         }  
       ];
       
-      const data = !qualityCollection ? [] : qualityCollection.customerComplaintList.map(
-            ({date, prr, pir, qr, prrCom, pirCom, qrCom, newIssue, criticalIssue}, i) => ({
+      const dataSource = data.map(({date, prr, pir, qr, prrCom, pirCom, qrCom, newIssue, criticalIssue}, i) => ({
         key: i,
         date: date,
         prr: prr,
@@ -59,23 +57,11 @@ const CustomerComplaintTable = ({isQualityFetching, qualityCollection}) => {
         critical: criticalIssue,
       }))
 
-      const onChange = (pagination, filters, sorter, extra) => {
-        // console.log('params', pagination, filters, sorter, extra);
-      }
-
-    return (
-        <Table 
-                loading={isQualityFetching}
-                columns={columns}
-                dataSource={data}
-                onChange={onChange}
-                pagination={false} />     
-    )
-}
-
-const mapStateToProps = ({ morningMeeting }) => ({
-    isQualityFetching: morningMeeting.isQualityFetching,
-    qualityCollection: morningMeeting.qualityCollection
+    return <Table 
+        loading={loading}
+        columns={columns}
+        dataSource={dataSource}
+        pagination={false} />
 })
 
-export default connect(mapStateToProps)(CustomerComplaintTable);
+export default CustomerComplaintTable;

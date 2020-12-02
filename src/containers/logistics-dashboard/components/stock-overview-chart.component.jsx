@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
@@ -12,17 +12,11 @@ import { tooltipStyle } from '../../../core/utilities/chart-config'
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const StockOverviewChart = ({stockOVerviewCollection, isStockOverviewFetching}) => {
+const StockOverviewChart = () => {
 
-    const { data } = stockOVerviewCollection;
-
-    const chartData = !data ? [] : data.map(({program, total}) => 
-        (
-            {
-                label: program,
-                value: total
-            }
-        ));
+    const stockOVerviewCollection = useSelector(({ logistics }) => logistics?.stockOVerviewCollection) ?? []
+    const isStockOverviewFetching = useSelector(({ logistics }) => logistics?.isStockOverviewFetching)
+    const data= stockOVerviewCollection?.data ?? [];
 
     const dataSource = {
         chart: {
@@ -32,7 +26,11 @@ const StockOverviewChart = ({stockOVerviewCollection, isStockOverviewFetching}) 
             theme: 'fusion',
             ...tooltipStyle
         },
-        data: chartData
+        data: data.map(({program, total}) => ({
+            label: program,
+            value: total
+        }
+    ))
       };
       
       const chartConfigs = {
@@ -43,20 +41,9 @@ const StockOverviewChart = ({stockOVerviewCollection, isStockOverviewFetching}) 
         dataSource: dataSource
       };
 
-    return (
-        <>
-            {
-                isStockOverviewFetching 
-                    ? (<CustomSpinner/>)
-                    : (<ReactFC {...chartConfigs} />)
-            }   
-        </>
-    )
+    return isStockOverviewFetching 
+        ? <CustomSpinner/>
+        : <ReactFC {...chartConfigs} />
 }
 
-const mapStateToProps = ({ morningMeeting }) => ({  
-    stockOVerviewCollection: morningMeeting.stockOVerviewCollection,
-    isStockOverviewFetching: morningMeeting.isStockOverviewFetching,
-})
-
-export default connect(mapStateToProps)(StockOverviewChart);
+export default StockOverviewChart;

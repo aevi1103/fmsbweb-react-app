@@ -9,8 +9,8 @@ import {
 
  const InventoryStatusTable = () => {
 
-    const loading = useSelector(({ morningMeeting: { isStockStatusFetching } }) => isStockStatusFetching) || false;
-    const inventoryStatus = useSelector(({ morningMeeting: { stockStatusCollection } }) => stockStatusCollection.inventoryStatus) || [];
+    const loading = useSelector(({ logistics: { isStockStatusFetching } }) => isStockStatusFetching) || false;
+    const inventoryStatus = useSelector(({ logistics: { stockStatusCollection } }) => stockStatusCollection.inventoryStatus) || [];
 
     const columns = [
         {

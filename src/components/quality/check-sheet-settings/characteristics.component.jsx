@@ -40,7 +40,6 @@ const { Option } = Select;
 const Characteristics = ({
     isCharacteristicsLoading,
     characteristicsCollection,
-    characteristicsErrorMsg,
     fetchCharacteristicStartAsync,
 
     setControlMethod,
@@ -115,7 +114,7 @@ const Characteristics = ({
 
     useEffect(() => {
 
-        const getMachine = (lineId) => {
+        const getMachine = () => {
 
             form.resetFields(['machineName']);
             setMachineLoading(true);

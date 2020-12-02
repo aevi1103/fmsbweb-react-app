@@ -74,8 +74,8 @@ const contentListNoTitle = {
 
 const Logistics = () => {
 
-    const customerLoading = useSelector(({ morningMeeting: { isStockStatusFetching } }) => isStockStatusFetching) || false;
-    const customerComments = useSelector(({ morningMeeting: { stockStatusCollection } }) => stockStatusCollection.customerComments) || [];
+    const customerLoading = useSelector(({ logistics: { isStockStatusFetching } }) => isStockStatusFetching) || false;
+    const customerComments = useSelector(({ logistics: { stockStatusCollection } }) => stockStatusCollection.customerComments) || [];
 
     const [tabKey, setTabKey] = useState('doh')
 

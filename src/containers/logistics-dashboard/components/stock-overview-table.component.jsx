@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import numeral from 'numeral';
 import { numberSorter } from '../../../core/utilities/helpers';
 
@@ -49,10 +49,14 @@ import {
 
  }
 
- const StockOverviewTable = ({isStockOverviewFetching, stockOVerviewCollection}) => {
+ const StockOverviewTable = () => {
 
-    const { data, targets } = stockOVerviewCollection;
-    
+    const stockOVerviewCollection = useSelector(({ logistics }) => logistics?.stockOVerviewCollection) ?? []
+    const isStockOverviewFetching = useSelector(({ logistics }) => logistics?.isStockOverviewFetching)
+
+    const data = stockOVerviewCollection?.data ?? [];
+    const targets = stockOVerviewCollection?.targets ?? [];
+
     const columns = [
         {
             title: 'Program',
@@ -206,7 +210,7 @@ import {
         }
       ];
       
-      const dataSource = !data ? [] : data.map((rowData, i) => {
+      const dataSource = data.map((rowData, i) => {
 
         const {
             program,
@@ -253,24 +257,13 @@ import {
         
       })
 
-      const onChange = (pagination, filters, sorter, extra) => {
-        // console.log('params', pagination, filters, sorter, extra);
-      }
+      return <Table 
+        size="small"
+        loading={isStockOverviewFetching}
+        columns={columns}
+        dataSource={dataSource}
+        pagination={false} /> 
+}
 
-      return (
-        <Table 
-            size="small"
-            loading={isStockOverviewFetching}
-            columns={columns}
-            dataSource={dataSource}
-            onChange={onChange}
-            pagination={false} />     
-    )
- }
 
-const mapStateToProps = ({ morningMeeting }) => ({
-    isStockOverviewFetching: morningMeeting.isStockOverviewFetching,
-    stockOVerviewCollection: morningMeeting.stockOVerviewCollection,
-})
-
-export default connect(mapStateToProps)(StockOverviewTable);
+export default StockOverviewTable;

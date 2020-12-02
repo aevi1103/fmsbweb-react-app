@@ -33,15 +33,15 @@ import PrintWotChartsPage from './containers/swot/swot-print.component';
 import ProductionDashboard from './containers/production-dashboard/production-dashboard.component'
 
 //morning meeting pages
-import SafetyPage from './containers/safety/safety-page.component';
-import QualityPage from './containers/quality/quality-page.component';
+import SafetyPage from './containers/safety/safety.component';
+import QualityPage from './containers/quality/quality.component';
 import LogisticsDashboard from './containers/logistics-dashboard/logistics-dashboard.component';
 import PerformanceLevel0Page from './containers/dashboard/kpi/performance-level0-page.component';
 import PerformanceLevel2Page from './containers/dashboard/kpi/performance-level2-page.component';
 import DepartmentDashboard from './containers/department-dashboard/department-dashboard.component';
 import WorkCenterDetails from './containers/work-center-details/work-center-details.component'; 
 import HourlyProdPage from './containers/hourly-production/hourly-production-page.component'
-import FinancePage from './containers/finance/finance-page.component';
+import FinancePage from './containers/finance/finance.component';
 import DowntimePage from './containers/downtime/downtime-page.component';
 
 import ProductionOrderPage from './containers/production-order/production-order-page.component';

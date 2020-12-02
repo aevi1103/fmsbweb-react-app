@@ -13,8 +13,8 @@ import './styles.scss'
 
 const DaysOnHandTable = () => {
 
-  const loading = useSelector(({ morningMeeting: { isStockStatusFetching } }) => isStockStatusFetching) || false;
-  const daysOnHand = useSelector(({ morningMeeting: { stockStatusCollection } }) => stockStatusCollection.daysOnHand) || [];
+  const loading = useSelector(({ logistics: { isStockStatusFetching } }) => isStockStatusFetching) || false;
+  const daysOnHand = useSelector(({ logistics: { stockStatusCollection } }) => stockStatusCollection.daysOnHand) || [];
 
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');

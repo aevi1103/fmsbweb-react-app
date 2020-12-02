@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import numeral from 'numeral';
 
 import FusionCharts from 'fusioncharts';
@@ -13,21 +12,8 @@ import { tooltipStyle } from '../../../core/utilities/chart-config'
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const MonthlyIncidentRateChart = ({monthlyIncidentRateCollection, isMonthlyIncidentRateFetching}) => {
+const MonthlyIncidentRateChart = React.memo(({ data, loading}) => {
 
-    const chartData = monthlyIncidentRateCollection.map(({month, incidentRate, manHours, numberOfRecordable}) => 
-        (
-            {
-                label: month.substr(0,3),
-                value: incidentRate,
-                color: month === 'YTD' ? '#ff5722' : '',
-                toolText: `<b>Month: </b> ${month} <br>
-                            <b>Man Hours: </b> ${numeral(manHours).format('0,0')} <br>
-                            <b>Recordables: </b> ${numeral(numberOfRecordable).format('0,0')} <br>
-                            <b>Incident Rate: </b> ${incidentRate} <br>`
-            }
-        ));
-    
     const dataSource = {
         chart: {
           xAxisName: 'Months',
@@ -36,7 +22,16 @@ const MonthlyIncidentRateChart = ({monthlyIncidentRateCollection, isMonthlyIncid
           theme: 'fusion',
           ...tooltipStyle
         },
-        data: chartData
+        data: data.map(({month, incidentRate, manHours, numberOfRecordable}) => ({
+                label: month.substr(0,3),
+                value: incidentRate,
+                color: month === 'YTD' ? '#ff5722' : '',
+                toolText: `<b>Month: </b> ${month} <br>
+                            <b>Man Hours: </b> ${numeral(manHours).format('0,0')} <br>
+                            <b>Recordables: </b> ${numeral(numberOfRecordable).format('0,0')} <br>
+                            <b>Incident Rate: </b> ${incidentRate} <br>`
+            }
+        ))
       };
       
       const chartConfigs = {
@@ -47,20 +42,9 @@ const MonthlyIncidentRateChart = ({monthlyIncidentRateCollection, isMonthlyIncid
         dataSource: dataSource
       };
 
-    return (
-      <>
-        {
-          isMonthlyIncidentRateFetching 
-                ? (<CustomSpinner/>)
-                : (<ReactFC {...chartConfigs} />)
-        }   
-    </> 
-    )
-}
-
-const mapStateToProps = ({ morningMeeting }) => ({
-    monthlyIncidentRateCollection: morningMeeting.monthlyIncidentRateCollection,
-    isMonthlyIncidentRateFetching: morningMeeting.isMonthlyIncidentRateFetching,
+    return loading 
+      ? <CustomSpinner/>
+      : <ReactFC {...chartConfigs} />
 })
 
-export default connect(mapStateToProps)(MonthlyIncidentRateChart);
+export default MonthlyIncidentRateChart;

@@ -1,8 +1,6 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import numeral from 'numeral';
 import moment from 'moment';
-import Error from '../../../components/error-empty-container/error-empty-container.component'
 import { 
     Table,
     Typography 
@@ -10,11 +8,7 @@ import {
 
 const { Text } = Typography;
 
-const FlashProjectionsTable = () => {
-
-    const financeKpiErrorMsg = useSelector(({ morningMeeting }) => morningMeeting?.financeKpiErrorMsg) ?? null;
-    const isFinanceKpiFetching = useSelector(({ morningMeeting }) => morningMeeting?.isFinanceKpiFetching) ?? false;
-    const monthlyFlashProjections = useSelector(({ morningMeeting  }) => morningMeeting?.financeKpiCollection?.monthlyFlashProjections ) ?? [];
+const FlashProjectionsTable = React.memo(({ data, loading }) => {
 
     const columns = [
         {
@@ -58,7 +52,7 @@ const FlashProjectionsTable = () => {
         }
       ];
       
-      const data = monthlyFlashProjections.map(({year, monthNum, sales1000, ebitda1000, capitalFcst, pistonScrapFcstCost,mroFcstCost }, i) => ({
+      const dataSource = data.map(({year, monthNum, sales1000, ebitda1000, capitalFcst, pistonScrapFcstCost,mroFcstCost }, i) => ({
         key: i,
         yr: year,
         month: moment().month(monthNum).format('MMMM'),
@@ -69,14 +63,11 @@ const FlashProjectionsTable = () => {
         mro: numeral(mroFcstCost).format('$0,0.00'),
       }))
 
-    return financeKpiErrorMsg 
-            ?  <Error errorMsg={financeKpiErrorMsg} /> 
-            :  <Table 
-                        loading={isFinanceKpiFetching}
-                        columns={columns}
-                        dataSource={data}
-                        pagination={false} />     
-
-}
+    return <Table 
+        loading={loading}
+        columns={columns}
+        dataSource={dataSource}
+        pagination={false} />   
+})
 
 export default FlashProjectionsTable;

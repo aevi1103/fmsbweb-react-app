@@ -1,18 +1,11 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import numeral from 'numeral';
 import { 
     Table
  } from "antd";
 import moment from 'moment';
 
-import Error from '../../../components/error-empty-container/error-empty-container.component'
-
-const DeptForecastTable = () => {
-
-    const financeKpiErrorMsg = useSelector(({ morningMeeting }) => morningMeeting?.financeKpiErrorMsg) ?? null;
-    const isFinanceKpiFetching = useSelector(({ morningMeeting }) => morningMeeting?.isFinanceKpiFetching) ?? false;
-    const monthlyForecast = useSelector(({ morningMeeting  }) => morningMeeting?.financeKpiCollection?.monthlyForecast ) ?? [];
+const DeptForecastTable = React.memo(({ data, loading }) => {
 
     const columns = [
         {
@@ -37,7 +30,7 @@ const DeptForecastTable = () => {
         }
       ];
       
-      const data = monthlyForecast.map(({ year, monthNum, dept, totalUnitFcst, oaeFcst }, i) => ({
+      const dataSource = data.map(({ year, monthNum, dept, totalUnitFcst, oaeFcst }, i) => ({
         key: i,
         yr: year,
         month: moment().month(monthNum).format('MMMM'),
@@ -46,15 +39,12 @@ const DeptForecastTable = () => {
         oae: oaeFcst + '%',
       }))
 
-    return financeKpiErrorMsg 
-        ?  <Error errorMsg={financeKpiErrorMsg} /> 
-        :  <Table 
-                loading={isFinanceKpiFetching}
-                columns={columns}
-                dataSource={data}
-                pagination={false} />     
+    return <Table 
+      loading={loading}
+      columns={columns}
+      dataSource={dataSource}
+      pagination={false} />     
     
-}
-
+})
 
 export default DeptForecastTable;

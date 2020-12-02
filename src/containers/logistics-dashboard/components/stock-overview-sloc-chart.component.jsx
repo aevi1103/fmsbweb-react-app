@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 import _ from 'lodash';
 
 import FusionCharts from 'fusioncharts';
@@ -13,73 +13,59 @@ import { tooltipStyle } from '../../../core/utilities/chart-config'
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const StockOverViewSlocChart = ({stockOVerviewSlocCollection, isStockOverviewSlocFetching}) => {
+const StockOverViewSlocChart = () => {
 
-    const { categories, data } = stockOVerviewSlocCollection;
-    let chartConfigs = {};
-    
-    if (data) {
-        
-        //group array by key
-        const dataSetByKey = _.groupBy(data, o => o.program); 
-        
-        // transform datasetbykey to a object that fusion chart understands
-        const dataSet = Object.keys(dataSetByKey).map(key => {
-            return {
-                seriesName: key,
-                renderas: ((key === "Min" || key === "Max") ? "Line" : ""),
-                color: (key === "Min" ? "#dc3545" : key === "Max" ? "#28a745" : ""),
-                data: dataSetByKey[key].map(({stock}) => 
-                        ({
-                            value: stock
-                        }))
-            }
-        })
+    const stockOVerviewSlocCollection = useSelector(({ logistics }) => logistics?.stockOVerviewSlocCollection) ?? []
+    const isStockOverviewSlocFetching = useSelector(({ logistics }) => logistics.isStockOverviewSlocFetching)
 
-        const dataSource = {
-            chart: {
-                xAxisName: 'Program',
-                yAxisName: 'Stock',
-                showValues: '0',
-                theme: 'fusion',
-                showsum: "1",
-                plottooltext: 'Program: $seriesname, SLOC: $label, Qty: $value',
-                ...tooltipStyle
-            },
-            categories: [
-                {
-                    category: _.orderBy(categories, o => o.slocOrder).map(c => ({ 
-                        label: c.category === 'WH (0300)' ? 'WH (0400)' : c.category
+    const categories = stockOVerviewSlocCollection?.categories ?? [];
+    const data = stockOVerviewSlocCollection?.data ?? [];
+
+    const dataSetByKey = _.groupBy(data, o => o.program); 
+        
+    const dataSet = Object.keys(dataSetByKey).map(key => {
+        return {
+            seriesName: key,
+            renderas: ((key === "Min" || key === "Max") ? "Line" : ""),
+            color: (key === "Min" ? "#dc3545" : key === "Max" ? "#28a745" : ""),
+            data: dataSetByKey[key].map(({stock}) => 
+                    ({
+                        value: stock
                     }))
-                }
-            ],
-            dataset: dataSet
-          };
-          
-          chartConfigs = {
-            type: 'stackedcolumn2dline',
-            width: '100%',
-            height: '450',
-            dataFormat: 'json',
-            dataSource: dataSource
-          };
+        }
+    })
 
-    }
-
-    return (
-        <>
+    const dataSource = {
+        chart: {
+            xAxisName: 'Program',
+            yAxisName: 'Stock',
+            showValues: '0',
+            theme: 'fusion',
+            showsum: "1",
+            plottooltext: 'Program: $seriesname, SLOC: $label, Qty: $value',
+            ...tooltipStyle
+        },
+        categories: [
             {
-                isStockOverviewSlocFetching 
-                    ? (<CustomSpinner/>)
-                    : (<ReactFC {...chartConfigs} />)
-            }   
-        </>
-    )
+                category: _.orderBy(categories, o => o.slocOrder).map(c => ({ 
+                    label: c.category === 'WH (0300)' ? 'WH (0400)' : c.category
+                }))
+            }
+        ],
+        dataset: dataSet
+      };
+      
+      const chartConfigs = {
+        type: 'stackedcolumn2dline',
+        width: '100%',
+        height: '450',
+        dataFormat: 'json',
+        dataSource: dataSource
+      };
+
+    return isStockOverviewSlocFetching 
+        ? <CustomSpinner/>
+        : <ReactFC {...chartConfigs} />
 }
 
-const mapStateToProps = ({ morningMeeting }) => ({
-    stockOVerviewSlocCollection: morningMeeting.stockOVerviewSlocCollection,
-    isStockOverviewSlocFetching: morningMeeting.isStockOverviewSlocFetching,
-})
-
-export default connect(mapStateToProps)(StockOverViewSlocChart);
+export default StockOverViewSlocChart;

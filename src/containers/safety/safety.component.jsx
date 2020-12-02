@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import moment from 'moment'
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom'
 
 import DateRangePicker from '../../components/date-range-picker/date-range-picker.component'
 
@@ -10,10 +12,11 @@ import IncidentTable from './components/incidents-table'
 import { 
     fetchSafetyMonthlyIncidentRateStartAsync,
     fetchSafetyIncidentByDeptStartAsync,
-    fetchSafetyIncidentStartAsync,
-    setStartDate,
-    setEndDate
-} from '../../core/redux/morning-meeting/morning-meeting.actions'
+    fetchSafetyIncidentStartAsync
+} from '../../core/redux/safety/safety.actions'
+
+import { dateFormat } from '../../core/utilities/helpers'
+import { useQuery } from '../../core/utilities/custom-hook'
 
 import { 
     Layout,
@@ -25,45 +28,49 @@ import {
  } from "antd";
 
 const { Content } = Layout;
-const dateFormat = 'MM/DD/YYYY';
 
 const cardHeightStyle = {
     height: "500px"
 }
 
+const yesterday = moment().add(-1, 'd').format(dateFormat);
 
-const SafetyPage = ({
-        setMonthlyIncidentRate,
-        setIncidentByDept,
-        setIncidents,
-
-        startDate,
-        endDate,
-        setStartDate,
-        setEndDate
-    }) => {
+const SafetyPage = () => {
     
+    const dispatch = useDispatch();
+    const query = useQuery();
+    const history = useHistory();
+
+    //* url qry
+    const startDate = query.get('start') ?? yesterday;
+    const endDate = query.get('start') ?? yesterday;
+
+    //* states
     const [startFormat, setStartFormat] = useState(startDate);
     const [endFormat, setSendFormat] = useState(endDate);
 
-    const fetchData = (start = startFormat, end = endFormat) => {
-        setMonthlyIncidentRate();
-        setIncidentByDept();
-        setIncidents(start, end);
+    //* selectors
+    const isMonthlyIncidentRateFetching = useSelector(({ safety }) => safety.isMonthlyIncidentRateFetching);
+    const isIncidentByDeptFetching = useSelector(({ safety }) => safety.isIncidentByDeptFetching);
+    const isIncidentFetching = useSelector(({ safety }) => safety.isIncidentFetching);
+
+    const monthlyIncidentRateCollection = useSelector(({ safety }) => safety?.monthlyIncidentRateCollection) ?? [];
+    const incidentByDept = useSelector(({ safety }) => safety?.incidentByDept) ?? null;
+    const incidentCollection = useSelector(({ safety }) => safety?.incidentCollection) ?? [];
+
+    const fetchData = () => {
+        history.push(`/dashboard/morningmeeting/safety?start=${startFormat}&end=${endFormat}`)
+        dispatch(fetchSafetyMonthlyIncidentRateStartAsync())
+        dispatch(fetchSafetyIncidentByDeptStartAsync())
+        dispatch(fetchSafetyIncidentStartAsync(startFormat, endFormat))
     }
 
-    const onClick = () => {
-        setStartDate(startFormat);
-        setEndDate(endFormat);
-        fetchData(startFormat, endFormat);
-    }
+    const onClick = () => fetchData();
 
     const onCalendarChange = (dates) => {
-
         const [start, end] = dates;
-        setStartFormat(start ? start.format(dateFormat) : null);
-        setSendFormat(end ? end.format(dateFormat) : null);
-
+        setStartFormat(start?.format(dateFormat) ?? null);
+        setSendFormat(end?.format(dateFormat) ?? null);
     }
 
     useEffect(() => {
@@ -103,7 +110,7 @@ const SafetyPage = ({
                         className="ba b--black-10"
                         style={cardHeightStyle}
                         >                     
-                        <MonthlyIncidentRateChart/>
+                            <MonthlyIncidentRateChart data={monthlyIncidentRateCollection} loading={isMonthlyIncidentRateFetching} />
                     </Card>
                 </Col>
                 <Col span={8} lg={8} md={24} xs={24}>
@@ -114,7 +121,7 @@ const SafetyPage = ({
                         className="ba b--black-10" 
                         style={cardHeightStyle}
                         >
-                        <IncidentByDeptChart/>
+                            <IncidentByDeptChart incidentData={incidentByDept} loading={isIncidentByDeptFetching} />
                     </Card>
                 </Col>
                 <Col span={8} lg={8} md={24} xs={24}>
@@ -123,7 +130,7 @@ const SafetyPage = ({
                         size="small"
                         className="ba b--black-10"
                         style={cardHeightStyle}>
-                        <IncidentTable/>
+                            <IncidentTable data={incidentCollection} loading={isIncidentFetching} />
                     </Card>
                 </Col>
             </Row>
@@ -132,17 +139,5 @@ const SafetyPage = ({
     </React.Fragment>
 )}
 
-const mapDispatchToProps = dispatch => ({
-    setMonthlyIncidentRate: () => dispatch(fetchSafetyMonthlyIncidentRateStartAsync()),
-    setIncidentByDept: () => dispatch(fetchSafetyIncidentByDeptStartAsync()),
-    setIncidents: (start, end) => dispatch(fetchSafetyIncidentStartAsync(start, end)),
-    setStartDate: (date) => dispatch(setStartDate(date)),
-    setEndDate: (date) => dispatch(setEndDate(date))
-})
 
-const mapStateToProps = ({morningMeeting}) => ({
-    startDate: morningMeeting.startDate,
-    endDate: morningMeeting.endDate
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(SafetyPage);
+export default SafetyPage;

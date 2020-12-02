@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom'
 import moment from 'moment'
-
-import DatePicker from '../../components/single-date-range-picker/single-date-range-picker.component'
 
 import KpiTable from './components/kpi-table.component'
 import DeptForecastTable from './components/dept-forecast-table.compoennt'
 import FlashProjectionTable from './components/flash-projections-table.component'
 
-import { 
-    fetchFiananceKpiStartAsync
-} from '../../core/redux/morning-meeting/morning-meeting.actions'
+import { fetchFiananceKpiStartAsync } from '../../core/redux/finance/finance.actions'
+import { dateFormat, disabledDate } from '../../core/utilities/helpers'
+import { useQuery } from '../../core/utilities/custom-hook'
 
 import { 
     Layout,
@@ -18,26 +17,35 @@ import {
     PageHeader,
     Row,
     Col,
-    Card
+    Card,
+    DatePicker
  } from "antd";
 
 const { Content } = Layout;
-const dateFormat = 'MM/DD/YYYY';
 
 const responsiveProps = {
     xs: 24,
     xl: 12
 }
 
+const today = moment().format(dateFormat)
+
 const FinancePage = () => {
     
+    const history = useHistory();
     const dispatch = useDispatch();
-    const endDate = useSelector(({ morningMeeting: { endDate } }) => endDate);
+    const query = useQuery();
 
-    const endDatePlusOneDay = moment(endDate, dateFormat).add(1, 'd').format(dateFormat)
-    const [ date, setDate ] = useState(endDatePlusOneDay);
+    const dateQry = query.get('date') ?? today;
+    const [date, setDate] = useState(dateQry);
 
-    const fetchData = () => dispatch(fetchFiananceKpiStartAsync(date))
+    const financeKpi = useSelector(({ finance }) => finance?.financeKpi) ?? null;
+    const loading = useSelector(({ finance }) => finance?.isFinanceKpiFetching)
+
+    const fetchData = () => {
+        history.push(`/dashboard/morningmeeting/finance?date=${date}`)
+        dispatch(fetchFiananceKpiStartAsync(date))
+    }
     const onClick = () => fetchData();
     const onChange = (date, dateStr) => setDate(dateStr);
 
@@ -59,7 +67,15 @@ const FinancePage = () => {
 
                 <Col span={24}>
 
-                    <DatePicker onButtonClick={onClick} onChange={onChange}  defaultValue={moment(endDatePlusOneDay, 'MM/DD/YYYY')} />
+                    <DatePicker 
+                        className="mr2"
+                        onChange={onChange}
+                        format={dateFormat}
+                        disabledDate={disabledDate}
+                        defaultValue={moment(date, dateFormat)}/>
+
+                    <Button type="primary" onClick={onClick} loading={loading}>Go</Button>
+
                     <Button type="primary" className="ml2">
                         <a href="http://10.129.224.149/FMSB/Finance/DataEntry.aspx" target="_blank" rel="noopener noreferrer">Enter Data</a>
                     </Button>
@@ -75,7 +91,7 @@ const FinancePage = () => {
                                 size="small"
                                 className="ba b--black-10"
                                 >       
-                                    <KpiTable/>              
+                                    <KpiTable data={financeKpi?.dailyKpi ?? []} loading={loading} />              
                             </Card>     
                         </Col>
                         <Col {...responsiveProps}>
@@ -84,7 +100,7 @@ const FinancePage = () => {
                                 size="small"
                                 className="ba b--black-10"
                                 >
-                                <DeptForecastTable/>
+                                <DeptForecastTable data={financeKpi?.monthlyForecast ?? []} loading={loading} />
                             </Card>
                         </Col>
                         <Col {...responsiveProps}>
@@ -92,7 +108,7 @@ const FinancePage = () => {
                                 title="Flash Projections"
                                 size="small"
                                 className="ba b--black-10">
-                                    <FlashProjectionTable/>
+                                    <FlashProjectionTable data={financeKpi?.monthlyFlashProjections ?? []} loading={loading}/>
                             </Card>
                         </Col>
                     </Row>

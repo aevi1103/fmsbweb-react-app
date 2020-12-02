@@ -1,11 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import moment from 'moment';
 import { 
     Table
  } from "antd";
 
-const IncidentTable = ({isIncidentFetching, incidentCollection}) => {
+const IncidentTable = React.memo(({ data, loading }) => {
 
     const columns = [
         {
@@ -34,32 +33,22 @@ const IncidentTable = ({isIncidentFetching, incidentCollection}) => {
         },
       ];
       
-      const data = incidentCollection.map(({dept, description, injuryStatus, incidentDate}, i) => ({
-        key: i,
-        dept: dept,
-        stat: injuryStatus,
-        date: moment(incidentDate).format('LLL'),
-        desc: description
+      const dataSource = data.map(({dept, description, injuryStatus, incidentDate}, i) => ({
+          key: i,
+          dept: dept,
+          stat: injuryStatus,
+          date: moment(incidentDate).format('LLL'),
+          desc: description
       }))
-
-      const onChange = (pagination, filters, sorter, extra) => {
-        // console.log('params', pagination, filters, sorter, extra);
-      }
 
     return (
         <Table 
-                loading={isIncidentFetching}
+                loading={loading}
                 columns={columns}
-                dataSource={data}
-                onChange={onChange}
+                dataSource={dataSource}
                 pagination={false}
                 scroll={{y: 380}} />     
     )
-}
-
-const mapStateToProps = ({ morningMeeting }) => ({
-    isIncidentFetching: morningMeeting.isIncidentFetching,
-    incidentCollection: morningMeeting.incidentCollection,
 })
 
-export default connect(mapStateToProps)(IncidentTable);
+export default IncidentTable;

@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import moment from 'moment'
 import numeral from 'numeral'
 
-import DatePicker from '../../components/single-date-range-picker/single-date-range-picker.component'
-import CustomerComplaintTable from './components/customer-complaint-table.component'
+import { fetchQualityStartAsync } from '../../core/redux/quality/quality.actions'
+import { dateFormat } from '../../core/utilities/helpers'
+import { useQuery } from '../../core/utilities/custom-hook'
 
-import { 
-    fetchQualityStartAsync
-} from '../../core/redux/morning-meeting/morning-meeting.actions'
+import CustomerComplaintTable from './components/customer-complaint-table.component'
 
 import { 
     Layout,
@@ -18,11 +18,11 @@ import {
     Row,
     Col,
     Card,
-    Empty
+    Tooltip,
+    DatePicker
  } from "antd";
 
 const { Content } = Layout;
-const dateFormat = 'MM/DD/YYYY';
 
 const KpiContainer = styled.span`
     display: flex;
@@ -38,19 +38,28 @@ const responsiveProps = {
     xl: 6
 }
 
+const today = moment().format(dateFormat);
+
 const QualityPage = () => {
     
+    const history = useHistory();
     const dispatch = useDispatch();
-    const endDate = useSelector(({ morningMeeting: { endDate } }) => endDate);
-    const isQualityFetching = useSelector(({ morningMeeting: { isQualityFetching } }) => isQualityFetching);
-    const qualityCollection = useSelector(({ morningMeeting: { qualityCollection } }) => qualityCollection);
+    const query = useQuery();
 
-    const endDatePlusOneDay = moment(endDate, dateFormat).add(1, 'd').format(dateFormat)
-    const [ date, setDate ] = useState(endDatePlusOneDay);
+    const date = query.get('date') ?? today;
 
-    const fetchData = () => dispatch(fetchQualityStartAsync(date));
+    const isQualityFetching = useSelector(({ quality: { isQualityFetching } }) => isQualityFetching);
+    const qualityCollection = useSelector(({ quality: { qualityCollection } }) => qualityCollection);
+
+    const [dateStr, setDateStr] = useState(date);
+
+    const fetchData = () => {
+        history.push(`/dashboard/morningmeeting/quality?date=${dateStr}`)
+        dispatch(fetchQualityStartAsync(dateStr));
+    }
+
     const onClick = () => fetchData();
-    const onChange = (date, dateStr) => setDate(dateStr);
+    const onDateChange = (date) => setDateStr(date.format(dateFormat))
 
     useEffect(() => {
         document.title = `Quality`;
@@ -70,7 +79,16 @@ const QualityPage = () => {
 
                 <Col span={24}>
                 
-                    <DatePicker onButtonClick={onClick} onChange={onChange} defaultValue={moment(endDatePlusOneDay, dateFormat)} />
+                    <DatePicker 
+                        className="mr2"
+                        onChange={onDateChange}
+                        format={dateFormat}
+                        defaultValue={moment(dateStr, dateFormat)} />
+
+                    <Tooltip placement="top" title={<span>Click to reload dashboard</span>}>
+                        <Button type="primary" onClick={onClick}>Go</Button>
+                    </Tooltip>
+
                     <Button type="primary" className="ml2">
                         <a href="http://10.129.224.149/FMSB/Quality/Customer/Record.aspx" target="_blank" rel="noopener noreferrer">Enter Data</a>
                     </Button>
@@ -80,6 +98,7 @@ const QualityPage = () => {
                 <Col span={24}>
 
                     <Row gutter={[12,12]}>
+
                         <Col {...responsiveProps}>
                             <Card 
                                 title="PRR / PIR / QR"
@@ -87,15 +106,12 @@ const QualityPage = () => {
                                 className="ba b--black-10"
                                 loading={isQualityFetching}
                                 >       
-                                    {
-                                        !qualityCollection 
-                                        ? (<Empty/>)
-                                        : (<KpiContainer>
-                                            <h1>{numeral(qualityCollection.totalCustomerComplaint).format('0,0')}</h1>
-                                        </KpiContainer>)
-                                    }
+                                    <KpiContainer>
+                                        <h1>{numeral(qualityCollection?.totalCustomerComplaint ?? 0).format('0,0')}</h1>
+                                    </KpiContainer>
                             </Card>     
                         </Col>
+
                         <Col {...responsiveProps}>
                             <Card 
                                 title="YTD Open Status MRR"
@@ -103,15 +119,12 @@ const QualityPage = () => {
                                 className="ba b--black-10"
                                 loading={isQualityFetching}
                                 >       
-                                    {
-                                        !qualityCollection 
-                                        ? (<Empty/>)
-                                        : (<KpiContainer>
-                                            <h1>{numeral(qualityCollection.ytdMrr.total).format('0,0')}</h1>
-                                        </KpiContainer>)
-                                    }
+                                    <KpiContainer>
+                                        <h1>{numeral(qualityCollection?.ytdMrr?.total ?? 0).format('0,0')}</h1>
+                                    </KpiContainer>
                             </Card>     
                         </Col>
+
                         <Col {...responsiveProps}>
                             <Card 
                                 title="MTD Open Status MRR"
@@ -119,15 +132,12 @@ const QualityPage = () => {
                                 className="ba b--black-10"
                                 loading={isQualityFetching}
                                 >       
-                                    {
-                                        !qualityCollection 
-                                        ? (<Empty/>)
-                                        : (<KpiContainer>
-                                            <h1>{numeral(qualityCollection.mtdMrr.total).format('0,0')}</h1>
-                                        </KpiContainer>)
-                                    }    
+                                    <KpiContainer>
+                                        <h1>{numeral(qualityCollection?.mtdMrr?.total ?? 0).format('0,0')}</h1>
+                                    </KpiContainer>   
                             </Card>     
                         </Col>
+
                         <Col {...responsiveProps}>
                             <Card 
                                 title="Last 24 Hours Open MRR"
@@ -135,26 +145,22 @@ const QualityPage = () => {
                                 className="ba b--black-10"
                                 loading={isQualityFetching}
                                 >       
-                                    {
-                                        !qualityCollection 
-                                        ? (<Empty/>)
-                                        : (<KpiContainer>
-                                            <h1>{numeral(qualityCollection.twentyMrr.total).format('0,0')}</h1>
-                                        </KpiContainer>)
-                                    } 
-                        
+                                    <KpiContainer>
+                                        <h1>{numeral(qualityCollection?.twentyMrr?.total ?? 0).format('0,0')}</h1>
+                                    </KpiContainer>
                             </Card>     
                         </Col>
+
                         <Col span={24}>
                             <Card 
                                 title="Customer Complaint"
-                                
                                 size="small"
                                 className="ba b--black-10"
                                 >
-                                    <CustomerComplaintTable/>
+                                    <CustomerComplaintTable data={qualityCollection?.customerComplaintList ?? []} loading={isQualityFetching} />
                             </Card>
                         </Col>
+
                     </Row>
                             
                 </Col>
