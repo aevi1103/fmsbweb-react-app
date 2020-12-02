@@ -9,7 +9,7 @@ import ReactFC from 'react-fusioncharts';
 
 import {
     setDowntimeByLine,
-} from '../../../core/redux/morning-meeting/morning-meeting.actions'
+} from '../../../core/redux/downtime/downtime.actions'
 
 import { tooltipStyle } from '../../../core/utilities/chart-config'
 
@@ -27,8 +27,8 @@ const Container = styled.span`
 const DowntimeByOwnerChart = () => {
 
     const dispatch = useDispatch();
-    const ownerDetails = useSelector(({ morningMeeting }) => morningMeeting?.downtimeByOwnerCollection?.ownerDetails) ?? [];
-    const downtimeByOwnerCollection = useSelector(({ morningMeeting }) => morningMeeting?.downtimeByOwnerCollection) ?? {};
+    const ownerDetails = useSelector(({ downtime }) => downtime?.downtimeByOwnerCollection?.ownerDetails) ?? [];
+    const downtimeByOwnerCollection = useSelector(({ downtime }) => downtime?.downtimeByOwnerCollection) ?? {};
     
     const dataSource = {
         chart: {

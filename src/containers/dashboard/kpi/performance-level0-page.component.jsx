@@ -22,12 +22,15 @@ import {
     fetchScrapVariancePerProgramStartAsync,    
     fetchPpmhPerDeptStartAsync,
     fetchDeptKpiStartAsync,
-    fetchDowntimeStartAsync,
     fetchPlantPpmhStartAsync,
     setPerformaceSelectedDepartment,
     setStartDate,
     setEndDate
 } from '../../../core/redux/morning-meeting/morning-meeting.actions';
+
+import {
+    fetchDowntimeStartAsync
+} from '../../../core/redux/downtime/downtime.actions'
 
 import { 
     DownloadOutlined,

@@ -8,18 +8,6 @@ const previousDayFormatted = previousDay.format(dateFormat);
 
 const INITIAL_STATE = {
 
-    isDowntimeFetching: false,
-    downtimeCollection: null,
-    downtimeErrorMsg: undefined,
-
-    isDowntimeByOwnerFetching: false,
-    downtimeByOwnerCollections: null,
-    downtimeByOwnerErrorMsg: undefined,
-
-    isDowntimeIconicsFetching: false,
-    downtimeIconicsCollections: null,
-    downtimeIconicsErrorMsg: undefined,
-
     isScrapVarianceFetching: false,
     scrapVarianceCollection: null,
     scrapVarianceErrorMsg: undefined,
@@ -63,8 +51,7 @@ const INITIAL_STATE = {
     startDate: previousDayFormatted,
     endDate: previousDayFormatted,
 
-    downtimeByOwnerCollection: [],
-    downtimeByLineCollection: [],
+
 
     performaceSelectedDepartment: 'Foundry Cell',
     ppmhChartType: 'ppmhByShift',
@@ -75,84 +62,6 @@ const INITIAL_STATE = {
 const morningMeetingReducer = (state = INITIAL_STATE, action) => {
 
     switch (action.type) {
-
-        //FIANNCE
-        
-
-        //downtime
-        case morningMeetingTypes.FETCH_DOWNTIME_START:
-
-            return {
-                ...state,
-                isDowntimeFetching: true
-            };
-
-        case morningMeetingTypes.FETCH_DOWNTIME_SUCCESS:
-
-            return {
-                ...state,
-                isDowntimeFetching: false,
-                downtimeCollection: action.payload
-            };
-
-        case morningMeetingTypes.FETCH_DOWNTIME_FAILURE:
-
-            return {
-                ...state,
-                isDowntimeFetching: false,
-                downtimeCollection: null,
-                downtimeErrorMsg: action.payload
-            };
-
-        //downtime by owner
-        case morningMeetingTypes.FETCH_DOWNTIME_BY_OWNER_START:
-
-            return {
-                ...state,
-                isDowntimeByOwnerFetching: true
-            };
-
-        case morningMeetingTypes.FETCH_DOWNTIME_BY_OWNER_SUCCESS:
-
-            return {
-                ...state,
-                isDowntimeByOwnerFetching: false,
-                downtimeByOwnerCollections: action.payload
-            };
-
-        case morningMeetingTypes.FETCH_DOWNTIME_BY_OWNER_FAILURE:
-
-            return {
-                ...state,
-                isDowntimeByOwnerFetching: false,
-                downtimeByOwnerCollections: null,
-                downtimeByOwnerErrorMsg: action.payload
-            };
-
-        //downtime by Iconics
-        case morningMeetingTypes.FETCH_DOWNTIME_ICONICS_START:
-
-            return {
-                ...state,
-                isDowntimeIconicsFetching: true
-            };
-
-        case morningMeetingTypes.FETCH_DOWNTIME_ICONICS_SUCCESS:
-
-            return {
-                ...state,
-                isDowntimeIconicsFetching: false,
-                downtimeIconicsCollections: action.payload
-            };
-
-        case morningMeetingTypes.FETCH_DOWNTIME_ICONICS_FAILURE:
-
-            return {
-                ...state,
-                isDowntimeIconicsFetching: false,
-                downtimeIconicsCollections: null,
-                downtimeIconicsErrorMsg: action.payload
-            };
 
         //scrap variance
         case morningMeetingTypes.FETCH_SCRAP_VARIANCE_START:
@@ -394,21 +303,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 endDate: action.payload
             };
 
-        //downtime by owner
-        case morningMeetingTypes.SET_DOWNTIME_BY_OWNER:
 
-            return {
-                ...state,
-                downtimeByOwnerCollection: action.payload
-            };
-
-        //downtime by line
-        case morningMeetingTypes.SET_DOWNTIME_BY_LINE:
-
-            return {
-                ...state,
-                downtimeByLineCollection: action.payload
-            };
 
         //selected department for performace page
         case morningMeetingTypes.SET_DEPARTMENT_SELECT:

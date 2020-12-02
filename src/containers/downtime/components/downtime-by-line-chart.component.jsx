@@ -23,7 +23,7 @@ const Container = styled.span`
 
 const DowntimeByOwnerChart = () => {
 
-    const lineDetails = useSelector(({ morningMeeting }) => morningMeeting?.downtimeByLineCollection?.lineDetails) ?? [];
+    const lineDetails = useSelector(({ downtime }) => downtime?.downtimeByLineCollection?.lineDetails) ?? [];
 
     const chartProps = {
         showvalues: "1",

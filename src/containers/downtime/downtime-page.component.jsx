@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import moment from 'moment'
 import { useSelector, useDispatch } from 'react-redux';
-import DateRangePicker from '../../components/date-range-picker/date-range-picker.component'
+import { useHistory } from 'react-router-dom'
+
 import { 
-    setStartDate,
-    setEndDate,
     fetchDowntimeStartAsync
-} from '../../core/redux/morning-meeting/morning-meeting.actions'
+} from '../../core/redux/downtime/downtime.actions'
 
 import DowntimeChart from './components/downtime-chart.component'
 import DowntimeByOwnerChart from './components/downtime-by-owner-chart.component'
 import DowntimeByLineChart from './components/downtime-by-line-chart.component'
+
+import { dateFormat, dateRange, disabledDate } from '../../core/utilities/helpers'
+import { useQuery } from '../../core/utilities/custom-hook'
 
 import { 
     Layout,
@@ -17,51 +20,56 @@ import {
     Row,
     Col,
     Card,
-    PageHeader
+    PageHeader,
+    DatePicker
  } from "antd";
 
- const { Content } = Layout;
- const dateFormat = 'MM/DD/YYYY';
+const { Content } = Layout;
+const { RangePicker } = DatePicker;
 
- const cardHeightStyle = {
+const cardHeightStyle = {
     height: "500px"
 }
 
- const DowntimePage = () => {
+const responsiveProps = {
+    xs: 24,
+    xl: 12
+}
 
+const today = moment().format(dateFormat);
+
+const DowntimePage = () => {
+
+    const history = useHistory();
+    const query = useQuery();
     const dispatch = useDispatch();
 
-    const startDate = useSelector(({ morningMeeting }) => morningMeeting.startDate)
-    const endDate = useSelector(({ morningMeeting }) => morningMeeting.endDate)
-    const ownerTitle = useSelector(({ morningMeeting }) => morningMeeting?.downtimeByOwnerCollection?.ownerTitle) ?? null;
-    const lineTitle = useSelector(({ morningMeeting }) => morningMeeting?.downtimeByLineCollection?.lineTitle) ?? null;
+    const startQry = query.get('start') ?? today;
+    const endQry = query.get('end') ?? today;
 
+    const ownerTitle = useSelector(({ downtime }) => downtime?.downtimeByOwnerCollection?.ownerTitle) ?? null;
+    const lineTitle = useSelector(({ downtime }) => downtime?.downtimeByLineCollection?.lineTitle) ?? null;
+    const isDowntimeFetching = useSelector(({ downtime }) => downtime?.isDowntimeFetching);
 
-    const [startFormat, setStartFormat] = useState(startDate);
-    const [endFormat, setSendFormat] = useState(endDate);
+    const [startDate, setStartDate] = useState(startQry);
+    const [endDate, setEndDate] = useState(endQry);
 
-    const fetchData = (start = startFormat, end = endFormat) => dispatch(fetchDowntimeStartAsync(start, end))
-
-    const onClick = () => {
-        dispatch(setStartDate(startFormat))
-        dispatch(setEndDate(endFormat))
-        fetchData(startFormat, endFormat);
-    }
-
-    const onCalendarChange = (dates) => {
-        const [start, end] = dates;
-        setStartFormat(start ? start.format(dateFormat) : null);
-        setSendFormat(end ? end.format(dateFormat) : null);
+    const fetchData = () => {
+        history.push(`/dashboard/morningmeeting/downtime?start=${startDate}&end=${endDate}`);
+        document.title = `Downtime: ${startDate} - ${endDate}`;
+        dispatch(fetchDowntimeStartAsync(startDate, endDate))
     }
 
     useEffect(() => {
-        document.title = `Downtime`;
         fetchData();
     }, [])
 
-    const responsiveProps = {
-        xs: 24,
-        xl: 12
+    const onClick = () => fetchData();
+
+    const onCalendarChange = (dates) => {
+        const [start, end] = dates;
+        setStartDate(start?.format(dateFormat) ?? null);
+        setEndDate(end?.format(dateFormat) ?? null);
     }
 
     return (
@@ -78,10 +86,16 @@ import {
 
                     <Col span={24}>
 
-                        <DateRangePicker 
-                            dateRangeValue={{startDate: startDate, endDate: endDate}}
-                            onButtonClick={onClick}
-                            onCalendarChange={onCalendarChange}/>
+                        <RangePicker 
+                                className="mr2"
+                                format={dateFormat}
+                                onCalendarChange={onCalendarChange}
+                                disabledDate={disabledDate}
+                                defaultValue={[moment(startDate), moment(endDate)]}
+                                ranges={dateRange}/>
+
+
+                        <Button type="primary" onClick={onClick} loading={isDowntimeFetching}>Go</Button>
 
                         <Button type="primary" className="ml2">
                             <a href="http://10.129.224.149/FMSB/Engineering/Downtime.aspx" target="_blank" rel="noopener noreferrer">More Charts</a>

@@ -14,7 +14,7 @@ import {
     fetchLogisticsStatusStartAsync
 } from '../../core/redux/logistics/logistics.actions'
 
-import { dateFormat } from '../../core/utilities/helpers'
+import { dateFormat, disabledDate } from '../../core/utilities/helpers'
 
 import { 
     Layout,
@@ -62,8 +62,6 @@ const LogisticsDashboard = () => {
     useEffect(() => {
         fetchData();
     }, [])
-
-    const disabledDate = current => current > moment().endOf('day');
 
     return (
     <>

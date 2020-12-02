@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
@@ -9,7 +9,7 @@ import ReactFC from 'react-fusioncharts';
 import {
     setDowntimeByOwner,
     resetDowntimeByLine
-} from '../../../core/redux/morning-meeting/morning-meeting.actions'
+} from '../../../core/redux/downtime/downtime.actions'
 
 import {
     tooltipStyle
@@ -22,44 +22,28 @@ FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
 const DowntimeChart = ({
-    downtimeCollection,
-    isDowntimeFetching,
-    setDowntimeByOwner,
-    resetDowntimeByLine,
     isDrillDown = true
 }) => {
 
-    const [categoriesSet, setCategoriesSet] = useState([])
-    const [chartData, setchartData] = useState([])
+    const dispatch = useDispatch();
 
-    useEffect(() => {
+    const downtimeCollection = useSelector(({ downtime }) => downtime?.downtimeCollection) ?? [];
+    const isDowntimeFetching = useSelector(({ downtime }) => downtime.isDowntimeFetching);
 
-        try {
-            setCategoriesSet(downtimeCollection.categories);
-            setchartData(downtimeCollection.chartData);
-        } catch (error) {
-            setchartData([]);
-        }
-        
+    const categoriesSet = downtimeCollection?.categories ?? [];
+    const chartData = downtimeCollection?.chartData ?? [];
 
-    },[downtimeCollection])
-
-    // transform datasetbykey to a object that fusion chart understands
-    const dataSet = chartData.map(({ seriesname, data }) => {
-        return {
-            seriesname,
-            data: data.map(({totalDowntime}) => ({ value: totalDowntime }))
-        }
-    });
+    const dataSet = chartData.map(({ seriesname, data }) => ({
+        seriesname,
+        data: data.map(({totalDowntime}) => ({ value: totalDowntime }))
+    }));
 
     const dataSource = {
         chart: {
             xAxisName: 'Department',
             yAxisName: 'Minutes',
-            // showValues: '1',
             theme: 'fusion',
             drawcrossline: "1",
-            // formatNumberScale: "0",
             showsum: "1",
             labelDisplay: "rotate",
             slantLabel: "1",
@@ -85,10 +69,9 @@ const DowntimeChart = ({
             dataplotClick: function(evt) {
 
                 if (isDrillDown) {
-                    //categoryLabel = dept, datasetName = shift
-                    const { categoryLabel, datasetName } = evt.data;              
-                    setDowntimeByOwner(downtimeCollection, categoryLabel, datasetName);
-                    resetDowntimeByLine();
+                    const { categoryLabel, datasetName } = evt.data;        
+                    dispatch(setDowntimeByOwner(downtimeCollection, categoryLabel, datasetName))
+                    dispatch(resetDowntimeByLine())
                 }
 
             }
@@ -102,14 +85,5 @@ const DowntimeChart = ({
                     : <ReactFC {...chartConfigs} />
 }
 
-const mapStateToProps = ({ morningMeeting }) => ({
-    isDowntimeFetching: morningMeeting.isDowntimeFetching,
-    downtimeCollection: morningMeeting.downtimeCollection
-})
 
-const mapDispatchToProps = dispatch => ({
-    setDowntimeByOwner: (downtimeCollection, dept, shift) => dispatch(setDowntimeByOwner(downtimeCollection, dept, shift)),
-    resetDowntimeByLine: () => dispatch(resetDowntimeByLine())
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(DowntimeChart);
+export default DowntimeChart;

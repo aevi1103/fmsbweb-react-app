@@ -10,6 +10,7 @@ import safetyreducer from './safety/safety.reducer'
 import qualityReducer from './quality/quaity.reducer'
 import logisticsReducer from './logistics/logistics.reducer'
 import financeReducer from './finance/finance.reducer'
+import downtimeReducer from './downtime/downtime.reducer'
 
 import morningMeetingReducer from './morning-meeting/morning-meeting.reducer'
 
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
     quality: qualityReducer,
     logistics: logisticsReducer,
     finance: financeReducer,
+    downtime: downtimeReducer,
     errors: errorsReducer
 })
 

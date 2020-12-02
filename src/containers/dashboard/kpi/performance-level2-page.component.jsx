@@ -11,16 +11,18 @@ import {
 import { 
     setStartDate,
     setEndDate,
-
     fetchScrapVariancePerDeptStartAsync,
     fetchScrapVariancePerShiftStartAsync,
-    fetchDowntimeByOwnerStartAsync,
-    fetchDowntimeIconicsStartAsync,
     fetchOvertimePercentPerDeptStartAsync,
     fetchOvertimePercentPerShiftStartAsync,
 
     setPerformaceSelectedDepartment
 } from '../../../core/redux/morning-meeting/morning-meeting.actions';
+
+import {
+    fetchDowntimeByOwnerStartAsync,
+    fetchDowntimeIconicsStartAsync,
+} from '../../../core/redux/downtime/downtime.actions'
 
 //level 0 charts
 import ScrapVariancePerDeptChart from '../../../components/performance/level-2/scrap-variance-per-dept.component';
