@@ -47,25 +47,28 @@ export const setColorCode = (value, target, type) => {
 
 }
 
-export const getUrlParameter = (qry) => new URLSearchParams(new URL(window.location.href).search).get(qry);
-
-export const updateUrlQryParameter = (params, title = document.title) => {
-
-    //base url
-    const url = new URL(window.location.href);
-
-    //generate qry strings
-    const queryString = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
-
-    //new url
-    const newUrl = `${url.origin + url.pathname}?${queryString}`;
-
-    //update url state
-    window.history.replaceState('updateUrl', title, newUrl);
-
-    //update document title
-    document.title = title;
-}
+export const departmentList = [
+    {
+        area: 'Foundry Cell',
+        dept: 'Foundry'
+    },
+    {
+        area: 'Machine Line',
+        dept: 'Machining'
+    },
+    {
+        area: 'Skirt Coat',
+        dept: 'Finishing'
+    },
+    {
+        area: 'Assembly',
+        dept: 'Assembly'
+    },
+    {
+        area: 'Plant',
+        dept: 'Plant'
+    }
+]
 
 export const mapDeptToArea = dept => {
 
@@ -102,10 +105,8 @@ export const oDataQryString = (odataQry) => {
     return odataQry.startsWith('?') ? odataQry : `?${odataQry}`;
 }
 
-export const depts = ['Foundry', 'Machining', 'Anodize', 'Skirt Coat', 'Assembly'];
-export const shifts = ['3', '1', '2', 'All'];
-export const dateFormat = 'MM/DD/YYYY';
 export const disabledDate = current => current && current > moment().endOf('day');
+
 export const dateRange = {
     'Today': [moment(), moment()],
     'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
@@ -116,6 +117,9 @@ export const dateRange = {
     'YTD': [moment().startOf('year'), moment().add(-1, 'days')]
 }
 
+export const depts = ['Foundry', 'Machining', 'Anodize', 'Skirt Coat', 'Assembly'];
+export const shifts = ['3', '1', '2', 'All'];
+export const dateFormat = 'MM/DD/YYYY';
 export const getTopItems = (data, top = 5) => [...data].splice(0,top);
 export const scrollToObject = el => window.scrollTo(0, el?.offsetTop);
 

@@ -1,9 +1,13 @@
 import React, { useEffect, useState, Fragment } from 'react';
 import { connect } from 'react-redux';
+import { useHistory } from 'react-router-dom'
 import moment from 'moment';
 import numeral from 'numeral';
 
 import api from '../../core/utilities/api'
+import { useQuery } from '../../core/utilities/custom-hook'
+import { colors } from '../../core/utilities/colors'
+import { dateFormat } from '../../core/utilities/helpers'
 
 import SapNetTable from '../../components/sap-net-table/sap-net-table.component';
 import DefectSummaryTable from '../../components/defect-summary-table/defect-summary-table.component';
@@ -16,8 +20,6 @@ import {
     fetchDeptEosCollectionStartAsync,
     setDeptEosCollection
 } from '../../core/redux/af-eos/af-eos.actions'
-
-import { getUrlParameter, updateUrlQryParameter } from '../../core/utilities/helpers'
 
 import {
     Layout,
@@ -78,6 +80,8 @@ const gridLayout = {
     xl: 6
 }
 
+const { green, red } = colors;
+
 const AfEosPage = ({
     fetchDeptLineStartAsync,
     isDeptLinesFetching,
@@ -92,18 +96,14 @@ const AfEosPage = ({
     setDeptEosCollection
 }) => {
 
-    const green = { color: '#3f8600' }
-    const red = { color: '#cf1322' }
-    const dateFormat = 'MM/DD/YYYY';
+    const history = useHistory();
+    const query = useQuery();
     
-    const deptQry = getUrlParameter('dept');
-    const dateQry = getUrlParameter('date');
-    const shiftQry = getUrlParameter('shift');
-    
-    const defaultDept = getUrlParameter('dept') ? deptQry : "Assembly";
-    const defaultShiftDate = dateQry ? moment(dateQry) : moment();
+    const defaultDept = query.get('dept') ?? "Assembly";
+    const defaultShiftDate = query.get('date') ? moment(query.get('date')) : moment();
+    const defaultShift = query.get('shift');
     const defaultShiftDateStr = defaultShiftDate.format(dateFormat);
-    const defaultShift = shiftQry ? shiftQry : null;
+
 
     useEffect(() => {
 
@@ -190,18 +190,14 @@ const AfEosPage = ({
 
     useEffect(() => {
 
-        const qry = {
-            dept,
-            date: shiftDateStr,
-            shift: shift ? shift : ''
-        }
-        const ttl = `${dept} EOS Report : ${shiftDateStr} ${qry.shift}`;
-        updateUrlQryParameter(qry, ttl)
+        const ttl = `${dept} EOS Report : ${shiftDateStr} ${shift}`;
         setEosTitle(ttl);
+
+        history.push(`/af/eos?dept=${dept}&date=${shiftDateStr}&shift=${shift}`)
 
         return () => setEosTitle('')
 
-    }, [dept, shiftDateStr, shift]);
+    }, [dept, shiftDateStr, shift, history]);
 
     useEffect(() => {
 
@@ -318,12 +314,12 @@ const AfEosPage = ({
     const getValueStyle = (value, target, type) => {
 
         if (type === 'scrap') {
-            if (value < target) return green;
+            if (value < target) return { color: red };
             return red;
         }
 
         if (type === 'oae') {
-            if (value >= target) return green;
+            if (value >= target) return { color: green };
             return red;
         }
 

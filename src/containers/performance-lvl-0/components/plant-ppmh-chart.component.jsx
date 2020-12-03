@@ -1,42 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import numeral from 'numeral'
+import moment from 'moment';
+
+import { tooltipStyle } from '../../../core/utilities/chart-config'
+import CustomSpinner from '../../../components/custom-spinner/custom-spinner.component'
 
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
-import { tooltipStyle } from '../../../core/utilities/chart-config'
-import CustomSpinner from '../../custom-spinner/custom-spinner.component'
-
-import { Empty } from 'antd';
-import moment from 'moment';
-
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const PlantPpmhChhart = ({
-    isPlantPpmhFetching,
-    plantPpmhCollection
-}) => {
+const numberFormat = '0,0.00[000]';
 
-    const [collection, setCollection] = useState([]);
-    useEffect(() => {
+const PlantPpmhChhart = () => {
 
-        try {
-            if (plantPpmhCollection) {
-                setCollection(plantPpmhCollection); 
-            } else {
-                setCollection([]);
-            }  
-        } catch (error) {
-            setCollection([]);
-        }
-        
-    },[plantPpmhCollection])
-
-    const numberFormat = '0,0.00[000]';
+    const collection = useSelector(({ performance0 }) => performance0?.plantPpmhCollection) ?? [];
+    const isPlantPpmhFetching = useSelector(({ performance0 }) => performance0.isPlantPpmhFetching);
 
     const chartProps = {
         showvalues: "1",
@@ -50,8 +33,10 @@ const PlantPpmhChhart = ({
 
     const tooltext = (data, period) => {
 
-        const { ppmh, regular, overtime, orientation, 
-            sapNetLessDmax, sapNetDmax, overallHours, overallHoursLessDmax } = data;
+        const { 
+            ppmh, regular, overtime, orientation, 
+            sapNetLessDmax, sapNetDmax, overallHours,
+            overallHoursLessDmax } = data;
             
         return `<b>Period:</b> ${period} <br><br>
 
@@ -75,7 +60,6 @@ const PlantPpmhChhart = ({
             yAxisName: 'PPMH',
             labelDisplay: "rotate",
             slantLabel: "1",
-            // rotateValues: "1",
             ...chartProps,
             ...tooltipStyle
         },
@@ -132,18 +116,9 @@ const PlantPpmhChhart = ({
         dataSource: dataSource
       };
 
-    //   console.log('PlantPpmhChhart', chartConfigs, plantPpmhCollection)
-
     return isPlantPpmhFetching 
             ? <CustomSpinner/> 
-            : collection.length === 0 
-                ? <Empty/>
-                : <ReactFC {...chartConfigs} />
+            : <ReactFC {...chartConfigs} />
 }
 
-const mapStateToProps = ({ morningMeeting }) => ({
-    isPlantPpmhFetching: morningMeeting.isPlantPpmhFetching,
-    plantPpmhCollection: morningMeeting.plantPpmhCollection
-})
-
-export default connect(mapStateToProps)(PlantPpmhChhart);
+export default PlantPpmhChhart;

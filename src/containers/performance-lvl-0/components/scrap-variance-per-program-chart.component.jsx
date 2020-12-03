@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import numeral from 'numeral'
 
 import FusionCharts from 'fusioncharts';
@@ -8,32 +8,15 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
 import { tooltipStyle } from '../../../core/utilities/chart-config'
-import CustomSpinner from '../../custom-spinner/custom-spinner.component'
-
-import { Empty } from 'antd';
+import CustomSpinner from '../../../components/custom-spinner/custom-spinner.component'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const ScrapVariancePerProgramChart = ({
-    scrapVariancePerProgramCollection,
-    isScrapVariancePerProgramFetching
-}) => {
+const ScrapVariancePerProgramChart = () => {
 
-    const [collection, setCollection] = useState([]);
-    useEffect(() => {
-
-        try {
-            if (scrapVariancePerProgramCollection) {
-                setCollection(scrapVariancePerProgramCollection); 
-            } else {
-                setCollection([]);
-            }  
-        } catch (error) {
-            setCollection([]);
-        }
-        
-    },[scrapVariancePerProgramCollection])
+    const collection = useSelector(({ performance0 }) => performance0?.scrapVariancePerProgramCollection) ?? [];
+    const isScrapVariancePerProgramFetching = useSelector(({ performance0 }) => performance0.isScrapVariancePerProgramFetching);
 
     const chartProps = {
         showvalues: "1",
@@ -119,18 +102,9 @@ const ScrapVariancePerProgramChart = ({
         dataSource: dataSource
       };
 
-    //   console.log('ScrapVariancePerProgramChart end', chartConfigs)
-
     return isScrapVariancePerProgramFetching 
             ? <CustomSpinner/> 
-            : collection.length === 0 
-                ? <Empty/>
-                : <ReactFC {...chartConfigs} />
+            : <ReactFC {...chartConfigs} />
 }
 
-const mapStateToProps = ({ morningMeeting }) => ({
-    isScrapVariancePerProgramFetching: morningMeeting.isScrapVariancePerProgramFetching,
-    scrapVariancePerProgramCollection: morningMeeting.scrapVariancePerProgramCollection
-})
-
-export default connect(mapStateToProps)(ScrapVariancePerProgramChart);
+export default ScrapVariancePerProgramChart;

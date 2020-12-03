@@ -9,7 +9,7 @@ const KpiContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 100px;
+    height: 100%;
 `
 
 const CustomSpinner = () => (

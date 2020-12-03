@@ -8,14 +8,6 @@ const previousDayFormatted = previousDay.format(dateFormat);
 
 const INITIAL_STATE = {
 
-    isScrapVarianceFetching: false,
-    scrapVarianceCollection: null,
-    scrapVarianceErrorMsg: undefined,
-
-    isScrapVariancePerProgramFetching: false,
-    scrapVariancePerProgramCollection: null,
-    scrapVariancePerProgramErrorMsg: undefined,
-
     isScrapVarianceByDeptFetching: false,
     scrapVarianceByDeptCollection: null,
     scrapVarianceByDeptErrorMsg: undefined,
@@ -23,14 +15,6 @@ const INITIAL_STATE = {
     isScrapVarianceByShiftFetching: false,
     scrapVarianceByShiftCollection: null,
     scrapVarianceByShiftErrorMsg: undefined,
-
-    isPpmhPerDeptVarianceFetching: false,
-    ppmhPerDeptVarianceCollection: null,
-    ppmhPerDeptVarianceErrorMsg: undefined,
-
-    isPlantPpmhFetching: false,
-    plantPpmhCollection: null,
-    plantPpmhErrorMsg: undefined,
 
     isOvertimePercentPerDeptFetching: false,
     overtimePercentperDeptCollection: null,
@@ -40,9 +24,6 @@ const INITIAL_STATE = {
     overtimePercentperShiftCollection: null,
     overtimePercentPerShiftErrorMsg: undefined,
 
-    isDeptKpiFetching: false,
-    deptKpiCollection: null,
-    deptKpiErrorMessage: undefined,
 
     isHourlyProdFetching: false,
     hourlyProdCollection: null,
@@ -51,9 +32,6 @@ const INITIAL_STATE = {
     startDate: previousDayFormatted,
     endDate: previousDayFormatted,
 
-
-
-    performaceSelectedDepartment: 'Foundry Cell',
     ppmhChartType: 'ppmhByShift',
 
     
@@ -62,56 +40,6 @@ const INITIAL_STATE = {
 const morningMeetingReducer = (state = INITIAL_STATE, action) => {
 
     switch (action.type) {
-
-        //scrap variance
-        case morningMeetingTypes.FETCH_SCRAP_VARIANCE_START:
-
-            return {
-                ...state,
-                isScrapVarianceFetching: true
-            };
-
-        case morningMeetingTypes.FETCH_SCRAP_VARIANCE_SUCCESS:
-
-            return {
-                ...state,
-                isScrapVarianceFetching: false,
-                scrapVarianceCollection: action.payload
-            };
-
-        case morningMeetingTypes.FETCH_SCRAP_VARIANCE_FAILURE:
-
-            return {
-                ...state,
-                isScrapVarianceFetching: false,
-                scrapVarianceCollection: null,
-                scrapVarianceErrorMsg: action.payload
-            };
-
-        //scrap variance per program
-        case morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_START:
-
-            return {
-                ...state,
-                isScrapVariancePerProgramFetching: true
-            };
-
-        case morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_SUCCESS:
-
-            return {
-                ...state,
-                isScrapVariancePerProgramFetching: false,
-                scrapVariancePerProgramCollection: action.payload
-            };
-
-        case morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_FAILURE:
-
-            return {
-                ...state,
-                isScrapVariancePerProgramFetching: false,
-                scrapVariancePerProgramCollection: null,
-                scrapVariancePerProgramErrorMsg: action.payload
-            };
 
         //scrap variance per dept
         case morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_DEPT_START:
@@ -161,81 +89,6 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
                 isScrapVarianceByShiftFetching: false,
                 scrapVarianceByShiftCollection: null,
                 scrapVarianceByShiftErrorMsg: action.payload
-            };
-
-        //ppmh variance per dept
-        case morningMeetingTypes.FETCH_PPMH_PER_DEPT_START:
-
-            return {
-                ...state,
-                isPpmhPerDeptVarianceFetching: true
-            };
-
-        case morningMeetingTypes.FETCH_PPMH_PER_DEPT_SUCCESS:
-
-            return {
-                ...state,
-                isPpmhPerDeptVarianceFetching: false,
-                ppmhPerDeptVarianceCollection: action.payload
-            };
-
-        case morningMeetingTypes.FETCH_PPMH_PER_DEPT_FAILURE:
-
-            return {
-                ...state,
-                isPpmhPerDeptVarianceFetching: false,
-                ppmhPerDeptVarianceCollection: null,
-                ppmhPerDeptVarianceErrorMsg: action.payload
-            };
-
-        //plant ppm
-        case morningMeetingTypes.FETCH_PLANT_PPMH_START:
-
-            return {
-                ...state,
-                isPlantPpmhFetching: true
-            };
-
-        case morningMeetingTypes.FETCH_PLANT_PPMH_SUCCESS:
-
-            return {
-                ...state,
-                isPlantPpmhFetching: false,
-                plantPpmhCollection: action.payload
-            };
-
-        case morningMeetingTypes.FETCH_PLANT_PPMH_FAILURE:
-
-            return {
-                ...state,
-                isPlantPpmhFetching: false,
-                plantPpmhCollection: null,
-                plantPpmhErrorMsg: action.payload
-            };
-
-        //dept kpi
-        case morningMeetingTypes.FETCH_DEPT_KPI_START:
-
-            return {
-                ...state,
-                isDeptKpiFetching: true
-            };
-
-        case morningMeetingTypes.FETCH_DEPT_KPI_SUCCESS:
-
-            return {
-                ...state,
-                isDeptKpiFetching: false,
-                deptKpiCollection: action.payload
-            };
-
-        case morningMeetingTypes.FETCH_DEPT_KPI_FAILURE:
-
-            return {
-                ...state,
-                isDeptKpiFetching: false,
-                deptKpiCollection: null,
-                deptKpiErrorMessage: action.payload
             };
 
         //overtime percent per dept
@@ -301,16 +154,6 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 endDate: action.payload
-            };
-
-
-
-        //selected department for performace page
-        case morningMeetingTypes.SET_DEPARTMENT_SELECT:
-
-            return {
-                ...state,
-                performaceSelectedDepartment: action.payload
             };
 
         //ppmh chart type

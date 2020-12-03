@@ -39,7 +39,7 @@ export const TransformScrapVarianceData = (data, area) => {
 
             })
 
-            //monthly plant scrap
+            //* monthly plant scrap
             const monthList = [];
             linkedData.forEach(({monthDetails}) => monthList.push(...monthDetails));
             const groupByMonth = _.groupBy(monthList, 'monthName');
@@ -56,7 +56,7 @@ export const TransformScrapVarianceData = (data, area) => {
 
             })
 
-            //quarterly plant scrap
+            //* quarterly plant scrap
             const groupByQuarter = _.groupBy(linkedData, 'quarter');
             const quarterlyDetails = Object.keys(groupByQuarter).map(key => {
 

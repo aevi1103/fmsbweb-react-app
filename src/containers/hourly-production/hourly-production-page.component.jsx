@@ -4,6 +4,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useHistory } from "react-router-dom";
 import moment from 'moment';
 
+import { fetchHourlyProdStartAsync } from '../../core/redux/morning-meeting/morning-meeting.actions'
+
+import HourlyProductionChart from './components/hourly-production-chart.component'
+import { dateFormat } from '../../core/utilities/helpers'
+import { useQuery } from '../../core/utilities/custom-hook'
+
 import {
     Layout,
     DatePicker,
@@ -13,40 +19,37 @@ import {
     Col
 } from 'antd'
 
-import {
-    fetchHourlyProdStartAsync
-} from '../../core/redux/morning-meeting/morning-meeting.actions'
-
-import HourlyProductionChart from './components/hourly-production-chart.component'
-import { getUrlParameter, updateUrlQryParameter } from '../../core/utilities/helpers'
-
 const { Content } = Layout;
-const dateFormat = 'MM/DD/YYYY';
 
 const HourlyProductionPage = () => {
 
     const dispatch = useDispatch();
     const history = useHistory();
     const location = useLocation();
+    const query = useQuery();
+
     const { state } = location;
     const { department } = state || {}
 
     const isHourlyProdFetching = useSelector(({ morningMeeting }) => morningMeeting?.isHourlyProdFetching) ?? false;
     const hourlyProdCollection = useSelector(({ morningMeeting }) => morningMeeting?.hourlyProdCollection) ?? null;
 
-    const dateQry = getUrlParameter('date');
+    const dateQry = query.get('date');
     const defaultShiftDate = dateQry ? moment(dateQry) : moment();
-    const dept = department ? department : location.pathname.split('/')[3];
+    const dept = department ?? location.pathname.split('/')[3];
+
     const getTitle = date => `${_.capitalize(dept)} Hourly Production: ${date.format(dateFormat)}`
 
     const [title, setTitle] = useState(getTitle(defaultShiftDate));
     const [date, setDate] = useState(defaultShiftDate);
     
     const updateUrl = () => {
-        const dateStr = moment(date).format('MM/DD/YYYY');
+        const dateStr = moment(date).format(dateFormat);
         const ttl = `${dept.toUpperCase()} Hourly Production: ${dateStr}`;
-        const qry = { date: dateStr }
-        updateUrlQryParameter(qry, ttl);
+
+        history.push(`/dashboard/morningmeeting/assembly/hourly-production?date=${dateStr}`);
+        document.title = ttl;
+
         setTitle(getTitle(date));
     }
 

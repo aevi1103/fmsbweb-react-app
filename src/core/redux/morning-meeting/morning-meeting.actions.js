@@ -2,19 +2,6 @@ import morningMeetingTypes from './morning-meeting.types';
 import api from '../../utilities/api';
 
 import {
-    getDowntimeByOwner
-} from '../../utilities/downtime-helper';
-
-import {
-    TransformScrapVarianceData,
-    TransformScrapVariancePerProgramData
-} from '../../utilities/scrap-variance-helper';
-
-import {
-    TransformDeptKpiData
-} from '../../utilities/dept-kpi-helper';
-
-import {
     fetchStart,
     fetchSuccess,
     fetchFailure
@@ -45,78 +32,6 @@ export const fetchFiananceKpiStartAsync = (date) => {
             
             dispatch(fetchFailure(
                 morningMeetingTypes.FETCH_FINANCE_KPI_FAILURE,
-                error.message));
-        
-        });
-
-    };
-};
-
-//scrap variance
-export const fetchScrapVarianceStartAsync = (start, end, area, isPurchasedScrap = 'SB') => {
-
-    return dispatch => {
-
-        dispatch(fetchStart(morningMeetingTypes.FETCH_SCRAP_VARIANCE_START));
-
-        const url = 'sap/scrapvariance';
-        api.get(url, {
-            params: {
-                start,
-                end,
-                area,
-                isPurchasedScrap: isPurchasedScrap === 'SB' ? false : true,
-                isPlantTotal: area === 'Plant' ? true : false
-            }
-        })
-        .then(response => {
-
-            const transformedData = TransformScrapVarianceData(response.data, area);
-            dispatch(fetchSuccess(morningMeetingTypes.FETCH_SCRAP_VARIANCE_SUCCESS, transformedData));
-
-        })
-        .catch(error => {
-            
-            dispatch(fetchFailure(
-                morningMeetingTypes.FETCH_SCRAP_VARIANCE_FAILURE,
-                error.message));
-        
-        });
-
-    };
-};
-
-//scrap variance per program
-export const fetchScrapVariancePerProgramStartAsync = (start, end, area, isPurchasedScrap = 'SB') => {
-
-    return dispatch => {
-
-        dispatch(fetchStart(
-            morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_START));
-
-        const url = 'sap/scrapvarianceperprogram';
-        api.get(url, {
-            params: {
-                start,
-                end,
-                area,
-                isPurchasedScrap: isPurchasedScrap === 'SB' ? false : true,
-                isPlantTotal: area === 'Plant' ? true : false
-            }
-        })
-        .then(response => {
-
-            const data = TransformScrapVariancePerProgramData(response.data, area);
-
-            dispatch(fetchSuccess(
-                morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_SUCCESS,
-                data));
-
-        })
-        .catch(error => {
-            
-            dispatch(fetchFailure(
-                morningMeetingTypes.FETCH_SCRAP_VARIANCE_PER_PROGRAM_FAILURE,
                 error.message));
         
         });
@@ -186,105 +101,6 @@ export const fetchScrapVariancePerShiftStartAsync = (start, end, area, isPurchas
             
             dispatch(fetchFailure(
                 morningMeetingTypes.FETCH_SCRAP_VARIANCE_BY_SHIFT_FAILURE,
-                error.message));
-        
-        });
-
-    };
-};
-
-//PPMH variance per dept
-export const fetchPpmhPerDeptStartAsync = (start, end, area) => {
-
-    return dispatch => {
-
-        dispatch(fetchStart(
-            morningMeetingTypes.FETCH_PPMH_PER_DEPT_START));
-
-        const url = 'ppmh/ppmhperdept';
-        api.get(url, {
-            params: {
-                start,
-                end,
-                area
-            }
-        })
-        .then(response => {
-
-            dispatch(fetchSuccess(
-                morningMeetingTypes.FETCH_PPMH_PER_DEPT_SUCCESS,
-                response.data));
-
-        })
-        .catch(error => {
-            
-            dispatch(fetchFailure(
-                morningMeetingTypes.FETCH_PPMH_PER_DEPT_FAILURE,
-                error.message));
-        });
-
-    };
-};
-
-//Plant PPMH
-export const fetchPlantPpmhStartAsync = (start, end) => {
-
-    return dispatch => {
-
-        dispatch(fetchStart(
-            morningMeetingTypes.FETCH_PLANT_PPMH_START));
-
-        const url = 'ppmh/plant';
-        api.get(url, {
-            params: {
-                start,
-                end
-            }
-        })
-        .then(response => {
-
-            dispatch(fetchSuccess(
-                morningMeetingTypes.FETCH_PLANT_PPMH_SUCCESS,
-                response.data));
-
-        })
-        .catch(error => {
-            
-            dispatch(fetchFailure(
-                morningMeetingTypes.FETCH_PLANT_PPMH_FAILURE,
-                error.message));
-        });
-
-    };
-};
-
-
-//dept kpi
-export const fetchDeptKpiStartAsync = (start, end, area) => {
-
-    return dispatch => {
-
-        dispatch(fetchStart(
-            morningMeetingTypes.FETCH_DEPT_KPI_START));
-
-        const url = 'sap/deptkpi';
-        api.get(url, {
-            params: {
-                start,
-                end,
-                area
-            }
-        })
-        .then(response => {
-
-            dispatch(fetchSuccess(
-                morningMeetingTypes.FETCH_DEPT_KPI_SUCCESS, TransformDeptKpiData(response.data, area)));
-
-        })
-        .catch(error => {
-            
-            dispatch(fetchFailure(
-                morningMeetingTypes.FETCH_DEPT_KPI_FAILURE,
                 error.message));
         
         });
@@ -368,11 +184,6 @@ export const setStartDate = date => ({
 export const setEndDate = date => ({
     type: morningMeetingTypes.SET_PRODUCTION_END_DATE,
     payload: date
-});
-
-export const setPerformaceSelectedDepartment = dept => ({
-    type: morningMeetingTypes.SET_DEPARTMENT_SELECT,
-    payload: dept
 });
 
 export const setPpmhChartType = chartType => ({

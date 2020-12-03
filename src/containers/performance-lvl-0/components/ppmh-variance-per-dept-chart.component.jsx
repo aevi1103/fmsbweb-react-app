@@ -1,41 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import numeral from 'numeral';
+import moment from 'moment';
+
+import CustomSpinner from '../../../components/custom-spinner/custom-spinner.component'
+import { tooltipStyle } from '../../../core/utilities/chart-config'
+
+import { Empty } from 'antd';
 
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
-import { Empty } from 'antd';
-
-import CustomSpinner from '../../custom-spinner/custom-spinner.component'
-import {
-    tooltipStyle
-} from '../../../core/utilities/chart-config'
-import moment from 'moment';
-
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const ScrapVarianceChart = ({
-    isPpmhPerDeptVarianceFetching,
-    ppmhPerDeptVarianceCollection,
-}) => {
+const hoursFormat = '0,0.00';
 
-    const [collection, setCollection] = useState([]);
+const ScrapVarianceChart = () => {
 
-    useEffect(() => {
-
-        try {
-            setCollection(ppmhPerDeptVarianceCollection ? ppmhPerDeptVarianceCollection : []); 
-        } catch (error) {
-            setCollection([]);
-        }
-        
-    },[ppmhPerDeptVarianceCollection]);
-
-    const hoursFormat = '0,0.00';
+    const collection = useSelector(({ performance0 }) => performance0?.ppmhPerDeptVarianceCollection) ?? [];
+    const isPpmhPerDeptVarianceFetching = useSelector(({ performance0 }) => performance0.isPpmhPerDeptVarianceFetching);
 
     const chartProps = {
         showValues: '1',
@@ -83,7 +69,6 @@ const ScrapVarianceChart = ({
         dataset: [
             {
                 seriesname: "PPMH",
-                // color: "#e74d3d",
                 data: collection.map(({ laborHours, key }) => ({ 
                     value: Math.round(laborHours.ppmh),
                     link: `newchart-xml-${key}`,
@@ -118,7 +103,6 @@ const ScrapVarianceChart = ({
                 dataset: [
                     {
                         seriesname: "PPMH",
-                        // color: "#e74d3d",
                         data: monthDetails.map(({ laborHours, key }) => ({ 
                             value: Math.round(laborHours.ppmh),
                             toolText: ppmhToolText(laborHours, key),
@@ -153,7 +137,6 @@ const ScrapVarianceChart = ({
                         dataset: [
                             {
                                 seriesname: "PPMH",
-                                // color: "#e74d3d",
                                 data: weekDetails.map(({ laborHours, key }) => ({ 
                                     value: Math.round(laborHours.ppmh),
                                     toolText: ppmhToolText(laborHours, key),
@@ -174,18 +157,11 @@ const ScrapVarianceChart = ({
         dataSource: dataSource
       };
 
-    //   console.log({chartConfigs, collection, ppmhPerDeptVarianceCollection})
-
     return isPpmhPerDeptVarianceFetching 
             ? <CustomSpinner/> 
-            : collection.length === 0 
-                ? <Empty/>
-                : <ReactFC {...chartConfigs} />
+            : collection.length > 0 
+                ? <ReactFC {...chartConfigs} />
+                : <Empty />
 }
 
-const mapStateToProps = ({ morningMeeting }) => ({
-    isPpmhPerDeptVarianceFetching: morningMeeting.isPpmhPerDeptVarianceFetching,
-    ppmhPerDeptVarianceCollection: morningMeeting.ppmhPerDeptVarianceCollection
-})
-
-export default connect(mapStateToProps)(ScrapVarianceChart);
+export default ScrapVarianceChart;

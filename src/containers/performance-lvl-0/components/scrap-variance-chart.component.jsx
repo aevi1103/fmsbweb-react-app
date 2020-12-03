@@ -1,45 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
+
+import CustomSpinner from '../../../components/custom-spinner/custom-spinner.component'
+import { tooltipStyle } from '../../../core/utilities/chart-config'
 
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
-import { Empty } from 'antd';
-
-import CustomSpinner from '../../custom-spinner/custom-spinner.component'
-import {
-    tooltipStyle
-} from '../../../core/utilities/chart-config'
-
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const ScrapVarianceChart = ({
-    scrapVarianceCollection,
-    isScrapVarianceFetching,
-}) => {
+const ScrapVarianceChart = () => {
 
-    const defaultCollection = {
+    const scrapVariance = useSelector(({ performance0 }) => performance0?.scrapVariance) ?? null;
+    const isScrapVarianceFetching = useSelector(({ performance0 }) => performance0.isScrapVarianceFetching);
+
+    const initialState = {
         category: [],
         linkedData: [],
         data: [],
         area: ''
     }
-    const [collection, setCollection] = useState(defaultCollection);
+    const [scrapVarianceData, setScrapVariaceData] = useState(initialState);
 
     useEffect(() => {
 
-        try {
-            if (scrapVarianceCollection) {
-                setCollection(scrapVarianceCollection);  
-            }
-        } catch (error) {
-            setCollection(defaultCollection);
-        }
+        if (scrapVariance) 
+            setScrapVariaceData(scrapVariance);  
         
-    },[scrapVarianceCollection, defaultCollection]);
+    },[scrapVariance]);
 
     const chartProps = {
         showValues: '1',
@@ -55,9 +46,11 @@ const ScrapVarianceChart = ({
         showValue: "0"
     }
 
-    const seriesData = collection.data.map(({ scrapType, details }) => {
+    const data = scrapVarianceData?.data ?? [];
 
-        if (collection.area === 'Plant') {
+    const seriesData = data.map(({ scrapType, details }) => {
+
+        if (scrapVarianceData.area === 'Plant') {
 
             return {
                 seriesname: `${scrapType} Scrap %`,
@@ -69,27 +62,25 @@ const ScrapVarianceChart = ({
                 }))
             }
 
-        } else {
+        } 
 
-            return {
-                seriesname: `${scrapType} Scrap %`,
-                color: "#e74d3d",  
-                data: details.map(({ scrapRate, key }) => ({ 
-                    value: (scrapRate * 100).toFixed(2),
-                    link: `newchart-xml-${key}` 
-                }))
-            }
-
+        return {
+            seriesname: `${scrapType} Scrap %`,
+            color: "#e74d3d",  
+            data: details.map(({ scrapRate, key }) => ({ 
+                value: (scrapRate * 100).toFixed(2),
+                link: `newchart-xml-${key}` 
+            }))
         }
 
     })
 
-    if (collection.area !== 'Plant') {
+    if (scrapVarianceData.area !== 'Plant') {
 
         seriesData.push({
             seriesname: "Target",
             color: "#18bc9c",
-            data: collection.category.map(({ target }) => ({ 
+            data: scrapVarianceData.category.map(({ target }) => ({ 
                 value: (target * 100).toFixed(2),
                 ...targetLineProps
                 }))
@@ -107,11 +98,11 @@ const ScrapVarianceChart = ({
         },
         categories: [
             {
-              category: collection.category.map(({ quarter }) => ({ label: quarter }))
+              category: scrapVarianceData.category.map(({ quarter }) => ({ label: quarter }))
             }
           ],
         dataset: seriesData,
-        linkeddata: collection.linkedData.map(({ key, quarter, monthDetails, area }) => ({
+        linkeddata: scrapVarianceData.linkedData.map(({ key, quarter, monthDetails, area }) => ({
             id: key,
             linkedchart: {
                 chart: {
@@ -184,18 +175,9 @@ const ScrapVarianceChart = ({
         dataSource: dataSource
       };
 
-    //   console.log({chartConfigs, collection, scrapVarianceCollection})
-
     return isScrapVarianceFetching 
         ? <CustomSpinner/> 
-        : collection.length === 0 
-            ? <Empty/>
-            : <ReactFC {...chartConfigs} />
+        : <ReactFC {...chartConfigs} />
 }
 
-const mapStateToProps = ({ morningMeeting }) => ({
-    scrapVarianceCollection: morningMeeting.scrapVarianceCollection,
-    isScrapVarianceFetching: morningMeeting.isScrapVarianceFetching
-})
-
-export default connect(mapStateToProps)(ScrapVarianceChart);
+export default ScrapVarianceChart;

@@ -15,9 +15,9 @@ import {
     fetchScrapVariancePerShiftStartAsync,
     fetchOvertimePercentPerDeptStartAsync,
     fetchOvertimePercentPerShiftStartAsync,
-
-    setPerformaceSelectedDepartment
 } from '../../../core/redux/morning-meeting/morning-meeting.actions';
+
+import { setDepartment } from '../../../core/redux/performance-lvl-0/performance-lvl-0.actions'
 
 import {
     fetchDowntimeByOwnerStartAsync,
@@ -422,14 +422,14 @@ const mapDispatchToProps = dispatch => ({
     fetchOvertimePercentPerDeptStartAsync: (start, end, dept) => dispatch(fetchOvertimePercentPerDeptStartAsync(start, end, dept)),
     fetchOvertimePercentPerShiftStartAsync: (start, end, dept) => dispatch(fetchOvertimePercentPerShiftStartAsync(start, end, dept)),
 
-    setPerformaceSelectedDepartment: (dept) => dispatch(setPerformaceSelectedDepartment(dept)),
+    setPerformaceSelectedDepartment: (dept) => dispatch(setDepartment(dept)),
 })
 
-const mapStateToProps = ({morningMeeting}) => ({
+const mapStateToProps = ({morningMeeting, performance0}) => ({
     startDate: morningMeeting.startDate,
     endDate: morningMeeting.endDate,
 
-    performaceSelectedDepartment: morningMeeting.performaceSelectedDepartment,
+    performaceSelectedDepartment: performance0.department,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(PerformanceLevel2Page);
