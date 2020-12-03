@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import numeral from 'numeral';
 
 import FusionCharts from 'fusioncharts';
@@ -8,28 +8,17 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
 import { tooltipStyle } from '../../../core/utilities/chart-config';
-import CustomSpinner from '../../custom-spinner/custom-spinner.component';
+import CustomSpinner from '../../../components/custom-spinner/custom-spinner.component';
 
 import { Empty } from 'antd';
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const OvertimePercentPerShiftChart = ({
-    isOvertimePercentPerShiftFetching,
-    overtimePercentperShiftCollection
-}) => {
+const OvertimePercentPerShiftChart = () => {
 
-    const [collection, setCollection] = useState([]);
-    useEffect(() => {
-
-        try {
-            setCollection(overtimePercentperShiftCollection || overtimePercentperShiftCollection.length > 0 ? overtimePercentperShiftCollection : []); 
-        } catch (error) {
-            setCollection([]);
-        }
-        
-    },[overtimePercentperShiftCollection]);
+    const collection = useSelector(({ performance2 }) => performance2?.overtimeShiftCollection) ?? [];
+    const loading = useSelector(({ performance2 }) => performance2.loading);
 
     const chartProps = {
         showvalues: "1",
@@ -68,18 +57,11 @@ const OvertimePercentPerShiftChart = ({
         dataSource: dataSource
       };
 
-    //   console.log('ScrapVariancePerProgramChart end', chartConfigs)
-
-    return isOvertimePercentPerShiftFetching 
+    return loading 
             ? <CustomSpinner/> 
             : collection.length === 0 
                 ? <Empty/>
                 : <ReactFC {...chartConfigs} />
 }
 
-const mapStateToProps = ({ morningMeeting }) => ({
-    isOvertimePercentPerShiftFetching: morningMeeting.isOvertimePercentPerShiftFetching,
-    overtimePercentperShiftCollection: morningMeeting.overtimePercentperShiftCollection
-})
-
-export default connect(mapStateToProps)(OvertimePercentPerShiftChart);
+export default OvertimePercentPerShiftChart;

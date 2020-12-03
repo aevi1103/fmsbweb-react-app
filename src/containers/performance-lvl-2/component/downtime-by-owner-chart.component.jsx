@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import numeral from 'numeral';
 import _ from 'lodash';
 
@@ -9,29 +9,17 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
 import { tooltipStyle } from '../../../core/utilities/chart-config';
-import CustomSpinner from '../../custom-spinner/custom-spinner.component';
+import CustomSpinner from '../../../components/custom-spinner/custom-spinner.component';
 
 import { Empty } from 'antd';
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const DeptKpiChart = ({
-    isDowntimeByOwnerFetching,
-    downtimeByOwnerCollections
-}) => {
+const DowntimeByOwnerChart = () => {
 
-    const [collection, setCollection] = useState([])
-
-    useEffect(() => {
-
-        try {
-            setCollection(downtimeByOwnerCollections ? downtimeByOwnerCollections : []); 
-        } catch (error) {
-            setCollection([]);
-        } 
-        
-    },[downtimeByOwnerCollections]);
+    const collection = useSelector(({ downtime }) => downtime?.downtimeByOwnerCollections) ?? [];
+    const isDowntimeByOwnerFetching = useSelector(({ downtime }) => downtime.isDowntimeByOwnerFetching);
 
     const getColorCode = (owner) => {
         switch (owner.toLowerCase()) {
@@ -95,6 +83,7 @@ const DeptKpiChart = ({
                 })),
                 linkeddata: lineDetails.map(({ type, line, mahcineDetails }) => ({
                     id: `${_.camelCase(type)}_${_.camelCase(line)}`,
+
                     linkedchart: {
                         chart: {             
                             caption: `${type} / ${line} - Downtime Loss by Machine`,
@@ -113,6 +102,7 @@ const DeptKpiChart = ({
                                         <b>Downtime: </b> ${numeral((downtimeLoss/60)).format('0,0')} hours <br>`,
                             link: `newchart-xml-${_.camelCase(type)}_${_.camelCase(line)}_${_.camelCase(machine)}`,
                         })),
+
                         linkeddata: mahcineDetails.map(({ type, line, machine, reasonDetails }) => ({
                             id: `${_.camelCase(type)}_${_.camelCase(line)}_${_.camelCase(machine)}`,
                             linkedchart: {
@@ -135,7 +125,9 @@ const DeptKpiChart = ({
                                 }))
                             }
                         }))
+
                     }
+                    
                 }))
             }
         }))
@@ -154,11 +146,6 @@ const DeptKpiChart = ({
         : collection.length === 0 
             ? <Empty/>
             : <ReactFC {...chartConfigs} />
-    }
+}
 
-const mapStateToProps = ({ morningMeeting }) => ({
-    isDowntimeByOwnerFetching: morningMeeting.isDowntimeByOwnerFetching,
-    downtimeByOwnerCollections: morningMeeting.downtimeByOwnerCollections
-})
-
-export default connect(mapStateToProps)(DeptKpiChart);
+export default DowntimeByOwnerChart;

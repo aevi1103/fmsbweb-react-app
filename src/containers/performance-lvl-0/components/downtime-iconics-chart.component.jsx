@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import numeral from 'numeral';
 import _ from 'lodash';
 
@@ -9,28 +9,17 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
 import { tooltipStyle } from '../../../core/utilities/chart-config';
-import CustomSpinner from '../../custom-spinner/custom-spinner.component';
+import CustomSpinner from '../../../components/custom-spinner/custom-spinner.component';
 
 import { Empty } from 'antd';
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const DowntimeIconicsChart = ({
-    isDowntimeIconicsFetching,
-    downtimeIconicsCollections
-}) => {
+const DowntimeIconicsChart = () => {
 
-    const [collection, setCollection] = useState([]);
-    useEffect(() => {
-
-        try {
-            setCollection(downtimeIconicsCollections || downtimeIconicsCollections.length > 0 ? downtimeIconicsCollections : []); 
-        } catch (error) {
-            setCollection([]);
-        }
-        
-    },[downtimeIconicsCollections]);
+    const collection = useSelector(({ downtime }) => downtime?.downtimeIconicsCollections) ?? [];
+    const isDowntimeIconicsFetching = useSelector(({ downtime }) => downtime.isDowntimeIconicsFetching);
 
     const chartProps = {
         showvalues: "1",
@@ -90,8 +79,6 @@ const DowntimeIconicsChart = ({
         dataSource: dataSource
       };
 
-    //   console.log('ScrapVariancePerProgramChart end', chartConfigs)
-
     return isDowntimeIconicsFetching 
             ? <CustomSpinner/> 
             : collection.length === 0 
@@ -99,9 +86,4 @@ const DowntimeIconicsChart = ({
                 : <ReactFC {...chartConfigs} />
 }
 
-const mapStateToProps = ({ morningMeeting }) => ({
-    isDowntimeIconicsFetching: morningMeeting.isDowntimeIconicsFetching,
-    downtimeIconicsCollections: morningMeeting.downtimeIconicsCollections
-})
-
-export default connect(mapStateToProps)(DowntimeIconicsChart);
+export default DowntimeIconicsChart;

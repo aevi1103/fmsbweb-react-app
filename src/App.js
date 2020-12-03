@@ -37,7 +37,7 @@ import SafetyPage from './containers/safety/safety.component';
 import QualityPage from './containers/quality/quality.component';
 import LogisticsDashboard from './containers/logistics-dashboard/logistics-dashboard.component';
 import PerformanceLevel0Page from './containers/performance-lvl-0/performance-level0-page.component';
-import PerformanceLevel2Page from './containers/dashboard/kpi/performance-level2-page.component';
+import PerformanceLevel2Page from './containers/performance-lvl-2/performance-level2-page.component';
 import DepartmentDashboard from './containers/department-dashboard/department-dashboard.component';
 import WorkCenterDetails from './containers/work-center-details/work-center-details.component'; 
 import HourlyProdPage from './containers/hourly-production/hourly-production-page.component'

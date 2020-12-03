@@ -12,6 +12,7 @@ import logisticsReducer from './logistics/logistics.reducer'
 import financeReducer from './finance/finance.reducer'
 import downtimeReducer from './downtime/downtime.reducer'
 import performanceLevel0Reducer from './performance-lvl-0/performance-lvl-0.reducer'
+import performanceLevel2Reducer from './performance-lvl-2/performance-lvl-2.reducer'
 
 import morningMeetingReducer from './morning-meeting/morning-meeting.reducer'
 
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
     finance: financeReducer,
     downtime: downtimeReducer,
     performance0: performanceLevel0Reducer,
+    performance2: performanceLevel2Reducer,
     errors: errorsReducer
 })
 

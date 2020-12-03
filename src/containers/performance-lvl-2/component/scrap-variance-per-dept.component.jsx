@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import numeral from 'numeral';
 
 import FusionCharts from 'fusioncharts';
@@ -8,28 +8,17 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
 import { tooltipStyle } from '../../../core/utilities/chart-config';
-import CustomSpinner from '../../custom-spinner/custom-spinner.component';
+import CustomSpinner from '../../../components/custom-spinner/custom-spinner.component';
 
 import { Empty } from 'antd';
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const ScrapVariancePerShiftChart = ({
-    isScrapVarianceByShiftFetching,
-    scrapVarianceByShiftCollection
-}) => {
+const ScrapVariancePerDeptChart = () => {
 
-    const [collection, setCollection] = useState([]);
-    useEffect(() => {
-
-        try {
-            setCollection(scrapVarianceByShiftCollection || scrapVarianceByShiftCollection.length > 0 ? scrapVarianceByShiftCollection : []); 
-        } catch (error) {
-            setCollection([]);
-        }
-        
-    },[scrapVarianceByShiftCollection])
+    const collection = useSelector(({ performance2 }) => performance2?.scrapVarianceByDeptCollection) ?? [];
+    const isScrapVarianceByDeptFetching = useSelector(({ performance2 }) => performance2.isScrapVarianceByDeptFetching);
 
     const chartProps = {
         showvalues: "1",
@@ -40,50 +29,53 @@ const ScrapVariancePerShiftChart = ({
         showLegend: "1",
         drawcrossline: "1",
         numberSuffix: "%"
-    };
+    }
 
     const dataSource = {
         chart: {
-            xAxisName: 'Shift',
+            xAxisName: 'Department',
             yAxisName: 'Scrap %',
+            labelDisplay: "rotate",
+            slantLabel: "1",
+            rotateValues: "1",
             ...chartProps,
             ...tooltipStyle
         },
-        data: collection.map(({shift, qty, sapGross, scrapRate}) => ({
-                label: shift,
+        data: collection.map(({area, qty, sapGross, scrapRate}) => ({
+                label: area,
                 value: (scrapRate * 100).toFixed(2),
-                toolText: `<b>Shift:</b> ${shift} <br>
+                toolText: `<b>Dept:</b> ${area} <br>
                             <b>SAP Gross:</b> ${numeral(sapGross).format('0,0')} <br>
                             <b>Scrap Qty:</b> ${numeral(qty).format('0,0')} <br>
                             <b>Scrap %:</b> ${numeral(scrapRate).format('0.00%')}`,
-                link: `newchart-xml-${shift.replace(' ','_')}`
+                link: `newchart-xml-${area.replace(' ','_')}`
             })),
             
-        linkeddata: collection.map(({ shift, scrapAreaNameDetails }) => ({
-            id: shift.replace(' ','_'),
+        linkeddata: collection.map(({ area, scrapAreaNameDetails }) => ({
+            id: area.replace(' ','_'),
             linkedchart: {
                 chart: {
-                    caption: `Shift: ${shift} - Scrap % by Scrap Type (Drilldown)`,
+                    caption: `${area} Dept - Scrap % by Scrap Type (Drilldown)`,
                     xAxisName: 'Scrap Type',
                     yAxisName: 'Scrap %',
                     ...chartProps,
                     ...tooltipStyle
                 },
-                data: scrapAreaNameDetails.map(({ scrapAreaName, shift, qty, scrapRate }) => ({ 
+                data: scrapAreaNameDetails.map(({ scrapAreaName, area, qty, scrapRate }) => ({ 
                         label: scrapAreaName,
                         value: (scrapRate * 100).toFixed(2),
-                        toolText: `<b>Shift:</b> ${shift} <br>
+                        toolText: `<b>Dept:</b> ${area} <br>
                                     <b>Scrap Type:</b> ${scrapAreaName} <br>
                                     <b>Scrap Qty:</b> ${numeral(qty).format('0,0')} <br>
                                     <b>Scrap %:</b> ${numeral(scrapRate).format('0.00%')}`,
-                        link: `newchart-xml-${shift.replace(' ','_')}_${scrapAreaName.replace(' ','_')}` 
+                        link: `newchart-xml-${area.replace(' ','_')}_${scrapAreaName.replace(' ','_')}` 
                     })),
 
-                linkeddata: scrapAreaNameDetails.map(({ shift, scrapAreaName, lineDetails }) => ({
-                    id: `${shift.replace(' ','_')}_${scrapAreaName.replace(' ','_')}`,
+                linkeddata: scrapAreaNameDetails.map(({ area, scrapAreaName, lineDetails }) => ({
+                    id: `${area.replace(' ','_')}_${scrapAreaName.replace(' ','_')}`,
                     linkedchart: {
                         chart: {
-                            caption: `Shift: ${shift} / Scrap Type: ${scrapAreaName} - Scrap % by Line`,
+                            caption: `Dept: ${area} / Scrap Type: ${scrapAreaName} - Scrap % by Line`,
                             xAxisName: 'Line',
                             yAxisName: 'Scrap %',
                             ...chartProps,
@@ -92,7 +84,7 @@ const ScrapVariancePerShiftChart = ({
                         data: lineDetails.map(({ line, qty, scrapRate }) => ({ 
                             label: line,
                             value: (scrapRate * 100).toFixed(2),
-                            toolText: `<b>Shift:</b> ${shift} <br>
+                            toolText: `<b>Dept:</b> ${area} <br>
                                         <b>Scrap Type:</b> ${scrapAreaName} <br>
                                         <b>Line:</b> ${line} <br>
                                         <b>Scrap Qty:</b> ${numeral(qty).format('0,0')} <br>
@@ -112,18 +104,12 @@ const ScrapVariancePerShiftChart = ({
         dataSource: dataSource
       };
 
-    //   console.log('ScrapVariancePerProgramChart end', chartConfigs)
-
-    return isScrapVarianceByShiftFetching 
+    return isScrapVarianceByDeptFetching 
             ? <CustomSpinner/> 
             : collection.length === 0 
                 ? <Empty/>
                 : <ReactFC {...chartConfigs} />
 }
 
-const mapStateToProps = ({ morningMeeting }) => ({
-    isScrapVarianceByShiftFetching: morningMeeting.isScrapVarianceByShiftFetching,
-    scrapVarianceByShiftCollection: morningMeeting.scrapVarianceByShiftCollection
-})
 
-export default connect(mapStateToProps)(ScrapVariancePerShiftChart);
+export default ScrapVariancePerDeptChart;

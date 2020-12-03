@@ -6,7 +6,7 @@ import { Link, useHistory } from "react-router-dom";
 import { useTitle } from 'react-use'
 
 //* helpers
-import { dateFormat, disabledDate, mapAreaToDept, departmentList, dateRange } from '../../core/utilities/helpers'
+import { dateFormat, disabledDate, mapAreaToDept, departmentList, dateRange, monthRange } from '../../core/utilities/helpers'
 import { useQuery } from '../../core/utilities/custom-hook'
 import { download } from './service/download'
 
@@ -19,8 +19,6 @@ import PpmhVariancePerDeptChart from './components/ppmh-variance-per-dept-chart.
 
 import DowntimeChart from '../downtime/components/downtime-chart.component';
 import SelectScrapType from '../../components/select-scrap-type/seclect-scrap-type.components';
-
-import CustomSpinner from '../../components/custom-spinner/custom-spinner.component'
 
 //* actions
 import { 
@@ -69,7 +67,7 @@ const cardProps = {
 }
 
 const yesterday = moment().add(-1, 'days').format(dateFormat);
-const monthStartDefault = moment().add(-12, 'month').startOf('quarter').format(dateFormat);
+const monthStartDefault = moment().quarter(1).startOf('quarter').format(dateFormat);
 const scrapTypeDefault = 'SB';
 
 const PerformanceLevel0Page = () => {
@@ -81,9 +79,9 @@ const PerformanceLevel0Page = () => {
     useTitle('Performance: L0 - L1');
 
     //* selectors
-    const selectedDept = useSelector(({ performance0 }) => performance0.department)
+    const department = useSelector(({ performance0 }) => performance0.department)
 
-    //*  url query params
+    //* url query params
     const startQry = query.get('start') ?? yesterday;
     const endQry = query.get('end') ?? yesterday;
 
@@ -95,7 +93,7 @@ const PerformanceLevel0Page = () => {
 
     //* other state
     const [downloadLoading, setDownloadLoading] = useState(false);
-    const [title, setTitle] = useState(selectedDept);
+    const [title, setTitle] = useState(department);
     const [scrapType, setScrapType] = useState(scrapTypeDefault);
     const [programScrapType, setProgramScrapType] = useState(scrapTypeDefault);
     const [dateRangeType, setDateRangeType] = useState(null)
@@ -103,19 +101,19 @@ const PerformanceLevel0Page = () => {
     const fetch = () => {
 
         //* fetch by month range
-        dispatch(fetchScrapVarianceStartAsync(monthStart, monthEnd, selectedDept, scrapType))
-        dispatch(fetchPpmhPerDeptStartAsync(monthStart, monthEnd, selectedDept))
+        dispatch(fetchScrapVarianceStartAsync(monthStart, monthEnd, department, scrapType))
+        dispatch(fetchPpmhPerDeptStartAsync(monthStart, monthEnd, department))
         dispatch(fetchPlantPpmhStartAsync(monthStart, monthEnd))
 
         //* fetch by date range
-        dispatch(fetchScrapVariancePerProgramStartAsync(startDate, endDate, selectedDept, scrapType))
-        dispatch(fetchDeptKpiStartAsync(startDate, endDate, selectedDept))
+        dispatch(fetchScrapVariancePerProgramStartAsync(startDate, endDate, department, scrapType))
+        dispatch(fetchDeptKpiStartAsync(startDate, endDate, department))
         dispatch(fetchDowntimeStartAsync(startDate, startDate))
 
-        const dept = _.startCase(mapAreaToDept(selectedDept));
+        const dept = _.startCase(mapAreaToDept(department));
         setTitle(dept === 'Skirt Coat' ? 'Finishing' : dept);
 
-        history.push(`/dashboard/morningmeeting/level0?start=${startDate}&end=${endDate}&dept=${selectedDept}`)
+        history.push(`/dashboard/morningmeeting/level0?start=${startDate}&end=${endDate}&dept=${department}`)
     }
 
     //* mount
@@ -150,12 +148,12 @@ const PerformanceLevel0Page = () => {
 
     const onScrapTypeChange = (type) => {
         setScrapType(type);
-        dispatch(fetchScrapVarianceStartAsync(monthStart, monthEnd, selectedDept, type))
+        dispatch(fetchScrapVarianceStartAsync(monthStart, monthEnd, department, type))
     }
 
     const onProgramScrapTypeChange = (type) => {
         setProgramScrapType(type);
-        dispatch(fetchScrapVariancePerProgramStartAsync(startDate, endDate, selectedDept, type));
+        dispatch(fetchScrapVariancePerProgramStartAsync(startDate, endDate, department, type));
     }
 
     const onClick = () => fetch();
@@ -164,22 +162,27 @@ const PerformanceLevel0Page = () => {
     const onDownload = async () => download(
             setDownloadLoading,
             programScrapType,
-            selectedDept,
+            department,
             startDate,
             endDate,
             monthStart,
             monthEnd)
 
-    //* highlight card when date range is hovered
+    //* highlight card when date range is hover
     const onMonthRangeMouseEnter = () => setDateRangeType('month')
     const onDateRangeEnter = () => setDateRangeType('date')
     const onDateleave = () => setDateRangeType(null)
 
     const borderColor = '#335c67';
+    const boxShadow = '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)'
     const monthBorderStyle = { 
         borderColor: dateRangeType === 'month' ? borderColor : null,
+        boxShadow: dateRangeType === 'month' ? boxShadow : null,
     }
-    const dateBorderStyle = { borderColor: dateRangeType === 'date' ? borderColor : null }
+    const dateBorderStyle = { 
+        borderColor: dateRangeType === 'date' ? borderColor : null,
+        boxShadow: dateRangeType === 'date' ? boxShadow : null,
+    }
 
     const btnOverlay = (
         <Menu>
@@ -216,10 +219,9 @@ const PerformanceLevel0Page = () => {
                                 picker="month" 
                                 onChange={onMonthRangeChange} 
                                 className="mr2" 
-                                // format={dateFormat}
+                                ranges={monthRange}
                                 disabledDate={disabledDate}
                                 style={monthBorderStyle}
-                                
                                 defaultValue={[
                                     moment(monthStart, dateFormat),
                                     moment(monthEnd, dateFormat)
@@ -248,19 +250,23 @@ const PerformanceLevel0Page = () => {
                         
                         <span className="mr2">Scrap:</span>
                         <Select 
-                            defaultValue={selectedDept}
+                            defaultValue={department}
                             style={{ width: 120 }}
                             onChange={onDepartmentChange}
                             className="mr2">   
                                 {  departmentList.map(({ area, dept }) => <Option key={area} value={area}>{dept}</Option>) }  
                         </Select>
                                         
-                        <Dropdown.Button type="primary" onClick={onClick} overlay={btnOverlay} disabled={downloadLoading}>
-                            { 
-                                downloadLoading 
-                                    ? <Spin indicator={<LoadingOutlined style={{ fontSize: 15 }} spin />} /> 
-                                    : 'Go' 
-                            }
+                        <Dropdown.Button 
+                            type="primary" 
+                            onClick={onClick} 
+                            overlay={btnOverlay} 
+                            disabled={downloadLoading}>
+                                { 
+                                    downloadLoading 
+                                        ? <Spin indicator={<LoadingOutlined style={{ fontSize: 15 }} spin />} /> 
+                                        : 'Go' 
+                                }
                         </Dropdown.Button>
 
                     </Col>
