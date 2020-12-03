@@ -1,72 +1,72 @@
-import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Route, Switch } from "react-router-dom";
 import { ReactComponent as Logo } from './assets/logo.svg';
 import { ReactComponent as LogoIcon } from './assets/logoIcon.svg';
 import { LogoContainer } from './App.styles';
-import { 
-  setSiderCollapse
- } from './redux/home/home.actions';
+import { useWindowSize } from 'react-use'
+import { setSiderCollapse } from './core/redux/home/home.actions'
 
 import { 
   Layout,
   BackTop
  } from "antd";
 
-import { useWindowSize } from 'react-use'
-
 import './App.css';
 import './App.scss'
 
-import HomePage from './pages/home/home.component';
-import NotFound from './pages/404/404.component';
+import HomePage from './containers/home/home.component';
+import NotFound from './containers/404/404.component';
 
 //nenu components
-import HomeMenu from './components/Menu/home-menu/home-menu.components';
-import MorningMeetingMenu from './components/Menu/morning-meeting-menu/morning-meeting-menu.component';
-import AfMenu from './components/Menu/af-menu/af-menu.component';
-import LogisticsMenu from './components/Menu/logistics/logistics-menu.component'
+import HomeMenu from './components/home-menu/home-menu.components';
+import DashboardMenu from './components/dashboard-menu/dashboard-menu.component';
+import AfMenu from './components/af-menu/af-menu.component';
+import LogisticsMenu from './components/logistics-menu/logistics-menu.component'
 
 //swot components
-import SwotSettingsPage from './pages/dashboard/swot/settings-page.component';
-import SwotPage from './pages/dashboard/swot/swot-page.component';
-import PrintWotChartsPage from './pages/dashboard/swot/print-swot-charts-page.component';
+import SwotSettings from './containers/swot-settings/swot-settings.component';
+import Swot from './containers/swot/swot.component';
+import PrintWotChartsPage from './containers/swot/swot-print.component';
 
 //department dashboard
-import DepartmentDashboardPage from './pages/dashboard/department/dashboard-page.component'
+import ProductionDashboard from './containers/production-dashboard/production-dashboard.component'
 
 //morning meeting pages
-import SafetyPage from './pages/dashboard/morning-meeting/safety-page/safety-page.component';
-import QualityPage from './pages/dashboard/morning-meeting/quality-page/quality-page.component';
-import LogisticsPage from './pages/dashboard/morning-meeting/logistics/logistics-page.component';
-import PerformanceLevel0Page from './pages/dashboard/morning-meeting/performance-level0-page/performance-level0-page.component';
-import PerformanceLevel2Page from './pages/dashboard/morning-meeting/performance-level2-page/performance-level2-page.component';
-import ProductionPage from './pages/dashboard/morning-meeting/production-page/production-page.component';
-import ProductionDetailsPage from './pages/dashboard/morning-meeting/production-details-page/production-details-page.component'; 
-import HourlyProdPage from './pages/dashboard/morning-meeting/hourly-production-page/hourly-production-page.component'
-import FinancePage from './pages/dashboard/morning-meeting/finance-page/finance-page.component';
-import DowntimePage from './pages/dashboard/morning-meeting/downtime-page/downtime-page.component';
+import SafetyPage from './containers/safety/safety.component';
+import QualityPage from './containers/quality/quality.component';
+import LogisticsDashboard from './containers/logistics-dashboard/logistics-dashboard.component';
+import PerformanceLevel0Page from './containers/performance-lvl-0/performance-level0-page.component';
+import PerformanceLevel2Page from './containers/performance-lvl-2/performance-level2-page.component';
+import DepartmentDashboard from './containers/department-dashboard/department-dashboard.component';
+import WorkCenterDetails from './containers/work-center-details/work-center-details.component'; 
+import HourlyProdPage from './containers/hourly-production/hourly-production-page.component'
+import FinancePage from './containers/finance/finance.component';
+import DowntimePage from './containers/downtime/downtime-page.component';
 
-import OrderStatusPage from './pages/order-status-page/order-status-page.component';
-import AfEosPage from './pages/af/eos-page/eos-page.component';
+import ProductionOrderPage from './containers/production-order/production-order-page.component';
+import AfEosPage from './containers/af-eos/af-eos.component';
 
 //quality pages
-import CheckSheetSettingsPage from './pages/quality/check-sheet/check-sheet-settings-page.component'
-import ControlMethodPage from './pages/quality/check-sheet/control-method-page.component'
-import CheckSheetLogInPage from './pages/quality/check-sheet/check-sheet-login-page.component'
-import CheckSheetDataEntryPage from './pages/quality/check-sheet/check-sheet-data-entry-page.component'
-import CheckSheetHistoryPage from './pages/quality/check-sheet/check-sheet-history-page.component'
+import CheckSheetSettingsPage from './containers/quality-check-sheet/check-sheet-settings-page.component'
+import ControlMethodPage from './containers/quality-check-sheet/control-method-page.component'
+import CheckSheetLogInPage from './containers/quality-check-sheet/check-sheet-login-page.component'
+import CheckSheetDataEntryPage from './containers/quality-check-sheet/check-sheet-data-entry-page.component'
+import CheckSheetHistoryPage from './containers/quality-check-sheet/check-sheet-history-page.component'
 
 //machining
-import MachiningManningPage from './pages/machining/manning/manning-page.component'
+import MachiningManningPage from './containers/machining-manning/machining-manning.component'
 
 //logistics settings page
-import InvetoryPage from './pages/logistics-settings/inventory-page.component'
-import CostTaregtsPage from './pages/logistics-settings/cost-targets-page.component'
-import MinMaxPage from './pages/logistics-settings/min-max-page.component'
-import ProdOrderPage from './pages/logistics-settings/prod-order-page.componen'
+import InvetoryPage from './containers/logistics-inventory-file-upload/inventory-page.component'
+import CostTaregtsPage from './containers/logitics-costs-targets/logistics-costs-targets.component'
+import InventoryMinMaxTargets from './containers/inventory-min-max-targets/inventory-min-max-targets.component'
+import ProductionOrderFileUpload from './containers/production-order-file-upload/production-order-file-upload.componen'
 
-import ChatPage from './pages/chat/chat-page.component'
+// OEE
+import OeeLines from './containers/dashboard/oee/lines-page.component'
+
+import ChatPage from './containers/chat/chat-page.component'
 
 const { Footer, Sider } = Layout;
 
@@ -81,21 +81,27 @@ const logoStylesWhite = {
   filter: "brightness(0) invert(1)"
 }
 
-const App = ( { 
-  collapsed,
-  setSiderCollapse
- } ) => { 
+const App = () => { 
+
+  const { width } = useWindowSize();
+
+  //* dispatcher
+  const dispatch = useDispatch();
+  const collapseSider = useCallback(collapsed => dispatch(setSiderCollapse(collapsed)), [dispatch]) 
+
+  //* selectors
+  const collapsed = useSelector(({ home }) => home.collapsed)
 
   const defaultSiderProps = {
     collapsible: true,
     collapsed,
-    onCollapse: setSiderCollapse
+    onCollapse: collapseSider
   }
-
-  const { width } = useWindowSize();
+  
+  //* global error handler
   const [siderProps, setSiderProps] = useState(defaultSiderProps);
 
-
+  //* coallapse effect
   useEffect(() => {
 
     if (width <= 1024) {
@@ -105,7 +111,7 @@ const App = ( {
         collapsedWidth: '0',
         collapsible: true,
         collapsed,
-        onCollapse: setSiderCollapse
+        onCollapse: collapseSider
       })
 
     } else {
@@ -113,12 +119,12 @@ const App = ( {
       setSiderProps({
         collapsible: true,
         collapsed,
-        onCollapse: setSiderCollapse
+        onCollapse: collapseSider
       })
 
     }
 
-  }, [width, collapsed, setSiderCollapse])
+  }, [width, collapseSider, collapsed])
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -136,12 +142,11 @@ const App = ( {
         <Switch>
           <Route exact path="/" component={HomeMenu} />
           <Route path="/dashboard/morningmeeting/logistics/settings/*" component={LogisticsMenu} />
-          <Route path="/dashboard/*" component={MorningMeetingMenu} />
-          <Route path="/orderstatus" component={MorningMeetingMenu} />
+          <Route path="/dashboard/*" component={DashboardMenu} />
+          <Route path="/orderstatus" component={DashboardMenu} />
           <Route path="/af" component={AfMenu} />
           <Route path="/quality" component={HomeMenu} />
           <Route path="/machining/manning" component={HomeMenu} />
-          
         </Switch>
 
       </Sider>
@@ -153,35 +158,39 @@ const App = ( {
           <Route exact path="/" component={HomePage} />
 
           {/* SWOT */}
-          <Route exact path="/dashboard/swot/settings/:department?" component={SwotSettingsPage} />
-          <Route exact path="/dashboard/swot/:department" component={SwotPage} />
+          <Route exact path="/dashboard/swot/settings/:department?" component={SwotSettings} />
+          <Route exact path="/dashboard/swot/:department" component={Swot} />
           <Route exact path="/dashboard/swot/:department/print" component={PrintWotChartsPage} />
 
           {/* Department Dashboard */}
-          <Route exact path="/dashboard/status/:department" component={DepartmentDashboardPage} />
+          <Route exact path="/dashboard/status/:department" component={ProductionDashboard} />
 
           {/* Monring Meeting */}
           <Route exact path="/dashboard/morningmeeting/safety" component={SafetyPage} />
-          <Route exact path="/dashboard/morningmeeting/logistics" component={LogisticsPage} />
+          <Route exact path="/dashboard/morningmeeting/logistics" component={LogisticsDashboard} />
           <Route exact path="/dashboard/morningmeeting/logistics/settings/inventory" component={InvetoryPage} />
           <Route exact path="/dashboard/morningmeeting/logistics/settings/cost/targets" component={CostTaregtsPage} />
-          <Route exact path="/dashboard/morningmeeting/logistics/settings/inventory/minmax" component={MinMaxPage} />
-          <Route exact path="/dashboard/morningmeeting/logistics/settings/order" component={ProdOrderPage} />
+          <Route exact path="/dashboard/morningmeeting/logistics/settings/inventory/minmax" component={InventoryMinMaxTargets} />
+          <Route exact path="/dashboard/morningmeeting/logistics/settings/order" component={ProductionOrderFileUpload} />
 
-          <Route exact path="/dashboard/morningmeeting/foundry" render={() => <ProductionPage area="foundry cell" headerTitle="Foundry" />} />
-          <Route exact path="/dashboard/morningmeeting/machining" render={() => <ProductionPage area="machine line" headerTitle="Machining" />} />
-          <Route exact path="/dashboard/morningmeeting/finishing" render={() => <ProductionPage area="skirt coat" headerTitle="Finishing / Skirt Coat" />}/>
-          <Route exact path="/dashboard/morningmeeting/assembly" render={() => <ProductionPage area="assembly" headerTitle="Assembly" />} />
+          <Route exact path="/dashboard/morningmeeting/foundry" render={() => <DepartmentDashboard area="foundry cell" />} />
+          <Route exact path="/dashboard/morningmeeting/machining" render={() => <DepartmentDashboard area="machine line" />} />
+          <Route exact path="/dashboard/morningmeeting/finishing" render={() => <DepartmentDashboard area="skirt coat" />}/>
+          <Route exact path="/dashboard/morningmeeting/assembly" render={() => <DepartmentDashboard area="assembly" />} />
 
           <Route exact path="/dashboard/morningmeeting/finance" component={FinancePage} />
           <Route exact path="/dashboard/morningmeeting/quality" component={QualityPage} />
           <Route exact path="/dashboard/morningmeeting/downtime" component={DowntimePage} />
 
-          <Route exact path="/dashboard/morningmeeting/:department/details" component={ProductionDetailsPage} />
+          <Route exact path="/dashboard/morningmeeting/:department/details" component={WorkCenterDetails} />
           <Route exact path="/dashboard/morningmeeting/*/hourly-production" component={HourlyProdPage} />
 
+          {/* OEE Page */}
+          <Route exact path="/oee/:department" component={OeeLines} />
+          <Route exact path="/oee/:department/:id" component={OeeLines} />
+
           {/* Order Status */}
-          <Route exact path="/orderstatus/:department" component={OrderStatusPage} />
+          <Route exact path="/orderstatus/:department" component={ProductionOrderPage} />
 
           {/* performance Page */}
           <Route exact path="/dashboard/morningmeeting/level0" component={PerformanceLevel0Page} />
@@ -204,6 +213,7 @@ const App = ( {
           <Route exact path="/chat" component={ChatPage} />
 
           <Route component={NotFound} />
+          
         </Switch>
         
         <Footer style={{ textAlign: "center" }} className="site-layout-bg">
@@ -217,15 +227,5 @@ const App = ( {
     </Layout>) 
 }
 
-//state is the root reducer
-const mapStateToProps = ({ home, requests }) => ({
-  collapsed: home.collapsed,
-  progress: requests.progress,
-  totalRequests: requests.totalRequests
-});
 
-const mapDispatchToProps = dispatch => ({
-  setSiderCollapse: collapsed => dispatch(setSiderCollapse(collapsed))
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;

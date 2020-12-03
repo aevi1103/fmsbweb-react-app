@@ -14,7 +14,7 @@ import {
         {
             title: 'View',
             dataIndex: 'view',
-            render: (text, record, index) => {
+            render: (text, record) => {
 
                 const { 
                     checkSheetId,
@@ -31,14 +31,14 @@ import {
         {
             title: 'Control Method',
             dataIndex: 'controlMethod',
-            render: (text, record, index) => {
+            render: (text, record) => {
                 return record.controlMethod.method;
             }
         },
         {
             title: 'Shift Date',
             dataIndex: 'shiftDate',
-            render: (text, record, index) => {
+            render: (text, record) => {
                 return moment(record.shiftDate).format('l')
             },
             sorter: (a, b) => new Date(a.shiftDate) - new Date(b.shiftDate),
@@ -53,7 +53,7 @@ import {
         {
             title: 'Line',
             dataIndex: 'line',
-            render: (text, record, index) => {
+            render: (text, record) => {
                 return record.line.value;
             },
             sorter: (a, b) => a.line.value - b.line.value,
@@ -62,7 +62,7 @@ import {
         {
             title: 'Part',
             dataIndex: 'part',
-            render: (text, record, index) => {
+            render: (text, record) => {
                 return record.organizationPart.part;
             },
             sorter: (a, b) => a.organizationPart.part.length - b.organizationPart.part.length,
@@ -71,7 +71,7 @@ import {
         {
             title: '# of Entries',
             dataIndex: 'records',
-            render: (text, record, index) => {
+            render: (text, record) => {
                 const count = record.checkSheetEntries.length;
                 return count > 0 ? <Tag color="green">{count}</Tag> : count;
             },
@@ -81,7 +81,7 @@ import {
         {
             title: 'Time Stamp',
             dataIndex: 'timeStamp',
-            render: (text, record, index) => {
+            render: (text, record) => {
                 return moment(record.timeStamp).format('lll')
             },
             sorter: (a, b) => new Date(a.timeStamp) - new Date(b.timeStamp),

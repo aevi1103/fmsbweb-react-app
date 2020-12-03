@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
 import { connect  } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import api from '../../../API'
+import api from '../../../core/utilities/api'
 
 import {
     setCheckSheetEntry
-} from '../../../redux/quality-check-sheet/quality-check-sheet.actions.js'
+} from '../../../core/redux/quality-check-sheet/quality-check-sheet.actions.js'
 import {
     Modal,
     Button,

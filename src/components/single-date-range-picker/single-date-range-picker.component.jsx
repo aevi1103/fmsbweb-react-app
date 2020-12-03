@@ -6,9 +6,9 @@ import {
     Tooltip
  } from "antd";
 
- const dateFormat = 'MM/DD/YYYY';
+import { dateFormat } from '../../core/utilities/helpers'
 
- const DateRangePicker = ({onButtonClick, onChange, defaultValue, otherState}) => (
+ const DateRangePicker = ({onButtonClick, onChange, defaultValue, ...other}) => (
 
     <>
         <span className="mr2">Date:</span>
@@ -18,7 +18,7 @@ import {
             onChange={onChange}
             format={dateFormat}
             defaultValue={defaultValue}
-            {...otherState}/>
+            {...other}/>
 
         <Tooltip placement="top" title={<span>Click to reload dashboard</span>}>
             <Button type="primary" onClick={onButtonClick}>Go</Button>

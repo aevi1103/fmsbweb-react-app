@@ -9,7 +9,7 @@ import {
 
 import {
     fetchLineStartAsync
-} from './../../../redux/quality-check-sheet/quality-check-sheet.actions'
+} from './../../../core/redux/quality-check-sheet/quality-check-sheet.actions'
 
 const LineComponent = ({ 
     fetchLineStartAsync,

@@ -13,7 +13,7 @@ import ToloranceBar from './tolerance-bar.component'
 
 import {
     getValidationStatusColorName
-} from '../../../helpers/check-sheet-helpers'
+} from '../../../core/utilities/check-sheet-helpers'
 
 const CheckSheetPopOverInfo = ({ 
     isPassFail,
