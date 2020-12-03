@@ -28,7 +28,7 @@ const DefectSummaryTable = React.memo(({ scrapData }) => {
 
     const dispatch = useDispatch()
     const isDailyScrapByCodeLoading = useSelector(({ productionDetails }) => productionDetails.isDailyScrapByCodeLoading)
-    const dailyScrapByCodeCollection = useSelector(({ productionDetails }) => productionDetails?.dailyScrapByCodeCollection) ?? []
+    const dailyScrapByCode = useSelector(({ productionDetails }) => productionDetails?.dailyScrapByCode) ?? null
 
     const [modalVisible, setModalVisible] = useState(false)
     const [modalTitle, setModalTitle] = useState('');
@@ -157,12 +157,12 @@ const DefectSummaryTable = React.memo(({ scrapData }) => {
 
                                 <Col span={24}>
                                     <Card title="All Shift Daily Trend" style={cardHeightStyle} size="small">
-                                        <DailyScrapByCodeChart chartData={dailyScrapByCodeCollection.allShifts} />
+                                        <DailyScrapByCodeChart chartData={dailyScrapByCode?.allShifts ?? []} />
                                     </Card>
                                 </Col>
 
                                 {
-                                    dailyScrapByCodeCollection.shift.map(({ shift, dailyScrap }) => (
+                                    dailyScrapByCode?.shift?.map(({ shift, dailyScrap }) => (
                                         <Col span={8} key={shift}>
                                             <Card title={`Shift: ${shift} Daily Trend`} style={cardHeightStyle} size="small">
                                                 <DailyScrapByCodeChart chartData={dailyScrap} />

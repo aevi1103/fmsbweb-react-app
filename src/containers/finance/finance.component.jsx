@@ -36,14 +36,14 @@ const FinancePage = () => {
     const dispatch = useDispatch();
     const query = useQuery();
 
-    const dateQry = query.get('date') ?? today;
+    const dateQry = query.get('start') ?? today;
     const [date, setDate] = useState(dateQry);
 
     const financeKpi = useSelector(({ finance }) => finance?.financeKpi) ?? null;
     const loading = useSelector(({ finance }) => finance?.isFinanceKpiFetching)
 
     const fetchData = () => {
-        history.push(`/dashboard/morningmeeting/finance?date=${date}`)
+        history.push(`/dashboard/morningmeeting/finance?start=${date}`)
         dispatch(fetchFiananceKpiStartAsync(date))
     }
     const onClick = () => fetchData();

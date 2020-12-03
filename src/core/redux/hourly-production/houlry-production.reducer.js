@@ -1,13 +1,13 @@
-import morningMeetingTypes from './morning-meeting.types';
+import morningMeetingTypes from './hourly-production.types';
 
 const INITIAL_STATE = {
 
     isHourlyProdFetching: false,
-    hourlyProdCollection: null,
+    hourlyProduction: null,
     hourlyProdErrorMsg: undefined,
 };
 
-const morningMeetingReducer = (state = INITIAL_STATE, action) => {
+const reducer = (state = INITIAL_STATE, action) => {
 
     switch (action.type) {
 
@@ -24,7 +24,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isHourlyProdFetching: false,
-                hourlyProdCollection: action.payload
+                hourlyProduction: action.payload
             };
 
         case morningMeetingTypes.FETCH_HOURLY_PROD_FAILURE:
@@ -32,7 +32,7 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isHourlyProdFetching: false,
-                hourlyProdCollection: null,
+                hourlyProduction: null,
                 hourlyProdErrorMsg: action.payload
             };
 
@@ -43,4 +43,4 @@ const morningMeetingReducer = (state = INITIAL_STATE, action) => {
 
 }
 
-export default morningMeetingReducer;
+export default reducer;

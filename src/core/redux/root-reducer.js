@@ -14,7 +14,7 @@ import downtimeReducer from './downtime/downtime.reducer'
 import performanceLevel0Reducer from './performance-lvl-0/performance-lvl-0.reducer'
 import performanceLevel2Reducer from './performance-lvl-2/performance-lvl-2.reducer'
 
-import morningMeetingReducer from './morning-meeting/morning-meeting.reducer'
+import hourlyProductionReducer from './hourly-production/houlry-production.reducer'
 
 import qualityCheckSheetReducer from './quality-check-sheet/quality-check-sheet.reducer'
 import requetsReducer from './requests/requests.reducer'
@@ -22,7 +22,7 @@ import errorsReducer from './errors/errors.reducer'
 
 const rootReducer = combineReducers({
     home: homeReducer,
-    morningMeeting: morningMeetingReducer,
+    hourlyProduction: hourlyProductionReducer,
     productionDetails: productionDetailsReducer,
     afEos: afEosReducer,
     qualityCheckSheet: qualityCheckSheetReducer,

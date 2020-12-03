@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useHistory } from "react-router-dom";
 import moment from 'moment';
 
-import { fetchHourlyProdStartAsync } from '../../core/redux/morning-meeting/morning-meeting.actions'
+import { fetchHourlyProdStartAsync } from '../../core/redux/hourly-production/hourly-production.actions'
 
 import HourlyProductionChart from './components/hourly-production-chart.component'
 import { dateFormat } from '../../core/utilities/helpers'
@@ -31,8 +31,8 @@ const HourlyProductionPage = () => {
     const { state } = location;
     const { department } = state || {}
 
-    const isHourlyProdFetching = useSelector(({ morningMeeting }) => morningMeeting?.isHourlyProdFetching) ?? false;
-    const hourlyProdCollection = useSelector(({ morningMeeting }) => morningMeeting?.hourlyProdCollection) ?? null;
+    const isHourlyProdFetching = useSelector(({ hourlyProduction }) => hourlyProduction?.isHourlyProdFetching) ?? false;
+    const hourlyProduction = useSelector(({ hourlyProduction }) => hourlyProduction?.hourlyProduction) ?? null;
 
     const dateQry = query.get('date');
     const defaultShiftDate = dateQry ? moment(dateQry) : moment();
@@ -47,7 +47,7 @@ const HourlyProductionPage = () => {
         const dateStr = moment(date).format(dateFormat);
         const ttl = `${dept.toUpperCase()} Hourly Production: ${dateStr}`;
 
-        history.push(`/dashboard/morningmeeting/assembly/hourly-production?date=${dateStr}`);
+        history.push(`/dashboard/morningmeeting/${dept}/hourly-production?date=${dateStr}`);
         document.title = ttl;
 
         setTitle(getTitle(date));
@@ -93,7 +93,7 @@ const HourlyProductionPage = () => {
                     </Col>
 
                     <Col span={24} style={{ height: '88vh' }}> 
-                        <HourlyProductionChart data={hourlyProdCollection} />
+                        <HourlyProductionChart data={hourlyProduction} />
                     </Col>
 
                 </Row>

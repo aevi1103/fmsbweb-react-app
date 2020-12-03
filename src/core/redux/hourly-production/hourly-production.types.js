@@ -1,7 +1,7 @@
-const MorningMeetingTypes = {
+const types = {
     FETCH_HOURLY_PROD_START: 'FETCH_HOURLY_PROD_START',
     FETCH_HOURLY_PROD_SUCCESS: 'FETCH_HOURLY_PROD_SUCCESS',
     FETCH_HOURLY_PROD_FAILURE: 'FETCH_HOURLY_PROD_FAILURE',
 }
 
-export default MorningMeetingTypes;
+export default types;

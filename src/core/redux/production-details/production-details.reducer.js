@@ -7,7 +7,7 @@ const INITIAL_STATE = {
     productionDetailsErrorMsg : undefined,
 
     isDailyScrapByCodeLoading: false,
-    dailyScrapByCodeCollection: null,
+    dailyScrapByCode: null,
     dailyScrapByCodeErrorMsg : undefined,
 }
 
@@ -53,7 +53,7 @@ const productionDetailsReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isDailyScrapByCodeLoading: false,
-                dailyScrapByCodeCollection: action.payload
+                dailyScrapByCode: action.payload
             }
 
         case productionDetailsTypes.FETCH_DAILY_SCRAP_BY_CODE_FAILURE:

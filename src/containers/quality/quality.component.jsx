@@ -46,7 +46,7 @@ const QualityPage = () => {
     const dispatch = useDispatch();
     const query = useQuery();
 
-    const date = query.get('date') ?? today;
+    const date = query.get('start') ?? today;
 
     const isQualityFetching = useSelector(({ quality: { isQualityFetching } }) => isQualityFetching);
     const qualityCollection = useSelector(({ quality: { qualityCollection } }) => qualityCollection);
@@ -54,7 +54,7 @@ const QualityPage = () => {
     const [dateStr, setDateStr] = useState(date);
 
     const fetchData = () => {
-        history.push(`/dashboard/morningmeeting/quality?date=${dateStr}`)
+        history.push(`/dashboard/morningmeeting/quality?start=${dateStr}`)
         dispatch(fetchQualityStartAsync(dateStr));
     }
 

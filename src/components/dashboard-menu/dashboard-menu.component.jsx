@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, withRouter } from "react-router-dom";
+import moment from 'moment'
 
 import {
     AreaChartOutlined,
@@ -18,10 +19,32 @@ import {
 
 import DashboardSubMenu from './components/dashboard-sub-menu.component'
 
+import { dateFormat } from '../../core/utilities/helpers'
+import { useQuery } from '../../core/utilities/custom-hook'
+
 import { Menu } from "antd";
+
 const { SubMenu } = Menu;
+const yesterday = moment().add(-1, 'day').format(dateFormat);
+
 
 const MorningMeetingMenu = ( { location } ) => { 
+
+    const query = useQuery();
+    const startQry = query.get('start') ?? yesterday;
+    const endQry = query.get('end') ?? yesterday;
+
+    const [date, setDate] = useState(endQry);
+
+    useEffect(() => {
+
+        if (moment(endQry) >= moment().startOf('day')) {
+            setDate(moment(endQry).format(dateFormat))
+        } else {
+            setDate(moment(endQry).add(1, 'd').format(dateFormat))
+        }
+
+    }, [endQry])
 
     const [menuProps, setMenuProps] = useState({
         theme:"dark",
@@ -50,19 +73,19 @@ const MorningMeetingMenu = ( { location } ) => {
         <Menu.Item key="/dashboard/morningmeeting/safety">
             <SafetyOutlined />
             <span>Safety</span>
-            <Link to="/dashboard/morningmeeting/safety"/>
+            <Link to={`/dashboard/morningmeeting/safety?start=${startQry}&end=${endQry}`}/>
         </Menu.Item>
 
         <Menu.Item key="/dashboard/morningmeeting/quality">
             <ExperimentOutlined />
             <span>Quality</span>
-            <Link to="/dashboard/morningmeeting/quality"/>
+            <Link to={`/dashboard/morningmeeting/quality?start=${date}`}/>
         </Menu.Item>
 
         <Menu.Item key="/dashboard/morningmeeting/logistics">
             <CarOutlined />
             <span>Logistics</span>
-            <Link to="/dashboard/morningmeeting/logistics"/>
+            <Link to={`/dashboard/morningmeeting/logistics?start=${date}`}/>
         </Menu.Item>
 
         <SubMenu
@@ -76,11 +99,11 @@ const MorningMeetingMenu = ( { location } ) => {
         >
 
             <Menu.Item key="/dashboard/morningmeeting/level0">
-                <Link to="/dashboard/morningmeeting/level0">Level 0 - 1</Link>
+                <Link to={`/dashboard/morningmeeting/level0?start=${startQry}&end=${endQry}`}>Level 0 - 1</Link>
             </Menu.Item>
 
             <Menu.Item key="/dashboard/morningmeeting/level2">
-                <Link to="/dashboard/morningmeeting/level2">Level 2 - 3</Link>
+                <Link to={`/dashboard/morningmeeting/level2?start=${startQry}&end=${endQry}`}>Level 2 - 3</Link>
             </Menu.Item>
 
         </SubMenu>
@@ -105,13 +128,13 @@ const MorningMeetingMenu = ( { location } ) => {
         <Menu.Item key="/dashboard/morningmeeting/finance">
             <DollarOutlined />
             <span>Finance</span>
-            <Link to="/dashboard/morningmeeting/finance"/>
+            <Link to={`/dashboard/morningmeeting/finance?start=${date}`}/>
         </Menu.Item>
 
         <Menu.Item key="/dashboard/morningmeeting/downtime">
             <SettingOutlined />
             <span>Downtime</span>
-            <Link to="/dashboard/morningmeeting/downtime"/>
+            <Link to={`/dashboard/morningmeeting/downtime`}/>
         </Menu.Item>
 
         

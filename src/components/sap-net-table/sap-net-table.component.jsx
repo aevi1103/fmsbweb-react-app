@@ -82,7 +82,7 @@ const SapNetTable = React.memo(({ sapNetData }) => {
             dataSource={data}
             size="middle"
             bordered={true}
-            pagination={false} />    
+            pagination={true} />    
     )
 })
 

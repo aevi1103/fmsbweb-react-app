@@ -35,7 +35,7 @@ const LogisticsDashboard = () => {
     const history = useHistory();
 
     //* url query string
-    const dateQry = query.get('date') ?? today;
+    const dateQry = query.get('start') ?? today;
     const [date, setDate] = useState(dateQry);
 
     //* selectors
@@ -47,7 +47,7 @@ const LogisticsDashboard = () => {
 
     const fetchData = useCallback(() => {
 
-        history.push(`/dashboard/morningmeeting/logistics?date=${date}`);
+        history.push(`/dashboard/morningmeeting/logistics?start=${date}`);
         document.title = `Logistics: ${date}`;
 
         dispatch(fetchLogisticsStockOverviewSlocStartAsync(date))

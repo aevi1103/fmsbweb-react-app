@@ -1,4 +1,4 @@
-import morningMeetingTypes from './morning-meeting.types';
+import morningMeetingTypes from './hourly-production.types';
 import api from '../../utilities/api';
 
 import {

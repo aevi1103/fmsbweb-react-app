@@ -40,7 +40,7 @@ const HomeMenu = React.memo(({ location }) => {
 
       <Menu.Item key="/dashboard/morningmeeting/safety">
         <DashboardOutlined />
-        <span>KPI Dashboard</span>
+        <span>Dashboard</span>
         <Link to="/dashboard/morningmeeting/safety" />
       </Menu.Item>
 
