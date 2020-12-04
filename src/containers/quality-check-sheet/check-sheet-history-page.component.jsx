@@ -3,8 +3,8 @@ import moment from 'moment';
 import api from '../../core/utilities/api'
 import axios from 'axios'
 
-import DateRangePicker from '../../components/date-range-picker/date-range-picker.component'
 import CheckSheetHistoryTable from '../../components/quality/history/check-sheet-history-table.component'
+import { dateFormat, dateRange, disabledDate } from '../../core/utilities/helpers'
 
 import { 
     Layout,
@@ -12,13 +12,13 @@ import {
     Select,
     Button,
     Row,
-    Col
+    Col,
+    DatePicker,
  } from "antd";
 
+const { RangePicker } = DatePicker
 const { Content } = Layout;
 const { Option } = Select;
-
-const dateFormat = 'MM/DD/YYYY';
 
 const initialState = {
     startDate: moment().add(-1, 'd'),
@@ -150,10 +150,17 @@ const CheckSheetHistoryPage = () => {
                 <Row gutter={[16,16]}>
                     <Col span={24}>
 
-                        <DateRangePicker 
-                            dateRangeValue={{startDate: state.startDate, endDate: state.endDate}}
+                        <RangePicker 
+                            className="mr2"
+                            onChange={() => {}}
+                            format={dateFormat}
                             onCalendarChange={onCalendarChange}
-                            isRenderButton={false}  />
+                            defaultValue={[
+                                moment(state.startDate, dateFormat),
+                                moment(state.endDate, dateFormat)
+                            ]}
+                            disabledDate={disabledDate}
+                            ranges={dateRange} />
 
                         <Select loading={state.initialLoading} 
                                 className="mr2" 

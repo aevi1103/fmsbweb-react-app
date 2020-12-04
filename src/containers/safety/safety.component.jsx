@@ -3,8 +3,6 @@ import moment from 'moment'
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom'
 
-import DateRangePicker from '../../components/date-range-picker/date-range-picker.component'
-
 import MonthlyIncidentRateChart from './components/monthly-incident-rate-chart.component'
 import IncidentByDeptChart from './components/incident-by-dept-chart.component'
 import IncidentTable from './components/incidents-table'
@@ -15,7 +13,7 @@ import {
     fetchSafetyIncidentStartAsync
 } from '../../core/redux/safety/safety.actions'
 
-import { dateFormat } from '../../core/utilities/helpers'
+import { dateFormat,dateRange, disabledDate } from '../../core/utilities/helpers'
 import { useQuery } from '../../core/utilities/custom-hook'
 
 import { 
@@ -24,9 +22,11 @@ import {
     PageHeader,
     Row,
     Col,
-    Card
+    Card,
+    DatePicker
  } from "antd";
 
+const { RangePicker } = DatePicker
 const { Content } = Layout;
 
 const cardHeightStyle = {
@@ -92,10 +92,19 @@ const SafetyPage = () => {
 
                 <Col span={24}>
 
-                    <DateRangePicker 
-                        dateRangeValue={{startDate: startDate, endDate: endDate}}
-                        onButtonClick={onClick}
-                        onCalendarChange={onCalendarChange} />
+                    <RangePicker 
+                        className="mr2"
+                        onChange={() => {}}
+                        format={dateFormat}
+                        onCalendarChange={onCalendarChange}
+                        defaultValue={[
+                            moment(startFormat, dateFormat),
+                            moment(endFormat, dateFormat)
+                        ]}
+                        disabledDate={disabledDate}
+                        ranges={dateRange} />
+
+                    <Button type="primary" onClick={onClick} loading={isIncidentByDeptFetching || isIncidentFetching}>Go</Button>
 
                     <Button type="primary" className="ml2">
                         <a href="http://10.129.224.149/FMSB/Safety2/Charts.aspx" target="_blank" rel="noopener noreferrer">More Charts</a>

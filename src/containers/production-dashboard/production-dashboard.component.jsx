@@ -71,7 +71,7 @@ const ProductionDashboard = () => {
         api.get(`/dateshift/${department}`)
         .then(response => {
 
-            const { shiftDate, shift } = response.data;
+            const { shiftDate, shift } = response.data || {};
             dispatch(setDateRange([shiftDate, shiftDate]));
             dispatch(setShift(shift));
 
