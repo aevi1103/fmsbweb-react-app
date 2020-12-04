@@ -34,7 +34,7 @@ const HourlyProductionPage = () => {
     const isHourlyProdFetching = useSelector(({ hourlyProduction }) => hourlyProduction?.isHourlyProdFetching) ?? false;
     const hourlyProduction = useSelector(({ hourlyProduction }) => hourlyProduction?.hourlyProduction) ?? null;
 
-    const dateQry = query.get('date');
+    const dateQry = query.get('start');
     const defaultShiftDate = dateQry ? moment(dateQry) : moment();
     const dept = department ?? location.pathname.split('/')[3];
 
@@ -47,7 +47,7 @@ const HourlyProductionPage = () => {
         const dateStr = moment(date).format(dateFormat);
         const ttl = `${dept.toUpperCase()} Hourly Production: ${dateStr}`;
 
-        history.push(`/dashboard/morningmeeting/${dept}/hourly-production?date=${dateStr}`);
+        history.push(`/dashboard/morningmeeting/${dept}/hourly-production?start=${dateStr}`);
         document.title = ttl;
 
         setTitle(getTitle(date));

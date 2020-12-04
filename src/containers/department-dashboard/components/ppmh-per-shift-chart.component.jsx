@@ -2,6 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import numeral from 'numeral';
 
+import { Empty } from 'antd'
+
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
@@ -58,7 +60,9 @@ const PpmhPerShiftChart = () => {
         dataSource: dataSource
       };
 
-    return <ReactFC {...chartConfigs} />
+    return ppmhCollection.length > 0 
+            ? <ReactFC {...chartConfigs} /> 
+            : <Empty/>
 }
 
 export default PpmhPerShiftChart;

@@ -27,7 +27,7 @@ const productionStatusReducer = (state = INITIAL_STATE, action) => {
 
     switch (action.type) {
 
-        case productionStatusTypes.SET_DEPARTMENT:
+        case productionStatusTypes.SET_PROD_STATUS_DEPARTMENT:
             
             return {
                 ...state,

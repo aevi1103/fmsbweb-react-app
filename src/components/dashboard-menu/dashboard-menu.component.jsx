@@ -24,15 +24,14 @@ import { useQuery } from '../../core/utilities/custom-hook'
 
 import { Menu } from "antd";
 
-const { SubMenu } = Menu;
 const yesterday = moment().add(-1, 'day').format(dateFormat);
-
 
 const MorningMeetingMenu = ( { location } ) => { 
 
     const query = useQuery();
     const startQry = query.get('start') ?? yesterday;
-    const endQry = query.get('end') ?? yesterday;
+    const endQry = query.get('end') ?? query.get('start') ?? yesterday;
+    const deptQry = query.get('dept') ?? '';
 
     const [date, setDate] = useState(endQry);
 
@@ -88,30 +87,22 @@ const MorningMeetingMenu = ( { location } ) => {
             <Link to={`/dashboard/morningmeeting/logistics?start=${date}`}/>
         </Menu.Item>
 
-        <SubMenu
-            key="performance"
-            title={
-            <span>
-                <DashboardOutlined />
-                <span>Performance</span>
-            </span>
-            }
-        >
+        <Menu.Item key="/dashboard/morningmeeting/level0">
+            <DashboardOutlined />
+            <span>Performance L0 - L1</span>
+            <Link to={`/dashboard/morningmeeting/level0?start=${startQry}&end=${endQry}&dept=${deptQry}`} />
+        </Menu.Item>
 
-            <Menu.Item key="/dashboard/morningmeeting/level0">
-                <Link to={`/dashboard/morningmeeting/level0?start=${startQry}&end=${endQry}`}>Level 0 - 1</Link>
-            </Menu.Item>
+        <Menu.Item key="/dashboard/morningmeeting/level2">
+            <DashboardOutlined />
+            <span>Performance L2 - L3</span>
+            <Link to={`/dashboard/morningmeeting/level2?start=${startQry}&end=${endQry}&dept=${deptQry}`} />
+        </Menu.Item>
 
-            <Menu.Item key="/dashboard/morningmeeting/level2">
-                <Link to={`/dashboard/morningmeeting/level2?start=${startQry}&end=${endQry}`}>Level 2 - 3</Link>
-            </Menu.Item>
-
-        </SubMenu>
-
-        <DashboardSubMenu dept="foundry" icon={<AreaChartOutlined/>} /> 
-        <DashboardSubMenu dept="machining" icon={<BarChartOutlined/>} /> 
-        <DashboardSubMenu dept="finishing" icon={<DotChartOutlined/>} /> 
-        <DashboardSubMenu dept="assembly" icon={<PieChartOutlined/>} /> 
+        <DashboardSubMenu start={startQry} end={endQry} dept="foundry" icon={<AreaChartOutlined/>} /> 
+        <DashboardSubMenu start={startQry} end={endQry} dept="machining" icon={<BarChartOutlined/>} /> 
+        <DashboardSubMenu start={startQry} end={endQry} dept="finishing" icon={<DotChartOutlined/>} /> 
+        <DashboardSubMenu start={startQry} end={endQry} dept="assembly" icon={<PieChartOutlined/>} /> 
 
         <Menu.Item key={`/dashboard/swot/settings/Foundry`}>
             <BarChartOutlined />

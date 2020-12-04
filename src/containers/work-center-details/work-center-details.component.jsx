@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import _ from 'lodash'
 import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment'
@@ -21,19 +21,19 @@ import {
     Menu,
     PageHeader,
     Row,
-    Col
+    Col,
+    DatePicker
  } from "antd";
 
-import DateRangePicker from '../../components/date-range-picker/date-range-picker.component'
 import ProductionDetails from './components/production-details.component'
 
 import { fetchProductionDetailsStartAsync } from '../../core/redux/production-details/production-details.actions';
-import { mapDeptToArea } from '../../core/utilities/helpers'
+import { mapDeptToArea, dateFormat, dateRange, disabledDate } from '../../core/utilities/helpers'
 import { useQuery } from '../../core/utilities/custom-hook'
-import { dateFormat } from '../../core/utilities/helpers'
 
 const { Option } = Select;
 const { Content } = Layout;
+const { RangePicker } = DatePicker;
 const previousDay = moment().add(-1, 'd');
 
 const WorkCenterDetails = () => {
@@ -61,24 +61,25 @@ const WorkCenterDetails = () => {
     const [endFormat, setSendFormat] = useState(defaultEndDate);
     const [shift, setShift] = useState(defaultShift);
     const [headerTitle, setHeaderTitle] = useState(null);
+    const [headerSubTitle, setHeaderSubTitle] = useState(null);
 
     //* download state
     const [downloadLoading, setDownloadLoading] = useState(false);
     const [downloadError, setDownloadError] = useState(null);
 
-    const fetchData = useCallback(() => {
+    const fetchData = () => {
         
         //* update URL
         history.push(`/dashboard/morningmeeting/${department}/details?start=${startFormat}&end=${endFormat}&shift=${shift}`);
 
         //* update title
-        const title =  `${_.startCase(department)} Details: ${startFormat} - ${endFormat} Shift: ${shift}`;
-        setHeaderTitle(title);
+        setHeaderTitle(`${_.startCase(department)} Work Center Details`);
+        setHeaderSubTitle(`${startFormat} - ${endFormat} Shift: ${shift || 'All'}`)
 
         //* fetch data
         dispatch(fetchProductionDetailsStartAsync(startFormat, endFormat, department, shift));
 
-    }, [department, dispatch, endFormat, startFormat, shift, history])
+    }
 
     useEffect(() => {
         document.title = `Morning Meeting Details`;
@@ -86,7 +87,7 @@ const WorkCenterDetails = () => {
 
     useEffect(() => {
         fetchData();
-    }, [department, fetchData])
+    }, [department])
         
     const onCalendarChange = (dates) => {
         const [start, end] = dates;
@@ -148,6 +149,7 @@ const WorkCenterDetails = () => {
             <PageHeader
                 className="site-page-header"
                 title={headerTitle}
+                subTitle={headerSubTitle}
             />
 
             <Content className="ma3 mt0">
@@ -156,10 +158,17 @@ const WorkCenterDetails = () => {
 
                     <Col span={24}>
                         
-                        <DateRangePicker 
+                        <RangePicker 
+                            className="mr2"
+                            onChange={() => {}}
+                            format={dateFormat}
                             onCalendarChange={onCalendarChange}
-                            dateRangeValue={{startDate: moment(startFormat), endDate: moment(endFormat)}}
-                            isRenderButton={false} />
+                            defaultValue={[
+                                moment(startFormat, dateFormat),
+                                moment(endFormat, dateFormat)
+                            ]}
+                            disabledDate={disabledDate}
+                            ranges={dateRange} />
                         
                         <Tooltip placement="top" title="Select Shift">
                             <Select onChange={setShift} className="mr2" style={{width: '70px'}} value={shift}>

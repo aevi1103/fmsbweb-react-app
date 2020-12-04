@@ -158,7 +158,7 @@ const App = () => {
           <Route exact path="/" component={HomePage} />
 
           {/* SWOT */}
-          <Route exact path="/dashboard/swot/settings/:department?" component={SwotSettings} />
+          <Route exact path="/dashboard/swot/settings/:department" component={SwotSettings} />
           <Route exact path="/dashboard/swot/:department" component={Swot} />
           <Route exact path="/dashboard/swot/:department/print" component={PrintWotChartsPage} />
 
@@ -177,12 +177,12 @@ const App = () => {
           <Route exact path="/dashboard/morningmeeting/machining" render={() => <DepartmentDashboard area="machine line" />} />
           <Route exact path="/dashboard/morningmeeting/finishing" render={() => <DepartmentDashboard area="skirt coat" />}/>
           <Route exact path="/dashboard/morningmeeting/assembly" render={() => <DepartmentDashboard area="assembly" />} />
+          <Route exact path="/dashboard/morningmeeting/:department/details" component={WorkCenterDetails} />
 
           <Route exact path="/dashboard/morningmeeting/finance" component={FinancePage} />
           <Route exact path="/dashboard/morningmeeting/quality" component={QualityPage} />
           <Route exact path="/dashboard/morningmeeting/downtime" component={DowntimePage} />
 
-          <Route exact path="/dashboard/morningmeeting/:department/details" component={WorkCenterDetails} />
           <Route exact path="/dashboard/morningmeeting/*/hourly-production" component={HourlyProdPage} />
 
           {/* OEE Page */}

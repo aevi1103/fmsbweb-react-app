@@ -19,14 +19,11 @@ import {
     fetchWeeklyLaborHrsStartAsync
 } from '../../core/redux/department-dashboard/department-dashboard.actions'
 
-import DateRangePicker from '../../components/date-range-picker/date-range-picker.component';
 import Production from './components/production.component';
 
-import { mapAreaToDept } from '../../core/utilities/helpers'
+import { mapAreaToDept, dateRange, disabledDate, dateFormat } from '../../core/utilities/helpers'
 import { useQuery } from '../../core/utilities/custom-hook'
 import download from './service/download'
-
-import { dateFormat } from '../../core/utilities/helpers'
 
 import { 
     Layout,
@@ -35,10 +32,12 @@ import {
     Dropdown,
     Menu,
     Row,
-    Col
+    Col,
+    DatePicker
  } from "antd";
 
 const { Content } = Layout;
+const { RangePicker } = DatePicker
 const previousDay = moment().add(-1, 'day').format(dateFormat);
 
 const DepartmentDashboard = ({
@@ -62,6 +61,7 @@ const DepartmentDashboard = ({
     const [startFormat, setStartFormat] = useState(defaultStartDate);
     const [endFormat, setSendFormat] = useState(defaultEndDate);
     const [title, setTitle] = useState(null)
+    const [subTitle, setSubTitle] = useState(null)
 
     //* download states
     const [downloadLoading, setDownloadLoading] = useState(false);
@@ -86,9 +86,11 @@ const DepartmentDashboard = ({
         history.push(`/dashboard/morningmeeting/${area === 'skirt coat' ? 'finishing' : dept}?start=${start}&end=${end}`);
 
         //* update title
-        const ttl = `${_.startCase(dept)}: ${start} - ${end}`;
+        const ttl = `${_.startCase(dept)} Department Summary`;
+        const subTitle = `${start} - ${end}`
         setTitle(ttl);
-        document.title = ttl;
+        setSubTitle(subTitle)
+        document.title = ttl + ' ' + subTitle;
 
         //* dispatch actions
         dispatch(fetchProductionDataStartAsync(start, end, area, prodTokenSrc))
@@ -150,7 +152,7 @@ const DepartmentDashboard = ({
                 <Link to={`/dashboard/swot/settings/${_.capitalize(dept)}?start=${startFormat}&end=${endFormat}&getdata=true`} >SWOT</Link>
             </Menu.Item>
             <Menu.Item key={`/dashboard/morningmeeting/${dept}/hourly-production`} >
-                <Link to={`/dashboard/morningmeeting/${dept}/hourly-production?date=${endFormat}`} >Hourly Production</Link>
+                <Link to={`/dashboard/morningmeeting/${dept}/hourly-production?start=${endFormat}`} >Hourly Production</Link>
             </Menu.Item>
             <Menu.Item key={`/orderstatus/${dept}`} >
                 <Link to={`/orderstatus/${dept}`}>Production Orders</Link>
@@ -169,6 +171,7 @@ const DepartmentDashboard = ({
             <PageHeader
                 className="site-page-header"
                 title={title}
+                subTitle={subTitle}
             />
 
             <Content className="ma3 mt0">
@@ -177,10 +180,17 @@ const DepartmentDashboard = ({
 
                     <Col span={24}>
 
-                        <DateRangePicker 
-                            dateRangeValue={{startDate: startFormat, endDate: endFormat}}
+                        <RangePicker 
+                            className="mr2"
+                            onChange={() => {}}
+                            format={dateFormat}
                             onCalendarChange={onCalendarChange}
-                            isRenderButton={false}  />
+                            defaultValue={[
+                                moment(startFormat, dateFormat),
+                                moment(endFormat, dateFormat)
+                            ]}
+                            disabledDate={disabledDate}
+                            ranges={dateRange} />
                         
                         <Dropdown.Button 
                             type="primary" 

@@ -112,9 +112,13 @@ export const dateRange = {
     'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
     'Last Week': [moment().subtract(6, 'days').startOf('week'), moment().subtract(6, 'days').endOf('week')],
     'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-    'Last 30 days': [moment().subtract(30, 'days').startOf('month'), moment()],
+    'Last 30 days': [moment().subtract(30, 'days'), moment()],
     'MTD': [moment().startOf('month'), moment()],
-    'YTD': [moment().startOf('year'), moment()]
+    'YTD': [moment().startOf('year'), moment()],
+    '1st Quarter': [moment().quarter(1).startOf('quarter'), moment().quarter(1).endOf('quarter')],
+    '2nd Quarter': [moment().quarter(2).startOf('quarter'), moment().quarter(2).endOf('quarter')],
+    '3rd Quarter': [moment().quarter(3).startOf('quarter'), moment().quarter(3).endOf('quarter')],
+    '4th Quarter': [moment().quarter(4).startOf('quarter'), moment().quarter(4).endOf('quarter')],
 }
 
 export const monthRange = {

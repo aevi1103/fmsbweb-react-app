@@ -1,7 +1,7 @@
 import productionStatusTypes from './production-status.types'
 
 export const setDepartment = dept => ({
-    type: productionStatusTypes.SET_DEPARTMENT,
+    type: productionStatusTypes.SET_PROD_STATUS_DEPARTMENT,
     payload: dept.toLowerCase() === 'skirt coat' ? 'Skirt Coat' : dept
 });
 

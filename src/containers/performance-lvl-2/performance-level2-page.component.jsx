@@ -82,7 +82,7 @@ const PerformanceLevel2Page = () => {
     const query = useQuery();
 
     //* selectors
-    const department = useSelector(({ performance0 }) => performance0.department)
+    const department = useSelector(({ performance0 }) => performance0?.department) ?? 'Foundry Cell';
 
     //* url query params
     const startQry = query.get('start') ?? yesterday;
@@ -208,7 +208,7 @@ const PerformanceLevel2Page = () => {
         <>
             <PageHeader
                 className="site-page-header"
-                title={`${title} Department Performace Level 2 - 3`}
+                title={`Performace Level 2 - 3: ${title} Department`}
             />
     
             <Content className="ma3 mt0">

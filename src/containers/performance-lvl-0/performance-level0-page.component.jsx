@@ -79,7 +79,7 @@ const PerformanceLevel0Page = () => {
     useTitle('Performance: L0 - L1');
 
     //* selectors
-    const department = useSelector(({ performance0 }) => performance0.department)
+    const department = useSelector(({ performance0 }) => performance0.department) ?? 'Foundry Cell'
 
     //* url query params
     const startQry = query.get('start') ?? yesterday;
@@ -199,7 +199,7 @@ const PerformanceLevel0Page = () => {
         <>
             <PageHeader
                 className="site-page-header"
-                title={`${title} Scrap Performace Level 0 - 1`}
+                title={`Performace Level 0 - 1: ${title} Scrap `}
             />
     
             <Content className="ma3 mt0">
@@ -286,7 +286,6 @@ const PerformanceLevel0Page = () => {
                         >
                             <ScrapVarianceChart  />
 
-                           {/*  <CustomSpinner /> */}
                         </Card>         
                     </Col>
 
