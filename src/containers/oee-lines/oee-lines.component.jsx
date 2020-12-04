@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { useParams, useHistory } from 'react-router'
 import styled from 'styled-components'
 import _ from 'lodash'
-import api from '../../../core/utilities/api'
+import api from '../../core/utilities/api'
+
+import {
+    LoadingOutlined,
+  } from '@ant-design/icons';
+
 import {
     PageHeader,
     Layout
@@ -43,7 +48,6 @@ const Button = styled.a`
         box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
         transform: translateY(-.3rem);
     }
-
 `
 
 const Lines = () => {
@@ -73,10 +77,12 @@ const Lines = () => {
 
     }, [])
 
+    const title = loading ? <span>Loading <LoadingOutlined /></span> : `${_.startCase(department)} Lines`
+
     return (
         <>
             <PageHeader 
-                title={`${_.startCase(department)} Lines`} 
+                title={title} 
                 onBack={() => history.goBack()}
                 className="site-page-header" />
 
@@ -85,19 +91,14 @@ const Lines = () => {
                 <Container>
 
                     {
-                        loading 
-                        ?   <span>Loading...</span>
-                        :   lines.length > 0 
-                                ? lines.map(({ groupName, kepServerTagNameGroupId }) => <Button
-                                    key={kepServerTagNameGroupId}
-                                    href={`/oee/assembly/${kepServerTagNameGroupId}`} >{groupName}</Button>)
-                                : <span>No lines available</span>
+                        lines.map(({ groupName, kepServerTagNameGroupId }) => <Button
+                            key={kepServerTagNameGroupId}
+                            href={`/oee/assembly/${kepServerTagNameGroupId}`} >{groupName}</Button>)
                     }
 
                 </Container>
 
                 
-
             </Content>
         
         </>

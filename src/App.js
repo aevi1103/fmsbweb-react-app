@@ -18,21 +18,21 @@ import './App.scss'
 import HomePage from './containers/home/home.component';
 import NotFound from './containers/404/404.component';
 
-//nenu components
+//* nenu components
 import HomeMenu from './components/home-menu/home-menu.components';
 import DashboardMenu from './components/dashboard-menu/dashboard-menu.component';
 import AfMenu from './components/af-menu/af-menu.component';
 import LogisticsMenu from './components/logistics-menu/logistics-menu.component'
 
-//swot components
+//* swot components
 import SwotSettings from './containers/swot-settings/swot-settings.component';
 import Swot from './containers/swot/swot.component';
 import PrintWotChartsPage from './containers/swot/swot-print.component';
 
-//department dashboard
+//* production dashboard
 import ProductionDashboard from './containers/production-dashboard/production-dashboard.component'
 
-//morning meeting pages
+//* dashboard
 import SafetyPage from './containers/safety/safety.component';
 import QualityPage from './containers/quality/quality.component';
 import LogisticsDashboard from './containers/logistics-dashboard/logistics-dashboard.component';
@@ -47,24 +47,25 @@ import DowntimePage from './containers/downtime/downtime-page.component';
 import ProductionOrderPage from './containers/production-order/production-order-page.component';
 import AfEosPage from './containers/af-eos/af-eos.component';
 
-//quality pages
+//* quality pages
 import CheckSheetSettingsPage from './containers/quality-check-sheet/check-sheet-settings-page.component'
 import ControlMethodPage from './containers/quality-check-sheet/control-method-page.component'
 import CheckSheetLogInPage from './containers/quality-check-sheet/check-sheet-login-page.component'
 import CheckSheetDataEntryPage from './containers/quality-check-sheet/check-sheet-data-entry-page.component'
 import CheckSheetHistoryPage from './containers/quality-check-sheet/check-sheet-history-page.component'
 
-//machining
+//* machining
 import MachiningManningPage from './containers/machining-manning/machining-manning.component'
 
-//logistics settings page
+//* logistics settings page
 import InvetoryPage from './containers/logistics-inventory-file-upload/inventory-page.component'
 import CostTaregtsPage from './containers/logitics-costs-targets/logistics-costs-targets.component'
 import InventoryMinMaxTargets from './containers/inventory-min-max-targets/inventory-min-max-targets.component'
 import ProductionOrderFileUpload from './containers/production-order-file-upload/production-order-file-upload.componen'
 
-// OEE
-import OeeLines from './containers/dashboard/oee/lines-page.component'
+//* OEE
+import OeeLines from './containers/oee-lines/oee-lines.component'
+import Oee from './containers/oee/oee.component'
 
 import ChatPage from './containers/chat/chat-page.component'
 
@@ -187,7 +188,7 @@ const App = () => {
 
           {/* OEE Page */}
           <Route exact path="/oee/:department" component={OeeLines} />
-          <Route exact path="/oee/:department/:id" component={OeeLines} />
+          <Route exact path="/oee/:department/:guid" component={Oee} />
 
           {/* Order Status */}
           <Route exact path="/orderstatus/:department" component={ProductionOrderPage} />
