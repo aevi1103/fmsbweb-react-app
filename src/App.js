@@ -12,8 +12,7 @@ import {
   BackTop
  } from "antd";
 
-import './App.css';
-import './App.scss'
+
 
 import HomePage from './containers/home/home.component';
 import NotFound from './containers/404/404.component';
@@ -68,6 +67,9 @@ import OeeLines from './containers/oee-lines/oee-lines.component'
 import Oee from './containers/oee/oee.component'
 
 import ChatPage from './containers/chat/chat-page.component'
+
+import 'tachyons'
+import './App.less'
 
 const { Footer, Sider } = Layout;
 

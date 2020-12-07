@@ -56,6 +56,7 @@ const Lines = () => {
     const history = useHistory();
     const [loading, setLoading] = useState(false);
     const [lines, setLines] = useState([]);
+    const [title, setTitle] = useState(null)
 
     useEffect(() => {
 
@@ -64,8 +65,12 @@ const Lines = () => {
             try {
                 
                 setLoading(true);
-                const response = await api.get(`/oee/groups/${department}`);
+                const response = await api.get(`/oee/lines?$filter=department eq '${department}'&$orderby=groupName`);
                 setLines(response.data);
+
+                const ttl = `${_.startCase(department)} Lines`;
+                document.title = ttl;
+                setTitle(ttl)
 
             } catch (error) {
 
@@ -77,12 +82,10 @@ const Lines = () => {
 
     }, [])
 
-    const title = loading ? <span>Loading <LoadingOutlined /></span> : `${_.startCase(department)} Lines`
-
     return (
         <>
             <PageHeader 
-                title={title} 
+                title={loading ? <span>Loading <LoadingOutlined /></span> : title} 
                 onBack={() => history.goBack()}
                 className="site-page-header" />
 
@@ -91,9 +94,9 @@ const Lines = () => {
                 <Container>
 
                     {
-                        lines.map(({ groupName, kepServerTagNameGroupId }) => <Button
-                            key={kepServerTagNameGroupId}
-                            href={`/oee/assembly/${kepServerTagNameGroupId}`} >{groupName}</Button>)
+                        lines.map(({ groupName, oeeLineId }) => <Button
+                            key={oeeLineId}
+                            href={`/oee/assembly/${oeeLineId}`} >{groupName}</Button>)
                     }
 
                 </Container>

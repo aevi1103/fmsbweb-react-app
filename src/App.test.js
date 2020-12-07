@@ -9,9 +9,7 @@ import { store, persistor} from './core/redux/store';
 import './index.css';
 import App from './App';
 
-
 import 'tachyons'
-import './sass/main.scss'
 
 it('renders without crashing', () => {
   const div = document.createElement('div');

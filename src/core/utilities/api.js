@@ -5,26 +5,15 @@ import {
     setProgress
  } from '../../core/redux/requests/requests.actions'
 
- import {
-    setErrors
- } from '../../core/redux/errors/errors.actions'
-
- import { 
-    notification
- } from 'antd'
+ import { setErrors } from '../../core/redux/errors/errors.actions'
+ import { notification } from 'antd'
+ import { baseApiUrl } from './base-url'
 
 const { dispatch } = store
-
-const { 
-    NODE_ENV,
-    REACT_APP_DEV_API_URL,
-    REACT_APP_API_URL
-} = process.env;
-
-const url = NODE_ENV === 'production' ? REACT_APP_API_URL : REACT_APP_DEV_API_URL;
+const { NODE_ENV } = process.env;
 
 const http = axios.create({
-    baseURL: url,
+    baseURL: baseApiUrl,
     headers: {
         'Accept': 'application/json',
         'Access-Control-Allow-Origin': '*',

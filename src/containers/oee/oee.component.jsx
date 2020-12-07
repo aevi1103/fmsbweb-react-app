@@ -1,36 +1,41 @@
-import React, { useEffect, useState, useCallback } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useParams, useHistory } from 'react-router-dom'
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import short from 'short-uuid'
+import { useWindowUnloadEffect  } from '../../core/utilities/custom-hook'
 
 import api from '../../core/utilities/api'
+import { baseUrl } from '../../core/utilities/base-url'
 
 import { 
     Layout,
     PageHeader,
-    List
+    List,
+    Row,
+    Col,
+    Button
  } from "antd";
 
  const { Content } = Layout;
 
  const Oee = () => {
 
-    const { guid } = useParams(); 
+    const history = useHistory();
+    const { guid, department } = useParams(); 
 
     const [loading, setLoading] = useState(false);
-
     const [counterConnection, setCounterConnection] = useState(null);
     const [downtimeConnection, setDowntimeConnection] = useState(null);
     const [scrapConnection, setScrapConnection] = useState(null);
-
     const [items, setItems] = useState([])
     const [tag, setTag] = useState(null); 
 
-    //* event state
+    //* event state (temp)
     const [counter, setCounter] = useState(null)
     const [downtime, setDowntime] = useState(null)
     const [scrap, setScrap] = useState(null)
 
+    //* mount
     useEffect(() => {
 
         (async function getLine() {
@@ -38,8 +43,12 @@ import {
             try {
                         
                 setLoading(true);
-                const response = await api.get(`oee/group/${guid}`)
-                setTag(response.data)
+                const response = await api.get(`oee/lines/${guid}`)
+
+                const data = response.data;
+                document.title = `${data.groupName} OEE`
+
+                setTag(data)
     
             } catch (error) {
                 
@@ -51,11 +60,29 @@ import {
 
     }, [])
 
+    //* unmount
+    useWindowUnloadEffect(() => {
+
+        if (counterConnection) {
+            counterConnection.invoke('RemoveToGroup', tag.tagName)
+        }
+
+        if (downtimeConnection) {
+            downtimeConnection.invoke('RemoveToGroup', tag.groupName)
+        }
+
+        if (scrapConnection) {
+            scrapConnection.invoke('RemoveToGroup', tag.workCenter)
+        }
+
+    }, true)
+
+
     //* counter
     useEffect(() => {
 
         const counterConn = new HubConnectionBuilder()
-            .withUrl(`https://localhost:44384/counterhub`)
+            .withUrl(`${baseUrl}/counterhub`)
             .withAutomaticReconnect()
             .build();
 
@@ -70,10 +97,18 @@ import {
                 .then(() => {
 
                     counterConnection.invoke('AddToGroup', tag.tagName)
+
                     counterConnection.on('BroadCastChange', data => {
                         console.log('counter', data)
-
                         setCounter({ type: 'counter', ...data })
+                    });
+
+                    counterConnection.on('onJoin', data => {
+                        console.log(`%c counter join: ${data}`, 'color: green; font-size: 15px; font-weight: bold;')
+                    });
+
+                    counterConnection.on('onLeave', data => {
+                        console.log(`%c counter leave: ${data}`, 'color: red; font-size: 15px; font-weight: bold;')
                     });
                 })
                 .catch(error => console.error(error))
@@ -85,7 +120,7 @@ import {
     useEffect(() => {
 
         const downtimeConn = new HubConnectionBuilder()
-            .withUrl(`https://localhost:44384/downtimehub`)
+            .withUrl(`${baseUrl}/downtimehub`)
             .withAutomaticReconnect()
             .build();
 
@@ -99,9 +134,18 @@ import {
             downtimeConnection.start()
                 .then(() => {
                     downtimeConnection.invoke('AddToGroup', tag.groupName)
+
                     downtimeConnection.on('BroadCastChange', data => {
                         console.log('downtime', data)
                         setDowntime({ type: 'downtime', ...data })
+                    });
+
+                    downtimeConnection.on('onJoin', data => {
+                        console.log(`%c downtime join: ${data}`, 'color: green; font-size: 15px; font-weight: bold;')
+                    });
+
+                    downtimeConnection.on('onLeave', data => {
+                        console.log(`%c downtime leave: ${data}`, 'color: red; font-size: 15px; font-weight: bold;')
                     });
                 })
                 .catch(error => console.error(error))
@@ -109,12 +153,11 @@ import {
 
     }, [downtimeConnection, tag])
 
-
     //* scrap
     useEffect(() => {
 
         const scrapConn = new HubConnectionBuilder()
-            .withUrl(`https://localhost:44384/scraphub`)
+            .withUrl(`${baseUrl}/scraphub`)
             .withAutomaticReconnect()
             .build();
 
@@ -127,17 +170,26 @@ import {
         if (scrapConnection && tag) {
             scrapConnection.start()
                 .then(() => {
+
                     scrapConnection.invoke('AddToGroup', tag.workCenter)
+
                     scrapConnection.on('BroadCastChange', data => {
                         console.log('scrap', data)
                         setScrap({ type: 'scrap', ...data })
+                    });
+                    
+                    scrapConnection.on('onJoin', data => {
+                        console.log(`%c scrap join: ${data}`, 'color: green; font-size: 15px; font-weight: bold;')
+                    });
+
+                    scrapConnection.on('onLeave', data => {
+                        console.log(`%c scrap leave: ${data}`, 'color: red; font-size: 15px; font-weight: bold;')
                     });
                 })
                 .catch(error => console.error(error))
         }
 
     }, [scrapConnection, tag])
-
 
 
     useEffect(() => {
@@ -154,40 +206,52 @@ import {
   
     return (
         <>
-        
-                <PageHeader
-                    className="site-page-header"
-                    title={`${tag?.groupName} OEE`}
-                />
+    
+            <PageHeader
+                className="site-page-header"
+                title={`${tag?.groupName} OEE`}
+                onBack={() => history.push(`/oee/${department}`)}
+            />
 
-                <Content className="ma3 mt0">
+            <Content className="ma3 mt0">
 
-                    <List>
-                        {
-                            items.map(e => {
+                <Row>
 
-                                let className = ''
-                                switch (e?.type) {
-                                    case 'counter':
-                                        className = 'bg-green'
-                                        break;
-                                    case 'downtime':
-                                        className = 'bg-yellow'
-                                        break;
-                                    case 'scrap':
-                                        className = 'bg-red'
-                                        break;
-                                    default:
-                                        break;
-                                }
+                    <Col span={24}>
 
-                                return <List.Item key={short.generate()} className={className} >{ JSON.stringify(e) }</List.Item>
+                        <Button type="primary" size="large" className="mr2" success>Start</Button>
+                        <Button size="large" >End</Button>
+                    
+                    </Col>
 
-                            })
-                        }
-                    </List>
+                </Row>
 
-                </Content>
+                <List>
+                    {
+                        items.map(e => {
+
+                            let className = ''
+                            switch (e?.type) {
+                                case 'counter':
+                                    className = 'bg-green'
+                                    break;
+                                case 'downtime':
+                                    className = 'bg-yellow'
+                                    break;
+                                case 'scrap':
+                                    className = 'bg-red'
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            return <List.Item key={short.generate()} className={className} >{ JSON.stringify(e) }</List.Item>
+
+                        })
+                    }
+                </List>
+
+            </Content>
         
         </>
 

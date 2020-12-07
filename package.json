@@ -3,10 +3,12 @@
   "version": "0.1.304",
   "private": true,
   "dependencies": {
+    "@craco/craco": "^5.9.0",
     "@microsoft/signalr": "^3.1.9",
     "antd": "^4.4.3",
     "axios": "^0.19.2",
     "babel-plugin-import": "^1.13.0",
+    "craco-less": "^1.17.1",
     "customize-cra": "^0.9.1",
     "fusioncharts": "^3.15.2",
     "husky": "^4.2.5",
@@ -36,20 +38,20 @@
     "short-uuid": "^4.1.0",
     "shortid": "^2.2.15",
     "styled-components": "^4.4.1",
-    "tachyons": "^4.11.1",
+    "tachyons": "^4.12.0",
     "uid-generator": "^2.0.0"
   },
   "scripts": {
-    "start": "react-scripts start --no-cache",
-    "build": "npm run release && react-scripts build && npm run post-build",
-    "test": "react-scripts test",
+    "start": "craco start --no-cache",
+    "build": "npm run release && craco build && npm run post-build",
+    "test": "craco test",
     "eject": "react-scripts eject",
     "release": "standard-version",
     "delete-post-build-dir": "rm -r /q/react.app/",
     "copy-build-to-prod-dir": "cp -a /c/Users/rontoa20/source/repos/fmsbweb3/fmsbweb.react-app/build/. /q/react.app/",
     "copy-web-config": "cp /c/Users/rontoa20/source/repos/fmsbweb3/fmsbweb.react-app/web.config /q/react.app/",
     "post-build": "npm run delete-post-build-dir && npm run copy-build-to-prod-dir && npm run copy-web-config",
-    "build:staging": "react-scripts build && npm run post-build:staging",
+    "build:staging": "craco build && npm run post-build:staging",
     "delete-post-build-dir:staging": "rm -r /q/react.app.staging/",
     "copy-build-to-prod-dir:staging": "cp -a /c/Users/rontoa20/source/repos/fmsbweb3/fmsbweb.react-app/build/. /q/react.app.staging/",
     "copy-web-config:staging": "cp /c/Users/rontoa20/source/repos/fmsbweb3/fmsbweb.react-app/web.config /q/react.app.staging/",
@@ -80,6 +82,8 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.20.3",
     "eslint-plugin-react-hooks": "^2.5.1",
+    "less": "^3.12.2",
+    "less-loader": "^7.1.0",
     "standard-version": "^8.0.1"
   }
 }

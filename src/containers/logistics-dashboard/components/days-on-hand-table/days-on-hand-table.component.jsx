@@ -9,7 +9,6 @@ import { SearchOutlined } from '@ant-design/icons';
 import { Table, Input, Button } from "antd";
 
 import { getColorCode, getColorRowClass } from '../../service/helper'
-import './styles.scss'
 
 const DaysOnHandTable = () => {
 
