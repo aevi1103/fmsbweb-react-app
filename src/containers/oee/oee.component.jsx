@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useReducer } from 'react'
+import moment from 'moment'
 import { useParams, useHistory } from 'react-router-dom'
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import short from 'short-uuid'
@@ -7,6 +8,7 @@ import { useWindowUnloadEffect  } from '../../core/utilities/custom-hook'
 import api from '../../core/utilities/api'
 import { baseUrl } from '../../core/utilities/base-url'
 import SuccessButton from '../../components/success-button/success-button.component'
+import { green, darkGray } from '../../core/utilities/colors'
 
 import { 
     Layout,
@@ -14,27 +16,87 @@ import {
     List,
     Row,
     Col,
-    Button
+    Button,
+    Tag,
+    Popconfirm
  } from "antd";
 
- const { Content } = Layout;
+const { Content } = Layout;
 
- const Oee = () => {
+const initialState = {
+    loading: false,
+    line: null, 
+    oee: null,
+    items: [],
+    subTitle: null,
+
+    counterConnection: null,
+    downtimeConnection: null, 
+    scrapConnection: null, 
+
+    startLoading: false,
+    startButtonDisabled: false,
+
+    counter: null, 
+    downtime: null, 
+    scrap: null
+}
+
+const reducer = (state = initialState, action) => {
+
+    switch (action.type) {
+
+        case 'SET_LOADING':
+            return { ...state,  loading: action.payload }
+
+        case 'SET_LINE':
+            return { ...state,  line: action.payload }
+
+        case 'SET_OEE':
+            return { ...state,  oee: action.payload }
+
+        case 'SET_ITEMS':
+            return { ...state,  items: action.payload }
+
+        case 'SET_SUB_TITLE':
+            return { ...state,  subTitle: action.payload }
+
+        case 'SET_COUNTER_CONN':
+            return { ...state,  counterConnection: action.payload }
+
+        case 'SET_DOWNTIME_CONN':
+            return { ...state,  downtimeConnection: action.payload }
+
+        case 'SET_SCRAP_CONN':
+            return { ...state,  scrapConnection: action.payload }
+
+        case 'SET_START_LOADING':
+            return { ...state,  startLoading: action.payload }
+
+        case 'SET_START_BUTTON_DISABLE':
+            return { ...state,  startButtonDisabled: action.payload }
+
+        //* temp
+        case 'SET_COUNTER':
+            return { ...state,  counter: action.payload }
+
+        case 'SET_DOWNTIME':
+            return { ...state,  downtime: action.payload }
+
+        case 'SET_SCRAP':
+            return { ...state,  scrap: action.payload }
+
+        default:
+            return state;
+    }
+
+}
+
+const Oee = () => {
 
     const history = useHistory();
     const { guid, department } = useParams(); 
-
-    const [loading, setLoading] = useState(false);
-    const [counterConnection, setCounterConnection] = useState(null);
-    const [downtimeConnection, setDowntimeConnection] = useState(null);
-    const [scrapConnection, setScrapConnection] = useState(null);
-    const [items, setItems] = useState([])
-    const [tag, setTag] = useState(null); 
-
-    //* event state (temp)
-    const [counter, setCounter] = useState(null)
-    const [downtime, setDowntime] = useState(null)
-    const [scrap, setScrap] = useState(null)
+    const [state, dispatch] = useReducer(reducer, initialState)
 
     //* mount
     useEffect(() => {
@@ -43,18 +105,25 @@ import {
 
             try {
                         
-                setLoading(true);
+                dispatch({ type: 'SET_LOADING', payload: true })
+        
                 const response = await api.get(`oee/lines/${guid}`)
-
                 const data = response.data;
                 document.title = `${data.groupName} OEE`
 
-                setTag(data)
+                dispatch({ type: 'SET_LINE', payload: data })
+
+                //* get OEE data
+                const oeeResponse =  await api.get(`oee?$filter=oeeLineId eq ${guid} and endDateTime eq null`);
+                const oeeData = oeeResponse.data[0];
+                dispatch({ type: 'SET_OEE', payload: oeeData })
+
+                
     
             } catch (error) {
                 
             } finally {
-                setLoading(false);
+                dispatch({ type: 'SET_LOADING', payload: false })
             }
 
         })()
@@ -64,22 +133,18 @@ import {
     //* unmount
     useWindowUnloadEffect(() => {
 
-        if (counterConnection) {
-            counterConnection.invoke('RemoveToGroup', tag.tagName)
-        }
+        if (state.counterConnection) 
+            state.counterConnection.invoke('RemoveToGroup', state.line?.tagName)
+        
+        if (state.downtimeConnection) 
+            state.downtimeConnection.invoke('RemoveToGroup', state.line?.groupName)
 
-        if (downtimeConnection) {
-            downtimeConnection.invoke('RemoveToGroup', tag.groupName)
-        }
-
-        if (scrapConnection) {
-            scrapConnection.invoke('RemoveToGroup', tag.workCenter)
-        }
-
+        if (state.scrapConnection) 
+            state.scrapConnection.invoke('RemoveToGroup', state.line?.workCenter)
+    
     }, true)
 
-
-    //* counter
+    //* counter onChange effects
     useEffect(() => {
 
         const counterConn = new HubConnectionBuilder()
@@ -87,37 +152,38 @@ import {
             .withAutomaticReconnect()
             .build();
 
-        setCounterConnection(counterConn);
+        dispatch({ type: 'SET_COUNTER_CONN', payload: counterConn })
 
     }, [])
 
     useEffect(() => {
 
-        if (counterConnection && tag) {
-            counterConnection.start()
+        if (state.counterConnection && state.line) {
+            state.counterConnection.start()
                 .then(() => {
 
-                    counterConnection.invoke('AddToGroup', tag.tagName)
+                    state.counterConnection.invoke('AddToGroup', state.line.tagName)
 
-                    counterConnection.on('BroadCastChange', data => {
+                    state.counterConnection.on('BroadCastChange', data => {
                         console.log('counter', data)
-                        setCounter({ type: 'counter', ...data })
+
+                        dispatch({ type: 'SET_COUNTER', payload: { type: 'counter', ...data } })
                     });
 
-                    counterConnection.on('onJoin', data => {
+                    state.counterConnection.on('onJoin', data => {
                         console.log(`%c counter join: ${data}`, 'color: green; font-size: 15px; font-weight: bold;')
                     });
 
-                    counterConnection.on('onLeave', data => {
+                    state.counterConnection.on('onLeave', data => {
                         console.log(`%c counter leave: ${data}`, 'color: red; font-size: 15px; font-weight: bold;')
                     });
                 })
                 .catch(error => console.error(error))
         }
 
-    }, [counterConnection, tag])
+    }, [state.counterConnection, state.line])
 
-    //* downtime
+    //* downtime onChange effects
     useEffect(() => {
 
         const downtimeConn = new HubConnectionBuilder()
@@ -125,36 +191,38 @@ import {
             .withAutomaticReconnect()
             .build();
 
-        setDowntimeConnection(downtimeConn);
+        dispatch({ type: 'SET_DOWNTIME_CONN', payload: downtimeConn })
         
     }, [])
 
     useEffect(() => {
 
-        if (downtimeConnection && tag) {
-            downtimeConnection.start()
+        if (state.downtimeConnection && state.line) {
+            state.downtimeConnection.start()
                 .then(() => {
-                    downtimeConnection.invoke('AddToGroup', tag.groupName)
+                    state.downtimeConnection.invoke('AddToGroup', state.line.groupName)
 
-                    downtimeConnection.on('BroadCastChange', data => {
+                    state.downtimeConnection.on('BroadCastChange', data => {
                         console.log('downtime', data)
-                        setDowntime({ type: 'downtime', ...data })
+
+                        dispatch({ type: 'SET_DOWNTIME', payload: { type: 'downtime', ...data } })
+         
                     });
 
-                    downtimeConnection.on('onJoin', data => {
+                    state.downtimeConnection.on('onJoin', data => {
                         console.log(`%c downtime join: ${data}`, 'color: green; font-size: 15px; font-weight: bold;')
                     });
 
-                    downtimeConnection.on('onLeave', data => {
+                    state.downtimeConnection.on('onLeave', data => {
                         console.log(`%c downtime leave: ${data}`, 'color: red; font-size: 15px; font-weight: bold;')
                     });
                 })
                 .catch(error => console.error(error))
         }
 
-    }, [downtimeConnection, tag])
+    }, [state.downtimeConnection, state.line])
 
-    //* scrap
+    //* scrap onChange effects
     useEffect(() => {
 
         const scrapConn = new HubConnectionBuilder()
@@ -162,55 +230,134 @@ import {
             .withAutomaticReconnect()
             .build();
 
-        setScrapConnection(scrapConn);
+        dispatch({ type: 'SET_SCRAP_CONN', payload: scrapConn })
         
     }, [])
 
     useEffect(() => {
 
-        if (scrapConnection && tag) {
-            scrapConnection.start()
+        if (state.scrapConnection && state.line) {
+            state.scrapConnection.start()
                 .then(() => {
 
-                    scrapConnection.invoke('AddToGroup', tag.workCenter)
+                    state.scrapConnection.invoke('AddToGroup', state.line.workCenter)
 
-                    scrapConnection.on('BroadCastChange', data => {
+                    state.scrapConnection.on('BroadCastChange', data => {
                         console.log('scrap', data)
-                        setScrap({ type: 'scrap', ...data })
+                        dispatch({ type: 'SET_SCRAP', payload: { type: 'scrap', ...data } })
                     });
                     
-                    scrapConnection.on('onJoin', data => {
+                    state.scrapConnection.on('onJoin', data => {
                         console.log(`%c scrap join: ${data}`, 'color: green; font-size: 15px; font-weight: bold;')
                     });
 
-                    scrapConnection.on('onLeave', data => {
+                    state.scrapConnection.on('onLeave', data => {
                         console.log(`%c scrap leave: ${data}`, 'color: red; font-size: 15px; font-weight: bold;')
                     });
                 })
                 .catch(error => console.error(error))
         }
 
-    }, [scrapConnection, tag])
+    }, [state.scrapConnection, state.line])
 
+    //* temp
+    useEffect(() => {
+        dispatch({ type: 'SET_ITEMS', payload: [...state.items, state.counter] })
+    }, [state.counter])
 
     useEffect(() => {
-        setItems(items => [...items, counter])
-    }, [counter])
+        dispatch({ type: 'SET_ITEMS', payload: [...state.items, state.downtime] })
+    }, [state.downtime])
 
     useEffect(() => {
-        setItems(items => [...items, downtime])
-    }, [downtime])
+        dispatch({ type: 'SET_ITEMS', payload: [...state.items, state.scrap] })
+    }, [state.scrap])
 
     useEffect(() => {
-        setItems(items => [...items, scrap])
-    }, [scrap])
+
+        if (state.oee) {
+            const { startDateTime } = state.oee;
+            const subTitle = `Production Started at ${moment(startDateTime).format('lll')}`
+            dispatch({ type: 'SET_SUB_TITLE', payload: subTitle })
+        } else {
+            dispatch({ type: 'SET_SUB_TITLE', payload: null })
+        }
+
+    }, [state.oee])
+
+    useEffect(() => {
+
+        if (state.oee) {
+            //* disable start button
+            dispatch({ type: 'SET_START_BUTTON_DISABLE', payload: true })
+        } else {
+            //* enable start button
+            dispatch({ type: 'SET_START_BUTTON_DISABLE', payload: false })
+        }
+
+    }, [state.oee])
+
+    //history.push(`/oee/assembly/${guid}?oee=${oeeData.oeeId}`)
+
+    useEffect(() => {
+        history.push(`/oee/assembly/${guid}?oee=${state.oee?.oeeId ?? ''}`)
+    }, [state.oee, guid, history])
+
+    //* events
+
+    const onStart = async () => {
+
+        try {
+            
+            dispatch({ type: 'SET_START_LOADING', payload: true })
+
+            const response = await api.post(`/oee`, {
+                oeeLineId: guid
+            })
+
+            dispatch({ type: 'SET_OEE', payload: response.data })
+
+        } catch (error) {
+            
+        } finally {
+            dispatch({ type: 'SET_START_LOADING', payload: false })
+        }
+
+    }
+
+    const onStop = async () => {
+
+        try {
+            
+            dispatch({ type: 'SET_START_LOADING', payload: true })
+
+            const response = await api.post(`/oee`, {
+                oeeId: state.oee?.oeeId,
+                oeeLineId: guid,
+                endDateTime: new Date(),
+                timestamp: state.oee?.timestamp,
+            })
+
+            dispatch({ type: 'SET_OEE', payload: response.data })
+
+        } catch (error) {
+            
+        } finally {
+            dispatch({ type: 'SET_START_LOADING', payload: false })
+        }
+
+    }
   
     return (
         <>
     
             <PageHeader
                 className="site-page-header"
-                title={`${tag?.groupName} OEE`}
+                title={`${state.line?.groupName} OEE`}
+                subTitle={state.subTitle}
+                tags={state.oee?.endDateTime === undefined 
+                        ? <Tag color={darkGray}>Not Running</Tag> 
+                        : <Tag color={green}>Running</Tag>}
                 onBack={() => history.push(`/oee/${department}`)}
             />
 
@@ -220,9 +367,44 @@ import {
 
                     <Col span={24}>
 
-                        <SuccessButton size="large" className="mr2">Start</SuccessButton>
-                        {/* <Button type="primary" size="large" className="mr2">Start</Button> */}
-                        <Button type="primary" size="large" danger>End</Button>
+                        <Popconfirm 
+                            placement="top" 
+                            title={"Are you sure you want to start production?"} 
+                            onConfirm={onStart} 
+                            okText="Yes" 
+                            cancelText="No">
+
+                            <SuccessButton 
+                                disabled={state.startButtonDisabled}
+                                loading={state.loading}
+                                size="large" 
+                                className="mr2" 
+                                style={{ width: '6rem' }} >
+                                    Start
+                            </SuccessButton>
+                            
+                        </Popconfirm>
+
+                        <Popconfirm 
+                            placement="top" 
+                            title={"Are you sure you want to stop production?"} 
+                            onConfirm={onStop} 
+                            okText="Yes" 
+                            cancelText="No">
+
+                            <Button 
+                                type="primary" 
+                                size="large" 
+                                style={{ width: '6rem' }} 
+                                danger >
+                                    Stop
+                            </Button>
+
+                        </Popconfirm>
+                        
+                    </Col>
+
+                    <Col span={24}>
                     
                     </Col>
 
@@ -230,7 +412,7 @@ import {
 
                 <List>
                     {
-                        items.map(e => {
+                        state.items.map(e => {
 
                             let className = ''
                             switch (e?.type) {

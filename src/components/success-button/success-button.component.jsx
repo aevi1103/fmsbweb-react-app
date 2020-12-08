@@ -14,7 +14,8 @@ const Btn = styled(Button)`
     color: #fff !important;
 
     &:hover {
-        background-color: ${lighten(.02, green)} !important;
+        background-color: ${lighten(.04, green)} !important;
+        border-color: ${lighten(.04, green)} !important;
     }
 `
 
