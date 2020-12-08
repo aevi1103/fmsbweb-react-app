@@ -20,6 +20,7 @@ import {
  } from '../../core/redux/production-details/production-details.actions'
 
  import DailyScrapByCodeChart from '../daily-scrap-by-code-chart/daily-scrap-by-code-chart.component'
+ import { lightGray } from '../../core/utilities/colors'
 
  const cardHeightStyle = { height: "300px" }
  const { Text } = Typography;
@@ -118,7 +119,7 @@ const DefectSummaryTable = React.memo(({ scrapData }) => {
       const summary = pageData => {
         const totalQty = pageData.reduce((prev, { qty }) => prev + qty, 0);
         return (
-            <Table.Summary.Row style={{ backgroundColor: '#fafafa'}}>
+            <Table.Summary.Row style={{ backgroundColor: lightGray }}>
                 <Table.Summary.Cell colSpan="4">
                     <Text strong>Total</Text>
                 </Table.Summary.Cell>

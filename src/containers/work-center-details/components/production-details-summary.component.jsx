@@ -12,6 +12,9 @@ import {
     ArrowDownOutlined
 } from '@ant-design/icons';
 
+import { colors } from '../../../core/utilities/colors'
+const { green, red } = colors
+
 const formatScrapText = (rate, qty) => `${numeral(rate).format('0.00%')} (${numeral(qty).format('0,0')})`;
 
 const formatScrap = (data, scrap) => {
@@ -32,7 +35,7 @@ const formatScrap = (data, scrap) => {
 }
 
 const formatNetOae = (net, oae) => `${numeral(oae).format('0%')} (${numeral(net).format('0,0')})`;
-const getStatusState = (value, target) => (value <= target) ? { color: '#FF4136' } : { color: '#19A974' } 
+const getStatusState = (value, target) => (value <= target) ? { color: green } : { color: red } 
 const getPrefix = (value, target) => (value <= target) ? <ArrowDownOutlined /> : <ArrowUpOutlined />
 
 const ProductionDetailsSummary = React.memo(({ data }) => {

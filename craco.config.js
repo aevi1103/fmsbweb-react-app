@@ -10,6 +10,7 @@ module.exports = {
           lessOptions: {
             modifyVars: { 
                 '@primary-color': tennecoBlue,
+                '@error-color': '#dc3545',
                 '@layout-body-background': '#fff',
                 '@layout-header-background': tennecoBlue,
                 '@menu-highlight-color': '#fff',

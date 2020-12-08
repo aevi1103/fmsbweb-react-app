@@ -6,6 +6,7 @@ import { useWindowUnloadEffect  } from '../../core/utilities/custom-hook'
 
 import api from '../../core/utilities/api'
 import { baseUrl } from '../../core/utilities/base-url'
+import SuccessButton from '../../components/success-button/success-button.component'
 
 import { 
     Layout,
@@ -193,15 +194,15 @@ import {
 
 
     useEffect(() => {
-        setItems([...items, counter])
+        setItems(items => [...items, counter])
     }, [counter])
 
     useEffect(() => {
-        setItems([...items, downtime])
+        setItems(items => [...items, downtime])
     }, [downtime])
 
     useEffect(() => {
-        setItems([...items, scrap])
+        setItems(items => [...items, scrap])
     }, [scrap])
   
     return (
@@ -219,8 +220,9 @@ import {
 
                     <Col span={24}>
 
-                        <Button type="primary" size="large" className="mr2" success>Start</Button>
-                        <Button size="large" >End</Button>
+                        <SuccessButton size="large" className="mr2">Start</SuccessButton>
+                        {/* <Button type="primary" size="large" className="mr2">Start</Button> */}
+                        <Button type="primary" size="large" danger>End</Button>
                     
                     </Col>
 

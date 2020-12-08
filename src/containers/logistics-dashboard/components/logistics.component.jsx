@@ -17,6 +17,7 @@ import DaysOnHandTableChart from './days-on-hand-chart.component'
 
 import CustomerCommentsTable from './customer-comments-table'
 import ProductionOrder from '../../production-order-file-upload/components/production-order.component'
+import { red, green, yellow, blue } from '../../../core/utilities/colors'
 
 import { 
     Row,
@@ -55,10 +56,10 @@ const tabListNoTitle = [
 const contentListNoTitle = {
     doh: <>
             <div className="mb2">
-                <Tag className="pa1" color="#e33545">DOH is between 0 and 2</Tag>
-                <Tag className="pa1" color="#ffc107">DOH is between 2 and 3</Tag>
-                <Tag className="pa1" color="#28a745">DOH is between 3 and 5</Tag>
-                <Tag className="pa1" color="#2196F3">DOH is greater than 5</Tag>
+                <Tag className="pa1" color={red}>DOH is between 0 and 2</Tag>
+                <Tag className="pa1" color={yellow}>DOH is between 2 and 3</Tag>
+                <Tag className="pa1" color={green}>DOH is between 3 and 5</Tag>
+                <Tag className="pa1" color={blue}>DOH is greater than 5</Tag>
             </div>
 
             <DaysOnHandTableChart/>

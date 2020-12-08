@@ -6,6 +6,7 @@ import Charts from 'fusioncharts/fusioncharts.powercharts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 import { tooltipStyle } from '../../../core/utilities/chart-config'
+import { green, red, darkGray } from '../../../core/utilities/colors'
 
 // Resolves charts dependancy
 FusionCharts.options.creditLabel = false;
@@ -71,8 +72,8 @@ const HourlyProductionChart = ({
     }
 
     const setColor = (target, oaeTarget, net) => {
-        if(target === 0) return '#a4a4a5';
-        return net < (target * oaeTarget) ? '#FF4136' : '#28A745'
+        if(target === 0) return darkGray;
+        return net < (target * oaeTarget) ? red : green
     }
 
     const mappedDataSet = dataSet.map(d => ({

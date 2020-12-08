@@ -82,10 +82,8 @@ const DaysOnHandTable = () => {
          ) : (
            text
          ),
-     });
+    });
    
-
-
    const columns = [
        {
            title: 'Date',

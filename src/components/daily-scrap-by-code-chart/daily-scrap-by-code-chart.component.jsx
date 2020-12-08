@@ -10,6 +10,9 @@ import {
     tooltipStyle
 } from '../../core/utilities/chart-config'
 
+import { red, blue } from '../../core/utilities/colors'
+
+
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
@@ -29,7 +32,7 @@ const DailyScrapByCodeChart = React.memo(({
             connectNullData: '1',
             labelDisplay: 'rotate',
             slantLabel: '1',
-            palettecolors: '#ef4434',
+            palettecolors: red,
             // exportEnabled: "1",
 
             ...tooltipStyle
@@ -45,7 +48,7 @@ const DailyScrapByCodeChart = React.memo(({
             line: [{
                 startvalue: start.toFixed(2),
                 endValue: end.toFixed(2),
-                color: "#007bff",
+                color: blue,
                 displayvalue: "",
                 valueOnRight: "1",
                 dashed: "1",

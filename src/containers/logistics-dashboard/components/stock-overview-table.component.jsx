@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import numeral from 'numeral';
 import { numberSorter } from '../../../core/utilities/helpers';
+import { green, red, yellow } from '../../../core/utilities/colors'
 
 import { 
     Table,
@@ -30,11 +31,11 @@ import {
         )
 
         if (value < target.min) {
-            color = "#dc3545";
+            color = red;
         } else if (value >= target.min && value <= target.max) {
-            color = "#28a745";
+            color = green;
         } else {
-            color = "#ffc107";
+            color = yellow;
         }
 
         return (

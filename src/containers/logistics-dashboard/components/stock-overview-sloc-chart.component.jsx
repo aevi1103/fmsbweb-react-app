@@ -6,6 +6,7 @@ import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
+import { green, red } from '../../../core/utilities/colors'
 
 import CustomSpinner from '../../../components/custom-spinner/custom-spinner.component';
 import { tooltipStyle } from '../../../core/utilities/chart-config'
@@ -27,7 +28,7 @@ const StockOverViewSlocChart = () => {
         return {
             seriesName: key,
             renderas: ((key === "Min" || key === "Max") ? "Line" : ""),
-            color: (key === "Min" ? "#dc3545" : key === "Max" ? "#28a745" : ""),
+            color: (key === "Min" ? red : key === "Max" ? green : ""),
             data: dataSetByKey[key].map(({stock}) => 
                     ({
                         value: stock
