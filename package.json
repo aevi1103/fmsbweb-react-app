@@ -1,6 +1,6 @@
 {
   "name": "fmsbweb.react-app",
-  "version": "0.1.304",
+  "version": "0.1.305",
   "private": true,
   "dependencies": {
     "@craco/craco": "^5.9.0",
