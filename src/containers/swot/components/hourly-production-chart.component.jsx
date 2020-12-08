@@ -9,10 +9,8 @@ import ReactFC from 'react-fusioncharts';
 
 import { tooltipStyle } from '../../../core/utilities/chart-config'
 
-import {
-    chartProps,
-    colorCodes
-} from '../service/helper'
+import { chartProps } from '../service/helper'
+import { red, green } from '../../../core/utilities/colors'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -26,7 +24,6 @@ const HourlyProductionChart = ({
 
     if (!prodData) return;
 
-    const { green, red } = colorCodes
     const { startDate, endDate, data } = prodData;
     const dateFormat = 'M/D';
 

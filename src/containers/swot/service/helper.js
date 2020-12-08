@@ -92,8 +92,3 @@ export const chartProps = {
     subCaptionFontSize: 13,
     // exportEnabled: '1'
 }
-
-export const colorCodes = {
-    green: '#19A974',
-    red: '#ff4136',
-}

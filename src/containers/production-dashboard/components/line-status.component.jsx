@@ -32,9 +32,7 @@ import {
 } from '../../../core/redux/production-status/production-status.action'
 
 import { getTopItems } from '../../../core/utilities/helpers'
-import { colorCodes } from '../../swot/service/helper'
-
-const { red } = colorCodes;
+import { red } from '../../../core/utilities/colors'
 
 const LineStatus = React.memo(({ 
     data,

@@ -6,11 +6,8 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
 import { tooltipStyle } from '../../../core/utilities/chart-config'
-
-import {
-    chartProps,
-    colorCodes
-} from '../service/helper'
+import { green } from '../../../core/utilities/colors'
+import { chartProps } from '../service/helper'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -38,7 +35,7 @@ const ProductionByProgramChart = ({
         data: data.map(({program, qty}) => ({
                 label: program,
                 value: qty,
-                color: colorCodes.green
+                color: green
             }))
       };
 

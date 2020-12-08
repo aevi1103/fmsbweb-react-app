@@ -12,11 +12,8 @@ import {
   } from '../../core/redux/swot/swot.actions'
 
 import SwotLine from './components/swot-line.component'
-
-import {
-    getContentListDepartment,
-    colorCodes
-} from './service/helper'
+import { red, green } from '../../core/utilities/colors'
+import { getContentListDepartment } from './service/helper'
 
 import { 
     ArrowDownOutlined,
@@ -99,7 +96,7 @@ const tabList =[
     const { oaeTarget } = targets || {}
     const { dept } = filters || {};
     const style = {
-        color: oae < oaeTarget ? colorCodes.red : colorCodes.green
+        color: oae < oaeTarget ? red : green
     }
 
     const onDownload = () => exportData(filters, setDownload, '', true);

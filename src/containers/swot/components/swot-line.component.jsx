@@ -3,10 +3,8 @@ import numeral from 'numeral'
 import moment from 'moment'
 import { exportData } from '../service/export'
 
-import {
-    getContentList,
-    colorCodes
-} from '../service/helper'
+import {  getContentList } from '../service/helper'
+import { red, green } from '../../../core/utilities/colors'
 
 import { 
     Card,
@@ -41,7 +39,7 @@ import {
     const [download, setDownload] = useState(false)
 
     const style = {
-        color: oae < oaeTarget ? colorCodes.red : colorCodes.green
+        color: oae < oaeTarget ? red : green
     }
 
     const onDownload = () => exportData(filters, setDownload, line);

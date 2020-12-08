@@ -8,11 +8,8 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
 import { tooltipStyle } from '../../../core/utilities/chart-config'
-
-import {
-    chartProps,
-    colorCodes
-} from '../service/helper'
+import { red, green } from '../../../core/utilities/colors'
+import { chartProps } from '../service/helper'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -119,7 +116,7 @@ const DailyScrapRateChart = ({
                 line: [
                     {
                         startvalue: overallScrapTarget * 100,
-                        color: colorCodes.red,
+                        color: red,
                         valueOnRight: '1',
                         displayvalue: `Target (${numeral(overallScrapTarget).format('0.00%')})`,
                         dashed: '1'

@@ -8,11 +8,8 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
 import { tooltipStyle } from '../../../core/utilities/chart-config'
-
-import {
-    chartProps,
-    colorCodes
-} from '../service/helper'
+import { red, green } from '../../../core/utilities/colors'
+import { chartProps } from '../service/helper'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -37,8 +34,6 @@ const MonthWeekOaeChart = ({
         lastMonths,
         lastWeeks
     } = filters;
-
-    const { green, red } = colorCodes
 
     const dateFormat = 'MM/DD/YY'
     const formatDate = date => moment(date).format(dateFormat);

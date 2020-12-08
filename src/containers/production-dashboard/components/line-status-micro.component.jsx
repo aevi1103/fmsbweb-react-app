@@ -7,9 +7,7 @@ import {
     Tooltip
 } from 'antd'
 
-import {
-    colorCodes
-} from '../../swot/service/helper'
+import { red, green} from '../../../core/utilities/colors'
 
 import { scrollToObject } from '../../../core/utilities/helpers'
 
@@ -24,7 +22,7 @@ const LineStatusMicro = ({
     line
 }) => {
 
-    const { green, red } = colorCodes;
+
 
     const headStyle ={
         backgroundColor: oae < oaeTarget ? red : green,

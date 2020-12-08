@@ -29,9 +29,8 @@ import {
 } from 'antd'
 
 import {  getTopItems } from '../../../core/utilities/helpers'
-import { colorCodes } from '../../swot/service/helper'
+import { red } from '../../../core/utilities/colors'
 
-const { red } = colorCodes;
 const gutter = [8,8]
 
 const DepartmentStatus = React.memo(({

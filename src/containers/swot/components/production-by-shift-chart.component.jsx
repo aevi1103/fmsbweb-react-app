@@ -7,11 +7,8 @@ import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
 import ReactFC from 'react-fusioncharts';
 
 import { tooltipStyle } from '../../../core/utilities/chart-config'
-
-import {
-    chartProps,
-    colorCodes
-} from '../service/helper'
+import { chartProps } from '../service/helper'
+import { red, green } from '../../../core/utilities/colors'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -42,7 +39,7 @@ const ProductionByShiftChart = ({
         data: data.map(({shift, qty, oae, target}) => ({
                 label: `Shift ${shift}`,
                 value: Math.round((oae * 100), 0),
-                color: oae < oaeTarget ? colorCodes.red : colorCodes.green,
+                color: oae < oaeTarget ? red : green,
                 toolText: `<b>Shift: ${shift}</b><br>
                             <b>Target: ${numeral(target).format('0,0')}</b><br>
                             <b>Net: ${numeral(qty).format('0,0')}</b><br>
@@ -53,7 +50,7 @@ const ProductionByShiftChart = ({
             {
                 line: [{
                     startvalue: oaeTarget * 100,
-                    color: colorCodes.green,
+                    color: green,
                     valueOnRight: '1',
                     displayvalue: `${numeral(oaeTarget).format('0%')}`,
                     dashed: '1'

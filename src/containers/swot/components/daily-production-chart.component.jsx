@@ -9,10 +9,8 @@ import ReactFC from 'react-fusioncharts';
 
 import { tooltipStyle } from '../../../core/utilities/chart-config'
 
-import {
-    chartProps,
-    colorCodes
-} from '../service/helper'
+import { chartProps } from '../service/helper'
+import { green } from '../../../core/utilities/colors'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -57,7 +55,7 @@ const DailyProductionChart = ({
             {
                 line: [{
                     startvalue: oaeTarget * 100,
-                    color: colorCodes.green,
+                    color: green,
                     valueOnRight: '1',
                     displayvalue: `${numeral(oaeTarget).format('0%')}`,
                     dashed: '1'

@@ -8,11 +8,7 @@ import ReactFC from 'react-fusioncharts';
 
 import { tooltipStyle } from '../../../core/utilities/chart-config'
 import { chartConfigDashboard, chartConfigModal } from '../service/chart-config'
-
-import {
-    colorCodes
-} from '../../swot/service/helper'
-
+import { red, green } from '../../../core/utilities/colors'
 
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
@@ -31,7 +27,6 @@ const HourlyProductionChart = React.memo(({
     const chartConfig = !isModal ? chartConfigDashboard : chartConfigModal;
 
     const { netRate } = target;
-    const { green, red } = colorCodes;
     const dateFormat = 'M/D';
 
     const getLabel = (shiftDate, shift, line, cellSide, hour) => {
