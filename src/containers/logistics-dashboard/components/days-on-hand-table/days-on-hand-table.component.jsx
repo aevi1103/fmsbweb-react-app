@@ -177,6 +177,26 @@ const DaysOnHandTable = () => {
 
             return `${rowClass}`;
 
+          }}
+          onRow={(record, rowIndex) => {
+
+            const antRowClassName = 'ant-table-row'
+
+            
+
+            return {
+              onMouseEnter: e => {
+                if (parseInt(record.safetyStock)  > 0) {
+                  e.target.parentElement.classList.remove(antRowClassName)
+                }
+              },
+              onMouseLeave: e => {
+                if (parseInt(record.safetyStock)  > 0) {
+                  e.target.parentElement.classList.add(antRowClassName)
+                }
+              }
+            }
+
           }} />     
    )
 }
