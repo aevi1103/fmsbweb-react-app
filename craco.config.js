@@ -1,4 +1,5 @@
 const CracoLessPlugin = require('craco-less');
+const tennecoBlue = '#0033A0';
 
 module.exports = {
   plugins: [
@@ -8,11 +9,11 @@ module.exports = {
         lessLoaderOptions: {
           lessOptions: {
             modifyVars: { 
-                '@primary-color': '#0033A0',
-                '@layout-body-background': '#FFFFFF',
-                '@layout-header-background': '#0033A0',
+                '@primary-color': tennecoBlue,
+                '@layout-body-background': '#fff',
+                '@layout-header-background': tennecoBlue,
                 '@menu-highlight-color': '#fff',
-                '@layout-trigger-background': '#002a85'
+                '@layout-trigger-background': '#002a85',
             },
             javascriptEnabled: true,
           },
