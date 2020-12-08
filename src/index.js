@@ -8,7 +8,7 @@ import { store, persistor} from './core/redux/store';
 
 import AppErrorBoundary from './components/error-boundaries/app-error-boundary.component';
 
-import './index.css';
+// import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 

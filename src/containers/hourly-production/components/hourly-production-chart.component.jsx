@@ -93,7 +93,7 @@ const HourlyProductionChart = ({
           showvalues: "1",
           labelDisplay: 'rotate',
           slantLabel: '1',
-          bgColor: '#F9FAFC',
+        //   bgColor: '#F9FAFC',
           ...tooltipStyle
         },
         rows: {
