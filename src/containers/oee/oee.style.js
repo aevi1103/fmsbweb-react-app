@@ -25,20 +25,21 @@ export const Centered = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 190px;
+    height: 195px;
 `
 
 export const Kpi = styled.span`
-    font-size: 5rem;
+    font-size: 6rem;
     font-weight: bold;
     color: ${props => props.danger ? red : props.success ? green : props.dark ? 'black' : props.warning ? yellow : ''};
 `
 
 export const SubTitle = styled.span`
     font-size: 1.5rem;
-    color: ${props => props.dark ? 'black' : ''};
+    color: ${props => props.danger ? red : props.success ? green : props.dark ? 'black' : props.warning ? yellow : ''};
 `
 
 export const SmallSubTitle = styled.span`
     font-size: .6rem;
+    color: ${props => props.danger ? red : props.success ? green : props.dark ? 'black' : props.warning ? yellow : ''};
 `

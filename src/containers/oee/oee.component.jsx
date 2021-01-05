@@ -1,5 +1,6 @@
 import React, { useEffect, useReducer, useState } from 'react'
 import moment from 'moment'
+import numeral from 'numeral'
 import { useParams, useHistory } from 'react-router-dom'
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import { useWindowUnloadEffect  } from '../../core/utilities/custom-hook'
@@ -293,34 +294,34 @@ const Oee = () => {
                         ? <Tag color={darkGray}>Not Running</Tag> 
                         : <Tag color={green}>Running</Tag>}
                 onBack={() => history.push(`/oee/${department}`)}
+                extra={<Row gutter={[6,6]}>
+                            <Col>
+                                <SuccessButton 
+                                    disabled={state.startButtonDisabled}
+                                    onClick={onStartClick}
+                                    size="large" 
+                                    className="mr2" 
+                                    style={{ width: '12rem' }} >
+                                        Start Production
+                                </SuccessButton>
+                            </Col>
+                            <Col>
+                                <Button 
+                                    type="primary" 
+                                    disabled={!state.startButtonDisabled}
+                                    size="large" 
+                                    onClick={onEndConfirm}
+                                    style={{ width: '12rem' }} 
+                                    danger >
+                                        Stop Production
+                                </Button>
+                            </Col> 
+                        </Row>}
             />
 
             <Content className="ma3 mt0">
 
                 <Row gutter={[12,12]}>
-
-                    <Col span={24}>
-
-                        <SuccessButton 
-                            disabled={state.startButtonDisabled}
-                            onClick={onStartClick}
-                            size="large" 
-                            className="mr2" 
-                            style={{ width: '12rem' }} >
-                                Start Production
-                        </SuccessButton>
-
-                        <Button 
-                            type="primary" 
-                            disabled={!state.startButtonDisabled}
-                            size="large" 
-                            onClick={onEndConfirm}
-                            style={{ width: '12rem' }} 
-                            danger >
-                                Stop Production
-                        </Button>
-                    
-                    </Col>
 
                     <Col span={24}>
 

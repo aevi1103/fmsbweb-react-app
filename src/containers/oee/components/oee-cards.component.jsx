@@ -28,10 +28,12 @@ const getTimeStatus = value => {
 
 const OeeCards = ({ state }) => {
 
-    const plcDowntime = state.oee?.status?.plcDowntime ?? 0;
+    const decimalFormat = '0.00'
+    const cycleTime = state.oee?.status?.cycleTimeSeconds ?? 0;
+    const ppm = 60 / cycleTime;
+    const ppmFormat = numeral(ppm).format(decimalFormat);
 
-    const cycleTimeSeconds = numeral(state.oee?.status?.cycleTimeSeconds ?? 0).format('0.00');
-    const cycleTimeMinutes = numeral(state.oee?.status?.cycleTimeMinutes ?? 0).format('0.00');
+    const plcDowntime = state.oee?.status?.plcDowntime ?? 0;
     const allTime = getTimeStatus(state.oee?.status?.allTime);
     const plannedDowntime = getTimeStatus(state.oee?.status?.plannedDowntime);
     const plannedProductionTime = getTimeStatus(state.oee?.status?.plannedProductionTime);
@@ -43,7 +45,7 @@ const OeeCards = ({ state }) => {
 
             <Col span={24}>
                 <Row gutter={[32,0]}>
-                    <Col><b>Cycle Time :</b> { cycleTimeSeconds } sec. / { cycleTimeMinutes } min. </Col>
+                    <Col><b>Ideal Cycle Time :</b> { numeral(cycleTime).format(decimalFormat) } seconds / { ppmFormat } parts per minute</Col>
                     <Col><b>All Time:</b> { allTime }</Col>
                     <Col><b>Planned Downtime:</b> { plannedDowntime }</Col>
                     <Col><b>Planned Production Time:</b> { plannedProductionTime }</Col>
@@ -52,7 +54,7 @@ const OeeCards = ({ state }) => {
                 </Row>
             </Col>
 
-            <Col span={6}>
+            <Col md={6} sm={12} xs={24} >
 
                 <Wrapper value={state.oee?.status?.oee ?? 0}>
                     <SubTitle>OEE</SubTitle>
@@ -66,7 +68,7 @@ const OeeCards = ({ state }) => {
                         
             </Col>
 
-            <Col span={6}>
+            <Col md={6} sm={12} xs={24}>
 
                 <Wrapper value={state.oee?.status?.availability ?? 0}>
                     <SubTitle>Availability</SubTitle>
@@ -80,7 +82,7 @@ const OeeCards = ({ state }) => {
                     
             </Col>
 
-            <Col span={6}>
+            <Col md={6} sm={12} xs={24}>
 
                 <Wrapper value={state.oee?.status?.performance ?? 0}>
                     <SubTitle>Performance</SubTitle>
@@ -95,7 +97,7 @@ const OeeCards = ({ state }) => {
 
             </Col>
 
-            <Col span={6}>
+            <Col md={6} sm={12} xs={24}>
 
                 <Wrapper value={state.oee?.status?.quality ?? 0}>
                     <SubTitle>Quality</SubTitle>
@@ -109,7 +111,7 @@ const OeeCards = ({ state }) => {
 
             </Col>
 
-            <Col span={6}>
+            <Col md={6} sm={12} xs={24}>
 
                 <Wrapper>
                     <SubTitle dark>Total Good Parts</SubTitle>
@@ -124,7 +126,7 @@ const OeeCards = ({ state }) => {
 
             </Col>
 
-            <Col span={6}>
+            <Col md={6} sm={12} xs={24}>
 
                 <Wrapper>
                     <SubTitle dark>Unplanned Downtime (Minutes)</SubTitle>
@@ -138,18 +140,19 @@ const OeeCards = ({ state }) => {
 
             </Col>
 
-            <Col span={6}>
+            <Col md={6} sm={12} xs={24}>
 
                 <Row gutter={[6,6]}>
 
                     <Col span={24}>
                         <Wrapper>
-                            <SubTitle dark>Capacity (Parts)</SubTitle>
+                            <SubTitle dark>Capacity</SubTitle>
                             <Centered> 
                                 <Kpi dark>
                                     { numeral(state.oee?.status?.capacity ?? 0).format('0,0') }
                                 </Kpi>
                             </Centered>
+                            <SmallSubTitle dark>Parts per minute × Runtime = Capacity</SmallSubTitle>
                         </Wrapper>
                     </Col>
 
@@ -168,7 +171,7 @@ const OeeCards = ({ state }) => {
 
             </Col>
 
-            <Col span={6}>
+            <Col md={6} sm={12} xs={24}>
 
                 <Wrapper>
                     <SubTitle dark>Total Bad Parts</SubTitle>

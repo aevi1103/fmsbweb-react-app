@@ -41,7 +41,7 @@ const ScrapChart = ({ state }) => {
       const chartConfigs = {
         type: 'column2d',
         width: '100%',
-        height: '266',
+        height: '294',
         dataFormat: 'json',
         dataSource: dataSource
       };

@@ -28,16 +28,19 @@ const HourlyProdChart = ({ state }) => {
             paletteColors: `${green}`,
             ...tooltipStyle
         },
-        data: data.map(({ hour, count, amPm }) => ({
-                label: `${hour} ${amPm}`,
-                value: count
+        data: data.map(({ label, count, date }) => ({
+                label: label,
+                value: count,
+                tooltext: `<b>Date:</b> ${moment(date).format('M/D/YYYY')} <br>
+                    <b>Hour:</b> ${label} <br>
+                    <b>Count:</b> ${count}`
             }))
       };
 
       const chartConfigs = {
         type: 'column2d',
         width: '100%',
-        height: '266',
+        height: '294',
         dataFormat: 'json',
         dataSource: dataSource
       };
