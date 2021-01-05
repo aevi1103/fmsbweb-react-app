@@ -6,7 +6,7 @@
     "@craco/craco": "^5.9.0",
     "@microsoft/signalr": "^3.1.9",
     "antd": "^4.4.3",
-    "axios": "^0.19.2",
+    "axios": ">=0.21.1",
     "babel-plugin-import": "^1.13.0",
     "craco-less": "^1.17.1",
     "customize-cra": "^0.9.1",
