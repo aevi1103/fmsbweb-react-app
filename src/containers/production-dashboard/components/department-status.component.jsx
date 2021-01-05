@@ -52,7 +52,7 @@ const DepartmentStatus = React.memo(({
         autoGageScrap
     } = data;
 
-    const { oaeTarget } = swotTarget;
+    const { oaeTarget } = swotTarget || {};
     const { detailsByMachine, detailsByReason } = downtimeDetails;
     const title = `${department} OAE: ${numeral(oae).format('0%')}`;
 

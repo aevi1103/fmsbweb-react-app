@@ -315,12 +315,12 @@ const AfEosPage = ({
 
         if (type === 'scrap') {
             if (value < target) return { color: red };
-            return red;
+            return { color: green };;
         }
 
         if (type === 'oae') {
             if (value >= target) return { color: green };
-            return red;
+            return { color: red };;
         }
 
         return null;

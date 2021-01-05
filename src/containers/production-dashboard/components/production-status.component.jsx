@@ -21,7 +21,7 @@ const ProductionStatus = React.memo(({
 
     const { lines, department, scrapDetails, scrapDetailsByDepartment } = productionStatus || {};
     const { oae, swotTarget } = department || {};
-    const { oaeTarget } = swotTarget;
+    const { oaeTarget } = swotTarget || {};
 
     return (
 

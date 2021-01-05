@@ -19,10 +19,10 @@ const Btn = styled(Button)`
     }
 `
 
-const SuccessButton = (props) => (
-    <Btn {...props}>
-        { props.children }
-    </Btn>
-)
+const SuccessButton = (props) => {
+    return props.disabled 
+        ? <Button {...props}> { props.children } </Button>
+        : <Btn {...props}> { props.children } </Btn>
+}
 
 export default SuccessButton;

@@ -35,7 +35,7 @@ const formatScrap = (data, scrap) => {
 }
 
 const formatNetOae = (net, oae) => `${numeral(oae).format('0%')} (${numeral(net).format('0,0')})`;
-const getStatusState = (value, target) => (value <= target) ? { color: green } : { color: red } 
+const getStatusState = (value, target) => (value <= target) ? { color: red } : { color: green } 
 const getPrefix = (value, target) => (value <= target) ? <ArrowDownOutlined /> : <ArrowUpOutlined />
 
 const ProductionDetailsSummary = React.memo(({ data }) => {

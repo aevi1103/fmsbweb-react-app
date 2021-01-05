@@ -1,96 +1,34 @@
-import React, { useEffect, useReducer } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import moment from 'moment'
 import { useParams, useHistory } from 'react-router-dom'
 import { HubConnectionBuilder } from '@microsoft/signalr';
-import short from 'short-uuid'
 import { useWindowUnloadEffect  } from '../../core/utilities/custom-hook'
 
 import api from '../../core/utilities/api'
 import { baseUrl } from '../../core/utilities/base-url'
 import SuccessButton from '../../components/success-button/success-button.component'
 import { green, darkGray } from '../../core/utilities/colors'
+import { initialState, reducer } from './services/reducer'
+import { getSummary, getLine } from './services/api'
+
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 import { 
     Layout,
     PageHeader,
-    List,
     Row,
     Col,
     Button,
     Tag,
-    Popconfirm
- } from "antd";
+    Modal,
+    Form,
+    InputNumber
+} from "antd";
+
+import OeeCards from './components/oee-cards.component'
 
 const { Content } = Layout;
-
-const initialState = {
-    loading: false,
-    line: null, 
-    oee: null,
-    items: [],
-    subTitle: null,
-
-    counterConnection: null,
-    downtimeConnection: null, 
-    scrapConnection: null, 
-
-    startLoading: false,
-    startButtonDisabled: false,
-
-    counter: null, 
-    downtime: null, 
-    scrap: null
-}
-
-const reducer = (state = initialState, action) => {
-
-    switch (action.type) {
-
-        case 'SET_LOADING':
-            return { ...state,  loading: action.payload }
-
-        case 'SET_LINE':
-            return { ...state,  line: action.payload }
-
-        case 'SET_OEE':
-            return { ...state,  oee: action.payload }
-
-        case 'SET_ITEMS':
-            return { ...state,  items: action.payload }
-
-        case 'SET_SUB_TITLE':
-            return { ...state,  subTitle: action.payload }
-
-        case 'SET_COUNTER_CONN':
-            return { ...state,  counterConnection: action.payload }
-
-        case 'SET_DOWNTIME_CONN':
-            return { ...state,  downtimeConnection: action.payload }
-
-        case 'SET_SCRAP_CONN':
-            return { ...state,  scrapConnection: action.payload }
-
-        case 'SET_START_LOADING':
-            return { ...state,  startLoading: action.payload }
-
-        case 'SET_START_BUTTON_DISABLE':
-            return { ...state,  startButtonDisabled: action.payload }
-
-        //* temp
-        case 'SET_COUNTER':
-            return { ...state,  counter: action.payload }
-
-        case 'SET_DOWNTIME':
-            return { ...state,  downtime: action.payload }
-
-        case 'SET_SCRAP':
-            return { ...state,  scrap: action.payload }
-
-        default:
-            return state;
-    }
-
-}
+const { confirm } = Modal;
 
 const Oee = () => {
 
@@ -98,30 +36,33 @@ const Oee = () => {
     const { guid, department } = useParams(); 
     const [state, dispatch] = useReducer(reducer, initialState)
 
-    //* mount
+    const [form] = Form.useForm();
+    const [visible, setVisible] = useState(false);
+
+    const getSummaryData = async () => {
+        const summaryResponse = await getSummary(guid)
+        dispatch({ type: 'SET_OEE', payload: summaryResponse.data })
+    }
+
+    //* on mount get line and oee data
     useEffect(() => {
 
-        (async function getLine() {
+        (async function () {
 
             try {
                         
                 dispatch({ type: 'SET_LOADING', payload: true })
         
-                const response = await api.get(`oee/lines/${guid}`)
-                const data = response.data;
-                document.title = `${data.groupName} OEE`
+                //* get line
+                const lineResponse = await getLine(guid);
+                document.title = `${lineResponse.data.groupName} OEE`;
+                dispatch({ type: 'SET_LINE', payload: lineResponse.data })
 
-                dispatch({ type: 'SET_LINE', payload: data })
+                //* get OEE
+                getSummaryData();
 
-                //* get OEE data
-                const oeeResponse =  await api.get(`oee?$filter=oeeLineId eq ${guid} and endDateTime eq null`);
-                const oeeData = oeeResponse.data[0];
-                dispatch({ type: 'SET_OEE', payload: oeeData })
 
-                
-    
-            } catch (error) {
-                
+            } catch (error) {           
             } finally {
                 dispatch({ type: 'SET_LOADING', payload: false })
             }
@@ -130,7 +71,7 @@ const Oee = () => {
 
     }, [])
 
-    //* unmount
+    //* unsubscribe to group hubs
     useWindowUnloadEffect(() => {
 
         if (state.counterConnection) 
@@ -144,9 +85,10 @@ const Oee = () => {
     
     }, true)
 
-    //* counter onChange effects
+    //* open signalr connections
     useEffect(() => {
 
+        //* counter connection
         const counterConn = new HubConnectionBuilder()
             .withUrl(`${baseUrl}/counterhub`)
             .withAutomaticReconnect()
@@ -154,27 +96,51 @@ const Oee = () => {
 
         dispatch({ type: 'SET_COUNTER_CONN', payload: counterConn })
 
+        //* downtime connection
+        const downtimeConn = new HubConnectionBuilder()
+            .withUrl(`${baseUrl}/downtimehub`)
+            .withAutomaticReconnect()
+            .build();
+
+        dispatch({ type: 'SET_DOWNTIME_CONN', payload: downtimeConn })
+
+        //* scrap connection
+        const scrapConn = new HubConnectionBuilder()
+            .withUrl(`${baseUrl}/scraphub`)
+            .withAutomaticReconnect()
+            .build();
+
+        dispatch({ type: 'SET_SCRAP_CONN', payload: scrapConn })
+
     }, [])
 
+    //* subscribe to group hubs
     useEffect(() => {
 
         if (state.counterConnection && state.line) {
             state.counterConnection.start()
                 .then(() => {
 
-                    state.counterConnection.invoke('AddToGroup', state.line.tagName)
+                    const conn = state.counterConnection;
+                    
+                    //* add client to group
+                    conn.invoke('AddToGroup', state.line.tagName)
 
-                    state.counterConnection.on('BroadCastChange', data => {
+                    //* listner
+
+                    conn.on('BroadCastChange', data => {
                         console.log('counter', data)
 
-                        dispatch({ type: 'SET_COUNTER', payload: { type: 'counter', ...data } })
+                        //* update data
+                        getSummaryData();
+
                     });
 
-                    state.counterConnection.on('onJoin', data => {
+                    conn.on('onJoin', data => {
                         console.log(`%c counter join: ${data}`, 'color: green; font-size: 15px; font-weight: bold;')
                     });
 
-                    state.counterConnection.on('onLeave', data => {
+                    conn.on('onLeave', data => {
                         console.log(`%c counter leave: ${data}`, 'color: red; font-size: 15px; font-weight: bold;')
                     });
                 })
@@ -183,37 +149,31 @@ const Oee = () => {
 
     }, [state.counterConnection, state.line])
 
-    //* downtime onChange effects
-    useEffect(() => {
-
-        const downtimeConn = new HubConnectionBuilder()
-            .withUrl(`${baseUrl}/downtimehub`)
-            .withAutomaticReconnect()
-            .build();
-
-        dispatch({ type: 'SET_DOWNTIME_CONN', payload: downtimeConn })
-        
-    }, [])
-
     useEffect(() => {
 
         if (state.downtimeConnection && state.line) {
             state.downtimeConnection.start()
                 .then(() => {
-                    state.downtimeConnection.invoke('AddToGroup', state.line.groupName)
 
-                    state.downtimeConnection.on('BroadCastChange', data => {
+                    const conn = state.downtimeConnection;
+
+                    //* add client to group
+                    conn.invoke('AddToGroup', state.line.groupName)
+
+                    //* listnen on value change in the db
+                    conn.on('BroadCastChange', data => {
+
                         console.log('downtime', data)
+                        //* update data
+                        getSummaryData();
 
-                        dispatch({ type: 'SET_DOWNTIME', payload: { type: 'downtime', ...data } })
-         
                     });
 
-                    state.downtimeConnection.on('onJoin', data => {
+                    conn.on('onJoin', data => {
                         console.log(`%c downtime join: ${data}`, 'color: green; font-size: 15px; font-weight: bold;')
                     });
 
-                    state.downtimeConnection.on('onLeave', data => {
+                    conn.on('onLeave', data => {
                         console.log(`%c downtime leave: ${data}`, 'color: red; font-size: 15px; font-weight: bold;')
                     });
                 })
@@ -222,36 +182,30 @@ const Oee = () => {
 
     }, [state.downtimeConnection, state.line])
 
-    //* scrap onChange effects
-    useEffect(() => {
-
-        const scrapConn = new HubConnectionBuilder()
-            .withUrl(`${baseUrl}/scraphub`)
-            .withAutomaticReconnect()
-            .build();
-
-        dispatch({ type: 'SET_SCRAP_CONN', payload: scrapConn })
-        
-    }, [])
-
     useEffect(() => {
 
         if (state.scrapConnection && state.line) {
             state.scrapConnection.start()
                 .then(() => {
 
-                    state.scrapConnection.invoke('AddToGroup', state.line.workCenter)
+                    const conn = state.scrapConnection;
 
-                    state.scrapConnection.on('BroadCastChange', data => {
+                    //* add client to group
+                    conn.invoke('AddToGroup', state.line.workCenter)
+
+                    //* listnen on value change in the db
+                    conn.on('BroadCastChange', data => {
                         console.log('scrap', data)
-                        dispatch({ type: 'SET_SCRAP', payload: { type: 'scrap', ...data } })
+                        //* update data
+
+                        getSummaryData();
                     });
                     
-                    state.scrapConnection.on('onJoin', data => {
+                    conn.on('onJoin', data => {
                         console.log(`%c scrap join: ${data}`, 'color: green; font-size: 15px; font-weight: bold;')
                     });
 
-                    state.scrapConnection.on('onLeave', data => {
+                    conn.on('onLeave', data => {
                         console.log(`%c scrap leave: ${data}`, 'color: red; font-size: 15px; font-weight: bold;')
                     });
                 })
@@ -260,94 +214,74 @@ const Oee = () => {
 
     }, [state.scrapConnection, state.line])
 
-    //* temp
-    useEffect(() => {
-        dispatch({ type: 'SET_ITEMS', payload: [...state.items, state.counter] })
-    }, [state.counter])
-
-    useEffect(() => {
-        dispatch({ type: 'SET_ITEMS', payload: [...state.items, state.downtime] })
-    }, [state.downtime])
-
-    useEffect(() => {
-        dispatch({ type: 'SET_ITEMS', payload: [...state.items, state.scrap] })
-    }, [state.scrap])
-
+    //* other side effects
     useEffect(() => {
 
         if (state.oee) {
-            const { startDateTime } = state.oee;
+
+            const { line: { startDateTime } } = state.oee;
             const subTitle = `Production Started at ${moment(startDateTime).format('lll')}`
             dispatch({ type: 'SET_SUB_TITLE', payload: subTitle })
-        } else {
-            dispatch({ type: 'SET_SUB_TITLE', payload: null })
-        }
-
-    }, [state.oee])
-
-    useEffect(() => {
-
-        if (state.oee) {
-            //* disable start button
             dispatch({ type: 'SET_START_BUTTON_DISABLE', payload: true })
+
         } else {
-            //* enable start button
+
+            dispatch({ type: 'SET_SUB_TITLE', payload: null })
             dispatch({ type: 'SET_START_BUTTON_DISABLE', payload: false })
+
         }
 
     }, [state.oee])
 
-    //history.push(`/oee/assembly/${guid}?oee=${oeeData.oeeId}`)
-
     useEffect(() => {
-        history.push(`/oee/assembly/${guid}?oee=${state.oee?.oeeId ?? ''}`)
+        history.push(`/oee/assembly/${guid}?id=${state.oee?.line?.oeeId ?? ''}`)
     }, [state.oee, guid, history])
 
     //* events
+    const onStartClick = () => setVisible(true)
 
-    const onStart = async () => {
+    const onEndConfirm = () => {
 
-        try {
-            
-            dispatch({ type: 'SET_START_LOADING', payload: true })
+        confirm({
+            title: `Do you want to stop ${state.line?.groupName} production?`,
+            icon: <ExclamationCircleOutlined />,
+            okText: 'Yes',
+            centered: true,
+            cancelText: 'No',
+            async onOk() {
 
-            const response = await api.post(`/oee`, {
-                oeeLineId: guid
-            })
+                const response = await api.post(`/oee`, {
+                    oeeId: state.oee?.line?.oeeId,
+                    LineId: guid,
+                    endDateTime: new Date(),
+                    timestamp: state.oee?.line?.timestamp,
+                })
+    
+                dispatch({ type: 'SET_OEE', payload: response.data })
 
-            dispatch({ type: 'SET_OEE', payload: response.data })
-
-        } catch (error) {
-            
-        } finally {
-            dispatch({ type: 'SET_START_LOADING', payload: false })
-        }
-
-    }
-
-    const onStop = async () => {
-
-        try {
-            
-            dispatch({ type: 'SET_START_LOADING', payload: true })
-
-            const response = await api.post(`/oee`, {
-                oeeId: state.oee?.oeeId,
-                oeeLineId: guid,
-                endDateTime: new Date(),
-                timestamp: state.oee?.timestamp,
-            })
-
-            dispatch({ type: 'SET_OEE', payload: response.data })
-
-        } catch (error) {
-            
-        } finally {
-            dispatch({ type: 'SET_START_LOADING', payload: false })
-        }
+            }
+        })
 
     }
   
+    const onSubmit = () => form.submit();
+
+    const onFinish = async ({ clockNumber }) => {
+
+        try {
+
+            const response = await api.post(`/oee`, { LineId: guid, clockNumber })
+            dispatch({ type: 'SET_OEE', payload: response.data });
+            setVisible(false)
+
+        } catch (error) {
+            
+        }
+
+    }
+
+    const onCancelModal = () => setVisible(false)
+
     return (
         <>
     
@@ -355,7 +289,7 @@ const Oee = () => {
                 className="site-page-header"
                 title={`${state.line?.groupName} OEE`}
                 subTitle={state.subTitle}
-                tags={state.oee?.endDateTime === undefined 
+                tags={state.oee?.line?.endDateTime === undefined 
                         ? <Tag color={darkGray}>Not Running</Tag> 
                         : <Tag color={green}>Running</Tag>}
                 onBack={() => history.push(`/oee/${department}`)}
@@ -363,79 +297,63 @@ const Oee = () => {
 
             <Content className="ma3 mt0">
 
-                <Row>
+                <Row gutter={[12,12]}>
 
                     <Col span={24}>
 
-                        <Popconfirm 
-                            placement="top" 
-                            title={"Are you sure you want to start production?"} 
-                            onConfirm={onStart} 
-                            okText="Yes" 
-                            cancelText="No">
+                        <SuccessButton 
+                            disabled={state.startButtonDisabled}
+                            onClick={onStartClick}
+                            size="large" 
+                            className="mr2" 
+                            style={{ width: '12rem' }} >
+                                Start Production
+                        </SuccessButton>
 
-                            <SuccessButton 
-                                disabled={state.startButtonDisabled}
-                                loading={state.loading}
-                                size="large" 
-                                className="mr2" 
-                                style={{ width: '6rem' }} >
-                                    Start
-                            </SuccessButton>
-                            
-                        </Popconfirm>
-
-                        <Popconfirm 
-                            placement="top" 
-                            title={"Are you sure you want to stop production?"} 
-                            onConfirm={onStop} 
-                            okText="Yes" 
-                            cancelText="No">
-
-                            <Button 
-                                type="primary" 
-                                size="large" 
-                                style={{ width: '6rem' }} 
-                                danger >
-                                    Stop
-                            </Button>
-
-                        </Popconfirm>
-                        
+                        <Button 
+                            type="primary" 
+                            disabled={!state.startButtonDisabled}
+                            size="large" 
+                            onClick={onEndConfirm}
+                            style={{ width: '12rem' }} 
+                            danger >
+                                Stop Production
+                        </Button>
+                    
                     </Col>
 
                     <Col span={24}>
-                    
+
+                        <OeeCards state={state} />
+
                     </Col>
 
                 </Row>
 
-                <List>
-                    {
-                        state.items.map(e => {
-
-                            let className = ''
-                            switch (e?.type) {
-                                case 'counter':
-                                    className = 'bg-green'
-                                    break;
-                                case 'downtime':
-                                    className = 'bg-yellow'
-                                    break;
-                                case 'scrap':
-                                    className = 'bg-red'
-                                    break;
-                                default:
-                                    break;
-                            }
-
-                            return <List.Item key={short.generate()} className={className} >{ JSON.stringify(e) }</List.Item>
-
-                        })
-                    }
-                </List>
-
             </Content>
+
+            <Modal
+                title={`${state.line?.groupName} Start Production Login`}
+                visible={visible}
+                centered={true}
+                onOk={onSubmit}
+                okText="Submit"
+                onCancel={onCancelModal}
+            >
+                <Form layout="inline" form={form} onFinish={onFinish}>
+                
+                    <Form.Item
+                        label="Clock Number"
+                        name="clockNumber"
+                        rules={[{ required: true, message: 'Please enter clock number' }]}>
+
+                            <InputNumber style={{ width: '10rem' }} max={9999} min={0} type="number" />
+
+                    </Form.Item>
+
+                </Form>
+
+            </Modal>
         
         </>
 

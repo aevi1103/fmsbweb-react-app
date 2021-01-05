@@ -20,7 +20,7 @@ const KpiChart = ({
     if (!data) return;
 
     const { oae, downtimeRate, unknownRate, scrapRates } = data;
-    const { oaeTarget } = target;
+    const { oaeTarget } = target || {};
 
     const mapScrapRates = scrapRates.filter(({ qty }) => qty > 0)
                             .map(({ scrap, scrapRate, colorCode }) => ({
@@ -41,7 +41,7 @@ const KpiChart = ({
             {
                 label: "OAE",
                 value: oae,
-                color: oae < oaeTarget ? red : green
+                color: oae < (oaeTarget ?? 0) ? red : green
             },
             {
                 label: "Downtime",

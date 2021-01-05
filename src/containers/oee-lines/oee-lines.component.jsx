@@ -3,6 +3,7 @@ import { useParams, useHistory } from 'react-router'
 import styled from 'styled-components'
 import _ from 'lodash'
 import api from '../../core/utilities/api'
+import { blue } from '../../core/utilities/colors'
 
 import {
     LoadingOutlined,
@@ -24,7 +25,7 @@ const Container = styled.div`
 const Button = styled.a`
 
     height: 10rem;
-    background-color: #0053A7;
+    background-color: ${blue};
     display: grid;
     align-items: center;
     justify-items: center;
@@ -94,9 +95,7 @@ const Lines = () => {
                 <Container>
 
                     {
-                        lines.map(({ groupName, oeeLineId }) => <Button
-                            key={oeeLineId}
-                            href={`/oee/assembly/${oeeLineId}`} >{groupName}</Button>)
+                        lines.map(({ groupName, lineId }) => <Button key={lineId} href={`/oee/assembly/${lineId}`} >{groupName}</Button>)
                     }
 
                 </Container>

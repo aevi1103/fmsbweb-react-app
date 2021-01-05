@@ -1,9 +1,11 @@
 import axios from "axios";
+import React from 'react'
 import { store } from '../../core/redux/store'
 import {
     setTotalRequests,
     setProgress
  } from '../../core/redux/requests/requests.actions'
+ import { red } from './colors'
 
  import { setErrors } from '../../core/redux/errors/errors.actions'
  import { notification } from 'antd'
@@ -95,8 +97,8 @@ error => {
 
     notification.error({
         message: `Error`,
-        description: `${msg} @ '${errUrl}' service.`,
-        duration: 60,
+        description: <b style={{ color: red }} >{`${msg} @ '${errUrl}' service.`}</b> ,
+        duration: 0,
         key: errUrl
     })
 
