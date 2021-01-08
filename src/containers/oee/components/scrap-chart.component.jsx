@@ -16,7 +16,7 @@ const ScrapChart = ({ state }) => {
     const data = state.oee?.dataList?.scrap ?? [];
     const startDate = state.oee?.status?.startTime;
     const endDate = state.oee?.status?.endTime;
-    const line = state.oee?.line?.line?.groupName;
+    const line = state.oee?.line?.line?.machineName;
 
     const top10Scrap = data.slice(0, 10);
 

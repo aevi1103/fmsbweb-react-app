@@ -16,7 +16,7 @@ const DowntimeChart = ({ state }) => {
     const data = state.oee?.dataList?.downtime ?? [];
     const startDate = state.oee?.status?.startTime;
     const endDate = state.oee?.status?.endTime;
-    const line = state.oee?.line?.line?.groupName;
+    const line = state.oee?.line?.line?.machineName;
 
     const dataSource = {
         chart: {

@@ -1,6 +1,5 @@
 import React, { useEffect, useReducer, useState } from 'react'
 import moment from 'moment'
-import numeral from 'numeral'
 import { useParams, useHistory } from 'react-router-dom'
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import { useWindowUnloadEffect  } from '../../core/utilities/custom-hook'
@@ -10,9 +9,11 @@ import { baseUrl } from '../../core/utilities/base-url'
 import SuccessButton from '../../components/success-button/success-button.component'
 import { green, darkGray } from '../../core/utilities/colors'
 import { initialState, reducer } from './services/reducer'
-import { getSummary, getLine } from './services/api'
+import { getSummary, getLine, getPrimaryReason } from './services/api'
 
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+
+import DowntimeForm from './components/downtime-form.component'
 
 import { 
     Layout,
@@ -36,9 +37,9 @@ const Oee = () => {
     const history = useHistory();
     const { guid, department } = useParams(); 
     const [state, dispatch] = useReducer(reducer, initialState)
-
     const [form] = Form.useForm();
     const [visible, setVisible] = useState(false);
+    const [downtimeVisible, setDowntimeVisible] = useState(false);
 
     const getSummaryData = async () => {
         const summaryResponse = await getSummary(guid)
@@ -68,6 +69,16 @@ const Oee = () => {
                 dispatch({ type: 'SET_LOADING', payload: false })
             }
 
+        })()
+
+    }, [])
+
+    //* on mount get primary reason
+    useEffect(() => {
+
+        (async function () {
+            const primaryReason = await getPrimaryReason();
+            dispatch({ type: 'SET_PRIMARY_REASON', payload: primaryReason?.data ?? [] })
         })()
 
     }, [])
@@ -265,8 +276,6 @@ const Oee = () => {
 
     }
   
-    const onSubmit = () => form.submit();
-
     const onFinish = async ({ clockNumber }) => {
 
         try {
@@ -281,14 +290,12 @@ const Oee = () => {
 
     }
 
-    const onCancelModal = () => setVisible(false)
-
     return (
         <>
     
             <PageHeader
                 className="site-page-header"
-                title={`${state.line?.groupName} OEE`}
+                title={`${state.line?.machineName} OEE`}
                 subTitle={state.subTitle}
                 tags={state.oee?.line?.endDateTime === undefined 
                         ? <Tag color={darkGray}>Not Running</Tag> 
@@ -297,6 +304,7 @@ const Oee = () => {
                 extra={<Row gutter={[6,6]}>
                             <Col>
                                 <SuccessButton 
+                                    loading={state.loading}
                                     disabled={state.startButtonDisabled}
                                     onClick={onStartClick}
                                     size="large" 
@@ -307,6 +315,7 @@ const Oee = () => {
                             </Col>
                             <Col>
                                 <Button 
+                                    loading={state.loading}
                                     type="primary" 
                                     disabled={!state.startButtonDisabled}
                                     size="large" 
@@ -316,44 +325,56 @@ const Oee = () => {
                                         Stop Production
                                 </Button>
                             </Col> 
+                            <Col>
+                                <Button 
+                                    type="primary" 
+                                    disabled={!state.startButtonDisabled}
+                                    size="large" 
+                                    style={{ width: '12rem' }} 
+                                    onClick={() => setDowntimeVisible(true)}
+                                     >
+                                        Enter Downtime
+                                </Button>
+                            </Col> 
                         </Row>}
             />
 
             <Content className="ma3 mt0">
-
                 <Row gutter={[12,12]}>
-
                     <Col span={24}>
-
                         <OeeCards state={state} />
-
                     </Col>
-
                 </Row>
-
             </Content>
 
             <Modal
-                title={`${state.line?.groupName} Start Production Login`}
+                title={`${state.line?.machineName} Start Production Login`}
                 visible={visible}
                 centered={true}
-                onOk={onSubmit}
+                onOk={() => form.submit()}
                 okText="Submit"
-                onCancel={onCancelModal}
+                onCancel={() => setVisible(false)}
             >
                 <Form layout="inline" form={form} onFinish={onFinish}>
-                
                     <Form.Item
                         label="Clock Number"
                         name="clockNumber"
                         rules={[{ required: true, message: 'Please enter clock number' }]}>
-
                             <InputNumber style={{ width: '10rem' }} max={9999} min={0} type="number" />
-
                     </Form.Item>
-
                 </Form>
+            </Modal>
 
+            <Modal
+                title={`${state.line?.machineName} Downtime`}
+                visible={downtimeVisible}
+                onOk={() => {}}
+                okText="Submit"
+                onCancel={() => setDowntimeVisible(false)}
+                footer={null}
+                width="1500px"
+            >
+                <DowntimeForm state={state} oeeId={state.oee?.line?.oeeId} />
             </Modal>
         
         </>

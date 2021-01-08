@@ -2,6 +2,7 @@ export const initialState = {
     loading: false,
     oee: null,
     line: null,
+    primaryReason: [],
     subTitle: null,
 
     counterConnection: null,
@@ -24,6 +25,9 @@ export const reducer = (state = initialState, action) => {
 
         case 'SET_LINE':
             return { ...state,  line: action.payload }
+
+        case 'SET_PRIMARY_REASON':
+            return { ...state,  primaryReason: action.payload }
 
         case 'SET_SUB_TITLE':
             return { ...state,  subTitle: action.payload }

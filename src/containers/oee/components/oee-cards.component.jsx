@@ -39,6 +39,10 @@ const OeeCards = ({ state }) => {
     const plannedProductionTime = getTimeStatus(state.oee?.status?.plannedProductionTime);
     const runtTime = getTimeStatus(state.oee?.status?.runtTime);
 
+    const availabilty = state.oee?.status?.availability ?? 0;
+    const performance = state.oee?.status?.performance ?? 0;
+    const quality = state.oee?.status?.quality ?? 0
+
     return (
 
         <Row gutter={[6,6]}>
@@ -70,11 +74,11 @@ const OeeCards = ({ state }) => {
 
             <Col md={6} sm={12} xs={24}>
 
-                <Wrapper value={state.oee?.status?.availability ?? 0}>
+                <Wrapper value={availabilty}>
                     <SubTitle>Availability</SubTitle>
                     <Centered> 
                         <Kpi>
-                            { numeral(state.oee?.status?.availability ?? 0).format('0%') } 
+                            { numeral(availabilty < 0 ? 0 : availabilty).format('0%') } 
                         </Kpi>
                     </Centered>
                     <SmallSubTitle>Runtime / Planned Production Time = Availability</SmallSubTitle>
@@ -84,11 +88,11 @@ const OeeCards = ({ state }) => {
 
             <Col md={6} sm={12} xs={24}>
 
-                <Wrapper value={state.oee?.status?.performance ?? 0}>
+                <Wrapper value={performance}>
                     <SubTitle>Performance</SubTitle>
                     <Centered> 
                         <Kpi>
-                            { numeral(state.oee?.status?.performance ?? 0).format('0%') } 
+                            { numeral(performance < 0 ? 0 : performance).format('0%') } 
                         </Kpi>
                     </Centered>
                     <SmallSubTitle>Total Parts / Capacity = Performance</SmallSubTitle>
@@ -99,11 +103,11 @@ const OeeCards = ({ state }) => {
 
             <Col md={6} sm={12} xs={24}>
 
-                <Wrapper value={state.oee?.status?.quality ?? 0}>
+                <Wrapper value={quality}>
                     <SubTitle>Quality</SubTitle>
                     <Centered> 
                         <Kpi>
-                            { numeral(state.oee?.status?.quality ?? 0).format('0%') } 
+                            { numeral(quality < 0 ? 0 : quality).format('0%') } 
                         </Kpi>
                     </Centered>
                     <SmallSubTitle>Total Good Parts / Total Parts = Quality</SmallSubTitle>
