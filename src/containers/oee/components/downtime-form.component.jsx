@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import api from '../../../core/utilities/api'
 
 import {
@@ -30,10 +31,12 @@ const layout = {
     wrapperCol: { span: 8 },
 };
 
-const DowntimeForm = React.memo(({ state, oeeId }) => {
+const DowntimeForm = React.memo(() => {
 
-    const mahcineGroup = state.line?.machineGroups ?? [];
-    const primaryReason = state.primaryReason;
+    const mahcineGroup = useSelector(({ oeeReducer }) => oeeReducer.line?.machineGroups ?? [])
+    const oeeId = useSelector(({ oeeReducer }) => oeeReducer.oee?.status?.oeeId)
+
+    const primaryReason = useSelector(({ oeeReducer }) => oeeReducer.reason1Collection)
 
     const [form] = Form.useForm();
     const [mahcines, setMachines] = useState([])
@@ -45,7 +48,6 @@ const DowntimeForm = React.memo(({ state, oeeId }) => {
     const [record, setRecord] = useState(null)
 
     //* methods
-
     const reset = () => {
         form.resetFields()
         setRecord(null)

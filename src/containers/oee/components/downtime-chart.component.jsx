@@ -1,5 +1,6 @@
 import React from 'react'
 import moment from 'moment'
+import { useSelector } from 'react-redux'
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
@@ -11,12 +12,12 @@ import { yellow, lightGray } from '../../../core/utilities/colors'
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const DowntimeChart = ({ state }) => {
+const DowntimeChart = () => {
 
-    const data = state.oee?.dataList?.downtime ?? [];
-    const startDate = state.oee?.status?.startTime;
-    const endDate = state.oee?.status?.endTime;
-    const line = state.oee?.line?.line?.machineName;
+    const data = useSelector(({ oeeReducer }) => oeeReducer?.oee?.dataList?.downtime ?? [])
+    const startDate = useSelector(({ oeeReducer }) => oeeReducer.oee?.status?.startTime)
+    const endDate = useSelector(({ oeeReducer }) => oeeReducer.oee?.status?.endTime)
+    const line = useSelector(({ oeeReducer }) => oeeReducer.oee?.line?.line.machineName)
 
     const dataSource = {
         chart: {

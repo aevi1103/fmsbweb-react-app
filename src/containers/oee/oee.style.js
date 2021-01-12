@@ -1,23 +1,38 @@
 import styled from 'styled-components'
 import { green, yellow, red, lightGray, darkGray } from '../../core/utilities/colors'
 
-const getBgColor = (value) => {
+const getColor = (value) => {
 
     const max = .85;
     const min = .6;
-    
-    if (value >= max) return green;
-    if (value > min && value < max) return yellow
-    if (value <= min) return red
 
-    return lightGray
+    if (!value) return {
+        bgColor: lightGray,
+        fontColor: 'black'
+    }
+    
+    if (value >= max) return {
+        bgColor: green,
+        fontColor: 'white'
+    };
+
+    if (value > min && value < max) return {
+        bgColor: yellow,
+        fontColor: 'black'
+    }
+
+    if (value <= min) return {
+        bgColor: red,
+        fontColor: 'white'
+    }
+
 }
 
 export const Wrapper = styled.div`
     padding: 1rem;
     border: 1px solid ${darkGray};
-    background-color: ${props => getBgColor(props.value)};
-    color: ${props => getBgColor(props.value) === yellow ? 'black' : 'white'};
+    background-color: ${props => getColor(props.value).bgColor};
+    color: ${props => getColor(props.value).fontColor};
     border-radius: 2px;
 `
 

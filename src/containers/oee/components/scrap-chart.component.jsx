@@ -1,5 +1,6 @@
 import React from 'react'
 import moment from 'moment'
+import { useSelector } from 'react-redux'
 import FusionCharts from 'fusioncharts';
 import Charts from 'fusioncharts/fusioncharts.charts';
 import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
@@ -11,12 +12,12 @@ import { red, lightGray } from '../../../core/utilities/colors'
 FusionCharts.options.creditLabel = false;
 ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 
-const ScrapChart = ({ state }) => {
+const ScrapChart = () => {
 
-    const data = state.oee?.dataList?.scrap ?? [];
-    const startDate = state.oee?.status?.startTime;
-    const endDate = state.oee?.status?.endTime;
-    const line = state.oee?.line?.line?.machineName;
+    const data = useSelector(({ oeeReducer }) => oeeReducer.oee?.dataList?.scrap ?? [])
+    const startDate = useSelector(({ oeeReducer }) => oeeReducer.oee?.status?.startTime)
+    const endDate = useSelector(({ oeeReducer }) => oeeReducer.oee?.status?.endTime)
+    const line = useSelector(({ oeeReducer }) => oeeReducer.oee?.line?.line.machineName)
 
     const top10Scrap = data.slice(0, 10);
 

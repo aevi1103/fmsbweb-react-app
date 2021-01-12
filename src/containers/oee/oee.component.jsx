@@ -1,19 +1,25 @@
-import React, { useEffect, useReducer, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import moment from 'moment'
+import { useSelector, useDispatch } from 'react-redux'
 import { useParams, useHistory } from 'react-router-dom'
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import { useWindowUnloadEffect  } from '../../core/utilities/custom-hook'
+import { startConnection } from './services/helper'
+import {
+    fetchLineStartAsync,
+    fetchOeeStartAsync,
+    fetchReason1StartAsync,
+    postOeeStartAsync,
+    setSubTitle
+} from '../../core/redux/oee/oee.actions'
 
-import api from '../../core/utilities/api'
 import { baseUrl } from '../../core/utilities/base-url'
 import SuccessButton from '../../components/success-button/success-button.component'
 import { green, darkGray } from '../../core/utilities/colors'
-import { initialState, reducer } from './services/reducer'
-import { getSummary, getLine, getPrimaryReason } from './services/api'
-
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 import DowntimeForm from './components/downtime-form.component'
+import StartProductionModal from './components/start-production-modal.component'
 
 import { 
     Layout,
@@ -23,8 +29,7 @@ import {
     Button,
     Tag,
     Modal,
-    Form,
-    InputNumber
+    message
 } from "antd";
 
 import OeeCards from './components/oee-cards.component'
@@ -34,67 +39,57 @@ const { confirm } = Modal;
 
 const Oee = () => {
 
+    const dispatch = useDispatch();
     const history = useHistory();
     const { guid, department } = useParams(); 
-    const [state, dispatch] = useReducer(reducer, initialState)
-    const [form] = Form.useForm();
-    const [visible, setVisible] = useState(false);
-    const [downtimeVisible, setDowntimeVisible] = useState(false);
 
-    const getSummaryData = async () => {
-        const summaryResponse = await getSummary(guid)
-        dispatch({ type: 'SET_OEE', payload: summaryResponse.data })
-    }
+    //* redux state
+    const line = useSelector(({ oeeReducer }) => oeeReducer.line)
+    const { machineName, tagName, workCenter, groupName } = line || {}
+
+    const subTitle = useSelector(({ oeeReducer }) => oeeReducer.subTitle)
+    const isLinefetching = useSelector(({ oeeReducer }) => oeeReducer.isLinefetching)
+    const isOeeFetching = useSelector(({ oeeReducer }) => oeeReducer.isOeeFetching)
+
+    const startDateTime = useSelector(({ oeeReducer }) => oeeReducer.oee?.line?.startDateTime)
+    const endDateTime = useSelector(({ oeeReducer }) => oeeReducer.oee?.line?.endDateTime)
+    const oeeId = useSelector(({ oeeReducer }) => oeeReducer.oee?.line?.oeeId)
+    const timestamp = useSelector(({ oeeReducer }) => oeeReducer.oee?.line?.timestamp)
+
+    //* Hubs connection states
+    const [counterConn, setCounterConn] = useState(null);
+    const [downtimeConn, setDownitmeConn] = useState(null);
+    const [scrapConn, setScrapConn] = useState(null);
+    
+    const [startModalVisible, setStartModalVisible] = useState(false);
+    const [downtimeModalVisible, setDowntimeVisible] = useState(false);
 
     //* on mount get line and oee data
     useEffect(() => {
-
-        (async function () {
-
-            try {
-                        
-                dispatch({ type: 'SET_LOADING', payload: true })
-        
-                //* get line
-                const lineResponse = await getLine(guid);
-                document.title = `${lineResponse.data.groupName} OEE`;
-                dispatch({ type: 'SET_LINE', payload: lineResponse.data })
-
-                //* get OEE
-                getSummaryData();
-
-
-            } catch (error) {           
-            } finally {
-                dispatch({ type: 'SET_LOADING', payload: false })
-            }
-
-        })()
-
+        dispatch(fetchLineStartAsync(guid))
+        dispatch(fetchOeeStartAsync(guid))
+        dispatch(fetchReason1StartAsync())
     }, [])
 
-    //* on mount get primary reason
     useEffect(() => {
+        document.title = `${machineName} OEE`;
+    }, [machineName])
 
-        (async function () {
-            const primaryReason = await getPrimaryReason();
-            dispatch({ type: 'SET_PRIMARY_REASON', payload: primaryReason?.data ?? [] })
-        })()
-
-    }, [])
-
-    //* unsubscribe to group hubs
+    //* unsubscribe to group hubs and reset state
     useWindowUnloadEffect(() => {
 
-        if (state.counterConnection) 
-            state.counterConnection.invoke('RemoveToGroup', state.line?.tagName)
-        
-        if (state.downtimeConnection) 
-            state.downtimeConnection.invoke('RemoveToGroup', state.line?.groupName)
-
-        if (state.scrapConnection) 
-            state.scrapConnection.invoke('RemoveToGroup', state.line?.workCenter)
-    
+        if (counterConn) {
+            counterConn.invoke('RemoveToGroup', tagName)
+        }
+            
+        if (downtimeConn) {
+            downtimeConn.invoke('RemoveToGroup', groupName)
+        }
+            
+        if (scrapConn) {
+            scrapConn.invoke('RemoveToGroup', workCenter)
+        }
+            
     }, true)
 
     //* open signalr connections
@@ -106,7 +101,7 @@ const Oee = () => {
             .withAutomaticReconnect()
             .build();
 
-        dispatch({ type: 'SET_COUNTER_CONN', payload: counterConn })
+        setCounterConn(counterConn)
 
         //* downtime connection
         const downtimeConn = new HubConnectionBuilder()
@@ -114,7 +109,7 @@ const Oee = () => {
             .withAutomaticReconnect()
             .build();
 
-        dispatch({ type: 'SET_DOWNTIME_CONN', payload: downtimeConn })
+        setDownitmeConn(downtimeConn)
 
         //* scrap connection
         const scrapConn = new HubConnectionBuilder()
@@ -122,190 +117,84 @@ const Oee = () => {
             .withAutomaticReconnect()
             .build();
 
-        dispatch({ type: 'SET_SCRAP_CONN', payload: scrapConn })
+        setScrapConn(scrapConn)
 
     }, [])
 
+    const onHubChange = useCallback(() => {
+        dispatch(fetchOeeStartAsync(guid))
+    }, [dispatch, guid])
+
     //* subscribe to group hubs
     useEffect(() => {
-
-        if (state.counterConnection && state.line) {
-            state.counterConnection.start()
-                .then(() => {
-
-                    const conn = state.counterConnection;
-                    
-                    //* add client to group
-                    conn.invoke('AddToGroup', state.line.tagName)
-
-                    //* listner
-
-                    conn.on('BroadCastChange', data => {
-                        console.log('counter', data)
-
-                        //* update data
-                        getSummaryData();
-
-                    });
-
-                    conn.on('onJoin', data => {
-                        console.log(`%c counter join: ${data}`, 'color: green; font-size: 15px; font-weight: bold;')
-                    });
-
-                    conn.on('onLeave', data => {
-                        console.log(`%c counter leave: ${data}`, 'color: red; font-size: 15px; font-weight: bold;')
-                    });
-                })
-                .catch(error => console.error(error))
-        }
-
-    }, [state.counterConnection, state.line])
+        startConnection(counterConn, line, onHubChange)
+    }, [counterConn, line, onHubChange])
 
     useEffect(() => {
-
-        if (state.downtimeConnection && state.line) {
-            state.downtimeConnection.start()
-                .then(() => {
-
-                    const conn = state.downtimeConnection;
-
-                    //* add client to group
-                    conn.invoke('AddToGroup', state.line.groupName)
-
-                    //* listnen on value change in the db
-                    conn.on('BroadCastChange', data => {
-
-                        console.log('downtime', data)
-                        //* update data
-                        getSummaryData();
-
-                    });
-
-                    conn.on('onJoin', data => {
-                        console.log(`%c downtime join: ${data}`, 'color: green; font-size: 15px; font-weight: bold;')
-                    });
-
-                    conn.on('onLeave', data => {
-                        console.log(`%c downtime leave: ${data}`, 'color: red; font-size: 15px; font-weight: bold;')
-                    });
-                })
-                .catch(error => console.error(error))
-        }
-
-    }, [state.downtimeConnection, state.line])
+        startConnection(downtimeConn, line, onHubChange)
+    }, [downtimeConn, line, onHubChange])
 
     useEffect(() => {
-
-        if (state.scrapConnection && state.line) {
-            state.scrapConnection.start()
-                .then(() => {
-
-                    const conn = state.scrapConnection;
-
-                    //* add client to group
-                    conn.invoke('AddToGroup', state.line.workCenter)
-
-                    //* listnen on value change in the db
-                    conn.on('BroadCastChange', data => {
-                        console.log('scrap', data)
-                        //* update data
-
-                        getSummaryData();
-                    });
-                    
-                    conn.on('onJoin', data => {
-                        console.log(`%c scrap join: ${data}`, 'color: green; font-size: 15px; font-weight: bold;')
-                    });
-
-                    conn.on('onLeave', data => {
-                        console.log(`%c scrap leave: ${data}`, 'color: red; font-size: 15px; font-weight: bold;')
-                    });
-                })
-                .catch(error => console.error(error))
-        }
-
-    }, [state.scrapConnection, state.line])
+        startConnection(scrapConn, line, onHubChange)
+    }, [scrapConn, line, onHubChange])
 
     //* other side effects
     useEffect(() => {
 
-        if (state.oee) {
-
-            const { line: { startDateTime } } = state.oee;
+        if (startDateTime) {
             const subTitle = `Production Started at ${moment(startDateTime).format('lll')}`
-            dispatch({ type: 'SET_SUB_TITLE', payload: subTitle })
-            dispatch({ type: 'SET_START_BUTTON_DISABLE', payload: true })
-
+            dispatch(setSubTitle(subTitle))
         } else {
-
-            dispatch({ type: 'SET_SUB_TITLE', payload: null })
-            dispatch({ type: 'SET_START_BUTTON_DISABLE', payload: false })
-
+            dispatch(setSubTitle(null))
         }
 
-    }, [state.oee])
+    }, [startDateTime, dispatch])
 
     useEffect(() => {
-        history.push(`/oee/assembly/${guid}?id=${state.oee?.line?.oeeId ?? ''}`)
-    }, [state.oee, guid, history])
+        history.push(`/oee/assembly/${guid}?id=${oeeId ?? ''}`)
+    }, [oeeId, guid, history])
 
     //* events
-    const onStartClick = () => setVisible(true)
+    const onStartClick = () => setStartModalVisible(true)
 
     const onEndConfirm = () => {
 
         confirm({
-            title: `Do you want to stop ${state.line?.groupName} production?`,
+            title: `Do you want to stop ${machineName} production?`,
             icon: <ExclamationCircleOutlined />,
             okText: 'Yes',
             centered: true,
             cancelText: 'No',
             async onOk() {
 
-                const response = await api.post(`/oee`, {
-                    oeeId: state.oee?.line?.oeeId,
+                dispatch(postOeeStartAsync({
+                    oeeId,
                     LineId: guid,
                     endDateTime: new Date(),
-                    timestamp: state.oee?.line?.timestamp,
-                })
-    
-                dispatch({ type: 'SET_OEE', payload: response.data })
+                    timestamp,
+                }));
 
             }
         })
 
     }
   
-    const onFinish = async ({ clockNumber }) => {
-
-        try {
-
-            const response = await api.post(`/oee`, { LineId: guid, clockNumber })
-            dispatch({ type: 'SET_OEE', payload: response.data });
-            setVisible(false)
-
-        } catch (error) {
-            
-        }
-
-    }
-
     return (
         <>
     
             <PageHeader
                 className="site-page-header"
-                title={`${state.line?.machineName} OEE`}
-                subTitle={state.subTitle}
-                tags={state.oee?.line?.endDateTime === undefined 
+                title={`${machineName} OEE`}
+                subTitle={subTitle}
+                tags={endDateTime === undefined 
                         ? <Tag color={darkGray}>Not Running</Tag> 
                         : <Tag color={green}>Running</Tag>}
                 onBack={() => history.push(`/oee/${department}`)}
                 extra={<Row gutter={[6,6]}>
                             <Col>
                                 <SuccessButton 
-                                    loading={state.loading}
-                                    disabled={state.startButtonDisabled}
+                                    loading={isOeeFetching}
+                                    disabled={!!oeeId}
                                     onClick={onStartClick}
                                     size="large" 
                                     className="mr2" 
@@ -315,9 +204,9 @@ const Oee = () => {
                             </Col>
                             <Col>
                                 <Button 
-                                    loading={state.loading}
+                                    loading={isOeeFetching}
                                     type="primary" 
-                                    disabled={!state.startButtonDisabled}
+                                    disabled={!(!!oeeId)}
                                     size="large" 
                                     onClick={onEndConfirm}
                                     style={{ width: '12rem' }} 
@@ -328,7 +217,7 @@ const Oee = () => {
                             <Col>
                                 <Button 
                                     type="primary" 
-                                    disabled={!state.startButtonDisabled}
+                                    disabled={!(!!oeeId)}
                                     size="large" 
                                     style={{ width: '12rem' }} 
                                     onClick={() => setDowntimeVisible(true)}
@@ -342,39 +231,23 @@ const Oee = () => {
             <Content className="ma3 mt0">
                 <Row gutter={[12,12]}>
                     <Col span={24}>
-                        <OeeCards state={state} />
+                        <OeeCards />
                     </Col>
                 </Row>
             </Content>
 
-            <Modal
-                title={`${state.line?.machineName} Start Production Login`}
-                visible={visible}
-                centered={true}
-                onOk={() => form.submit()}
-                okText="Submit"
-                onCancel={() => setVisible(false)}
-            >
-                <Form layout="inline" form={form} onFinish={onFinish}>
-                    <Form.Item
-                        label="Clock Number"
-                        name="clockNumber"
-                        rules={[{ required: true, message: 'Please enter clock number' }]}>
-                            <InputNumber style={{ width: '10rem' }} max={9999} min={0} type="number" />
-                    </Form.Item>
-                </Form>
-            </Modal>
+            <StartProductionModal visible={startModalVisible} onCancel={() => setStartModalVisible(false)} />
 
             <Modal
-                title={`${state.line?.machineName} Downtime`}
-                visible={downtimeVisible}
+                title={`${machineName} Downtime`}
+                visible={downtimeModalVisible}
                 onOk={() => {}}
                 okText="Submit"
                 onCancel={() => setDowntimeVisible(false)}
                 footer={null}
                 width="1500px"
             >
-                <DowntimeForm state={state} oeeId={state.oee?.line?.oeeId} />
+                <DowntimeForm />
             </Modal>
         
         </>

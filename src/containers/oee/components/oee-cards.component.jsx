@@ -1,6 +1,6 @@
 import React from 'react'
 import numeral from 'numeral'
-
+import { useSelector } from 'react-redux'
 import HourlyProdChart from './hourly-prod-chart.component'
 import DowntimeChart from './downtime-chart.component'
 import ScrapChart from './scrap-chart.component'
@@ -26,22 +26,31 @@ const getTimeStatus = value => {
     )
 }
 
-const OeeCards = ({ state }) => {
+const decimalFormat = '0.00'
 
-    const decimalFormat = '0.00'
-    const cycleTime = state.oee?.status?.cycleTimeSeconds ?? 0;
+const OeeCards = () => {
+
+    const oeeState = useSelector(({ oeeReducer }) => oeeReducer?.oee?.status) 
+    const { 
+        cycleTimeSeconds,
+        plcDowntime,
+        allTime,
+        plannedDowntime,
+        plannedProductionTime,
+        runtTime,
+        availability,
+        performance,
+        quality,
+        oee,
+        net,
+        capacity,
+        gross,
+        scrapTotal
+    } = oeeState || {};
+
+    const cycleTime = cycleTimeSeconds
     const ppm = 60 / cycleTime;
     const ppmFormat = numeral(ppm).format(decimalFormat);
-
-    const plcDowntime = state.oee?.status?.plcDowntime ?? 0;
-    const allTime = getTimeStatus(state.oee?.status?.allTime);
-    const plannedDowntime = getTimeStatus(state.oee?.status?.plannedDowntime);
-    const plannedProductionTime = getTimeStatus(state.oee?.status?.plannedProductionTime);
-    const runtTime = getTimeStatus(state.oee?.status?.runtTime);
-
-    const availabilty = state.oee?.status?.availability ?? 0;
-    const performance = state.oee?.status?.performance ?? 0;
-    const quality = state.oee?.status?.quality ?? 0
 
     return (
 
@@ -60,11 +69,11 @@ const OeeCards = ({ state }) => {
 
             <Col md={6} sm={12} xs={24} >
 
-                <Wrapper value={state.oee?.status?.oee ?? 0}>
+                <Wrapper value={oee ?? 0}>
                     <SubTitle>OEE</SubTitle>
                     <Centered> 
                         <Kpi>
-                            { numeral(state.oee?.status?.oee ?? 0).format('0%') } 
+                            { numeral(oee ?? 0).format('0%') } 
                         </Kpi>
                     </Centered>
                     <SmallSubTitle>Availabity × Performance × Quality = OEE</SmallSubTitle>
@@ -74,11 +83,11 @@ const OeeCards = ({ state }) => {
 
             <Col md={6} sm={12} xs={24}>
 
-                <Wrapper value={availabilty}>
+                <Wrapper value={availability}>
                     <SubTitle>Availability</SubTitle>
                     <Centered> 
                         <Kpi>
-                            { numeral(availabilty < 0 ? 0 : availabilty).format('0%') } 
+                            { numeral((availability ?? 0) < 0 ? 0 : availability).format('0%') } 
                         </Kpi>
                     </Centered>
                     <SmallSubTitle>Runtime / Planned Production Time = Availability</SmallSubTitle>
@@ -92,7 +101,7 @@ const OeeCards = ({ state }) => {
                     <SubTitle>Performance</SubTitle>
                     <Centered> 
                         <Kpi>
-                            { numeral(performance < 0 ? 0 : performance).format('0%') } 
+                            { numeral((performance ?? 0) < 0 ? 0 : performance).format('0%') } 
                         </Kpi>
                     </Centered>
                     <SmallSubTitle>Total Parts / Capacity = Performance</SmallSubTitle>
@@ -107,7 +116,7 @@ const OeeCards = ({ state }) => {
                     <SubTitle>Quality</SubTitle>
                     <Centered> 
                         <Kpi>
-                            { numeral(quality < 0 ? 0 : quality).format('0%') } 
+                            { numeral((quality ?? 0) < 0 ? 0 : quality).format('0%') } 
                         </Kpi>
                     </Centered>
                     <SmallSubTitle>Total Good Parts / Total Parts = Quality</SmallSubTitle>
@@ -121,11 +130,11 @@ const OeeCards = ({ state }) => {
                     <SubTitle dark>Total Good Parts</SubTitle>
                     <Centered> 
                         <Kpi success>
-                            { numeral(state.oee?.status?.net ?? 0).format('0,0') } 
+                            { numeral(net ?? 0).format('0,0') } 
                         </Kpi>
                     </Centered>
 
-                    <HourlyProdChart state={state} />
+                    <HourlyProdChart />
                 </Wrapper>
 
             </Col>
@@ -136,10 +145,10 @@ const OeeCards = ({ state }) => {
                     <SubTitle dark>Unplanned Downtime (Minutes)</SubTitle>
                     <Centered> 
                         <Kpi warning>
-                            { numeral(state.oee?.status?.plcDowntime ?? 0).format('0,0') }
+                            { numeral(plcDowntime ?? 0).format('0,0') }
                         </Kpi>
                     </Centered>
-                    <DowntimeChart state={state} />
+                    <DowntimeChart />
                 </Wrapper>
 
             </Col>
@@ -153,7 +162,7 @@ const OeeCards = ({ state }) => {
                             <SubTitle dark>Capacity</SubTitle>
                             <Centered> 
                                 <Kpi dark>
-                                    { numeral(state.oee?.status?.capacity ?? 0).format('0,0') }
+                                    { numeral(capacity ?? 0).format('0,0') }
                                 </Kpi>
                             </Centered>
                             <SmallSubTitle dark>Parts per minute × Runtime = Capacity</SmallSubTitle>
@@ -165,7 +174,7 @@ const OeeCards = ({ state }) => {
                             <SubTitle dark>Total Parts</SubTitle>
                             <Centered> 
                                 <Kpi dark>
-                                    { numeral(state.oee?.status?.gross ?? 0).format('0,0') }
+                                    { numeral(gross ?? 0).format('0,0') }
                                 </Kpi>
                             </Centered>
                         </Wrapper>
@@ -181,11 +190,11 @@ const OeeCards = ({ state }) => {
                     <SubTitle dark>Total Bad Parts</SubTitle>
                     <Centered> 
                         <Kpi danger>
-                            { numeral(state.oee?.status?.scrapTotal ?? 0).format('0,0') }
+                            { numeral(scrapTotal ?? 0).format('0,0') }
                         </Kpi>
                     </Centered>
 
-                    <ScrapChart state={state} />
+                    <ScrapChart />
                 </Wrapper>
 
             </Col>

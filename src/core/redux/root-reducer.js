@@ -16,16 +16,16 @@ import performanceLevel2Reducer from './performance-lvl-2/performance-lvl-2.redu
 
 import hourlyProductionReducer from './hourly-production/houlry-production.reducer'
 
-import qualityCheckSheetReducer from './quality-check-sheet/quality-check-sheet.reducer'
+// import qualityCheckSheetReducer from './quality-check-sheet/quality-check-sheet.reducer'
 import requetsReducer from './requests/requests.reducer'
 import errorsReducer from './errors/errors.reducer'
+import oeeReducer from './oee/oee.reducer'
 
 const rootReducer = combineReducers({
     home: homeReducer,
     hourlyProduction: hourlyProductionReducer,
     productionDetails: productionDetailsReducer,
     afEos: afEosReducer,
-    qualityCheckSheet: qualityCheckSheetReducer,
     swot: swotReducer,
     requests: requetsReducer,
     productionStatus: productionStatusReducer,
@@ -37,7 +37,9 @@ const rootReducer = combineReducers({
     downtime: downtimeReducer,
     performance0: performanceLevel0Reducer,
     performance2: performanceLevel2Reducer,
-    errors: errorsReducer
+    errors: errorsReducer,
+    oeeReducer,
+    // qualityCheckSheet: qualityCheckSheetReducer,
 })
 
 export default rootReducer;
