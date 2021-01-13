@@ -59,11 +59,11 @@ const OeeCards = () => {
             <Col span={24}>
                 <Row gutter={[32,0]}>
                     <Col><b>Ideal Cycle Time :</b> { numeral(cycleTime).format(decimalFormat) } seconds / { ppmFormat } parts per minute</Col>
-                    <Col><b>All Time:</b> { allTime }</Col>
-                    <Col><b>Planned Downtime:</b> { plannedDowntime }</Col>
-                    <Col><b>Planned Production Time:</b> { plannedProductionTime }</Col>
+                    <Col><b>All Time:</b> { getTimeStatus(allTime) }</Col>
+                    <Col><b>Planned Downtime:</b> { getTimeStatus(plannedDowntime) }</Col>
+                    <Col><b>Planned Production Time:</b> { getTimeStatus(plannedProductionTime) }</Col>
                     <Col><b>Unplanned Downtime:</b> { getTimeStatus(plcDowntime) }</Col>
-                    <Col><b>Runtime:</b> { runtTime }</Col>
+                    <Col><b>Runtime:</b> {  getTimeStatus(runtTime) }</Col>
                 </Row>
             </Col>
 

@@ -45,7 +45,7 @@ const Oee = () => {
 
     //* redux state
     const line = useSelector(({ oeeReducer }) => oeeReducer.line)
-    const { machineName, tagName, workCenter, groupName } = line || {}
+    const { machineName, tagName, workCenter, groupName, lineId } = line || {}
 
     const subTitle = useSelector(({ oeeReducer }) => oeeReducer.subTitle)
     const isLinefetching = useSelector(({ oeeReducer }) => oeeReducer.isLinefetching)
@@ -59,6 +59,7 @@ const Oee = () => {
     //* Hubs connection states
     const [counterConn, setCounterConn] = useState(null);
     const [downtimeConn, setDownitmeConn] = useState(null);
+    const [downtimeManualConn, setDownitmeManualConn] = useState(null);
     const [scrapConn, setScrapConn] = useState(null);
     
     const [startModalVisible, setStartModalVisible] = useState(false);
@@ -85,6 +86,10 @@ const Oee = () => {
         if (downtimeConn) {
             downtimeConn.invoke('RemoveToGroup', groupName)
         }
+
+        // if (downtimeManualConn) {
+        //     downtimeManualConn.invoke('RemoveToGroup', guid)
+        // }
             
         if (scrapConn) {
             scrapConn.invoke('RemoveToGroup', workCenter)
@@ -119,24 +124,34 @@ const Oee = () => {
 
         setScrapConn(scrapConn)
 
+        //* downtime manual connection
+        // const downtimeManual = new HubConnectionBuilder()
+        //     .withUrl(`${baseUrl}/downtimemanualhub`)
+        //     .withAutomaticReconnect()
+        //     .build();
+
+        // setDownitmeManualConn(downtimeManual)
+
     }, [])
 
-    const onHubChange = useCallback(() => {
-        dispatch(fetchOeeStartAsync(guid))
-    }, [dispatch, guid])
+
 
     //* subscribe to group hubs
     useEffect(() => {
-        startConnection(counterConn, line, onHubChange)
-    }, [counterConn, line, onHubChange])
+        startConnection(counterConn, line, tagName, () => dispatch(fetchOeeStartAsync(guid)))
+    }, [counterConn, line, tagName, dispatch, guid])
 
     useEffect(() => {
-        startConnection(downtimeConn, line, onHubChange)
-    }, [downtimeConn, line, onHubChange])
+        startConnection(downtimeConn, line, groupName, () => dispatch(fetchOeeStartAsync(guid)))
+    }, [downtimeConn, line, groupName, dispatch, guid])
+
+    // useEffect(() => {
+    //     startConnection(downtimeManualConn, line, guid, onHubChange)
+    // }, [downtimeManualConn, line, guid, onHubChange])
 
     useEffect(() => {
-        startConnection(scrapConn, line, onHubChange)
-    }, [scrapConn, line, onHubChange])
+        startConnection(scrapConn, line, workCenter, () => dispatch(fetchOeeStartAsync(guid)))
+    }, [scrapConn, line, workCenter, dispatch, guid])
 
     //* other side effects
     useEffect(() => {

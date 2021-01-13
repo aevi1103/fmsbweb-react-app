@@ -1,20 +1,25 @@
-export const startConnection = (conn, line, onChange, onJoin, onLeave, onError) => {
+export const startConnection = (conn, line, group, onChange, onJoin, onLeave, onError) => {
 
     const joinStyle = 'color: green; font-size: 15px; font-weight: bold;'
     const leaveStyle = 'color: red; font-size: 15px; font-weight: bold;'
 
     if (conn && line && conn.state === 'Disconnected') {
 
+        console.log(conn)
+
         conn.start()
             .then(() => {
 
                 //* add client to group
-                conn.invoke('AddToGroup', line.tagName)
+                conn.invoke('AddToGroup', group)
 
                 //* listner
                 conn.on('BroadCastChange', data => {
 
+                    console.log('on change.....', data)
+
                     if (onChange === 'function') {
+                        // onChange(data);
                         onChange();
                     }
                     
@@ -23,7 +28,7 @@ export const startConnection = (conn, line, onChange, onJoin, onLeave, onError) 
                 conn.on('onJoin', data => {
 
                     if (!onJoin) {
-                        console.log(`%c counter join: ${data}`, joinStyle)
+                        console.log(`%c ${conn?.connection?.baseUrl} join: ${data}`, joinStyle)
                     }
 
                     if (onJoin === 'function') {
@@ -35,7 +40,7 @@ export const startConnection = (conn, line, onChange, onJoin, onLeave, onError) 
                 conn.on('onLeave', data => {
 
                     if (!onLeave) {
-                        console.log(`%c counter leave: ${data}`, leaveStyle)
+                        console.log(`%c ${conn?.connection?.baseUrl} leave: ${data}`, leaveStyle)
                     }
 
                     if (onLeave === 'function') {
