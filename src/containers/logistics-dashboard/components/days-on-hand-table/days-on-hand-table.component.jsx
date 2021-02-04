@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import moment from 'moment';
 import numeral from 'numeral';
 import Highlighter from 'react-highlight-words';
 import { EditOutlined } from '@ant-design/icons';
 import api from '../../../../core/utilities/api'
+import { setLogisticsStatus } from '../../../../core/redux/logistics/logistics.actions'
 
-import { numberSorter } from '../../../../core/utilities/helpers';
+// import { numberSorter } from '../../../../core/utilities/helpers';
 import { SearchOutlined } from '@ant-design/icons';
 import { 
   Table,
@@ -18,54 +19,23 @@ import {
   message
 } from "antd";
 
-import { getColorCode, getColorRowClass } from '../../service/helper'
+import { getColorRowClass } from '../../service/helper'
 
 const DaysOnHandTable = () => {
 
   let searchInput = null;
-  const loading = useSelector(({ logistics: { isStockStatusFetching } }) => isStockStatusFetching) || false;
-  const daysOnHand = useSelector(({ logistics: { stockStatusCollection } }) => stockStatusCollection.daysOnHand) || [];
+
+  const dispatch = useDispatch();
+  const logistics = useSelector(({ logistics }) => logistics);
+  const { isStockStatusFetching, stockStatus } = logistics || {};
+  const loading = isStockStatusFetching;
+  const daysOnHand = (stockStatus?.daysOnHand ?? []).map((i, key) => ({ ...i, key }));
 
   const [form] = Form.useForm();
-  const [dataSource, setDataSource] = useState([])
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState(null);
-
-  useEffect(() => {
-
-      const ds = daysOnHand.map((rowData, i) => {
-
-            const {
-                date,
-                program,
-                material,
-                qty,
-                daysOnHand,
-                safetyStock,
-                safetyDays
-            } = rowData;
-
-            return {
-                key: i,
-                ...rowData,
-                date: moment(date).format('MM/DD/YYYY'),
-                prog: program,
-                mat: material,
-                stock: numeral(qty).format('0,0'),
-                safetyStock: numeral(safetyStock).format('0,0'),
-                safetyStockQty: safetyStock,
-                safetyDays: safetyDays?.days ?? 0,
-                stockSafetyDaysId: safetyDays?.stockSafetyDaysId ?? 0,
-                doh: numeral(daysOnHand).format('0.00'),
-                bgColor: getColorCode(daysOnHand, safetyStock)
-            }
-      })
-
-      setDataSource(ds)
-
-  }, [daysOnHand])
 
   useEffect(() => {
 
@@ -93,19 +63,19 @@ const DaysOnHandTable = () => {
     setSelectedRecord(record)
 
     form.setFieldsValue({
-      days: record?.safetyDays
+      days: record?.safetyDays?.days
     })
     
   }
 
-  const onFinish = ({ days }) => {
+  const onFinish = async ({ days }) => {
   
     try {
       
-      const { stockSafetyDaysId, material, safetyStockQty, qty } = selectedRecord || {};
+      const { safetyDays, material, safetyStock, qty } = selectedRecord || {};
 
-      api.post(`/logistics/days`, {
-        stockSafetyDaysId: stockSafetyDaysId,
+      const response = await api.post(`/logistics/days`, {
+        stockSafetyDaysId: safetyDays?.stockSafetyDaysId,
         materialNumber: material,
         days: +days
       })
@@ -113,20 +83,28 @@ const DaysOnHandTable = () => {
       message.success(`Successfully submitted!`)
       setModalVisible(false)
 
-      const safetyStockOverDays = days === 0 ? 0 : safetyStockQty / days;
-      const daysOnHand = safetyStockOverDays === 0 ? 0 : qty / safetyStockOverDays;
+      const safetyStockOverDays = days === 0 ? 0 : safetyStock / days;
+      const doh = safetyStockOverDays === 0 ? 0 : qty / safetyStockOverDays;
 
-      const rowObject = {
-        ...selectedRecord,
-        safetyDays: days,
-        daysOnHand,
-        doh: numeral(daysOnHand).format('0.00')
+      const clone = { ...selectedRecord };
+
+      if (clone.safetyDays) {
+        clone.safetyDays.days = +days;
+      } else {
+        clone.safetyDays = {
+          days: +days,
+          materialNumber: selectedRecord?.material,
+          stockSafetyDaysId: response.data.stockSafetyDaysId
+        }
       }
 
-      const newDataSource = [...dataSource.filter(({ material }) => material !== selectedRecord?.material), rowObject]
-      const sortDataSource = newDataSource.sort((a, b) => b.qty - a.qty)
+      clone.daysOnHand = doh;
 
-      setDataSource(sortDataSource)
+      const newStockStat = { ...stockStatus }
+      const newDaysOnHand = [ ...daysOnHand.filter(({ material }) => material !== selectedRecord?.material), clone]
+      newStockStat.daysOnHand = newDaysOnHand.sort((a, b) => b.qty - a.qty);
+
+      dispatch(setLogisticsStatus(newStockStat))
 
     } catch (error) {
       message.error(`Something went wrong!`)
@@ -193,47 +171,53 @@ const DaysOnHandTable = () => {
        {
            title: 'Date',
            dataIndex: 'date',
-          //  sorter: (a, b) => new Date(a.date) - new Date(b.date),
-          //  sortDirections: ['descend', 'ascend']
+           render: (text, record, index) => {       
+              const { date } = record;
+              return  moment(date).format('MM/DD/YYYY')    
+          }
        },
        {
            title: 'Program',
-           dataIndex: 'prog',
-          //  sorter: (a, b) => a.prog.localeCompare(b.prog),
-          //  sortDirections: ['descend', 'ascend'],
-           ...getColumnSearchProps('prog')
+           dataIndex: 'program',
+           ...getColumnSearchProps('program'),
+           render: (text, record, index) => {       
+              const { program } = record;
+              return  program
+          }
        },
        {
            title: 'Material',
-           dataIndex: 'mat',
-          //  sorter: (a, b) =>  a.mat.localeCompare(b.mat),
-          //  sortDirections: ['descend', 'ascend'],
-           ...getColumnSearchProps('mat')
+           dataIndex: 'material',
+           ...getColumnSearchProps('material'),
+          render: (text, record, index) => {       
+              const { material } = record;
+              return  material
+          }
        },
        {
            title: 'Stock Qty',
-           dataIndex: 'stock',
-          //  sorter: (a, b) => numberSorter(a.stock, b.stock),
-          //  sortDirections: ['descend', 'ascend']
+           dataIndex: 'qty',
+           render: (text, record, index) => {       
+              const { qty } = record;
+              return  numeral(qty).format('0,0')
+          }
       },
       {
          title: 'Safety Stock',
          dataIndex: 'safetyStock',
-        //  sorter: (a, b) => numberSorter(a.safetyStock, b.safetyStock),
-        //  sortDirections: ['descend', 'ascend']
+         render: (text, record, index) => {       
+            const { safetyStock } = record;
+            return  numeral(safetyStock).format('0,0')
+        }
       },
       {
           title: 'Days',
           dataIndex: 'safetyDays',
-          // sorter: (a, b) => numberSorter(a.safetyDays.days, b.safetyStock.days),
-          // sortDirections: ['descend', 'ascend'],
           render: (text, record, index) => {       
-
               const { safetyDays } = record;
-
               return (
                 <>
-                  <span className="mr2">{safetyDays}</span> 
+                  <span className="mr2">{safetyDays?.days ?? 0}</span> 
                   <Tooltip title="Edit days">
                     <span style={{ cursor: 'pointer' }} onClick={() => onEdit(record)} aria-hidden="true" ><EditOutlined /></span>
                   </Tooltip>
@@ -243,14 +227,14 @@ const DaysOnHandTable = () => {
           }
       },
       {
-           title: 'Days On Hand',
-           dataIndex: 'doh',
-          //  sorter: (a, b) => numberSorter(a.doh, b.doh),
-          //  sortDirections: ['descend', 'ascend'],
+          title: 'Days On Hand',
+          dataIndex: 'daysOnHand',
+          render: (text, record, index) => {       
+              const { daysOnHand } = record;
+              return  numeral(daysOnHand).format('0.00')
+          }
       }
      ];
-     
-     
 
      return (
        <>
@@ -258,12 +242,12 @@ const DaysOnHandTable = () => {
             size="small"
             loading={loading}
             columns={columns}
-            dataSource={dataSource}
+            dataSource={daysOnHand}
             pagination={false}
             rowClassName={(record, index) => {
 
-              const { doh, safetyStock } = record;
-              const rowClass = getColorRowClass(parseFloat(doh), parseFloat(safetyStock));
+              const { daysOnHand, safetyStock } = record;
+              const rowClass = getColorRowClass(parseFloat(daysOnHand), parseFloat(safetyStock));
 
               return `${rowClass}`;
 

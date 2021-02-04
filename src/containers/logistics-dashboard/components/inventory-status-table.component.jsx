@@ -10,7 +10,7 @@ import {
  const InventoryStatusTable = () => {
 
     const loading = useSelector(({ logistics: { isStockStatusFetching } }) => isStockStatusFetching) || false;
-    const inventoryStatus = useSelector(({ logistics: { stockStatusCollection } }) => stockStatusCollection.inventoryStatus) || [];
+    const inventoryStatus = useSelector(({ logistics: { stockStatus } }) => stockStatus?.inventoryStatus ?? []);
 
     const columns = [
         {

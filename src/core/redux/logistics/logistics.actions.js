@@ -61,6 +61,11 @@ export const fetchLogisticsStockOverviewSlocStartAsync = (date) => {
 
     };
 };
+
+export const setLogisticsStatus = data => ({
+    type: types.FETCH_LOGISTICS_STATUS_SUCCESS,
+    payload: data
+})
     
 //* LOGISTICS_STATUS
 export const fetchLogisticsStatusStartAsync = (date) => {

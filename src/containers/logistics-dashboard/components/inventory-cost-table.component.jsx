@@ -10,7 +10,7 @@ import {
  const InventoryCostTable = () => {
 
     const loading = useSelector(({ logistics: { isStockStatusFetching } }) => isStockStatusFetching) || false;
-    const inventoryCost = useSelector(({ logistics: { stockStatusCollection } }) => stockStatusCollection.inventoryCost) || [];
+    const inventoryCost = useSelector(({ logistics: { stockStatus } }) => stockStatus?.inventoryCost ?? []);
 
     
     const columns = [

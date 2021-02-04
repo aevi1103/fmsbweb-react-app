@@ -10,7 +10,7 @@ const INITIAL_STATE = {
     stockOVerviewSlocErrorMsg: undefined,
 
     isStockStatusFetching: false,
-    stockStatusCollection: [],
+    stockStatus: null,
     stockStatusErrorMsg: undefined,
 }
 
@@ -81,7 +81,7 @@ const reducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isStockStatusFetching: false,
-                stockStatusCollection: action.payload
+                stockStatus: action.payload
             };
 
         case types.FETCH_LOGISTICS_STATUS_FAILURE:
@@ -89,7 +89,7 @@ const reducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isStockStatusFetching: false,
-                stockStatusCollection: [],
+                stockStatus: [],
                 stockStatusErrorMsg: action.payload
             };
     

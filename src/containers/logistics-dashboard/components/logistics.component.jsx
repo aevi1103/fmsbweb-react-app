@@ -76,7 +76,7 @@ const contentListNoTitle = {
 const Logistics = () => {
 
     const customerLoading = useSelector(({ logistics: { isStockStatusFetching } }) => isStockStatusFetching) || false;
-    const customerComments = useSelector(({ logistics: { stockStatusCollection } }) => stockStatusCollection.customerComments) || [];
+    const customerComments = useSelector(({ logistics: { stockStatus } }) => stockStatus?.customerComments ?? []);
 
     const [tabKey, setTabKey] = useState('doh')
 

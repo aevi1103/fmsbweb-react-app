@@ -98,7 +98,7 @@ const PlantPpmhChhart = () => {
                                 ...tooltipStyle
                             },
                             data: weekDetails.map(w => ({ 
-                                label: w.weekNumber,
+                                label: `${year}-Q${quarter}-${month}-WK${w.weekNumber}`,
                                 value: Math.round(w.ppmh),
                                 toolText: tooltext(w, `${year}-Q${quarter}-${moment().month(month).format('MMM')}-WK${w.weekNumber}`),
                             }))

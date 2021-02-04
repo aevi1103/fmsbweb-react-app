@@ -13,7 +13,7 @@ ReactFC.fcRoot(FusionCharts, Charts, FusionTheme);
 const DaysOnHandTableChart = () => {
 
     const loading = useSelector(({ logistics: { isStockStatusFetching } }) => isStockStatusFetching) || false;
-    const daysOnHand = useSelector(({ logistics: { stockStatusCollection } }) => stockStatusCollection.daysOnHand) || [];
+    const daysOnHand = useSelector(({ logistics: { stockStatus } }) => stockStatus?.daysOnHand ?? []);
 
     const data = daysOnHand.filter(({ qty }) => qty > 0)
 
