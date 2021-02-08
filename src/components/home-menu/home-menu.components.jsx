@@ -113,16 +113,25 @@ const HomeMenu = React.memo(({ location }) => {
           </span>
         }
       >
-        <Menu.Item key="afHourByHour">
-          <a href="http://10.129.224.149/FMSB/AssemblyFinishing/Inputs/Home.aspx" target="_blank" rel="noopener noreferrer">Hour by Hour</a>
+
+        <Menu.Item key="/af/project-tracker">
+            <span>Project Tracker</span>
+            <Link to="/af/project-tracker" />
         </Menu.Item>
-        <Menu.Item key="/af/history">
-          <span>HxH History</span>
-          <Link to="/af/history" />
-        </Menu.Item>
+
         <Menu.Item key="/af/eos">
           <span>EOS</span>
           <Link to="/af/eos" />
+        </Menu.Item>
+
+        <Menu.Item key="afHourByHour">
+          <a href="http://10.129.224.149/FMSB/AssemblyFinishing/Inputs/Home.aspx" target="_blank" rel="noopener noreferrer">Hour by Hour</a>
+        </Menu.Item>
+
+
+        {/* <Menu.Item key="/af/history">
+          <span>HxH History</span>
+          <Link to="/af/history" />
         </Menu.Item>
         <Menu.Item key="/af/recipients">
           <span>EOS Recipients</span>
@@ -131,7 +140,8 @@ const HomeMenu = React.memo(({ location }) => {
         <Menu.Item key="/af/traceability">
           <span>Component Traceability</span>
           <Link to="/af/traceability" />
-        </Menu.Item>
+        </Menu.Item> */}
+
       </SubMenu>
 
       <SubMenu
