@@ -44,6 +44,9 @@ import DowntimePage from './containers/downtime/downtime-page.component';
 import ProductionOrderPage from './containers/production-order/production-order-page.component';
 import AfEosPage from './containers/af-eos/af-eos.component';
 
+//* Project Tracker
+import ProjectTracker from './containers/project-tracker/project-tracker.component'
+
 //* quality pages
 import CheckSheetSettingsPage from './containers/quality-check-sheet/check-sheet-settings-page.component'
 import ControlMethodPage from './containers/quality-check-sheet/control-method-page.component'
@@ -198,6 +201,7 @@ const App = () => {
 
           {/* A&F Page */}
           <Route exact path="/af/eos" component={AfEosPage} />
+          <Route exact path="/af/project-tracker" component={ProjectTracker} />
 
           {/* Quality */}
           <Route exact path="/quality/checksheets/settings" component={CheckSheetSettingsPage} />

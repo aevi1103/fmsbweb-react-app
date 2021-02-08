@@ -24,22 +24,28 @@ const AfMenu = React.memo(() => {
                     <Link to="/" />
                 </Menu.Item>
 
+                <Menu.Item key="/af/project-tracker">
+                    <DatabaseOutlined />
+                    <span>Project Tracker</span>
+                    <Link to="/af/project-tracker" />
+                </Menu.Item>
+
+                <Menu.Item key="/af/eos">
+                    <SaveOutlined />
+                    <span>EOS Report</span>
+                    <Link to="/af/eos" />
+                </Menu.Item>
+
                 <Menu.Item key="afHourByHour">
                     <InboxOutlined />   
                     <span>Hour by Hour</span>
                     <a href="http://10.129.224.149/FMSB/AssemblyFinishing/Inputs/Home.aspx" target="_blank" rel="noopener noreferrer"></a>
                 </Menu.Item>
-
-                <Menu.Item key="/af/history">
+                
+                {/* <Menu.Item key="/af/history">
                     <DatabaseOutlined />
                     <span>HxH History</span>
                     <Link to="/af/history" />
-                </Menu.Item>
-
-                <Menu.Item key="/af/eos">
-                    <SaveOutlined />
-                    <span>EOS</span>
-                    <Link to="/af/eos" />
                 </Menu.Item>
 
                 <Menu.Item key="/af/recipients">
@@ -52,7 +58,7 @@ const AfMenu = React.memo(() => {
                     <ContainerOutlined />
                     <span>Component Traceability</span>
                     <Link to="/af/traceability" />
-                </Menu.Item>
+                </Menu.Item> */}
 
             </Menu>)
 })

@@ -9,7 +9,7 @@ module.exports = {
         lessLoaderOptions: {
           lessOptions: {
             modifyVars: { 
-                '@primary-color': tennecoBlue,
+                '@primary-color': '#0141bf',
                 '@error-color': '#dc3545',
                 '@layout-body-background': '#fff',
                 '@layout-header-background': tennecoBlue,

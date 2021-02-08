@@ -137,6 +137,7 @@ export const monthRange = {
 export const depts = ['Foundry', 'Machining', 'Anodize', 'Skirt Coat', 'Assembly'];
 export const shifts = ['3', '1', '2', 'All'];
 export const dateFormat = 'MM/DD/YYYY';
+export const longDateFormat = 'MM/DD/YYYY hh:mm:ss A';
 export const getTopItems = (data, top = 5) => [...data].splice(0,top);
 export const scrollToObject = el => window.scrollTo(0, el?.offsetTop);
 
