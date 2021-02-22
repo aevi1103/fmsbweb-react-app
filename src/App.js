@@ -63,6 +63,9 @@ import CostTaregtsPage from './containers/logitics-costs-targets/logistics-costs
 import InventoryMinMaxTargets from './containers/inventory-min-max-targets/inventory-min-max-targets.component'
 import ProductionOrderFileUpload from './containers/production-order-file-upload/production-order-file-upload.componen'
 
+//* Maintenance
+import MaintenanceMtbb from './containers/maintenance-mtbb/maintenance-mtbb.component'
+
 //* OEE
 import OeeLines from './containers/oee-lines/oee-lines.component'
 import Oee from './containers/oee/oee.component'
@@ -185,6 +188,8 @@ const App = () => {
           <Route exact path="/dashboard/morningmeeting/finance" component={FinancePage} />
           <Route exact path="/dashboard/morningmeeting/quality" component={QualityPage} />
           <Route exact path="/dashboard/morningmeeting/downtime" component={DowntimePage} />
+
+          <Route exact path="/dashboard/maintenance" component={MaintenanceMtbb} />
 
           <Route exact path="/dashboard/morningmeeting/*/hourly-production" component={HourlyProdPage} />
 

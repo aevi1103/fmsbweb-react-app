@@ -99,10 +99,16 @@ const MorningMeetingMenu = ( { location } ) => {
             <Link to={`/dashboard/morningmeeting/level2?start=${startQry}&end=${endQry}&dept=${deptQry}`} />
         </Menu.Item>
 
+        <Menu.Item key="/dashboard/maintenance">
+            <DashboardOutlined />
+            <span>Maintenance</span>
+            <Link to={`/dashboard/maintenance`} />
+        </Menu.Item>
+
+        <DashboardSubMenu start={startQry} end={endQry} dept="assembly" icon={<PieChartOutlined/>} /> 
         <DashboardSubMenu start={startQry} end={endQry} dept="foundry" icon={<AreaChartOutlined/>} /> 
         <DashboardSubMenu start={startQry} end={endQry} dept="machining" icon={<BarChartOutlined/>} /> 
         <DashboardSubMenu start={startQry} end={endQry} dept="finishing" icon={<DotChartOutlined/>} /> 
-        <DashboardSubMenu start={startQry} end={endQry} dept="assembly" icon={<PieChartOutlined/>} /> 
 
         <Menu.Item key={`/dashboard/swot/settings/Foundry`}>
             <BarChartOutlined />

@@ -11,7 +11,7 @@ import {
  import { notification } from 'antd'
  import { baseApiUrl } from './base-url'
 
-const { dispatch } = store
+// const { dispatch } = store
 const { NODE_ENV } = process.env;
 
 const http = axios.create({
@@ -32,11 +32,13 @@ http.interceptors.request.use(req => {
         console.log('req',method, req.url)
     }
 
-    dispatch(setTotalRequests(totalReq++));
+    store.dispatch(setTotalRequests(totalReq++));
     return req;
 });
 
 http.interceptors.response.use(res => {
+
+    const { dispatch } = store
 
     if (NODE_ENV !== 'production') {
         const { config, data } = res;
@@ -77,6 +79,8 @@ http.interceptors.response.use(res => {
     return res;
 },
 error => {
+
+    const { dispatch } = store
 
     //* global error hadlker
     const { errors: { errorCollection } } = store.getState();

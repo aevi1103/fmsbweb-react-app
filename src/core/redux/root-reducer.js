@@ -15,6 +15,8 @@ import performanceLevel0Reducer from './performance-lvl-0/performance-lvl-0.redu
 import performanceLevel2Reducer from './performance-lvl-2/performance-lvl-2.reducer'
 
 import hourlyProductionReducer from './hourly-production/houlry-production.reducer'
+import maintenanceMtbbReducer from '../../containers/maintenance-mtbb/services/maintenance-mtbb.slice'
+
 
 // import qualityCheckSheetReducer from './quality-check-sheet/quality-check-sheet.reducer'
 import requetsReducer from './requests/requests.reducer'
@@ -39,6 +41,7 @@ const rootReducer = combineReducers({
     performance2: performanceLevel2Reducer,
     errors: errorsReducer,
     oeeReducer,
+    maintenanceMtbb: maintenanceMtbbReducer
     // qualityCheckSheet: qualityCheckSheetReducer,
 })
 
