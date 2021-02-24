@@ -66,6 +66,9 @@ import ProductionOrderFileUpload from './containers/production-order-file-upload
 //* Maintenance
 import MaintenanceMtbb from './containers/maintenance-mtbb/maintenance-mtbb.component'
 
+//* overtime
+import Overtime from './containers/overtime/overtime.component'
+
 //* OEE
 import OeeLines from './containers/oee-lines/oee-lines.component'
 import Oee from './containers/oee/oee.component'
@@ -207,6 +210,7 @@ const App = () => {
           {/* A&F Page */}
           <Route exact path="/af/eos" component={AfEosPage} />
           <Route exact path="/af/project-tracker" component={ProjectTracker} />
+          <Route exact path="/af/overtime" component={Overtime} />
 
           {/* Quality */}
           <Route exact path="/quality/checksheets/settings" component={CheckSheetSettingsPage} />

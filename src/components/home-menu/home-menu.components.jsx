@@ -9,7 +9,7 @@ import {
   SafetyOutlined,
   SolutionOutlined,
   TeamOutlined,
-  ToolOutlined,
+  ToolOutlined
 } from '@ant-design/icons';
 
 import { Menu } from "antd";
@@ -122,6 +122,11 @@ const HomeMenu = React.memo(({ location }) => {
         <Menu.Item key="/af/eos">
           <span>EOS</span>
           <Link to="/af/eos" />
+        </Menu.Item>
+
+        <Menu.Item key="/af/overtime">
+            <span>Overtime</span>
+            <Link to="/af/overtime" />
         </Menu.Item>
 
         <Menu.Item key="afHourByHour">

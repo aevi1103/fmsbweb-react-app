@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link, useLocation } from "react-router-dom";
-
 import { Menu } from 'antd';
 
 import {
@@ -8,8 +7,7 @@ import {
     HomeOutlined,
     InboxOutlined,
     SaveOutlined,
-    UserSwitchOutlined,
-    ContainerOutlined
+    UserSwitchOutlined
 } from '@ant-design/icons';
 
 const AfMenu = React.memo(() => {
@@ -34,6 +32,12 @@ const AfMenu = React.memo(() => {
                     <SaveOutlined />
                     <span>EOS Report</span>
                     <Link to="/af/eos" />
+                </Menu.Item>
+
+                <Menu.Item key="/af/overtime">
+                    <UserSwitchOutlined />
+                    <span>Overtime</span>
+                    <Link to="/af/overtime" />
                 </Menu.Item>
 
                 <Menu.Item key="afHourByHour">
