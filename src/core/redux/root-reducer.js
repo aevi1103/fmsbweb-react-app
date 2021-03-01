@@ -6,7 +6,9 @@ import productionStatusReducer from './production-status/production-status.reduc
 import productionDetailsReducer from './production-details/production-details.reducer'
 import afEosReducer from './af-eos/af-eos.reducer'
 import departmentDashboardReducer from './department-dashboard/department-dashboard.reducer'
+
 import safetyreducer from './safety/safety.reducer'
+
 import qualityReducer from './quality/quaity.reducer'
 import logisticsReducer from './logistics/logistics.reducer'
 import financeReducer from './finance/finance.reducer'
@@ -18,7 +20,7 @@ import hourlyProductionReducer from './hourly-production/houlry-production.reduc
 import maintenanceMtbbReducer from '../../containers/maintenance-mtbb/services/maintenance-mtbb.slice'
 import overtimeReducer from '../../containers/overtime/services/overtime.slice'
 
-
+import SafetyHistoryReducer from '../../containers/safety-history/services/safety-history.slice'
 // import qualityCheckSheetReducer from './quality-check-sheet/quality-check-sheet.reducer'
 import requetsReducer from './requests/requests.reducer'
 import errorsReducer from './errors/errors.reducer'
@@ -43,7 +45,8 @@ const rootReducer = combineReducers({
     errors: errorsReducer,
     oeeReducer,
     maintenanceMtbb: maintenanceMtbbReducer,
-    overtime: overtimeReducer
+    overtime: overtimeReducer,
+    safetyHistory: SafetyHistoryReducer
     // qualityCheckSheet: qualityCheckSheetReducer,
 })
 

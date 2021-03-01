@@ -20,6 +20,7 @@ import HomeMenu from './components/home-menu/home-menu.components';
 import DashboardMenu from './components/dashboard-menu/dashboard-menu.component';
 import AfMenu from './components/af-menu/af-menu.component';
 import LogisticsMenu from './components/logistics-menu/logistics-menu.component'
+import SafetyMenu from './components/safety-menu/safety-menu.component'
 
 //* swot components
 import SwotSettings from './containers/swot-settings/swot-settings.component';
@@ -72,6 +73,8 @@ import Overtime from './containers/overtime/overtime.component'
 //* OEE
 import OeeLines from './containers/oee-lines/oee-lines.component'
 import Oee from './containers/oee/oee.component'
+
+import SafetyHistory from './containers/safety-history/safety-history.component'
 
 import ChatPage from './containers/chat/chat-page.component'
 
@@ -156,6 +159,7 @@ const App = () => {
           <Route path="/af" component={AfMenu} />
           <Route path="/quality" component={HomeMenu} />
           <Route path="/machining/manning" component={HomeMenu} />
+          <Route path="/safety/*" component={SafetyMenu} />
         </Switch>
 
       </Sider>
@@ -222,6 +226,8 @@ const App = () => {
           
           {/* Machining Page */}
           <Route exact path="/machining/manning/:eosId" component={MachiningManningPage} />
+
+          <Route exact path="/safety/history" component={SafetyHistory} />
 
           <Route exact path="/chat" component={ChatPage} />
 
