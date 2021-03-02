@@ -49,23 +49,30 @@ const formLayout = {
 
 const shiftArr = [1,2,3,'A','B','C','D','M','E']
 
-const menu = (record, setIsModalVisible, form, setIsClosed) => {
-
-    console.log({record})
+const menu = (record, setIsModalVisible, form, setIsClosed, setMitigatedTimestamp, setIsRecordable) => {
 
     const { confirm } = Modal;
-    const { id } = record;
+    const { 
+        id,
+        accidentDate,
+        mitigatedTimeStamp,
+        isClosed,
+        injuryStatId
+    } = record;
 
     const onEditClick = () => {
         
         form.resetFields();
         form.setFieldsValue({
             ...record,
-            accidentDate: moment(record.accidentDate)
+            accidentDate: moment(accidentDate),
+            mitigatedTimeStamp: mitigatedTimeStamp ? moment(mitigatedTimeStamp) : null
         })
 
         setIsModalVisible(true)
-        setIsClosed(record.isClosed)
+        setIsClosed(isClosed)
+        setMitigatedTimestamp(mitigatedTimeStamp ? moment(mitigatedTimeStamp) : null)
+        setIsRecordable(injuryStatId.toLowerCase().includes('recordable'))
     }
 
     const showConfirmDelete = () => {
@@ -118,6 +125,8 @@ const IncidentHistoryTable = ({ department, range }) => {
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [isClosed, setIsClosed] = useState(false)
     const [submitLoading, setSubmitLoading] = useState(false)
+    const [mitigatedTimeStamp, setMitigatedTimestamp] = useState(null)
+    const [isRecordable, setIsRecordable] = useState(false)
 
     const handleOk = () => form.submit();
 
@@ -127,13 +136,13 @@ const IncidentHistoryTable = ({ department, range }) => {
             
             setSubmitLoading(true)
 
-            const { accidentDate, mitigated } = values;
+            const { accidentDate, mitigatedTimeStamp } = values;
 
             await http.post(`safety`, {
                 ...values,
                 modifieddate: new Date(),
                 accidentDate: moment(accidentDate).format(longDateFormat), 
-                mitigatedTimeStamp: mitigated ? new Date() : null
+                mitigatedTimeStamp:!mitigatedTimeStamp ? null : moment(mitigatedTimeStamp).format(longDateFormat)
             })
 
             dispatchIncidentsQry({ department, range }, dispatch)
@@ -150,14 +159,28 @@ const IncidentHistoryTable = ({ department, range }) => {
 
     const onCheckBoxChange = e => setIsClosed(e.target.checked)
     const handleCancel = () => setIsModalVisible(false)
-    const onDatePickerChange = () => {}
+    const onInjuryStateChange = value => setIsRecordable(value.toLowerCase().includes('recordable'))
+
+    const onMitigatedChecked = e => {
+
+        const isChecked = e.target.checked;
+
+        if (isChecked) {
+            setMitigatedTimestamp(moment())
+            form.setFieldsValue({ mitigatedTimeStamp: moment() })
+        } else {
+            setMitigatedTimestamp(null)
+            form.setFieldsValue({ mitigatedTimeStamp: null })
+        }
+
+    }
 
     const columns = [
         {
             title: 'Action',
             dataIndex: 'action',
             render: (text, record) => {
-                return (<Dropdown overlay={() => menu(record, setIsModalVisible, form, setIsClosed)}>
+                return (<Dropdown overlay={() => menu(record, setIsModalVisible, form, setIsClosed, setMitigatedTimestamp, setIsRecordable)}>
                     <Link>Action</Link>
                 </Dropdown>)
             }
@@ -170,6 +193,12 @@ const IncidentHistoryTable = ({ department, range }) => {
             render: (text, { isClosed }) => {
                 return isClosed ? 'Closed' : 'Open'
             }
+        },
+        {
+            title: 'FM Tips #',
+            dataIndex: 'fmTipsNumber',
+            sorter: (a, b) => a.fmTipsNumber - b.fmTipsNumber,
+            sortDirections: ['descend', 'ascend']
         },
         {
             title: 'Mitigated',
@@ -396,7 +425,6 @@ const IncidentHistoryTable = ({ department, range }) => {
                         hasFeedback>
 
                             <DatePicker
-                                onChange={onDatePickerChange}
                                 disabledDate={disabledDate}
                                 format={longDateFormat}
                                 showTime
@@ -449,7 +477,7 @@ const IncidentHistoryTable = ({ department, range }) => {
                             },
                         ]}
                         hasFeedback>
-                        <Select>
+                        <Select onChange={onInjuryStateChange}>
                             {
                                 status.map(({ injuryStat1 }) => <Option key={injuryStat1} value={injuryStat1}>{injuryStat1}</Option>)
                             }
@@ -496,12 +524,12 @@ const IncidentHistoryTable = ({ department, range }) => {
                         name="fmTipsNumber"
                         rules={[
                             {
-                                required: isClosed,
+                                required: isClosed && isRecordable,
                                 message: 'Please enter FM Tips Number',
                             },
                         ]}
                         hasFeedback>
-                            <Input disabled={!isClosed} />
+                            <Input disabled={!isClosed || !isRecordable} />
                     </Form.Item>
 
                     <Form.Item
@@ -509,7 +537,28 @@ const IncidentHistoryTable = ({ department, range }) => {
                         name="mitigated"
                         valuePropName="checked"
                         hasFeedback>
-                            <Checkbox />
+                            <Checkbox onChange={onMitigatedChecked} />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="MItigated Date"
+                        name="mitigatedTimeStamp"
+                        rules={[
+                            {
+                                required: !!mitigatedTimeStamp,
+                                message: 'Please enter FM Tips Number',
+                            },
+                        ]}
+                        hasFeedback>
+                            <DatePicker
+                                disabledDate={disabledDate}
+                                format={longDateFormat}
+                                value={mitigatedTimeStamp}
+                                disabled={mitigatedTimeStamp ? false : true}
+                                showTime
+                                style={{
+                                    width: '100%',
+                                }} />
                     </Form.Item>
 
                     <Form.Item

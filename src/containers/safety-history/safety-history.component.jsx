@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 import axios from 'axios'
 import http from '../../core/utilities/api'
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { dateFormat, dateRange, disabledDate } from '../../core/utilities/helpers'
 import { setDropdowns } from './services/safety-history.slice'
@@ -63,7 +64,6 @@ const SafetyHistory = () => {
         })
         .finally(() => setDropdownLoading(false))
 
-        
     }, [])
 
     useEffect(() => getIncidents(), [])
@@ -103,12 +103,19 @@ const SafetyHistory = () => {
         </Row>
     )
 
+    const subTitle = (
+        <>
+            <span className="mr2">Date Range: {range[0].format(dateFormat)} - {range[1].format(dateFormat)}</span>
+            <Link to="/safety/dashboard">View Dashboard</Link>
+        </>
+    )
+
     return (
         <>
             <PageHeader
                 className="site-page-header"
                 title={`${department ? department : 'All'} Department Safety History`}
-                subTitle={`Date Range: ${range[0].format(dateFormat)} - ${range[1].format(dateFormat)}`}
+                subTitle={subTitle}
                 extra={extra}
             />
 

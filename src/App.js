@@ -75,6 +75,7 @@ import OeeLines from './containers/oee-lines/oee-lines.component'
 import Oee from './containers/oee/oee.component'
 
 import SafetyHistory from './containers/safety-history/safety-history.component'
+import SafetyDashboard from './containers/safety-dashboard/safety-dashboard.component'
 
 import ChatPage from './containers/chat/chat-page.component'
 
@@ -179,7 +180,7 @@ const App = () => {
           <Route exact path="/dashboard/status/:department" component={ProductionDashboard} />
 
           {/* Monring Meeting */}
-          <Route exact path="/dashboard/morningmeeting/safety" component={SafetyPage} />
+          <Route exact path="/dashboard/morningmeeting/safety" component={SafetyDashboard} />
           <Route exact path="/dashboard/morningmeeting/logistics" component={LogisticsDashboard} />
           <Route exact path="/dashboard/morningmeeting/logistics/settings/inventory" component={InvetoryPage} />
           <Route exact path="/dashboard/morningmeeting/logistics/settings/cost/targets" component={CostTaregtsPage} />
@@ -228,6 +229,7 @@ const App = () => {
           <Route exact path="/machining/manning/:eosId" component={MachiningManningPage} />
 
           <Route exact path="/safety/history" component={SafetyHistory} />
+          <Route exact path="/safety/dashboard" component={SafetyDashboard} />
 
           <Route exact path="/chat" component={ChatPage} />
 

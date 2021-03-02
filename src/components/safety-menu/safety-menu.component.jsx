@@ -47,17 +47,15 @@ const SafetyMenu = () => {
             </Menu.Item>
 
             <Menu.Item key="history">
-                {/* <a href="http://10.129.224.149/FMSB/Safety2/History.aspx" rel="noopener noreferrer">History</a> */}
                 <FolderOpenOutlined />
                 <span>History</span>
                 <Link to="/safety/history" />
             </Menu.Item>
 
-            <Menu.Item key="report">
+            <Menu.Item key="dashboard">
                 <PieChartOutlined />
-                <span>
-                    <a href="http://10.129.224.149/FMSB/Safety2/Charts.aspx" rel="noopener noreferrer">Dashboard</a>
-                </span>
+                <span>Dashboard</span>
+                <Link to="/safety/dashboard" />
             </Menu.Item>
 
         </Menu>

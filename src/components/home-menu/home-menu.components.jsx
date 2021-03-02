@@ -58,14 +58,18 @@ const HomeMenu = React.memo(({ location }) => {
         </Menu.Item>
 
         <Menu.Item key="history">
-          {/* <a href="http://10.129.224.149/FMSB/Safety2/History.aspx" rel="noopener noreferrer">History</a> */}
           <span>History</span>
           <Link to="/safety/history" />
         </Menu.Item>
 
-        <Menu.Item key="report">
-          <a href="http://10.129.224.149/FMSB/Safety2/Charts.aspx" rel="noopener noreferrer">Dashboard</a>
+        <Menu.Item key="dashboard">
+          <span>Dashboard</span>
+          <Link to="/safety/dashboard" />
         </Menu.Item>
+
+        {/* <Menu.Item key="report">
+          <a href="http://10.129.224.149/FMSB/Safety2/Charts.aspx" rel="noopener noreferrer">Dashboard</a>
+        </Menu.Item> */}
 
       </SubMenu>
 
