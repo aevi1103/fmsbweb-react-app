@@ -7,7 +7,7 @@ import { dateFormat } from '../../../core/utilities/helpers'
 // Resolves charts dependancy
 charts(FusionCharts);
 
-const BodyPartChart = ({ data, range, department }) => {
+const BodyPartChart = React.memo(({ data, range, department }) => {
 
     const [start, end] = range;
 
@@ -16,6 +16,8 @@ const BodyPartChart = ({ data, range, department }) => {
             caption: `${department} Department Body Part Incidents`,
             subcaption: `${start.format(dateFormat)} - ${end.format(dateFormat)}`,
             showvalues: "1",
+            labelDisplay: "rotate",
+            slantLabel: "1",
             theme: "fusion"
         },
         data: data.map(({ count, bodyPart }) => ({
@@ -34,6 +36,6 @@ const BodyPartChart = ({ data, range, department }) => {
         />
     );
 
-}
+})
 
 export default BodyPartChart;

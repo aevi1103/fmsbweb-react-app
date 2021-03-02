@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import moment from 'moment';
+import Highlighter from 'react-highlight-words';
 import { useSelector, useDispatch } from 'react-redux';
-import { longDateFormat, disabledDate } from '../../../core/utilities/helpers'
+import { longDateFormat } from '../../../core/utilities/helpers'
 import http from '../../../core/utilities/api'
 import { dispatchIncidentsQry } from '../services/api'
+import EditForm from './edit-form.component'
 import { 
     Table,
     Menu,
@@ -13,41 +15,17 @@ import {
     message,
     Input,
     Form,
-    Select,
-    DatePicker,
-    Checkbox
+    Button
  } from "antd";
 
 import {
     DeleteOutlined,
     EditOutlined,
-    PaperClipOutlined
+    PaperClipOutlined,
+    SearchOutlined
 } from '@ant-design/icons';
 
 const { Link } = Typography;
-const { Option } = Select;
-const { TextArea } = Input;
-
-const formLayout = {
-    labelCol: {
-        xs: {
-            span: 24,
-        },
-        sm: {
-            span: 6,
-        }
-    },
-    wrapperCol: {
-        xs: {
-            span: 24,
-        },
-        sm: {
-            span:24,
-        },
-    }
-};
-
-const shiftArr = [1,2,3,'A','B','C','D','M','E']
 
 const menu = (record, setIsModalVisible, form, setIsClosed, setMitigatedTimestamp, setIsRecordable) => {
 
@@ -116,10 +94,6 @@ const IncidentHistoryTable = ({ department, range }) => {
 
     const incidents = useSelector(({ safetyHistory }) => safetyHistory.incidents);
     const incidentsLoading = useSelector(({ safetyHistory }) => safetyHistory.isLoading);
-    const departments = useSelector(({ safetyHistory }) => safetyHistory.departments);
-    const bodyParts = useSelector(({ safetyHistory }) => safetyHistory.bodyParts);
-    const injuries = useSelector(({ safetyHistory }) => safetyHistory.injuries);
-    const status = useSelector(({ safetyHistory }) => safetyHistory.status);
 
     const [form] = Form.useForm();
     const [isModalVisible, setIsModalVisible] = useState(false)
@@ -127,6 +101,10 @@ const IncidentHistoryTable = ({ department, range }) => {
     const [submitLoading, setSubmitLoading] = useState(false)
     const [mitigatedTimeStamp, setMitigatedTimestamp] = useState(null)
     const [isRecordable, setIsRecordable] = useState(false)
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
+
+    let searchInput = null;
 
     const handleOk = () => form.submit();
 
@@ -140,7 +118,7 @@ const IncidentHistoryTable = ({ department, range }) => {
 
             await http.post(`safety`, {
                 ...values,
-                modifieddate: new Date(),
+                modifieddate: moment().format(longDateFormat),
                 accidentDate: moment(accidentDate).format(longDateFormat), 
                 mitigatedTimeStamp:!mitigatedTimeStamp ? null : moment(mitigatedTimeStamp).format(longDateFormat)
             })
@@ -175,6 +153,76 @@ const IncidentHistoryTable = ({ department, range }) => {
 
     }
 
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+     };
+  
+     const handleReset = clearFilters => {
+         clearFilters();
+         setSearchText('');
+     };
+
+    const getColumnSearchProps = dataIndex => ({
+
+       filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
+         <div style={{ padding: 8 }}>
+           <Input
+             ref={node => {
+               searchInput = node;
+             }}
+             placeholder={`Search`}
+             value={selectedKeys[0]}
+             onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+             onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+             style={{ width: 188, marginBottom: 8, display: 'block' }}
+           />
+           <Button
+             type="primary"
+             onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+             icon={<SearchOutlined />}
+             size="small"
+             style={{ width: 90, marginRight: 8 }}
+           >
+             Search
+           </Button>
+           <Button onClick={() => handleReset(clearFilters)} size="small" style={{ width: 90 }}>
+             Reset
+           </Button>
+         </div>
+       ),
+
+       filterIcon: filtered => (
+         <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />
+       ),
+
+       onFilter: (value, record) =>
+
+         record[dataIndex]
+           ?.toString()
+           ?.toLowerCase()
+           ?.includes(value?.toLowerCase()),
+
+       onFilterDropdownVisibleChange: visible => {
+         if (visible) {
+           setTimeout(() => searchInput.select());
+         }
+       },
+
+       render: text => {
+
+        return searchedColumn === dataIndex ? (
+            <Highlighter
+                highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+                searchWords={[searchText]}
+                autoEscape
+                textToHighlight={text?.toString()}
+            />) : text
+
+       },
+    });
+
     const columns = [
         {
             title: 'Action',
@@ -187,99 +235,112 @@ const IncidentHistoryTable = ({ department, range }) => {
         },
         {
             title: 'Status',
-            dataIndex: 'isClosed',
+            dataIndex: 'isClosedText',
             sorter: (a, b) => a.isClosed - b.isClosed,
             sortDirections: ['descend', 'ascend'],
-            render: (text, { isClosed }) => {
-                return isClosed ? 'Closed' : 'Open'
-            }
+            render: (text, { isClosedText }) => {
+                return isClosedText
+            },
+            ...getColumnSearchProps('isClosedText'),
         },
         {
             title: 'FM Tips #',
             dataIndex: 'fmTipsNumber',
             sorter: (a, b) => a.fmTipsNumber - b.fmTipsNumber,
-            sortDirections: ['descend', 'ascend']
+            sortDirections: ['descend', 'ascend'],
+            ...getColumnSearchProps('fmTipsNumber'),
         },
         {
             title: 'Mitigated',
-            dataIndex: 'mitigated',
+            dataIndex: 'mitigatedText',
             sorter: (a, b) => a.mitigated - b.mitigated,
-            sortDirections: ['descend', 'ascend'],
-            render: (text, { mitigated }) => {
-                return mitigated ? 'Yes' : 'No'
-            }
+            sortDirections: ['descend', 'ascend'], 
+            render: (text, { mitigatedText }) => {
+                return mitigatedText
+            },
+            ...getColumnSearchProps('mitigatedText'),
         },
         {
             title: 'Mitigated Timestamp',
-            dataIndex: 'mitigatedTimeStamp',
+            dataIndex: 'mitigatedTimeStampText',
             sorter: (a, b) => new Date(a.mitigatedTimeStamp) - new Date(b.mitigatedTimeStamp),
             sortDirections: ['descend', 'ascend'],
-            render: (text, { mitigatedTimeStamp }) => {
-                return mitigatedTimeStamp ? moment(mitigatedTimeStamp).format(longDateFormat) : 'N/A'
-            }
+            render: (text, { mitigatedTimeStampText }) => {
+                return mitigatedTimeStampText
+            },
+            ...getColumnSearchProps('mitigatedTimeStampText'),
         },
         {
             title: 'Department',
             dataIndex: 'dept',
             sorter: (a, b) => a.dept.length - b.dept.length,
             sortDirections: ['descend', 'ascend'],
+            ...getColumnSearchProps('dept'),
         },
         {
             title: 'First Name',
             dataIndex: 'fname',
             sorter: (a, b) => a.fname.length - b.fname.length,
             sortDirections: ['descend', 'ascend'],
+            ...getColumnSearchProps('fname'),
         },
         {
             title: 'Last Name',
             dataIndex: 'lname',
             sorter: (a, b) => a.lname.length - b.lname.length,
             sortDirections: ['descend', 'ascend'],
+            ...getColumnSearchProps('lname'),
         },
         {
             title: 'Shift',
             dataIndex: 'shift',
             sorter: (a, b) => a.shift - b.shift,
             sortDirections: ['descend', 'ascend'],
+            ...getColumnSearchProps('shift'),
         },
         {
             title: 'Incident Date',
-            dataIndex: 'accidentDate',
+            dataIndex: 'accidentDateText',
             sorter: (a, b) => new Date(a.accidentDate) - new Date(b.accidentDate),
             sortDirections: ['descend', 'ascend'],
-            render: (text, { accidentDate }) => {
-                return moment(accidentDate).format(longDateFormat)
-            }
+            render: (text, { accidentDateText }) => {
+                return accidentDateText
+            },
+            ...getColumnSearchProps('accidentDateText'),
         },
         {
             title: 'Injury',
-            dataIndex: 'injury',
-            sorter: (a, b) => a.injury.injuryName.length - b.injury.injuryName.length,
+            dataIndex: 'injuryName',
+            sorter: (a, b) => a.injuryName.length - b.injuryName.length,
             sortDirections: ['descend', 'ascend'],
-            render: (text, { injury }) => {
-                return injury.injuryName
-            }
+            render: (text, { injuryName }) => {
+                return injuryName
+            },
+            ...getColumnSearchProps('injuryName'),
         },
         {
             title: 'Body Part',
-            dataIndex: 'bodyPart',
-            sorter: (a, b) => a.bodyPart.bodyPart1.length - b.bodyPart.bodyPart1.length,
+            dataIndex: 'bodyPartName',
+            sorter: (a, b) => a.bodyPartName.length - b.bodyPartName.length,
             sortDirections: ['descend', 'ascend'],
-            render: (text, { bodyPart }) => {
-                return bodyPart.bodyPart1
-            }
+            render: (text, { bodyPartName }) => {
+                return bodyPartName
+            },
+            ...getColumnSearchProps('bodyPartName'),
         },
         {
             title: 'Supervisor',
             dataIndex: 'supervisor',
             sorter: (a, b) => a.supervisor.length - b.supervisor.length,
             sortDirections: ['descend', 'ascend'],
+            ...getColumnSearchProps('supervisor'),
         },
         {
             title: 'Injury Status',
             dataIndex: 'injuryStatId',
             sorter: (a, b) => a.injuryStatId.length - b.injuryStatId.length,
             sortDirections: ['descend', 'ascend'],
+            ...getColumnSearchProps('injuryStatId'),
         },
         {
             title: 'Description',
@@ -287,37 +348,52 @@ const IncidentHistoryTable = ({ department, range }) => {
             width: 500,
             sorter: (a, b) => a.description.length - b.description.length,
             sortDirections: ['descend', 'ascend'],
+            ...getColumnSearchProps('description'),
         },
         {
             title: 'Interim Action Taken',
             dataIndex: 'interimActionTaken',
             sorter: (a, b) => a.interimActionTaken.length - b.interimActionTaken.length,
             sortDirections: ['descend', 'ascend'],
+            ...getColumnSearchProps('interimActionTaken'),
         },
         {
             title: 'Final Corrective Action',
             dataIndex: 'finalCorrectiveAction',
             sorter: (a, b) => a.finalCorrectiveAction.length - b.finalCorrectiveAction.length,
             sortDirections: ['descend', 'ascend'],
+            ...getColumnSearchProps('finalCorrectiveAction'),
         },
         {
             title: 'Reason Supporting ORIR Status',
             dataIndex: 'reasonSupportingOrirstat',
             sorter: (a, b) => a.reasonSupportingOrirstat?.length - b.reasonSupportingOrirstat?.length,
             sortDirections: ['descend', 'ascend'],
+            ...getColumnSearchProps('reasonSupportingOrirstat'),
         },
         {
             title: 'Time Stamp',
-            dataIndex: 'modifieddate',
+            dataIndex: 'modifieddateText',
             sorter: (a, b) => new Date(a.modifieddate) - new Date(b.modifieddate),
             sortDirections: ['descend', 'ascend'],
-            render: (text, { modifieddate }) => {
-                return moment(modifieddate).format(longDateFormat)
-            }
+            render: (text, { modifieddateText }) => {
+                return modifieddateText
+            },
+            ...getColumnSearchProps('modifieddateText'),
         }
     ];
       
-    const dataSource = incidents.map((item, i) => ({ key: i, ...item }))
+    const dataSource = incidents.map((item, i) => ({ 
+        key: i,
+        ...item,
+        injuryName: item.injury.injuryName,
+        bodyPartName: item.bodyPart.bodyPart1,
+        isClosedText: item.isClosed ? 'Close' : 'Open',
+        mitigatedText: item.mitigated ? 'Yes' : 'No',
+        mitigatedTimeStampText: item.mitigatedTimeStamp ? moment(item.mitigatedTimeStamp).format(longDateFormat) : 'N/A',
+        accidentDateText: moment(item.accidentDate).format(longDateFormat),
+        modifieddateText: moment(item.modifieddate).format(longDateFormat),
+    }))
 
     return (
         <>
@@ -338,237 +414,16 @@ const IncidentHistoryTable = ({ department, range }) => {
                 }} 
                 width={700}>
                 
-                <Form {...formLayout} onFinish={onFinish} form={form}>
-
-                    <Form.Item
-                        label="Id"
-                        hidden={true}
-                        name="id">
-                            <Input disabled />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Department"
-                        name="dept"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please select department',
-                            },
-                        ]}
-                        hasFeedback>
-                        <Select>
-                            {
-                                departments?.map(({ dept1 }) => <Option key={dept1} value={dept1}>{dept1}</Option>)
-                            }
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Supervisor"
-                        name="supervisor">
-                            <Input />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="First Name"
-                        name="fname"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please enter first name',
-                            },
-                        ]}
-                        hasFeedback>
-                            <Input />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Last Name"
-                        name="lname"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please enter last name',
-                            },
-                        ]}
-                        hasFeedback>
-                            <Input />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Shift"
-                        name="shift"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please select shift',
-                            },
-                        ]}
-                        hasFeedback>
-                        <Select>
-                            {
-                                shiftArr.map(shift => <Option key={shift} value={shift}>{shift}</Option>)
-                            }
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Incident Date"
-                        name="accidentDate"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please enter incident date',
-                            },
-                        ]}
-                        hasFeedback>
-
-                            <DatePicker
-                                disabledDate={disabledDate}
-                                format={longDateFormat}
-                                showTime
-                                style={{
-                                    width: '100%',
-                                }} />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Injury Type"
-                        name="injuryId"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please select injury type',
-                            },
-                        ]}
-                        hasFeedback>
-                        <Select>
-                            {
-                                injuries.map(({ id, injuryName }) => <Option key={id} value={id}>{injuryName}</Option>)
-                            }
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Body Part"
-                        name="bodyPartId"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please select body part',
-                            },
-                        ]}
-                        hasFeedback>
-                        <Select>
-                            {
-                                bodyParts.map(({ id, bodyPart1 }) => <Option key={id} value={id}>{bodyPart1}</Option>)
-                            }
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Injury Status"
-                        name="injuryStatId"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please select injury status',
-                            },
-                        ]}
-                        hasFeedback>
-                        <Select onChange={onInjuryStateChange}>
-                            {
-                                status.map(({ injuryStat1 }) => <Option key={injuryStat1} value={injuryStat1}>{injuryStat1}</Option>)
-                            }
-                        </Select>
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Description"
-                        name="description"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please enter description',
-                            },
-                        ]}
-                        hasFeedback>
-                            <TextArea autoSize={true} />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Interim Action Taken"
-                        name="interimActionTaken"
-                        hasFeedback>
-                            <TextArea autoSize={true} />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Final Corrective Action"
-                        name="finalCorrectiveAction"
-                        hasFeedback>
-                            <TextArea autoSize={true} />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Close"
-                        name="isClosed"
-                        valuePropName="checked"
-                        hasFeedback>
-                            <Checkbox onChange={onCheckBoxChange} />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="FM Tips Number"
-                        name="fmTipsNumber"
-                        rules={[
-                            {
-                                required: isClosed && isRecordable,
-                                message: 'Please enter FM Tips Number',
-                            },
-                        ]}
-                        hasFeedback>
-                            <Input disabled={!isClosed || !isRecordable} />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Mitigated"
-                        name="mitigated"
-                        valuePropName="checked"
-                        hasFeedback>
-                            <Checkbox onChange={onMitigatedChecked} />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="MItigated Date"
-                        name="mitigatedTimeStamp"
-                        rules={[
-                            {
-                                required: !!mitigatedTimeStamp,
-                                message: 'Please enter FM Tips Number',
-                            },
-                        ]}
-                        hasFeedback>
-                            <DatePicker
-                                disabledDate={disabledDate}
-                                format={longDateFormat}
-                                value={mitigatedTimeStamp}
-                                disabled={mitigatedTimeStamp ? false : true}
-                                showTime
-                                style={{
-                                    width: '100%',
-                                }} />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Notes"
-                        name="notes"
-                        hasFeedback>
-                            <TextArea autoSize={true} />
-                    </Form.Item>
-
-                </Form>
+                <EditForm
+                    form={form}
+                    isClosed={isClosed}
+                    isRecordable={isRecordable}
+                    mitigatedTimeStamp={mitigatedTimeStamp}
+                    onFinish={onFinish}
+                    onInjuryStateChange={onInjuryStateChange}
+                    onCheckBoxChange={onCheckBoxChange}
+                    onMitigatedChecked={onMitigatedChecked}
+                />
 
             </Modal>
         </>

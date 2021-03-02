@@ -7,7 +7,7 @@ import { dateFormat } from '../../../core/utilities/helpers'
 // Resolves charts dependancy
 charts(FusionCharts);
 
-const MonthlyIncidentChart = ({ data, range, department, isnearMiss = false }) => {
+const MonthlyIncidentChart = React.memo(({ data, range, department, isnearMiss = false }) => {
 
     const [start, end] = range;
     const injuries = data?.flatMap(({ injuries }) => injuries) ?? [];
@@ -19,6 +19,8 @@ const MonthlyIncidentChart = ({ data, range, department, isnearMiss = false }) =
             subcaption: `${start.format(dateFormat)} - ${end.format(dateFormat)}`,
             showsum: "1",
             theme: "fusion",
+            labelDisplay: "rotate",
+            slantLabel: "1",
             drawcrossline: "1"
         },
         categories: [
@@ -47,6 +49,6 @@ const MonthlyIncidentChart = ({ data, range, department, isnearMiss = false }) =
         />
     );
 
-}
+})
 
 export default MonthlyIncidentChart;

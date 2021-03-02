@@ -2,27 +2,28 @@ import React from 'react'
 import FusionCharts from "fusioncharts";
 import charts from "fusioncharts/fusioncharts.charts";
 import ReactFusioncharts from "react-fusioncharts";
-import { dateFormat } from '../../../core/utilities/helpers'
 
 // Resolves charts dependancy
 charts(FusionCharts);
 
-const OpenStatusChart = React.memo(({ data, range }) => {
+const MonthlyIncidentRateChart = React.memo(({ data }) => {
 
-    const [start, end] = range;
+    const yrs = data.filter(({ year }) => year > 0).map(({ year }) => year);
+    const minYear = Math.min(...yrs)
+    const maxYear = Math.max(...yrs)
+    const ytdLabel = minYear === maxYear ? 'YTD' : `${minYear} - ${maxYear}`
 
     const dataSource = {
         chart: {
-            caption: `Open Status Incidents`,
-            subcaption: `${start.format(dateFormat)} - ${end.format(dateFormat)}`,
+            caption: `${ytdLabel} Monthly Incident Rate `,
             showvalues: "1",
+            theme: "fusion",
             labelDisplay: "rotate",
             slantLabel: "1",
-            theme: "fusion"
         },
-        data: data.map(({ count, dept }) => ({
-            label: dept,
-            value: count
+        data: data.map(({ year, monthName, rate }) => ({
+            label: year > 0 ? `${monthName.substr(0,3)} ${year}` : ytdLabel,
+            value: rate
         }))
       };
 
@@ -38,4 +39,4 @@ const OpenStatusChart = React.memo(({ data, range }) => {
 
 })
 
-export default OpenStatusChart;
+export default MonthlyIncidentRateChart;

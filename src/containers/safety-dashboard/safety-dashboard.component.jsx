@@ -9,7 +9,8 @@ import MonthlyIncidentChart from './components/monthly-incidents-chart'
 import InjuryChart from './components/injury-chart.component'
 import BodyPartChart from './components/body-part-chart.component'
 import MitigationByChart from './components/mitigation-by-dept-chart.component'
-import MitigagedWithin14Days from './components/mitigated-within-14-days-chart.component'
+import MitigagedOver14Days from './components/mitigated-over-14-days-chart.component'
+import MonthlyIncidentRateChart from './components/monthly-incident-rate-chart.component'
 
 import { 
     Layout,
@@ -150,6 +151,14 @@ const SafetyDashboard = () => {
                     <Col span={8} >
                         <Card size="small">
                             {
+                                chartData && <MonthlyIncidentRateChart data={chartData.monthlyIncidentRate} />
+                            }
+                        </Card>
+                    </Col>
+
+                    <Col span={8} >
+                        <Card size="small">
+                            {
                                 chartData && <IncidentsByDept data={chartData.incidentsByDepartment} range={range} />
                             }
                         </Card>
@@ -221,8 +230,8 @@ const SafetyDashboard = () => {
                     <Col span={8} >
                         <Card size="small">
                             {
-                                chartData && <MitigagedWithin14Days 
-                                                data={chartData.mitigatedWithin14Days} 
+                                chartData && <MitigagedOver14Days 
+                                                data={chartData.notMitigatedOver14Days} 
                                                 range={range}  />
                             }
                         </Card>

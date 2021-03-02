@@ -7,7 +7,7 @@ import { dateFormat } from '../../../core/utilities/helpers'
 // Resolves charts dependancy
 charts(FusionCharts);
 
-const IncidentsByDept = ({ data, range }) => {
+const IncidentsByDept = React.memo(({ data, range }) => {
 
     const [start, end] = range;
     const injuries = data?.flatMap(({ injuries }) => injuries) ?? [];
@@ -19,6 +19,8 @@ const IncidentsByDept = ({ data, range }) => {
             subcaption: `${start.format(dateFormat)} - ${end.format(dateFormat)}`,
             showsum: "1",
             theme: "fusion",
+            labelDisplay: "rotate",
+            slantLabel: "1",
             drawcrossline: "1"
         },
         categories: [
@@ -47,6 +49,6 @@ const IncidentsByDept = ({ data, range }) => {
         />
     );
 
-}
+})
 
 export default IncidentsByDept;

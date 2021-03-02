@@ -8,7 +8,7 @@ import { dateFormat } from '../../../core/utilities/helpers'
 // Resolves charts dependancy
 charts(FusionCharts);
 
-const MitigationByChart = ({ data, range }) => {
+const MitigationByChart = React.memo(({ data, range }) => {
 
     const [start, end] = range;
 
@@ -17,6 +17,8 @@ const MitigationByChart = ({ data, range }) => {
             caption: `Average days for mitigation to occur by Department`,
             subcaption: `${start.format(dateFormat)} - ${end.format(dateFormat)}`,
             showvalues: "1",
+            labelDisplay: "rotate",
+            slantLabel: "1",
             theme: "fusion"
         },
         data: data.map(({ avgDays, dept }) => ({
@@ -35,6 +37,6 @@ const MitigationByChart = ({ data, range }) => {
         />
     );
 
-}
+})
 
 export default MitigationByChart;

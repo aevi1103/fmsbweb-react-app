@@ -7,7 +7,7 @@ import { dateFormat } from '../../../core/utilities/helpers'
 // Resolves charts dependancy
 charts(FusionCharts);
 
-const MitigagedWithin14Days = ({ data, range }) => {
+const MitigagedOver14Days = React.memo(({ data, range }) => {
 
     const [start, end] = range;
 
@@ -16,6 +16,8 @@ const MitigagedWithin14Days = ({ data, range }) => {
             caption: `# of issues open past 14 days w/o mitigation by department`,
             subcaption: `${start.format(dateFormat)} - ${end.format(dateFormat)}`,
             showvalues: "1",
+            labelDisplay: "rotate",
+            slantLabel: "1",
             theme: "fusion"
         },
         data: data.map(({ issuesCount, dept }) => ({
@@ -34,6 +36,6 @@ const MitigagedWithin14Days = ({ data, range }) => {
         />
     );
 
-}
+})
 
-export default MitigagedWithin14Days;
+export default MitigagedOver14Days;
